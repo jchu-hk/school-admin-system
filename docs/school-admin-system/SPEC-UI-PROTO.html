@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能校务助理系统 — 界面原型设计文档 v1.0.0</title>
+    <style>
+        :root {
+            --primary: #1E40AF;
+            --primary-light: #3B82F6;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --bg: #F8FAFC;
+            --text: #1E293B;
+            --border: #E2E8F0;
+            --sidebar-bg: #1E293B;
+            --sidebar-text: #94A3B8;
+            --card-bg: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans HK', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 20px 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .header-info {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+        }
+        
+        .header-info span {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+        
+        /* Layout */
+        .container {
+            display: flex;
+            margin-top: 70px;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            min-height: calc(100vh - 70px);
+            position: fixed;
+            left: 0;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-title {
+            color: var(--sidebar-text);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+        
+        .sidebar-link {
+            display: block;
+            color: #CBD5E1;
+            text-decoration: none;
+            padding: 10px 20px 10px 30px;
+            font-size: 14px;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-link:hover {
+            background: rgba(255,255,255,0.05);
+            border-left-color: var(--primary-light);
+            color: white;
+        }
+        
+        .sidebar-link.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-left-color: var(--primary-light);
+            color: white;
+        }
+        
+        /* Main Content */
+        .main {
+            margin-left: 280px;
+            padding: 40px;
+            flex: 1;
+            max-width: 1400px;
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .info-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background: #F1F5F9;
+            font-weight: 600;
+            color: #475569;
+        }
+        
+        tr:hover {
+            background: #F8FAFC;
+        }
+        
+        /* Screen Mockup */
+        .screen-mockup {
+            background: #1E293B;
+            border-radius: 12px;
+            padding: 2px;
+            overflow: hidden;
+            margin: 20px 0;
+            font-family: 'SF Mono', Monaco, Consolas, monospace;
+            font-size: 11px;
+        }
+        
+        .screen-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .screen-header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .screen-logo {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .screen-nav {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+        }
+        
+        .screen-nav span {
+            opacity: 0.8;
+            cursor: pointer;
+        }
+        
+        .screen-nav span.active {
+            opacity: 1;
+            border-bottom: 2px solid white;
+            padding-bottom: 2px;
+        }
+        
+        .screen-header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 12px;
+        }
+        
+        .screen-body {
+            display: flex;
+            min-height: 400px;
+        }
+        
+        .screen-sidebar {
+            width: 200px;
+            background: #334155;
+            padding: 15px;
+            color: #94A3B8;
+            font-size: 11px;
+        }
+        
+        .screen-sidebar-item {
+            padding: 8px 12px;
+            margin-bottom: 2px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .screen-sidebar-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .screen-sidebar-item.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .screen-content {
+            flex: 1;
+            background: #F8FAFC;
+            padding: 20px;
+            color: var(--text);
+        }
+        
+        .screen-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .screen-card-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text);
+            font-size: 13px;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #64748B;
+            margin-top: 5px;
+        }
+        
+        .stat-change {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        
+        .stat-change.positive {
+            color: var(--success);
+        }
+        
+        .stat-change.negative {
+            color: var(--error);
+        }
+        
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .badge-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        
+        .badge-warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .badge-error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        
+        .badge-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        /* Priority Badges */
+        .priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .priority-p0 {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+        
+        .priority-p1 {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+        
+        .priority-p2 {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+        
+        .priority-p3 {
+            background: #E2E8F0;
+            color: #475569;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1E3A8A;
+        }
+        
+        .btn-secondary {
+            background: #E2E8F0;
+            color: #475569;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+        
+        /* Charts placeholder */
+        .chart-placeholder {
+            background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #64748B;
+        }
+        
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            font-size: 11px;
+        }
+        
+        .data-table th {
+            background: #F1F5F9;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid #E2E8F0;
+        }
+        
+        .data-table td {
+            padding: 10px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+        
+        /* Module Tag */
+        .module-tag {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        /* Responsive Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* Color Palette */
+        .color-palette {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .color-item {
+            text-align: center;
+        }
+        
+        .color-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .color-name {
+            font-size: 11px;
+            color: #64748B;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            font-size: 14px;
+            color: #64748B;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            font-weight: 600;
+        }
+        
+        /* AI Chat */
+        .ai-chat {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+        }
+        
+        .ai-message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .ai-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .ai-bubble {
+            background: #F1F5F9;
+            border-radius: 12px;
+            padding: 12px 15px;
+            flex: 1;
+            font-size: 13px;
+        }
+        
+        .ai-quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .ai-quick-btn {
+            background: #EEF2FF;
+            border: 1px solid #C7D2FE;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 12px;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .ai-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .ai-input input {
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-size: 13px;
+            outline: none;
+        }
+        
+        .ai-input button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            color: #64748B;
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* Language Switcher */
+        .lang-switch {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-option {
+            flex: 1;
+            background: #F8FAFC;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .lang-option:hover {
+            border-color: var(--primary-light);
+        }
+        
+        .lang-option.selected {
+            border-color: var(--primary);
+            background: #EEF2FF;
+        }
+        
+        .lang-option h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .lang-option p {
+            font-size: 12px;
+            color: #64748B;
+        }
+        
+        /* Quick Links */
+        .quick-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-link {
+            background: #F8FAFC;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-link:hover {
+            border-color: var(--primary-light);
+            background: #EEF2FF;
+        }
+        
+        .quick-link-icon {
+            font-size: 24px;
+        }
+        
+        .quick-link-text {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        /* Print Styles */
+        @media print {
+            .sidebar, .header {
+                display: none;
+            }
+            .main {
+                margin-left: 0;
+            }
+            .screen-mockup {
+                break-inside: avoid;
+            }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>🏫 智能校务助理系统 — 界面原型设计文档</h1>
+        <div class="header-info">
+            <span>版本 v1.0.0</span>
+            <span>输入: SPEC-COMPLETE.md v1.3.0</span>
+            <span>状态: 草稿</span>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">文档概述</div>
+                <a href="#overview" class="sidebar-link active">1. 文档概述</a>
+                <a href="#principles" class="sidebar-link">2. 设计原则与规范</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">界面原型</div>
+                <a href="#login" class="sidebar-link">3. 登录与认证界面</a>
+                <a href="#dashboard" class="sidebar-link">4. 主仪表板界面</a>
+                <a href="#cyclic" class="sidebar-link">5. 周期性校务管理</a>
+                <a href="#finance" class="sidebar-link">6. 财务资产管理</a>
+                <a href="#ai" class="sidebar-link">7. AI 智能助理</a>
+                <a href="#settings" class="sidebar-link">8. 系统设置与管理</a>
+                <a href="#i18n" class="sidebar-link">9. 多语言切换</a>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">附录</div>
+                <a href="#responsive" class="sidebar-link">10. 响应式设计</a>
+                <a href="#appendix" class="sidebar-link">11. 附录</a>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Section 1: Overview -->
+            <section id="overview">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📋 文档概述</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-box">
+                            <h4>📌 参考依据</h4>
+                            <p>本界面原型设计文档基于 <strong>SPEC-COMPLETE.md v1.3.0</strong> 功能规格书，包含 8 大模块、49 个功能函数。</p>
+                        </div>
+                        
+                        <h3 style="margin: 20px 0 15px;">目的</h3>
+                        <p>本界面原型设计文档用于向高级管理层 (Senior Management) 和部门主管 (Department Heads) 展示智能校务助理系统的用户界面设计，帮助他们全面了解系统的操作体验和功能呈现方式。</p>
+                        
+                        <h3 style="margin: 20px 0 15px;">适用用户角色</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>用户角色</th>
+                                    <th>说明</th>
+                                    <th>权限级别</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>🏢 校务主任</td>
+                                    <td>系统管理员，全面管理</td>
+                                    <td><span class="badge badge-error">最高权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td>👔 部门主管</td>
+                                    <td>各部门负责人</td>
+                                    <td><span class="badge badge-warning">部门权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td>👨‍🏫 教职员</td>
+                                    <td>教师、职工</td>
+                                    <td><span class="badge badge-info">基础权限</span></td>
+                                </tr>
+                                <tr>
+                                    <td>👪 家长</td>
+                                    <td>学生家长查询</td>
+                                    <td><span class="badge badge-success">只读权限</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h3 style="margin: 20px 0 15px;">模块与功能映射</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>模块编号</th>
+                                    <th>模块名称</th>
+                                    <th>功能数量</th>
+                                    <th>界面复杂度</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="module-tag">Module 1</span> MOD-DAILY-001</td>
+                                    <td>每日仪表板</td>
+                                    <td>7 个功能</td>
+                                    <td>⭐⭐⭐ 高</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="module-tag">Module 2</span> MOD-CYCL-001</td>
+                                    <td>周期性校务</td>
+                                    <td>10 个功能</td>
+                                    <td>⭐⭐⭐ 高</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="module-tag">Module 3</span> MOD-FIN-001</td>
+                                    <td>财务资产</td>
+                                    <td>7 个功能</td>
+                                    <td>⭐⭐⭐ 高</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="module-tag">Module 4</span> MOD-USER-001</td>
+                                    <td>用户管理</td>
+                                    <td>7 个功能</td>
+                                    <td>⭐⭐ 中</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="module-tag">Module 5</span> MOD-AI-001</td>
+                                    <td>AI 智能助理</td>
+                                    <td>5 个功能</td>
+                                    <td>⭐⭐⭐ 高</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="module-tag">Module 6</span> MOD-INT-001</td>
+                                    <td>系统集成</td>
+                                    <td>6 个功能</td>
+                                    <td>⭐ 基础</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="module-tag">Module 8</span> MOD-I18N-001</td>
+                                    <td>多语言支持</td>
+                                    <td>4 个功能</td>
+                                    <td>⭐ 基础</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 2: Design Principles -->
+            <section id="principles">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🎨 设计原则与规范</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 15px;">设计系统</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>项目</th>
+                                    <th>设计值</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>设计框架</td>
+                                    <td>React 18 + Tailwind CSS</td>
+                                </tr>
+                                <tr>
+                                    <td>图标库</td>
+                                    <td>Lucide React</td>
+                                </tr>
+                                <tr>
+                                    <td>字体</td>
+                                    <td>中文: Noto Sans HK / 英文: Inter</td>
+                                </tr>
+                                <tr>
+                                    <td>基准字号</td>
+                                    <td>14px (正文), 16px (标题)</td>
+                                </tr>
+                                <tr>
+                                    <td>栅格系统</td>
+                                    <td>12 列, 间距 16px / 24px / 32px</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h3 style="margin: 25px 0 15px;">颜色系统</h3>
+                        <div class="color-palette">
+                            <div class="color-item">
+                                <div class="color-swatch" style="background: #1E40AF;"></div>
+                                <div class="color-name">主色 Primary<br>#1E40AF</div>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-swatch" style="background: #3B82F6;"></div>
+                                <div class="color-name">辅助色 Secondary<br>#3B82F6</div>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-swatch" style="background: #10B981;"></div>
+                                <div class="color-name">成功 Success<br>#10B981</div>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-swatch" style="background: #F59E0B;"></div>
+                                <div class="color-name">警告 Warning<br>#F59E0B</div>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-swatch" style="background: #EF4444;"></div>
+                                <div class="color-name">错误 Error<br>#EF4444</div>
+                            </div>
+                            <div class="color-item">
+                                <div class="color-swatch" style="background: #F8FAFC;"></div>
+                                <div class="color-name">背景色 Background<br>#F8FAFC</div>
+                            </div>
+                        </div>
+                        
+                        <h3 style="margin: 25px 0 15px;">布局模式</h3>
+                        <div class="screen-mockup" style="min-height: 200px;">
+                            <div style="background: var(--primary); color: white; padding: 10px 20px; font-size: 12px;">
+                                Header (Logo | 导航菜单 | 搜索 | 语言切换 | 通知 | 用户头像)
+                            </div>
+                            <div style="display: flex; min-height: 150px;">
+                                <div style="width: 180px; background: #334155; color: #94A3B8; padding: 15px; font-size: 11px;">
+                                    Sidebar (240px)<br>
+                                    • 仪表板<br>
+                                    • 校务<br>
+                                    • 财务<br>
+                                    • AI助理<br>
+                                    • 设置
+                                </div>
+                                <div style="flex: 1; background: #F8FAFC; padding: 15px; font-size: 11px; color: var(--text);">
+                                    Main Content Area<br><br>
+                                    Page Header + 内容区域 (数据表格 / 卡片列表 / 表单 / 图表)
+                                </div>
+                            </div>
+                            <div style="background: #E2E8F0; padding: 8px 20px; font-size: 11px; text-align: center; color: #64748B;">
+                                Footer (版本信息 | 支持链接 | 版权声明)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 3: Login -->
+            <section id="login">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🔐 登录与认证界面</h2>
+                        <span class="badge badge-info">F-USER-002 身份认证</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 15px;">登录页面</h3>
+                        <div class="screen-mockup">
+                            <div class="screen-header" style="justify-content: center; padding: 30px;">
+                                <div style="text-align: center;">
+                                    <div style="font-size: 40px; margin-bottom: 10px;">🏫</div>
+                                    <div class="screen-logo">耀美学校</div>
+                                </div>
+                            </div>
+                            <div class="screen-body" style="justify-content: center; align-items: center; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); padding: 40px;">
+                                <div style="background: white; border-radius: 16px; padding: 30px; width: 100%; max-width: 380px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+                                    <h3 style="text-align: center; margin-bottom: 25px; color: var(--text);">欢迎登录</h3>
+                                    
+                                    <div style="margin-bottom: 15px;">
+                                        <label style="font-size: 12px; color: #64748B; display: block; margin-bottom: 5px;">用户名 / 邮箱</label>
+                                        <input type="text" placeholder="请输入用户名" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px;">
+                                    </div>
+                                    
+                                    <div style="margin-bottom: 15px;">
+                                        <label style="font-size: 12px; color: #64748B; display: block; margin-bottom: 5px;">密码</label>
+                                        <input type="password" placeholder="请输入密码" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px;">
+                                    </div>
+                                    
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 13px;">
+                                        <label style="display: flex; align-items: center; gap: 5px; color: #64748B;">
+                                            <input type="checkbox"> 记住登录状态
+                                        </label>
+                                        <a href="#" style="color: var(--primary); text-decoration: none;">忘记密码?</a>
+                                    </div>
+                                    
+                                    <button class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 15px;">登 录</button>
+                                    
+                                    <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+                                        <span style="font-size: 12px; color: #64748B;">其他登录方式</span>
+                                        <div style="margin-top: 10px;">
+                                            <button class="btn btn-secondary" style="width: 100%;">🔵 SSO 企业登录</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="background: #1E293B; padding: 10px; text-align: center; color: #94A3B8; font-size: 12px;">
+                                🌐 语言: 繁體中文 ▼
+                            </div>
+                        </div>
+                        
+                        <div class="info-box" style="margin-top: 20px;">
+                            <h4>功能映射</h4>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li><strong>F-USER-002:</strong> 身份认证 <span class="priority priority-p0">P0</span></li>
+                                <li><strong>F-USER-006:</strong> 密码重置入口 <span class="priority priority-p0">P0</span></li>
+                                <li><strong>F-I18N-002:</strong> 语言检测与自动切换 <span class="priority priority-p0">P0</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 4: Dashboard -->
+            <section id="dashboard">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📊 主仪表板界面</h2>
+                        <span class="badge badge-info">MOD-DAILY-001 每日仪表板</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 15px;">仪表板首页</h3>
+                        <div class="screen-mockup">
+                            <div class="screen-header">
+                                <div class="screen-header-left">
+                                    <span class="screen-logo">🏫 耀美学校</span>
+                                    <div class="screen-nav">
+                                        <span class="active">仪表板</span>
+                                        <span>周期性校务</span>
+                                        <span>财务资产</span>
+                                        <span>AI助理</span>
+                                    </div>
+                                </div>
+                                <div class="screen-header-right">
+                                    <span>🔍</span>
+                                    <span>🌐 繁中</span>
+                                    <span>👋 张老师</span>
+                                </div>
+                            </div>
+                            <div class="screen-body">
+                                <div class="screen-sidebar">
+                                    <div class="screen-sidebar-item active">📊 仪表板</div>
+                                    <div class="screen-sidebar-item">📅 每日</div>
+                                    <div style="padding-left: 25px; font-size: 10px;">
+                                        <div class="screen-sidebar-item">└ 出勤</div>
+                                        <div class="screen-sidebar-item">└ 午膳</div>
+                                        <div class="screen-sidebar-item">└ 校车</div>
+                                        <div class="screen-sidebar-item">└ 请假</div>
+                                        <div class="screen-sidebar-item">└ 收费</div>
+                                    </div>
+                                    <div class="screen-sidebar-item">📂 周期性</div>
+                                    <div class="screen-sidebar-item">💰 财务</div>
+                                    <div class="screen-sidebar-item">🤖 AI助理</div>
+                                    <div class="screen-sidebar-item">⚙️ 设置</div>
+                                </div>
+                                <div class="screen-content">
+                                    <!-- Date Bar -->
+                                    <div class="screen-card" style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span>📅 2026年5月27日 星期三</span>
+                                        <span>📍 香港 天气: ☀️ 28°C</span>
+                                        <span>👤 张老师</span>
+                                    </div>
+                                    
+                                    <!-- Today Overview -->
+                                    <div class="screen-card">
+                                        <div class="screen-card-title">📊 今日概览</div>
+                                        <div class="stats-grid">
+                                            <div class="stat-card">
+                                                <div class="stat-icon">👥</div>
+                                                <div class="stat-value">98.5%</div>
+                                                <div class="stat-label">出勤率</div>
+                                                <div class="stat-change positive">▲ +2.3%</div>
+                                            </div>
+                                            <div class="stat-card">
+                                                <div class="stat-icon">🍱</div>
+                                                <div class="stat-value">456</div>
+                                                <div class="stat-label">午膳预订</div>
+                                                <div class="stat-change">预订中</div>
+                                            </div>
+                                            <div class="stat-card">
+                                                <div class="stat-icon">🚌</div>
+                                                <div class="stat-value">12</div>
+                                                <div class="stat-label">校车线路</div>
+                                                <div class="stat-change positive">运行正常</div>
+                                            </div>
+                                            <div class="stat-card">
+                                                <div class="stat-icon">📝</div>
+                                                <div class="stat-value">3</div>
+                                                <div class="stat-label">请假待审</div>
+                                                <div class="stat-change negative">待处理</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Two Column -->
+                                    <div class="grid-2">
+                                        <!-- Attendance Chart -->
+                                        <div class="screen-card">
+                                            <div class="screen-card-title">📈 出勤统计</div>
+                                            <div class="chart-placeholder" style="padding: 30px;">
+                                                [柱状图: 本周出勤趋势]
+                                            </div>
+                                            <div style="margin-top: 10px; font-size: 11px;">
+                                                <div>全校: 98.5% | 1A班: 100% | 2B班: 96.2%</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Pending Items -->
+                                        <div class="screen-card">
+                                            <div class="screen-card-title">🔔 待处理事项 (5)</div>
+                                            <div style="font-size: 12px;">
+                                                <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">☐ <span class="badge badge-error">紧急</span> 请假申请 - 李小明家长</div>
+                                                <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">☐ <span class="badge badge-warning">普通</span> 校车变更 - 1A班</div>
+                                                <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">☐ <span class="badge badge-warning">普通</span> 午膳调整 - 2B班</div>
+                                                <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">☐ <span class="badge badge-info">低</span> 课本补订 - 3C班</div>
+                                                <div style="padding: 8px 0;">☐ <span class="badge badge-info">低</span> 活动报名确认</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Bus Status -->
+                                    <div class="screen-card" style="margin-top: 15px;">
+                                        <div class="screen-card-title">🚌 校车状态</div>
+                                        <div style="display: flex; gap: 20px;">
+                                            <div style="flex: 1; padding: 10px; background: #F0FDF4; border-radius: 8px; border-left: 3px solid var(--success);">
+                                                🟢 校车1号线 - 正常运行
+                                            </div>
+                                            <div style="flex: 1; padding: 10px; background: #FEF3C7; border-radius: 8px; border-left: 3px solid var(--warning);">
+                                                🟡 校车3号线 - 轻微延误
+                                            </div>
+                                            <div style="flex: 1; padding: 10px; background: #F0FDF4; border-radius: 8px; border-left: 3px solid var(--success);">
+                                                🟢 校车4号线 - 正常运行
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box" style="margin-top: 20px;">
+                            <h4>功能映射</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                <span class="priority priority-p0">F-ATT-001 出勤统计</span>
+                                <span class="priority priority-p0">F-ATT-002 迟到/早退</span>
+                                <span class="priority priority-p0">F-LUNCH-001 午膳订购</span>
+                                <span class="priority priority-p0">F-BUS-001 校车追踪</span>
+                                <span class="priority priority-p0">F-BUS-002 校车点名</span>
+                                <span class="priority priority-p0">F-LEAVE-001 请假处理</span>
+                                <span class="priority priority-p0">F-FEE-001 费用收取</span>
+                            </div>
+                        </div>
+                        
+                        <hr style="margin: 30px 0; border: none; border-top: 1px solid var(--border);">
+                        
+                        <h3 style="margin-bottom: 15px;">出勤管理页面</h3>
+                        <div class="screen-mockup">
+                            <div class="screen-header">
+                                <div class="screen-header-left">
+                                    <span class="screen-logo">🏫 耀美学校</span>
+                                    <div class="screen-nav">
+                                        <span class="active">仪表板</span>
+                                        <span>周期性校务</span>
+                                        <span>财务资产</span>
+                                        <span>AI助理</span>
+                                    </div>
+                                </div>
+                                <div class="screen-header-right">
+                                    <span>🔍</span>
+                                    <span>🌐 繁中</span>
+                                    <span>👋 张老师</span>
+                                </div>
+                            </div>
+                            <div class="screen-body">
+                                <div class="screen-sidebar">
+                                    <div class="screen-sidebar-item">📊 仪表板</div>
+                                    <div class="screen-sidebar-item">📅 每日</div>
+                                    <div style="padding-left: 25px; font-size: 10px;">
+                                        <div class="screen-sidebar-item active">└ 出勤</div>
+                                        <div class="screen-sidebar-item">└ 午膳</div>
+                                        <div class="screen-sidebar-item">└ 校车</div>
+                                        <div class="screen-sidebar-item">└ 请假</div>
+                                    </div>
+                                </div>
+                                <div class="screen-content">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                        <h3 style="font-size: 16px;">👥 出勤管理</h3>
+                                        <div>
+                                            <button class="btn btn-secondary" style="margin-right: 10px;">导出</button>
+                                            <button class="btn btn-primary">筛选 ▼</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Filters -->
+                                    <div class="screen-card" style="display: flex; gap: 15px; align-items: center;">
+                                        <span>日期:</span>
+                                        <input type="date" value="2026-05-27" style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                                        <span>班级:</span>
+                                        <select style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                                            <option>全部</option>
+                                        </select>
+                                        <span>状态:</span>
+                                        <select style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                                            <option>全部</option>
+                                        </select>
+                                        <button class="btn btn-primary">搜索</button>
+                                    </div>
+                                    
+                                    <!-- Stats -->
+                                    <div class="screen-card">
+                                        <strong>📊 今日出勤概览</strong>
+                                        <div style="margin-top: 10px; display: flex; gap: 30px; font-size: 12px;">
+                                            <span>全校出勤率: <strong style="color: var(--primary);">98.5%</strong></span>
+                                            <span>应到: 862</span>
+                                            <span>实到: 849</span>
+                                            <span>请假: 8</span>
+                                            <span>迟到: 5</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Table -->
+                                    <div class="screen-card">
+                                        <table class="data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox"></th>
+                                                    <th>学生姓名</th>
+                                                    <th>学号</th>
+                                                    <th>班级</th>
+                                                    <th>状态</th>
+                                                    <th>时间</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><input type="checkbox"></td>
+                                                    <td>陈小明</td>
+                                                    <td>S001</td>
+                                                    <td>1A</td>
+                                                    <td><span class="badge badge-success">✅ 出勤</span></td>
+                                                    <td>08:00</td>
+                                                    <td>👁️</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="checkbox"></td>
+                                                    <td>王小华</td>
+                                                    <td>S003</td>
+                                                    <td>1A</td>
+                                                    <td><span class="badge badge-warning">⏰ 迟到</span></td>
+                                                    <td>08:15</td>
+                                                    <td>👁️</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="checkbox"></td>
+                                                    <td>张小美</td>
+                                                    <td>S004</td>
+                                                    <td>1A</td>
+                                                    <td><span class="badge badge-info">📝 请假</span></td>
+                                                    <td>--</td>
+                                                    <td>👁️</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 5: Cyclic -->
+            <section id="cyclic">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📂 周期性校务管理界面</h2>
+                        <span class="badge badge-info">MOD-CYCL-001 周期性校务</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 15px;">周期性校务首页</h3>
+                        <div class="screen-mockup">
+                            <div class="screen-header">
+                                <div class="screen-header-left">
+                                    <span class="screen-logo">🏫 耀美学校</span>
+                                    <div class="screen-nav">
+                                        <span>仪表板</span>
+                                        <span class="active">周期性校务</span>
+                                        <span>财务资产</span>
+                                        <span>AI助理</span>
+                                    </div>
+                                </div>
+                                <div class="screen-header-right">
+                                    <span>🔍</span>
+                                    <span>🌐 繁中</span>
+                                    <span>👋 张老师</span>
+                                </div>
+                            </div>
+                            <div class="screen-body">
+                                <div class="screen-sidebar">
+                                    <div class="screen-sidebar-item">📊 仪表板</div>
+                                    <div class="screen-sidebar-item active">📂 周期性</div>
+                                    <div style="padding-left: 25px; font-size: 10px;">
+                                        <div class="screen-sidebar-item">└ 注册</div>
+                                        <div class="screen-sidebar-item">└ 考试</div>
+                                        <div class="screen-sidebar-item">└ 收生</div>
+                                        <div class="screen-sidebar-item">└ 年终</div>
+                                    </div>
+                                    <div class="screen-sidebar-item">💰 财务</div>
+                                    <div class="screen-sidebar-item">🤖 AI助理</div>
+                                    <div class="screen-sidebar-item">⚙️ 设置</div>
+                                </div>
+                                <div class="screen-content">
+                                    <h3 style="margin-bottom: 20px;">📂 周期性校务管理</h3>
+                                    
+                                    <!-- Quick Links -->
+                                    <div class="grid-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px;">
+                                        <div class="quick-link">
+                                            <span class="quick-link-icon">📝</span>
+                                            <span class="quick-link-text">注册管理</span>
+                                        </div>
+                                        <div class="quick-link">
+                                            <span class="quick-link-icon">📋</span>
+                                            <span class="quick-link-text">考试管理</span>
+                                        </div>
+                                        <div class="quick-link">
+                                            <span class="quick-link-icon">🎓</span>
+                                            <span class="quick-link-text">收生管理</span>
+                                        </div>
+                                        <div class="quick-link">
+                                            <span class="quick-link-icon">📦</span>
+                                            <span class="quick-link-text">年终处理</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Current Phase -->
+                                    <div class="screen-card">
+                                        <div class="screen-card-title">📅 当前阶段: 2025-2026学年</div>
+                                        <div style="background: #FEF3C7; border-left: 4px solid var(--warning); padding: 15px; border-radius: 8px;">
+                                            <strong>📌 进行中事项 (5)</strong>
+                                            <div style="margin-top: 10px; font-size: 12px;">
+                                                <div style="padding: 8px 0;">1️⃣ <span class="badge badge-error">DSE报考</span> 截止日期: 2026-06-15 (剩余15天)</div>
+                                                <div style="padding: 8px 0;">2️⃣ <span class="badge badge-warning">中一收生</span> 面试日期: 2026-04-20 (进行中)</div>
+                                                <div style="padding: 8px 0;">3️⃣ <span class="badge badge-info">课本分发</span> 领取期: 2026-08-25 至 08-31</div>
+                                                <div style="padding: 8px 0;">4️⃣ <span class="badge badge-info">学年结算</span> 截止日期: 2026-07-31 (剩余60天)</div>
+                                                <div style="padding: 8px 0;">5️⃣ <span class="badge badge-info">档案清理</span> 截止日期: 2026-08-15 (剩余45天)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box" style="margin-top: 20px;">
+                            <h4>功能映射</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                <span class="priority priority-p0">F-ENRL-001 新生注册</span>
+                                <span class="priority priority-p0">F-ENRL-002 AI编班</span>
+                                <span class="priority priority-p1">F-ENRL-003 课本分发</span>
+                                <span class="priority priority-p0">F-EXAM-001 DSE报考</span>
+                                <span class="priority priority-p0">F-EXAM-002 试卷管理</span>
+                                <span class="priority priority-p0">F-EXAM-003 特别考试</span>
+                                <span class="priority priority-p0">F-EXAM-004 成绩单</span>
+                                <span class="priority priority-p0">F-ADM-001 中一收生</span>
+                                <span class="priority priority-p0">F-ADM-002 JUPAS联招</span>
+                                <span class="priority priority-p1">F-YREND-001 档案清理</span>
+                                <span class="priority priority-p0">F-YREND-002 财务结算</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 6: Finance -->
+            <section id="finance">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">💰 财务资产管理界面</h2>
+                        <span class="badge badge-info">MOD-FIN-001 财务资产</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 15px;">财务资产首页</h3>
+                        <div class="screen-mockup">
+                            <div class="screen-header">
+                                <div class="screen-header-left">
+                                    <span class="screen-logo">🏫 耀美学校</span>
+                                    <div class="screen-nav">
+                                        <span>仪表板</span>
+                                        <span>周期性校务</span>
+                                        <span class="active">财务资产</span>
+                                        <span>AI助理</span>
+                                    </div>
+                                </div>
+                                <div class="screen-header-right">
+                                    <span>🔍</span>
+                                    <span>🌐 繁中</span>
+                                    <span>👋 张老师</span>
+                                </div>
+                            </div>
+                            <div class="screen-body">
+                                <div class="screen-sidebar">
+                                    <div class="screen-sidebar-item">📊 仪表板</div>
+                                    <div class="screen-sidebar-item">📂 周期性</div>
+                                    <div class="screen-sidebar-item active">💰 财务</div>
+                                    <div style="padding-left: 25px; font-size: 10px;">
+                                        <div class="screen-sidebar-item">└ 学费</div>
+                                        <div class="screen-sidebar-item">└ 报销</div>
+                                        <div class="screen-sidebar-item">└ 资产</div>
+                                        <div class="screen-sidebar-item">└ 场地</div>
+                                    </div>
+                                    <div class="screen-sidebar-item">🤖 AI助理</div>
+                                </div>
+                                <div class="screen-content">
+                                    <h3 style="margin-bottom: 20px;">💰 财务资产管理</h3>
+                                    
+                                    <!-- Quick Links -->
+                                    <div class="grid-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px;">
+                                        <div class="quick-link">
+                                            <span class="quick-link-icon">💵</span>
+                                            <span class="quick-link-text">学费管理</span>
+                                        </div>
+                                        <div class="quick-link">
+                                            <span class="quick-link-icon">💴</span>
+                                            <span class="quick-link-text">报销管理</span>
+                                        </div>
+                                        <div class="quick-link">
+                                            <span class="quick-link-icon">🏷️</span>
+                                            <span class="quick-link-text">资产盘点</span>
+                                        </div>
+                                        <div class="quick-link">
+                                            <span class="quick-link-icon">🏢</span>
+                                            <span class="quick-link-text">场地租借</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Monthly Overview -->
+                                    <div class="screen-card">
+                                        <div class="screen-card-title">📊 本月财务概览 (2026年5月)</div>
+                                        <div class="stats-grid">
+                                            <div class="stat-card">
+                                                <div class="stat-value" style="color: var(--success);">$456,780</div>
+                                                <div class="stat-label">收入</div>
+                                                <div class="stat-change positive">▲ 12%</div>
+                                            </div>
+                                            <div class="stat-card">
+                                                <div class="stat-value" style="color: var(--error);">$123,450</div>
+                                                <div class="stat-label">支出</div>
+                                                <div class="stat-change negative">▼ 5%</div>
+                                            </div>
+                                            <div class="stat-card">
+                                                <div class="stat-value" style="color: var(--primary);">$333,330</div>
+                                                <div class="stat-label">结余</div>
+                                            </div>
+                                            <div class="stat-card">
+                                                <div class="stat-value" style="color: var(--warning);">$45,600</div>
+                                                <div class="stat-label">待收学费</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Alerts -->
+                                    <div class="screen-card" style="background: #FEF2F2; border: 1px solid #FECACA;">
+                                        <div class="screen-card-title" style="color: #991B1B;">⚠️ 待处理事项</div>
+                                        <div style="font-size: 12px;">
+                                            <div style="padding: 5px 0;">• 12名学生学费逾期未缴 (共计 $45,600)</div>
+                                            <div style="padding: 5px 0;">• 5笔报销申请待审批 (共计 $8,900)</div>
+                                            <div style="padding: 5px 0;">• 3项设备保养到期 (空调、投影机)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box" style="margin-top: 20px;">
+                            <h4>功能映射</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                <span class="priority priority-p0">F-FIN-001 学费管理</span>
+                                <span class="priority priority-p0">F-FIN-002 零用现金报销</span>
+                                <span class="priority priority-p0">F-FIN-003 奖学金津贴</span>
+                                <span class="priority priority-p1">F-ASSET-001 校产盘点</span>
+                                <span class="priority priority-p1">F-ASSET-002 场地租借</span>
+                                <span class="priority priority-p1">F-ASSET-003 设备保养</span>
+                                <span class="priority priority-p1">F-VEND-001 供应商管理</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 7: AI Assistant -->
+            <section id="ai">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🤖 AI 智能助理界面</h2>
+                        <span class="badge badge-info">MOD-AI-001 AI 智能助理</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 15px;">AI 智能助理对话界面</h3>
+                        <div class="screen-mockup">
+                            <div class="screen-header">
+                                <div class="screen-header-left">
+                                    <span class="screen-logo">🏫 耀美学校</span>
+                                    <div class="screen-nav">
+                                        <span>仪表板</span>
+                                        <span>周期性校务</span>
+                                        <span>财务资产</span>
+                                        <span class="active">AI助理</span>
+                                    </div>
+                                </div>
+                                <div class="screen-header-right">
+                                    <span>🔍</span>
+                                    <span>🌐 繁中</span>
+                                    <span>👋 张老师</span>
+                                </div>
+                            </div>
+                            <div class="screen-body">
+                                <div class="screen-sidebar">
+                                    <div class="screen-sidebar-item">📊 仪表板</div>
+                                    <div class="screen-sidebar-item">📂 周期性</div>
+                                    <div class="screen-sidebar-item">💰 财务</div>
+                                    <div class="screen-sidebar-item active">🤖 AI助理</div>
+                                    <div style="padding-left: 25px; font-size: 10px;">
+                                        <div class="screen-sidebar-item active">└ 对话</div>
+                                        <div class="screen-sidebar-item">└ FAQ</div>
+                                        <div class="screen-sidebar-item">└ 提醒</div>
+                                        <div class="screen-sidebar-item">└ 文档</div>
+                                    </div>
+                                    <div class="screen-sidebar-item">⚙️ 设置</div>
+                                </div>
+                                <div class="screen-content" style="display: flex; justify-content: center; align-items: flex-start; padding-top: 30px;">
+                                    <div class="ai-chat" style="width: 100%; max-width: 600px;">
+                                        <div style="text-align: center; margin-bottom: 20px;">
+                                            <div style="font-size: 50px; margin-bottom: 10px;">🤖</div>
+                                            <h3>你好！我是耀美学校的智能助理</h3>
+                                            <p style="color: #64748B; font-size: 13px; margin-top: 5px;">请选择或输入您想了解的内容</p>
+                                        </div>
+                                        
+                                        <div class="ai-quick-actions">
+                                            <button class="ai-quick-btn">📊 今天有多少学生请假？</button>
+                                            <button class="ai-quick-btn">📈 查看本周出勤报告</button>
+                                            <button class="ai-quick-btn">💰 有哪些费用需要处理？</button>
+                                            <button class="ai-quick-btn">🚌 校车今天运行正常吗？</button>
+                                        </div>
+                                        
+                                        <div class="ai-input">
+                                            <input type="text" placeholder="请输入您的问题...">
+                                            <button>发送</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr style="margin: 30px 0; border: none; border-top: 1px solid var(--border);">
+                        
+                        <h3 style="margin-bottom: 15px;">AI 对话示例</h3>
+                        <div class="ai-chat" style="max-width: 700px; margin: 0 auto;">
+                            <div class="ai-message">
+                                <div style="width: 36px; height: 36px; border-radius: 50%; background: #E2E8F0; display: flex; align-items: center; justify-content: center;">👤</div>
+                                <div class="ai-bubble">
+                                    <strong>张老师</strong><br>
+                                    今天的出勤情况如何？
+                                </div>
+                            </div>
+                            
+                            <div class="ai-message">
+                                <div class="ai-avatar">🤖</div>
+                                <div class="ai-bubble">
+                                    <strong>AI 助理</strong><br><br>
+                                    今天是 2026年5月27日（星期三）<br><br>
+                                    <strong>📊 今日出勤概览:</strong><br>
+                                    • 应到人数: 862<br>
+                                    • 实到人数: 849<br>
+                                    • 请假人数: 8<br>
+                                    • 迟到人数: 5<br>
+                                    • 出勤率: <strong style="color: var(--success);">98.5%</strong> (▲ +2.3%)<br><br>
+                                    <strong>⚠️ 需关注:</strong><br>
+                                    • 2B班出勤率偏低 (96.2%)<br>
+                                    • 3名学生未请假未到校<br><br>
+                                    是否需要我帮您发送通知给相关家长？
+                                    <div style="margin-top: 15px;">
+                                        <button class="btn btn-primary" style="margin-right: 10px;">是，发送</button>
+                                        <button class="btn btn-secondary" style="margin-right: 10px;">查看详情</button>
+                                        <button class="btn btn-secondary">不用了</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="ai-input">
+                                <input type="text" placeholder="继续提问...">
+                                <button>发送</button>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box" style="margin-top: 20px;">
+                            <h4>功能映射</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                <span class="priority priority-p0">F-AI-001 自然语言理解</span>
+                                <span class="priority priority-p0">F-AI-002 FAQ智能匹配</span>
+                                <span class="priority priority-p0">F-AUTO-001 周期性任务</span>
+                                <span class="priority priority-p0">F-AUTO-002 智能提醒</span>
+                                <span class="priority priority-p1">F-AI-003 OCR识别</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 8: Settings -->
+            <section id="settings">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">⚙️ 系统设置与管理界面</h2>
+                        <span class="badge badge-info">MOD-USER-001 用户管理</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 15px;">用户管理页面</h3>
+                        <div class="screen-mockup">
+                            <div class="screen-header">
+                                <div class="screen-header-left">
+                                    <span class="screen-logo">🏫 耀美学校</span>
+                                    <div class="screen-nav">
+                                        <span>仪表板</span>
+                                        <span>周期性校务</span>
+                                        <span>财务资产</span>
+                                        <span>AI助理</span>
+                                        <span class="active">设置</span>
+                                    </div>
+                                </div>
+                                <div class="screen-header-right">
+                                    <span>🔍</span>
+                                    <span>🌐 繁中</span>
+                                    <span>👋 张老师</span>
+                                </div>
+                            </div>
+                            <div class="screen-body">
+                                <div class="screen-sidebar">
+                                    <div class="screen-sidebar-item">📊 仪表板</div>
+                                    <div class="screen-sidebar-item">🤖 AI助理</div>
+                                    <div class="screen-sidebar-item active">⚙️ 设置</div>
+                                    <div style="padding-left: 25px; font-size: 10px;">
+                                        <div class="screen-sidebar-item active">└ 用户</div>
+                                        <div class="screen-sidebar-item">└ 角色</div>
+                                        <div class="screen-sidebar-item">└ 权限</div>
+                                        <div class="screen-sidebar-item">└ 审批</div>
+                                        <div class="screen-sidebar-item">└ 审计</div>
+                                        <div class="screen-sidebar-item">└ 系统</div>
+                                    </div>
+                                </div>
+                                <div class="screen-content">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                        <h3 style="font-size: 16px;">👥 用户管理</h3>
+                                        <div>
+                                            <button class="btn btn-secondary" style="margin-right: 10px;">导出</button>
+                                            <button class="btn btn-primary">新建用户</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Filters -->
+                                    <div class="screen-card" style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+                                        <span>状态:</span>
+                                        <select style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                                            <option>全部</option>
+                                        </select>
+                                        <span>部门:</span>
+                                        <select style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                                            <option>全部</option>
+                                        </select>
+                                        <button class="btn btn-primary">筛选</button>
+                                    </div>
+                                    
+                                    <!-- Table -->
+                                    <div class="screen-card">
+                                        <table class="data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox"></th>
+                                                    <th>姓名</th>
+                                                    <th>工号</th>
+                                                    <th>部门</th>
+                                                    <th>角色</th>
+                                                    <th>状态</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><input type="checkbox"></td>
+                                                    <td>张三</td>
+                                                    <td>E2024001</td>
+                                                    <td>校务处</td>
+                                                    <td>管理员</td>
+                                                    <td><span class="badge badge-success">🟢 活跃</span></td>
+                                                    <td>👁️ ✏️</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="checkbox"></td>
+                                                    <td>李四</td>
+                                                    <td>E2024002</td>
+                                                    <td>教务处</td>
+                                                    <td>教师</td>
+                                                    <td><span class="badge badge-success">🟢 活跃</span></td>
+                                                    <td>👁️ ✏️</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="checkbox"></td>
+                                                    <td>王五</td>
+                                                    <td>E2024003</td>
+                                                    <td>总务处</td>
+                                                    <td>职工</td>
+                                                    <td><span class="badge badge-warning">🟡 待激活</span></td>
+                                                    <td>👁️ ✏️</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="checkbox"></td>
+                                                    <td>赵六</td>
+                                                    <td>E2024004</td>
+                                                    <td>教务处</td>
+                                                    <td>教师</td>
+                                                    <td><span class="badge badge-error">🔴 停用</span></td>
+                                                    <td>👁️ ✏️</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box" style="margin-top: 20px;">
+                            <h4>功能映射</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                <span class="priority priority-p0">F-USER-001 用户生命周期</span>
+                                <span class="priority priority-p0">F-USER-002 身份认证</span>
+                                <span class="priority priority-p0">F-USER-003 功能授权</span>
+                                <span class="priority priority-p0">F-USER-004 会话管理</span>
+                                <span class="priority priority-p0">F-USER-005 审计日志</span>
+                                <span class="priority priority-p0">F-USER-006 密码重置</span>
+                                <span class="priority priority-p1">F-USER-007 权限审批</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 9: i18n -->
+            <section id="i18n">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🌐 多语言切换界面</h2>
+                        <span class="badge badge-info">MOD-I18N-001 多语言支持</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 15px;">语言设置界面</h3>
+                        <div class="screen-mockup">
+                            <div class="screen-header">
+                                <div class="screen-header-left">
+                                    <span class="screen-logo">🏫 耀美學校</span>
+                                    <div class="screen-nav">
+                                        <span>儀表板</span>
+                                        <span>周期性校務</span>
+                                        <span>財務資產</span>
+                                        <span>AI助理</span>
+                                        <span class="active">設定</span>
+                                    </div>
+                                </div>
+                                <div class="screen-header-right">
+                                    <span>🔍</span>
+                                    <span>🌐 繁中▼</span>
+                                    <span>👋 張老師</span>
+                                </div>
+                            </div>
+                            <div class="screen-body">
+                                <div class="screen-sidebar">
+                                    <div class="screen-sidebar-item">📊 儀表板</div>
+                                    <div class="screen-sidebar-item">🤖 AI助理</div>
+                                    <div class="screen-sidebar-item active">⚙️ 設定</div>
+                                    <div style="padding-left: 25px; font-size: 10px;">
+                                        <div class="screen-sidebar-item active">└ 語言</div>
+                                        <div class="screen-sidebar-item">└ 通知</div>
+                                        <div class="screen-sidebar-item">└ 安全</div>
+                                    </div>
+                                </div>
+                                <div class="screen-content">
+                                    <h3 style="margin-bottom: 20px;">🌐 語言設定</h3>
+                                    <p style="color: #64748B; margin-bottom: 20px;">選擇您的偏好語言，界面將即時更新</p>
+                                    
+                                    <div class="lang-switch">
+                                        <div class="lang-option selected">
+                                            <div style="font-size: 30px; margin-bottom: 10px;">🌏</div>
+                                            <h4>繁體中文 (香港)</h4>
+                                            <p>預設語言</p>
+                                            <div style="margin-top: 10px;"><span class="badge badge-success">已選擇</span></div>
+                                        </div>
+                                        <div class="lang-option">
+                                            <div style="font-size: 30px; margin-bottom: 10px;">🇨🇳</div>
+                                            <h4>简体中文</h4>
+                                            <p>適用於內地用戶</p>
+                                        </div>
+                                        <div class="lang-option">
+                                            <div style="font-size: 30px; margin-bottom: 10px;">🇬🇧</div>
+                                            <h4>English</h4>
+                                            <p>For international users</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 style="margin: 25px 0 15px;">界面多语言效果对比</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>元素</th>
+                                    <th>繁體中文 (zh-HK)</th>
+                                    <th>简体中文 (zh-CN)</th>
+                                    <th>English (en)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Header</strong></td>
+                                    <td>🏫 耀美學校</td>
+                                    <td>🏫 耀美学校</td>
+                                    <td>🏫 Yaomei School</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Menu</strong></td>
+                                    <td>儀表板</td>
+                                    <td>仪表板</td>
+                                    <td>Dashboard</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Button</strong></td>
+                                    <td>確 認</td>
+                                    <td>确认</td>
+                                    <td>Confirm</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status</strong></td>
+                                    <td>✅ 已完成</td>
+                                    <td>✅ 已完成</td>
+                                    <td>✅ Completed</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Date</strong></td>
+                                    <td>2026年5月27日</td>
+                                    <td>2026年5月27日</td>
+                                    <td>May 27, 2026</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Currency</strong></td>
+                                    <td>HK$ 1,234</td>
+                                    <td>¥1,234</td>
+                                    <td>$1,234 HKD</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="info-box" style="margin-top: 20px;">
+                            <h4>功能映射</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                <span class="priority priority-p0">F-I18N-001 多语言框架</span>
+                                <span class="priority priority-p0">F-I18N-002 语言检测</span>
+                                <span class="priority priority-p1">F-I18N-003 实时翻译</span>
+                                <span class="priority priority-p1">F-I18N-004 格式本地化</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 10: Responsive -->
+            <section id="responsive">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📱 响应式设计说明</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 15px;">断点定义</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>设备类型</th>
+                                    <th>断点</th>
+                                    <th>布局变化</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>🖥️ 桌面 (Desktop)</td>
+                                    <td>≥ 1280px</td>
+                                    <td>完整侧边栏 + 主内容区</td>
+                                </tr>
+                                <tr>
+                                    <td>📱 平板 (Tablet)</td>
+                                    <td>768px - 1279px</td>
+                                    <td>折叠侧边栏 + 主内容区</td>
+                                </tr>
+                                <tr>
+                                    <td>📲 手机 (Mobile)</td>
+                                    <td>< 768px</td>
+                                    <td>底部导航 + 全屏内容</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h3 style="margin: 25px 0 15px;">响应式布局示例</h3>
+                        <div class="grid-3">
+                            <div>
+                                <h4 style="margin-bottom: 10px; font-size: 13px;">桌面 (Desktop ≥1280px)</h4>
+                                <div style="background: #1E293B; border-radius: 8px; overflow: hidden; font-size: 10px; color: white;">
+                                    <div style="background: var(--primary); padding: 8px;">Header</div>
+                                    <div style="display: flex;">
+                                        <div style="width: 60px; background: #334155; padding: 10px 5px; text-align: center;">侧栏</div>
+                                        <div style="flex: 1; background: #F8FAFC; color: var(--text); padding: 20px; text-align: center;">Content Area</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 10px; font-size: 13px;">平板 (Tablet 768-1279px)</h4>
+                                <div style="background: #1E293B; border-radius: 8px; overflow: hidden; font-size: 10px; color: white;">
+                                    <div style="background: var(--primary); padding: 8px;">Header (简略)</div>
+                                    <div style="display: flex;">
+                                        <div style="width: 30px; background: #334155; padding: 10px 2px; text-align: center;">≡</div>
+                                        <div style="flex: 1; background: #F8FAFC; color: var(--text); padding: 20px; text-align: center;">Content Area</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 style="margin-bottom: 10px; font-size: 13px;">手机 (Mobile <768px)</h4>
+                                <div style="background: #1E293B; border-radius: 8px; overflow: hidden; font-size: 10px; color: white;">
+                                    <div style="background: var(--primary); padding: 8px;">☰ Header</div>
+                                    <div style="background: #F8FAFC; color: var(--text); padding: 30px 10px; text-align: center;">Content Area (全屏)</div>
+                                    <div style="background: #334155; padding: 8px; text-align: center;">🏠 📅 💰 🤖 ⚙️</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section 11: Appendix -->
+            <section id="appendix">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📋 附录</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3 style="margin-bottom: 15px;">A. 功能编号对照表</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>模块编号</th>
+                                    <th>模块名称</th>
+                                    <th>功能编号</th>
+                                    <th>功能名称</th>
+                                    <th>优先级</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-DAILY-001 每日仪表板</td></tr>
+                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-ATT-001</td><td>出勤统计</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-ATT-002</td><td>迟到/早退记录</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-INQ-001</td><td>家长查询队列</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-LUNCH-001</td><td>午膳订购汇总</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-BUS-001</td><td>校车实时追踪</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-BUS-002</td><td>校车点大名记录</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-LEAVE-001</td><td>请假申请处理</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                
+                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-CYCL-001 周期性校务</td></tr>
+                                <tr><td>Module 2</td><td>周期性校务</td><td>F-ENRL-001</td><td>新生注册</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 2</td><td>周期性校务</td><td>F-ENRL-002</td><td>AI辅助编班</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 2</td><td>周期性校务</td><td>F-EXAM-001</td><td>DSE报考管理</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 2</td><td>周期性校务</td><td>F-EXAM-004</td><td>成绩单生成发布</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 2</td><td>周期性校务</td><td>F-ADM-001</td><td>中一自行分配</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 2</td><td>周期性校务</td><td>F-ADM-002</td><td>JUPAS联招管理</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                
+                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-FIN-001 财务资产</td></tr>
+                                <tr><td>Module 3</td><td>财务资产</td><td>F-FIN-001</td><td>学费管理</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 3</td><td>财务资产</td><td>F-FIN-002</td><td>零用现金报销</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 3</td><td>财务资产</td><td>F-FIN-003</td><td>奖学金津贴申请</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                
+                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-USER-001 用户管理</td></tr>
+                                <tr><td>Module 4</td><td>用户管理</td><td>F-USER-001</td><td>用户生命周期管理</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 4</td><td>用户管理</td><td>F-USER-002</td><td>身份认证</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 4</td><td>用户管理</td><td>F-USER-003</td><td>功能授权 (RBAC+ABAC)</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                
+                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-AI-001 AI智能助理</td></tr>
+                                <tr><td>Module 5</td><td>AI智能助理</td><td>F-AI-001</td><td>自然语言查询理解</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 5</td><td>AI智能助理</td><td>F-AI-002</td><td>FAQ智能匹配</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 5</td><td>AI智能助理</td><td>F-AUTO-001</td><td>周期性任务触发器</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 5</td><td>AI智能助理</td><td>F-AUTO-002</td><td>智能提醒系统</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                
+                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-I18N-001 多语言</td></tr>
+                                <tr><td>Module 8</td><td>多语言</td><td>F-I18N-001</td><td>多语言框架与翻译管理</td><td><span class="priority priority-p0">P0</span></td></tr>
+                                <tr><td>Module 8</td><td>多语言</td><td>F-I18N-002</td><td>语言检测与自动切换</td><td><span class="priority priority-p0">P0</span></td></tr>
+                            </tbody>
+                        </table>
+                        
+                        <h3 style="margin: 25px 0 15px;">B. 优先级说明</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>优先级</th>
+                                    <th>说明</th>
+                                    <th>目标用户</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="priority priority-p0">P0</span></td>
+                                    <td>核心功能，必须实现</td>
+                                    <td>全体用户</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="priority priority-p1">P1</span></td>
+                                    <td>重要功能，尽快实现</td>
+                                    <td>大多数用户</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="priority priority-p2">P2</span></td>
+                                    <td>一般功能，计划实现</td>
+                                    <td>部分用户</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="priority priority-p3">P3</span></td>
+                                    <td>低优先级，可选实现</td>
+                                    <td>特殊需求</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <h3 style="margin: 25px 0 15px;">C. 参考文档</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>文档名称</th>
+                                    <th>版本</th>
+                                    <th>说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>SPEC-COMPLETE.md</td>
+                                    <td>v1.3.0</td>
+                                    <td>完整功能规格书</td>
+                                </tr>
+                                <tr>
+                                    <td>SPEC-SYSTEM-DESIGN.md</td>
+                                    <td>v0.4</td>
+                                    <td>系统架构设计</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Footer -->
+            <footer class="footer">
+                <p><strong>智能校务助理系统 — 界面原型设计文档 v1.0.0</strong></p>
+                <p>输入参考: SPEC-COMPLETE.md v1.3.0 | 创建日期: 2026-05-27 | 状态: 草稿</p>
+                <p>文档维护: 系统架构团队</p>
+            </footer>
+        </main>
+    </div>
+    
+    <script>
+        // Sidebar navigation
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                
+                // Update active state
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Language option selection
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+        
+        // Scroll spy for sidebar
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
