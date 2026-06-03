@@ -9,7 +9,7 @@
 |------|------|
 | 文档名称 | 智能校务助理系统 — 完整功能规格书 |
 | 文档编号 | SPEC-SCHOOL-ADMIN-001 |
-| 当前版本 | **v1.3.0** |
+| 当前版本 | **v1.4.0** |
 | 文档状态 | 已核准 (Approved) |
 | 存放位置 | `/docs/school-admin-system/SPEC-COMPLETE.md` |
 | 主维护人 | 系统架构团队 |
@@ -132,6 +132,10 @@
 │   Finance   │       │    Asset    │       │   Vendor    │
 └─────────────┘       └─────────────┘       └─────────────┘
 ```
+
+> 📘 **详细数据库架构设计**，请参阅：
+> - `DB-SCHEMA.md` — 完整表结构定义、索引设计、外键关系
+> - `DATA-DICTIONARY.md` — 数据项定义、枚举值、业务规则、数据质量规范
 
 ---
 
@@ -2347,6 +2351,7 @@ MOD-INT-001 (整合合规)
 
 | 版本 | 发布日期 | 发布者 | 变更类型 | 变更摘要 | 审批人 |
 |------|----------|--------|----------|----------|--------|
+| **v1.4.0** | 2026-06-03 | 系统架构团队 | Minor | 新增数据库架构设计文档 (DB-SCHEMA.md) 和数据字典 (DATA-DICTIONARY.md)；定义60+数据表，涵盖7大模块；包含ER关系图、表结构定义、索引设计、外键关系、枚举值规范；数据字典定义数据项、业务规则、数据质量规则、敏感数据处理、数据保留政策 | （待填）|
 | **v1.3.0** | 2026-05-25 | 系统架构团队 | Minor | 新增 Module 8 — 多语言支持系统：F-I18N-001 至 F-I18N-004（4个函数）；支持繁体中文(zh-HK)、简体中文(zh-CN)、英语(en)；涵盖翻译框架、语言检测、AI实时翻译、区域化格式本地化；功能函数总数 45→49 | （待填）|
 | **v1.2.0** | 2026-05-24 | 系统架构团队 | Minor | 新增文档版本管理系统：SemVer 规范、版本修订规则、附录 A 变更记录；Module 4→7、Module 5→8 重新编号；功能函数总数 38→45 | （待填）|
 | **v1.1.0** | 2026-05-24 | 系统架构团队 | Minor | 新增 Module 6 — 用户与权限管理系统：F-USER-001 至 F-USER-007（7个函数）；用户生命周期、身份认证、RBAC+ABAC授权、会话Token、审计日志、凭证重置、权限变更审批；MOD-USER-001 纳入模块依赖图 | （待填）|
@@ -2381,6 +2386,42 @@ MOD-INT-001 (整合合规)
 **文档更新：**
 - 功能函数总数：45 → 49
 - 涵盖模块：7 → 8
+
+---
+
+### v1.4.0 — 2026-06-03 | 数据库架构设计与数据字典
+
+**变更类型：** Minor
+**变更者：** 系统架构团队
+
+**新增内容：**
+
+- **数据库架构设计文档 (DB-SCHEMA.md)**
+  - 设计原则：3NF规范化、Audit First、Soft Delete、多租户、UUID主键、JSONB扩展
+  - 命名规范：表/字段/索引/约束命名规则
+  - ER实体关系图：7大模块60+表关系总览
+  - 表结构定义：
+    - 核心管理表 (3表)：schools, departments, academic_years
+    - 用户权限表 (11表)：users, user_roles, permissions, sessions, audit_logs等
+    - 学生班级表 (8表)：students, classes, teachers, parents等
+    - 每日操作表 (12表)：attendance_records, lunch_orders, bus_tracking等
+    - 周期性校务表 (4表)：enrollment_records, textbooks, exam_registrations等
+    - 财务资产表 (12表)：fee_assessments, petty_cash, assets, vendors等
+    - 系统表 (7表)：reminders, ai_knowledge_base, translations等
+  - 索引设计：针对高频查询的索引策略
+  - 外键关系：完整的实体关系映射
+
+- **数据字典 (DATA-DICTIONARY.md)**
+  - 核心实体数据定义：学校、用户、学生、班级字段详细说明
+  - 枚举值规范：user_type, status, fee_type等所有枚举定义
+  - 业务规则：格式校验、范围校验、唯一性、引用完整性
+  - 数据质量规则：香港身份证格式、邮箱格式、电话格式等
+  - 敏感数据处理：加密策略（AES-256）、哈希策略（bcrypt/argon2）
+  - 数据保留政策：审计日志7年、学生记录离校后7年、会话30天等
+
+**文档更新：**
+- 新增配套文档：DB-SCHEMA.md（~37KB）、DATA-DICTIONARY.md（~10KB）
+- SPEC-COMPLETE.md 版本更新：v1.3.0 → v1.4.0
 
 ---
 
