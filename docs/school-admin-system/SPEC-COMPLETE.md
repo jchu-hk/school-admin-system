@@ -184,10 +184,199 @@
 | sync_source | Enum | System | "eClass", "manual", "biometric" |
 
 **处理流程：**
-1. 从eClass API拉取出勤数据
-2. 按班级、年级、类别汇总
-3. 识别异常（异常缺席模式）
-4. 标记连续缺席3+天的学生
+
+```
+Step 1: 数据拉取 (Data Ingestion)
+Step 2: 数据清洗与标准化 (Data Cleansing)
+Step 3: 聚合汇总 (Aggregation)
+Step 4: 异常检测 (Anomaly Detection)
+Step 5: 预警标记 (Alert Tagging)
+Step 6: 响应组装 (Response Assembly)
+```
+
+#### Step 1: 数据拉取 (Data Ingestion)
+
+本步骤从多个数据源实时/定时拉取出勤原始数据，支持以下来源：
+
+**1.1 eClass API（首选数据源）**
+
+| 接口端点 | 方法 | 描述 | 数据量 |
+|----------|------|------|--------|
+| `/api/attendance/students/{class_id}/{date}` | GET | 按班级和日期获取出勤记录 | 每班约30-40人 |
+| `/api/attendance/student/{student_id}/history` | GET | 获取单个学生出勤历史 | 单个学生 |
+| `/api/class/{class_id}/students` | GET | 获取班级学生列表 | 每班约30-40人 |
+| `/api/attendance/sync` | POST | 批量同步出勤数据 | 每次最多500条 |
+
+**API 调用示例：**
+```bash
+# 获取指定班级某日的出勤数据
+curl -X GET "https://school.eclass.com/api/attendance/students/1A/2026-05-27" \
+  -H "Authorization: Bearer {access_token}" \
+  -H "Content-Type: application/json"
+
+# 响应：
+{
+  "class_id": "1A",
+  "date": "2026-05-27",
+  "records": [
+    {
+      "student_id": "2023S10101",
+      "student_name": "陳小明",
+      "status": "present",
+      "check_in_time": "07:58:32",
+      "check_in_method": "card",
+      "device_id": "RFID-001"
+    },
+    {
+      "student_id": "2023S10102",
+      "student_name": "李小红",
+      "status": "late",
+      "check_in_time": "08:12:15",
+      "check_in_method": "card",
+      "device_id": "RFID-001"
+    }
+  ],
+  "summary": {
+    "total": 38,
+    "present": 35,
+    "absent": 1,
+    "late": 2
+  }
+}
+```
+
+**1.2 人工录入（Backup）**
+
+当系统接口不可用或数据异常时，校务处同工可通过 Web 表单手动录入：
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| class_id | String | 是 | 班级代码 |
+| date | Date | 是 | 出勤日期 |
+| student_id | String | 是 | 学号 |
+| status | Enum | 是 | present / absent / late / excused |
+| check_in_time | Time | 条件 | 到校时间（迟到时必填）|
+| reason | Text | 条件 | 缺席/迟到原因（缺席/迟到时必填）|
+| document | File | 可选 | 证明文件（医生证明等）|
+
+**表单布局：**
+```
+┌──────────────────────────────────────────────────────────┐
+│  人工录入出勤记录                                      │
+├──────────────────────────────────────────────────────────┤
+│  班级:    [全部 ▼]   日期:    [2026-05-27 📅]        │
+│                                                      │
+│  ┌────────────────────────────────────────────────┐  │
+│  │ 学号    │ 姓名   │ 状态      │ 到校时间 │ 备注 │  │
+│  ├────────────────────────────────────────────────┤  │
+│  │ S00101 │ 陳小明 │ ○出席  ●迟到 ○缺席 ○请假 │ 08:02 │ [  ] │  │
+│  │ S00102 │ 李小红 │ ●出席  ○迟到 ○缺席 ○请假 │ 07:55 │ [  ] │  │
+│  │ S00103 │ 王小華 │ ○出席  ○迟到 ●缺席 ○请假 │  --   │ [病假] │  │
+│  └────────────────────────────────────────────────┘  │
+│                                                      │
+│  [批量导入 Excel]          [保存]  [取消]           │
+└──────────────────────────────────────────────────────────┘
+```
+
+**1.3 生物识别设备（实时数据源）**
+
+| 设备类型 | 品牌/型号 | 数据格式 | 实时性 |
+|----------|----------|----------|--------|
+| 门禁刷卡机 | 智慧卡考勤机 | JSON over HTTP | 准实时（<30s延迟）|
+| 人脸识别闸机 | 海康/大华人脸识别 | JSON over HTTP | 准实时（<5s延迟）|
+| 移动考勤App | 学校自研App | REST API | 实时 |
+
+**Webhook 配置示例：**
+```json
+{
+  "webhook_url": "https://school-admin.internal/api/attendance/webhook",
+  "events": ["check_in", "check_out", "anomaly"],
+  "auth": {
+    "type": "hmac_sha256",
+    "secret": "{webhook_secret}"
+  },
+  "retry": {
+    "max_attempts": 3,
+    "interval_seconds": 5
+  }
+}
+```
+
+**1.4 数据拉取策略**
+
+| 策略 | 触发条件 | 执行时间 | 适用场景 |
+|------|----------|---------|----------|
+| **实时同步** | Webhook推送触发 | 事件驱动 | 门禁/刷卡/刷脸 |
+| **定时拉取** | 每日定时任务 | 07:00 AM / 15:30 PM | eClass系统同步 |
+| **按需拉取** | 用户查询时触发 | 实时 | 历史数据补录 |
+| **批量导入** | 人工上传文件 | 手动触发 | 数据异常恢复 |
+
+**定时任务配置（例）：**
+```yaml
+attendance_sync:
+  schedule: "0 7,15 * * *"  # 每天7:00和15:00执行
+  sources:
+    - name: eclass_api
+      priority: 1
+      timeout: 30s
+      retry: 3
+    - name: biometric_backup
+      priority: 2
+      timeout: 10s
+      retry: 2
+  merge_strategy: "latest_wins"  # 以最新记录为准
+  alert_on_failure: true
+```
+
+#### Step 2: 数据清洗与标准化 (Data Cleansing)
+
+| 处理规则 | 说明 | 示例 |
+|----------|------|------|
+| **去重** | 同一学生同一天多条记录，保留最新 | 刷卡2次→保留最终状态 |
+| **状态优先** | excused > present > late > early > absent | 有请假条优先于缺席 |
+| **时间标准化** | 统一为 Asia/Hong_Kong 时区 | UTC+0 → UTC+8 |
+| **格式校验** | 校验学号格式、日期格式 | 学号应为YYYY+S+NNN格式 |
+| **异常值过滤** | 过滤明显错误记录 | 时间在06:00前或21:00后 |
+
+#### Step 3: 聚合汇总 (Aggregation)
+
+```python
+# 伪代码：出勤聚合计算
+def aggregate_attendance(records, group_by="class"):
+    summary = {
+        "total_students": len(records),
+        "present": records.filter(status="present").count(),
+        "absent": records.filter(status="absent").count(),
+        "late": records.filter(status="late").count(),
+        "early": records.filter(status="early").count(),
+        "excused": records.filter(status="excused").count(),
+        "attendance_rate": f"{(present / total * 100):.2f}%"
+    }
+    if group_by == "grade":
+        return group_by_grade(records)
+    elif group_by == "class":
+        return group_by_class(records)
+    return summary
+```
+
+#### Step 4: 异常检测 (Anomaly Detection)
+
+| 异常类型 | 检测规则 | 预警级别 |
+|----------|----------|----------|
+| 连续缺席 | 同一学生连续缺席≥3天 | medium |
+| 连续迟到 | 7天内迟到≥3次 | medium |
+| 突发缺席 | 过去30天缺席率<5%，今日突然>20% | high |
+| 班级异常 | 班级出勤率低于全校平均值2个标准差 | low |
+| 模式逃逸 | 特定学生连续多天同一时间段缺席 | high |
+
+#### Step 5: 预警标记 (Alert Tagging)
+
+| alert_level | 触发条件 | 通知对象 | 通知方式 |
+|-------------|----------|----------|----------|
+| `high` | 连续缺席≥5天 / 突发异常 | 校务主任 + 班主任 + 家长 | 短信 + App推送 |
+| `medium` | 连续缺席3-4天 / 连续迟到3次/7天 | 班主任 + 家长 | App推送 |
+| `low` | 单次异常 / 班级出勤偏低 | 校务处 | 系统通知 |
+| `none` | 正常出勤 | 无 | 无 |
 
 **输出：**
 ```json
