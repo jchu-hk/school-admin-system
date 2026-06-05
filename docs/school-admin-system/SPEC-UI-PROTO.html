@@ -1,2138 +1,1215 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能校务助理系统 — 界面原型设计文档 v1.0.0</title>
-    <style>
-        :root {
-            --primary: #1E40AF;
-            --primary-light: #3B82F6;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --error: #EF4444;
-            --bg: #F8FAFC;
-            --text: #1E293B;
-            --border: #E2E8F0;
-            --sidebar-bg: #1E293B;
-            --sidebar-text: #94A3B8;
-            --card-bg: #FFFFFF;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Noto Sans HK', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-        }
-        
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 20px 40px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header h1 {
-            font-size: 20px;
-            font-weight: 600;
-        }
-        
-        .header-info {
-            display: flex;
-            gap: 20px;
-            font-size: 14px;
-        }
-        
-        .header-info span {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 12px;
-            border-radius: 20px;
-        }
-        
-        /* Layout */
-        .container {
-            display: flex;
-            margin-top: 70px;
-        }
-        
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: var(--sidebar-bg);
-            min-height: calc(100vh - 70px);
-            position: fixed;
-            left: 0;
-            padding: 20px 0;
-            overflow-y: auto;
-        }
-        
-        .sidebar-section {
-            margin-bottom: 10px;
-        }
-        
-        .sidebar-title {
-            color: var(--sidebar-text);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 10px 20px;
-            font-weight: 600;
-        }
-        
-        .sidebar-link {
-            display: block;
-            color: #CBD5E1;
-            text-decoration: none;
-            padding: 10px 20px 10px 30px;
-            font-size: 14px;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-        }
-        
-        .sidebar-link:hover {
-            background: rgba(255,255,255,0.05);
-            border-left-color: var(--primary-light);
-            color: white;
-        }
-        
-        .sidebar-link.active {
-            background: rgba(59, 130, 246, 0.2);
-            border-left-color: var(--primary-light);
-            color: white;
-        }
-        
-        /* Main Content */
-        .main {
-            margin-left: 280px;
-            padding: 40px;
-            flex: 1;
-            max-width: 1400px;
-        }
-        
-        /* Cards */
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-            overflow: hidden;
-        }
-        
-        .card-header {
-            padding: 20px 25px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text);
-        }
-        
-        .card-body {
-            padding: 25px;
-        }
-        
-        /* Info Box */
-        .info-box {
-            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
-            border-left: 4px solid var(--primary);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .info-box h4 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-        
-        /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-        
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        th {
-            background: #F1F5F9;
-            font-weight: 600;
-            color: #475569;
-        }
-        
-        tr:hover {
-            background: #F8FAFC;
-        }
-        
-        /* Screen Mockup */
-        .screen-mockup {
-            background: #1E293B;
-            border-radius: 12px;
-            padding: 2px;
-            overflow: hidden;
-            margin: 20px 0;
-            font-family: 'SF Mono', Monaco, Consolas, monospace;
-            font-size: 11px;
-        }
-        
-        .screen-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .screen-header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .screen-logo {
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        .screen-nav {
-            display: flex;
-            gap: 20px;
-            font-size: 12px;
-        }
-        
-        .screen-nav span {
-            opacity: 0.8;
-            cursor: pointer;
-        }
-        
-        .screen-nav span.active {
-            opacity: 1;
-            border-bottom: 2px solid white;
-            padding-bottom: 2px;
-        }
-        
-        .screen-header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 12px;
-        }
-        
-        .screen-body {
-            display: flex;
-            min-height: 400px;
-        }
-        
-        .screen-sidebar {
-            width: 200px;
-            background: #334155;
-            padding: 15px;
-            color: #94A3B8;
-            font-size: 11px;
-        }
-        
-        .screen-sidebar-item {
-            padding: 8px 12px;
-            margin-bottom: 2px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .screen-sidebar-item:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-        
-        .screen-sidebar-item.active {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .screen-content {
-            flex: 1;
-            background: #F8FAFC;
-            padding: 20px;
-            color: var(--text);
-        }
-        
-        .screen-card {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .screen-card-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--text);
-            font-size: 13px;
-        }
-        
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-        
-        .stat-icon {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-        
-        .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .stat-label {
-            font-size: 11px;
-            color: #64748B;
-            margin-top: 5px;
-        }
-        
-        .stat-change {
-            font-size: 11px;
-            margin-top: 5px;
-        }
-        
-        .stat-change.positive {
-            color: var(--success);
-        }
-        
-        .stat-change.negative {
-            color: var(--error);
-        }
-        
-        /* Status Badges */
-        .badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 500;
-        }
-        
-        .badge-success {
-            background: #D1FAE5;
-            color: #065F46;
-        }
-        
-        .badge-warning {
-            background: #FEF3C7;
-            color: #92400E;
-        }
-        
-        .badge-error {
-            background: #FEE2E2;
-            color: #991B1B;
-        }
-        
-        .badge-info {
-            background: #DBEAFE;
-            color: #1E40AF;
-        }
-        
-        /* Priority Badges */
-        .priority {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        
-        .priority-p0 {
-            background: #FEE2E2;
-            color: #991B1B;
-        }
-        
-        .priority-p1 {
-            background: #FEF3C7;
-            color: #92400E;
-        }
-        
-        .priority-p2 {
-            background: #DBEAFE;
-            color: #1E40AF;
-        }
-        
-        .priority-p3 {
-            background: #E2E8F0;
-            color: #475569;
-        }
-        
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            text-decoration: none;
-            text-align: center;
-        }
-        
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #1E3A8A;
-        }
-        
-        .btn-secondary {
-            background: #E2E8F0;
-            color: #475569;
-        }
-        
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-        
-        .btn-warning {
-            background: var(--warning);
-            color: white;
-        }
-        
-        .btn-danger {
-            background: var(--error);
-            color: white;
-        }
-        
-        /* Charts placeholder */
-        .chart-placeholder {
-            background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
-            border-radius: 8px;
-            padding: 40px;
-            text-align: center;
-            color: #64748B;
-        }
-        
-        /* Data Table */
-        .data-table {
-            width: 100%;
-            font-size: 11px;
-        }
-        
-        .data-table th {
-            background: #F1F5F9;
-            padding: 10px;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 1px solid #E2E8F0;
-        }
-        
-        .data-table td {
-            padding: 10px;
-            border-bottom: 1px solid #E2E8F0;
-        }
-        
-        /* Module Tag */
-        .module-tag {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            margin-right: 5px;
-        }
-        
-        /* Responsive Grid */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-        }
-        
-        /* Color Palette */
-        .color-palette {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .color-item {
-            text-align: center;
-        }
-        
-        .color-swatch {
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .color-name {
-            font-size: 11px;
-            color: #64748B;
-        }
-        
-        /* Tabs */
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid var(--border);
-            margin-bottom: 20px;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -2px;
-            font-size: 14px;
-            color: #64748B;
-        }
-        
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-            font-weight: 600;
-        }
-        
-        /* AI Chat */
-        .ai-chat {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 500px;
-        }
-        
-        .ai-message {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-        
-        .ai-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-        
-        .ai-bubble {
-            background: #F1F5F9;
-            border-radius: 12px;
-            padding: 12px 15px;
-            flex: 1;
-            font-size: 13px;
-        }
-        
-        .ai-quick-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .ai-quick-btn {
-            background: #EEF2FF;
-            border: 1px solid #C7D2FE;
-            border-radius: 20px;
-            padding: 8px 15px;
-            font-size: 12px;
-            color: var(--primary);
-            cursor: pointer;
-        }
-        
-        .ai-input {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .ai-input input {
-            flex: 1;
-            border: 1px solid var(--border);
-            border-radius: 25px;
-            padding: 10px 20px;
-            font-size: 13px;
-            outline: none;
-        }
-        
-        .ai-input button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-        
-        /* Footer */
-        .footer {
-            margin-top: 40px;
-            padding: 20px;
-            text-align: center;
-            color: #64748B;
-            font-size: 13px;
-            border-top: 1px solid var(--border);
-        }
-        
-        /* Language Switcher */
-        .lang-switch {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .lang-option {
-            flex: 1;
-            background: #F8FAFC;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .lang-option:hover {
-            border-color: var(--primary-light);
-        }
-        
-        .lang-option.selected {
-            border-color: var(--primary);
-            background: #EEF2FF;
-        }
-        
-        .lang-option h4 {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-        
-        .lang-option p {
-            font-size: 12px;
-            color: #64748B;
-        }
-        
-        /* Quick Links */
-        .quick-links {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .quick-link {
-            background: #F8FAFC;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .quick-link:hover {
-            border-color: var(--primary-light);
-            background: #EEF2FF;
-        }
-        
-        .quick-link-icon {
-            font-size: 24px;
-        }
-        
-        .quick-link-text {
-            font-size: 13px;
-            font-weight: 500;
-        }
-        
-        /* Print Styles */
-        @media print {
-            .sidebar, .header {
-                display: none;
-            }
-            .main {
-                margin-left: 0;
-            }
-            .screen-mockup {
-                break-inside: avoid;
-            }
-        }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #F1F5F9;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #CBD5E1;
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94A3B8;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能校务助理系统 — 界面原型设计文档 v1.2.0</title>
+<style>
+:root{--primary:#1E40AF;--primary-light:#3B82F6;--success:#10B981;--warning:#F59E0B;--error:#EF4444;--bg:#F8FAFC;--text:#1E293B;--border:#E2E8F0;--muted:#64748B;--card:#fff;--sidebar-bg:#1E293B;--accent:#6366F1}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans HK','PingFang HK','Microsoft JhengHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px}
+a{color:var(--primary-light);text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:230px;background:var(--sidebar-bg);padding:20px 0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;flex-shrink:0}
+.sidebar-header{padding:0 16px 16px;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:12px}
+.sidebar-logo{font-size:14px;font-weight:700;color:#fff}
+.sidebar-sub{font-size:10px;color:#94A3B8;margin-top:3px}
+.sidebar-section{margin-bottom:8px}
+.sidebar-section-title{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#64748B;font-weight:600;padding:6px 16px}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:7px 16px;font-size:13px;color:#CBD5E1;cursor:pointer;transition:background .15s;border-radius:0}
+.sidebar-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+.sidebar-item.active{background:rgba(99,102,241,0.2);color:#A5B4FC}
+.main{margin-left:230px;flex:1;min-width:0}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 36px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-left{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.content{padding:40px 44px;max-width:1060px}
+.content-full{padding:40px 44px}
+.page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:3px solid var(--primary)}
+.page-header h1{font-size:26px;font-weight:800;color:var(--primary);margin-bottom:4px}
+.page-header h2{font-size:16px;font-weight:400;color:var(--muted);font-style:italic}
+.page-header-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.tag{display:inline-flex;align-items:center;gap:5px;background:#EEF2FF;color:var(--accent);font-size:12px;font-weight:600;padding:3px 11px;border-radius:20px}
+.tag.green{background:#D1FAE5;color:#065F46}
+.tag.orange{background:#FEF3C7;color:#92400E}
+.tag.red{background:#FEE2E2;color:#991B1B}
+.tag.gray{background:#F1F5F9;color:var(--muted)}
+.section{margin-bottom:52px}
+.section-title{font-size:18px;font-weight:700;color:var(--primary);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.section-num{background:var(--primary);color:#fff;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+h3{font-size:16px;font-weight:700;margin:24px 0 10px;color:var(--text)}
+h4{font-size:14px;font-weight:700;margin:18px 0 8px;color:var(--text)}
+h5{font-size:13px;font-weight:700;margin:14px 0 6px}
+p{margin:8px 0}
+ul,ol{padding-left:22px;margin:8px 0}
+li{margin-bottom:4px}
+hr{border:none;border-top:1px solid var(--border);margin:32px 0}
+strong{font-weight:700}
+code{background:#F1F5F9;color:#7C3AED;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:13px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card-blue{border-left:4px solid var(--primary-light)}
+.card-green{border-left:4px solid var(--success)}
+.card-orange{border-left:4px solid var(--warning)}
+.card-red{border-left:4px solid var(--error)}
+.card-purple{border-left:4px solid var(--accent)}
+.table-wrap{overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:#EEF2FF;color:var(--primary);font-weight:700;padding:9px 13px;text-align:left;border:1px solid var(--border);white-space:nowrap}
+td{padding:8px 13px;border:1px solid var(--border);vertical-align:top}
+tr:nth-child(even) td{background:#F8FAFC}
+tr:hover td{background:#EEF2FF}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700}
+.badge-blue{background:#DBEAFE;color:#1E40AF}
+.badge-green{background:#D1FAE5;color:#065F46}
+.badge-orange{background:#FEF3C7;color:#92400E}
+.badge-red{background:#FEE2E2;color:#991B1B}
+.badge-purple{background:#EDE9FE;color:#5B21B6}
+.badge-gray{background:#F1F5F9;color:#475569}
+.info-box{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:14px 18px;margin:14px 0;font-size:14px}
+.info-box strong{color:var(--primary)}
+.info-box.success{background:#F0FDF4;border-color:#BBF7D0}
+.info-box.success strong{color:#166534}
+.info-box.warning{background:#FFFBEB;border-color:#FDE68A}
+.info-box.warning strong{color:#92400E}
+.info-box.danger{background:#FEF2F2;border-color:#FECACA}
+.info-box.danger strong{color:#991B1B}
+.callout{display:flex;gap:12px;padding:14px 18px;border-radius:8px;margin:14px 0;font-size:14px}
+.callout-info{background:#EFF6FF;border-left:4px solid var(--primary-light)}
+.callout-success{background:#F0FDF4;border-left:4px solid var(--success)}
+.callout-warning{background:#FFFBEB;border-left:4px solid var(--warning)}
+.callout-danger{background:#FEF2F2;border-left:4px solid var(--error)}
+.callout-icon{font-size:17px;flex-shrink:0;margin-top:1px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:14px 0}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:14px 0}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center}
+.stat-card .s-icon{font-size:26px;margin-bottom:6px}
+.stat-card .s-val{font-size:22px;font-weight:800;color:var(--primary)}
+.stat-card .s-lbl{font-size:11px;color:var(--muted);margin-top:4px}
+.stat-card.success{border-top:3px solid var(--success)}
+.stat-card.warning{border-top:3px solid var(--warning)}
+.stat-card.error{border-top:3px solid var(--error)}
+.mock{margin:16px 0}
+.mock-label{background:var(--primary);color:#fff;padding:5px 14px;font-size:12px;font-weight:700;display:inline-block;border-radius:4px 4px 0 0}
+.mock-screen{background:#E2E8F0;border:1px solid #CBD5E1;border-radius:8px 8px 0 0;overflow:hidden;margin-bottom:0}
+.mock-bar{background:#CBD5E1;padding:7px 14px;display:flex;align-items:center;gap:5px}
+.mock-dot{width:9px;height:9px;border-radius:50%}
+.mock-dot.r{background:#EF4444}
+.mock-dot.y{background:#F59E0B}
+.mock-dot.g{background:#10B981}
+.mock-content{background:#F8FAFC;padding:16px 20px;font-family:'Courier New',Consolas,monospace;font-size:11.5px;line-height:1.65;white-space:pre;overflow-x:auto;color:#1E293B}
+.toc{background:#F8FAFC;border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin-bottom:32px}
+.toc-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:12px}
+.toc ol{padding-left:20px}
+.toc li{margin-bottom:5px;font-size:14px}
+.text-muted{color:var(--muted)}
+.text-small{font-size:12px}
+.text-center{text-align:center}
+.text-right{text-align:right}
+.mt{margin-top:14px}
+.mb{margin-bottom:14px}
+.flex{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0}
+.flex>*{flex:1;min-width:200px}
+footer{background:var(--sidebar-bg);color:#94A3B8;padding:20px 36px;margin-left:230px;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+footer a{color:#93C5FD}
+@media(max-width:900px){
+.sidebar{transform:translateX(-100%);transition:transform .3s}
+.sidebar.open{transform:translateX(0)}
+.main{margin-left:0}
+footer{margin-left:0}
+.content,.content-full{padding:24px 18px}
+.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+}
+@media print{
+.sidebar,footer,.topbar{display:none}
+.main{margin-left:0}
+}
+</style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <h1>🏫 智能校务助理系统 — 界面原型设计文档</h1>
-        <div class="header-info">
-            <span>版本 v1.0.0</span>
-            <span>输入: SPEC-COMPLETE.md v1.3.0</span>
-            <span>状态: 草稿</span>
-        </div>
-    </header>
-    
-    <div class="container">
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="sidebar-section">
-                <div class="sidebar-title">文档概述</div>
-                <a href="#overview" class="sidebar-link active">1. 文档概述</a>
-                <a href="#principles" class="sidebar-link">2. 设计原则与规范</a>
-            </div>
-            <div class="sidebar-section">
-                <div class="sidebar-title">界面原型</div>
-                <a href="#login" class="sidebar-link">3. 登录与认证界面</a>
-                <a href="#dashboard" class="sidebar-link">4. 主仪表板界面</a>
-                <a href="#cyclic" class="sidebar-link">5. 周期性校务管理</a>
-                <a href="#finance" class="sidebar-link">6. 财务资产管理</a>
-                <a href="#ai" class="sidebar-link">7. AI 智能助理</a>
-                <a href="#settings" class="sidebar-link">8. 系统设置与管理</a>
-                <a href="#i18n" class="sidebar-link">9. 多语言切换</a>
-            </div>
-            <div class="sidebar-section">
-                <div class="sidebar-title">附录</div>
-                <a href="#responsive" class="sidebar-link">10. 响应式设计</a>
-                <a href="#appendix" class="sidebar-link">11. 附录</a>
-            </div>
-        </nav>
-        
-        <!-- Main Content -->
-        <main class="main">
-            <!-- Section 1: Overview -->
-            <section id="overview">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">📋 文档概述</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="info-box">
-                            <h4>📌 参考依据</h4>
-                            <p>本界面原型设计文档基于 <strong>SPEC-COMPLETE.md v1.3.0</strong> 功能规格书，包含 8 大模块、49 个功能函数。</p>
-                        </div>
-                        
-                        <h3 style="margin: 20px 0 15px;">目的</h3>
-                        <p>本界面原型设计文档用于向高级管理层 (Senior Management) 和部门主管 (Department Heads) 展示智能校务助理系统的用户界面设计，帮助他们全面了解系统的操作体验和功能呈现方式。</p>
-                        
-                        <h3 style="margin: 20px 0 15px;">适用用户角色</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>用户角色</th>
-                                    <th>说明</th>
-                                    <th>权限级别</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>🏢 校务主任</td>
-                                    <td>系统管理员，全面管理</td>
-                                    <td><span class="badge badge-error">最高权限</span></td>
-                                </tr>
-                                <tr>
-                                    <td>👔 部门主管</td>
-                                    <td>各部门负责人</td>
-                                    <td><span class="badge badge-warning">部门权限</span></td>
-                                </tr>
-                                <tr>
-                                    <td>👨‍🏫 教职员</td>
-                                    <td>教师、职工</td>
-                                    <td><span class="badge badge-info">基础权限</span></td>
-                                </tr>
-                                <tr>
-                                    <td>👪 家长</td>
-                                    <td>学生家长查询</td>
-                                    <td><span class="badge badge-success">只读权限</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                        <h3 style="margin: 20px 0 15px;">模块与功能映射</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>模块编号</th>
-                                    <th>模块名称</th>
-                                    <th>功能数量</th>
-                                    <th>界面复杂度</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span class="module-tag">Module 1</span> MOD-DAILY-001</td>
-                                    <td>每日仪表板</td>
-                                    <td>7 个功能</td>
-                                    <td>⭐⭐⭐ 高</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="module-tag">Module 2</span> MOD-CYCL-001</td>
-                                    <td>周期性校务</td>
-                                    <td>10 个功能</td>
-                                    <td>⭐⭐⭐ 高</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="module-tag">Module 3</span> MOD-FIN-001</td>
-                                    <td>财务资产</td>
-                                    <td>7 个功能</td>
-                                    <td>⭐⭐⭐ 高</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="module-tag">Module 4</span> MOD-USER-001</td>
-                                    <td>用户管理</td>
-                                    <td>7 个功能</td>
-                                    <td>⭐⭐ 中</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="module-tag">Module 5</span> MOD-AI-001</td>
-                                    <td>AI 智能助理</td>
-                                    <td>5 个功能</td>
-                                    <td>⭐⭐⭐ 高</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="module-tag">Module 6</span> MOD-INT-001</td>
-                                    <td>系统集成</td>
-                                    <td>6 个功能</td>
-                                    <td>⭐ 基础</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="module-tag">Module 8</span> MOD-I18N-001</td>
-                                    <td>多语言支持</td>
-                                    <td>4 个功能</td>
-                                    <td>⭐ 基础</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section 2: Design Principles -->
-            <section id="principles">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">🎨 设计原则与规范</h2>
-                    </div>
-                    <div class="card-body">
-                        <h3 style="margin-bottom: 15px;">设计系统</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>项目</th>
-                                    <th>设计值</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>设计框架</td>
-                                    <td>React 18 + Tailwind CSS</td>
-                                </tr>
-                                <tr>
-                                    <td>图标库</td>
-                                    <td>Lucide React</td>
-                                </tr>
-                                <tr>
-                                    <td>字体</td>
-                                    <td>中文: Noto Sans HK / 英文: Inter</td>
-                                </tr>
-                                <tr>
-                                    <td>基准字号</td>
-                                    <td>14px (正文), 16px (标题)</td>
-                                </tr>
-                                <tr>
-                                    <td>栅格系统</td>
-                                    <td>12 列, 间距 16px / 24px / 32px</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                        <h3 style="margin: 25px 0 15px;">颜色系统</h3>
-                        <div class="color-palette">
-                            <div class="color-item">
-                                <div class="color-swatch" style="background: #1E40AF;"></div>
-                                <div class="color-name">主色 Primary<br>#1E40AF</div>
-                            </div>
-                            <div class="color-item">
-                                <div class="color-swatch" style="background: #3B82F6;"></div>
-                                <div class="color-name">辅助色 Secondary<br>#3B82F6</div>
-                            </div>
-                            <div class="color-item">
-                                <div class="color-swatch" style="background: #10B981;"></div>
-                                <div class="color-name">成功 Success<br>#10B981</div>
-                            </div>
-                            <div class="color-item">
-                                <div class="color-swatch" style="background: #F59E0B;"></div>
-                                <div class="color-name">警告 Warning<br>#F59E0B</div>
-                            </div>
-                            <div class="color-item">
-                                <div class="color-swatch" style="background: #EF4444;"></div>
-                                <div class="color-name">错误 Error<br>#EF4444</div>
-                            </div>
-                            <div class="color-item">
-                                <div class="color-swatch" style="background: #F8FAFC;"></div>
-                                <div class="color-name">背景色 Background<br>#F8FAFC</div>
-                            </div>
-                        </div>
-                        
-                        <h3 style="margin: 25px 0 15px;">布局模式</h3>
-                        <div class="screen-mockup" style="min-height: 200px;">
-                            <div style="background: var(--primary); color: white; padding: 10px 20px; font-size: 12px;">
-                                Header (Logo | 导航菜单 | 搜索 | 语言切换 | 通知 | 用户头像)
-                            </div>
-                            <div style="display: flex; min-height: 150px;">
-                                <div style="width: 180px; background: #334155; color: #94A3B8; padding: 15px; font-size: 11px;">
-                                    Sidebar (240px)<br>
-                                    • 仪表板<br>
-                                    • 校务<br>
-                                    • 财务<br>
-                                    • AI助理<br>
-                                    • 设置
-                                </div>
-                                <div style="flex: 1; background: #F8FAFC; padding: 15px; font-size: 11px; color: var(--text);">
-                                    Main Content Area<br><br>
-                                    Page Header + 内容区域 (数据表格 / 卡片列表 / 表单 / 图表)
-                                </div>
-                            </div>
-                            <div style="background: #E2E8F0; padding: 8px 20px; font-size: 11px; text-align: center; color: #64748B;">
-                                Footer (版本信息 | 支持链接 | 版权声明)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section 3: Login -->
-            <section id="login">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">🔐 登录与认证界面</h2>
-                        <span class="badge badge-info">F-USER-002 身份认证</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 style="margin-bottom: 15px;">登录页面</h3>
-                        <div class="screen-mockup">
-                            <div class="screen-header" style="justify-content: center; padding: 30px;">
-                                <div style="text-align: center;">
-                                    <div style="font-size: 40px; margin-bottom: 10px;">🏫</div>
-                                    <div class="screen-logo">耀美学校</div>
-                                </div>
-                            </div>
-                            <div class="screen-body" style="justify-content: center; align-items: center; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); padding: 40px;">
-                                <div style="background: white; border-radius: 16px; padding: 30px; width: 100%; max-width: 380px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
-                                    <h3 style="text-align: center; margin-bottom: 25px; color: var(--text);">欢迎登录</h3>
-                                    
-                                    <div style="margin-bottom: 15px;">
-                                        <label style="font-size: 12px; color: #64748B; display: block; margin-bottom: 5px;">用户名 / 邮箱</label>
-                                        <input type="text" placeholder="请输入用户名" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px;">
-                                    </div>
-                                    
-                                    <div style="margin-bottom: 15px;">
-                                        <label style="font-size: 12px; color: #64748B; display: block; margin-bottom: 5px;">密码</label>
-                                        <input type="password" placeholder="请输入密码" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px;">
-                                    </div>
-                                    
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 13px;">
-                                        <label style="display: flex; align-items: center; gap: 5px; color: #64748B;">
-                                            <input type="checkbox"> 记住登录状态
-                                        </label>
-                                        <a href="#" style="color: var(--primary); text-decoration: none;">忘记密码?</a>
-                                    </div>
-                                    
-                                    <button class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 15px;">登 录</button>
-                                    
-                                    <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
-                                        <span style="font-size: 12px; color: #64748B;">其他登录方式</span>
-                                        <div style="margin-top: 10px;">
-                                            <button class="btn btn-secondary" style="width: 100%;">🔵 SSO 企业登录</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="background: #1E293B; padding: 10px; text-align: center; color: #94A3B8; font-size: 12px;">
-                                🌐 语言: 繁體中文 ▼
-                            </div>
-                        </div>
-                        
-                        <div class="info-box" style="margin-top: 20px;">
-                            <h4>功能映射</h4>
-                            <ul style="margin-top: 10px; padding-left: 20px;">
-                                <li><strong>F-USER-002:</strong> 身份认证 <span class="priority priority-p0">P0</span></li>
-                                <li><strong>F-USER-006:</strong> 密码重置入口 <span class="priority priority-p0">P0</span></li>
-                                <li><strong>F-I18N-002:</strong> 语言检测与自动切换 <span class="priority priority-p0">P0</span></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section 4: Dashboard -->
-            <section id="dashboard">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">📊 主仪表板界面</h2>
-                        <span class="badge badge-info">MOD-DAILY-001 每日仪表板</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 style="margin-bottom: 15px;">仪表板首页</h3>
-                        <div class="screen-mockup">
-                            <div class="screen-header">
-                                <div class="screen-header-left">
-                                    <span class="screen-logo">🏫 耀美学校</span>
-                                    <div class="screen-nav">
-                                        <span class="active">仪表板</span>
-                                        <span>周期性校务</span>
-                                        <span>财务资产</span>
-                                        <span>AI助理</span>
-                                    </div>
-                                </div>
-                                <div class="screen-header-right">
-                                    <span>🔍</span>
-                                    <span>🌐 繁中</span>
-                                    <span>👋 张老师</span>
-                                </div>
-                            </div>
-                            <div class="screen-body">
-                                <div class="screen-sidebar">
-                                    <div class="screen-sidebar-item active">📊 仪表板</div>
-                                    <div class="screen-sidebar-item">📅 每日</div>
-                                    <div style="padding-left: 25px; font-size: 10px;">
-                                        <div class="screen-sidebar-item">└ 出勤</div>
-                                        <div class="screen-sidebar-item">└ 午膳</div>
-                                        <div class="screen-sidebar-item">└ 校车</div>
-                                        <div class="screen-sidebar-item">└ 请假</div>
-                                        <div class="screen-sidebar-item">└ 收费</div>
-                                    </div>
-                                    <div class="screen-sidebar-item">📂 周期性</div>
-                                    <div class="screen-sidebar-item">💰 财务</div>
-                                    <div class="screen-sidebar-item">🤖 AI助理</div>
-                                    <div class="screen-sidebar-item">⚙️ 设置</div>
-                                </div>
-                                <div class="screen-content">
-                                    <!-- Date Bar -->
-                                    <div class="screen-card" style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span>📅 2026年5月27日 星期三</span>
-                                        <span>📍 香港 天气: ☀️ 28°C</span>
-                                        <span>👤 张老师</span>
-                                    </div>
-                                    
-                                    <!-- Today Overview -->
-                                    <div class="screen-card">
-                                        <div class="screen-card-title">📊 今日概览</div>
-                                        <div class="stats-grid">
-                                            <div class="stat-card">
-                                                <div class="stat-icon">👥</div>
-                                                <div class="stat-value">98.5%</div>
-                                                <div class="stat-label">出勤率</div>
-                                                <div class="stat-change positive">▲ +2.3%</div>
-                                            </div>
-                                            <div class="stat-card">
-                                                <div class="stat-icon">🍱</div>
-                                                <div class="stat-value">456</div>
-                                                <div class="stat-label">午膳预订</div>
-                                                <div class="stat-change">预订中</div>
-                                            </div>
-                                            <div class="stat-card">
-                                                <div class="stat-icon">🚌</div>
-                                                <div class="stat-value">12</div>
-                                                <div class="stat-label">校车线路</div>
-                                                <div class="stat-change positive">运行正常</div>
-                                            </div>
-                                            <div class="stat-card">
-                                                <div class="stat-icon">📝</div>
-                                                <div class="stat-value">3</div>
-                                                <div class="stat-label">请假待审</div>
-                                                <div class="stat-change negative">待处理</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Two Column -->
-                                    <div class="grid-2">
-                                        <!-- Attendance Chart -->
-                                        <div class="screen-card">
-                                            <div class="screen-card-title">📈 出勤统计</div>
-                                            <div class="chart-placeholder" style="padding: 30px;">
-                                                [柱状图: 本周出勤趋势]
-                                            </div>
-                                            <div style="margin-top: 10px; font-size: 11px;">
-                                                <div>全校: 98.5% | 1A班: 100% | 2B班: 96.2%</div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Pending Items -->
-                                        <div class="screen-card">
-                                            <div class="screen-card-title">🔔 待处理事项 (5)</div>
-                                            <div style="font-size: 12px;">
-                                                <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">☐ <span class="badge badge-error">紧急</span> 请假申请 - 李小明家长</div>
-                                                <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">☐ <span class="badge badge-warning">普通</span> 校车变更 - 1A班</div>
-                                                <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">☐ <span class="badge badge-warning">普通</span> 午膳调整 - 2B班</div>
-                                                <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">☐ <span class="badge badge-info">低</span> 课本补订 - 3C班</div>
-                                                <div style="padding: 8px 0;">☐ <span class="badge badge-info">低</span> 活动报名确认</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Bus Status -->
-                                    <div class="screen-card" style="margin-top: 15px;">
-                                        <div class="screen-card-title">🚌 校车状态</div>
-                                        <div style="display: flex; gap: 20px;">
-                                            <div style="flex: 1; padding: 10px; background: #F0FDF4; border-radius: 8px; border-left: 3px solid var(--success);">
-                                                🟢 校车1号线 - 正常运行
-                                            </div>
-                                            <div style="flex: 1; padding: 10px; background: #FEF3C7; border-radius: 8px; border-left: 3px solid var(--warning);">
-                                                🟡 校车3号线 - 轻微延误
-                                            </div>
-                                            <div style="flex: 1; padding: 10px; background: #F0FDF4; border-radius: 8px; border-left: 3px solid var(--success);">
-                                                🟢 校车4号线 - 正常运行
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="info-box" style="margin-top: 20px;">
-                            <h4>功能映射</h4>
-                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                                <span class="priority priority-p0">F-ATT-001 出勤统计</span>
-                                <span class="priority priority-p0">F-ATT-002 迟到/早退</span>
-                                <span class="priority priority-p0">F-LUNCH-001 午膳订购</span>
-                                <span class="priority priority-p0">F-BUS-001 校车追踪</span>
-                                <span class="priority priority-p0">F-BUS-002 校车点名</span>
-                                <span class="priority priority-p0">F-LEAVE-001 请假处理</span>
-                                <span class="priority priority-p0">F-FEE-001 费用收取</span>
-                            </div>
-                        </div>
-                        
-                        <hr style="margin: 30px 0; border: none; border-top: 1px solid var(--border);">
-                        
-                        <h3 style="margin-bottom: 15px;">出勤管理页面</h3>
-                        <div class="screen-mockup">
-                            <div class="screen-header">
-                                <div class="screen-header-left">
-                                    <span class="screen-logo">🏫 耀美学校</span>
-                                    <div class="screen-nav">
-                                        <span class="active">仪表板</span>
-                                        <span>周期性校务</span>
-                                        <span>财务资产</span>
-                                        <span>AI助理</span>
-                                    </div>
-                                </div>
-                                <div class="screen-header-right">
-                                    <span>🔍</span>
-                                    <span>🌐 繁中</span>
-                                    <span>👋 张老师</span>
-                                </div>
-                            </div>
-                            <div class="screen-body">
-                                <div class="screen-sidebar">
-                                    <div class="screen-sidebar-item">📊 仪表板</div>
-                                    <div class="screen-sidebar-item">📅 每日</div>
-                                    <div style="padding-left: 25px; font-size: 10px;">
-                                        <div class="screen-sidebar-item active">└ 出勤</div>
-                                        <div class="screen-sidebar-item">└ 午膳</div>
-                                        <div class="screen-sidebar-item">└ 校车</div>
-                                        <div class="screen-sidebar-item">└ 请假</div>
-                                    </div>
-                                </div>
-                                <div class="screen-content">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                                        <h3 style="font-size: 16px;">👥 出勤管理</h3>
-                                        <div>
-                                            <button class="btn btn-secondary" style="margin-right: 10px;">导出</button>
-                                            <button class="btn btn-primary">筛选 ▼</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Filters -->
-                                    <div class="screen-card" style="display: flex; gap: 15px; align-items: center;">
-                                        <span>日期:</span>
-                                        <input type="date" value="2026-05-27" style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
-                                        <span>班级:</span>
-                                        <select style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
-                                            <option>全部</option>
-                                        </select>
-                                        <span>状态:</span>
-                                        <select style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
-                                            <option>全部</option>
-                                        </select>
-                                        <button class="btn btn-primary">搜索</button>
-                                    </div>
-                                    
-                                    <!-- Stats -->
-                                    <div class="screen-card">
-                                        <strong>📊 今日出勤概览</strong>
-                                        <div style="margin-top: 10px; display: flex; gap: 30px; font-size: 12px;">
-                                            <span>全校出勤率: <strong style="color: var(--primary);">98.5%</strong></span>
-                                            <span>应到: 862</span>
-                                            <span>实到: 849</span>
-                                            <span>请假: 8</span>
-                                            <span>迟到: 5</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Table -->
-                                    <div class="screen-card">
-                                        <table class="data-table">
-                                            <thead>
-                                                <tr>
-                                                    <th><input type="checkbox"></th>
-                                                    <th>学生姓名</th>
-                                                    <th>学号</th>
-                                                    <th>班级</th>
-                                                    <th>状态</th>
-                                                    <th>时间</th>
-                                                    <th>操作</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td><input type="checkbox"></td>
-                                                    <td>陈小明</td>
-                                                    <td>S001</td>
-                                                    <td>1A</td>
-                                                    <td><span class="badge badge-success">✅ 出勤</span></td>
-                                                    <td>08:00</td>
-                                                    <td>👁️</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><input type="checkbox"></td>
-                                                    <td>王小华</td>
-                                                    <td>S003</td>
-                                                    <td>1A</td>
-                                                    <td><span class="badge badge-warning">⏰ 迟到</span></td>
-                                                    <td>08:15</td>
-                                                    <td>👁️</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><input type="checkbox"></td>
-                                                    <td>张小美</td>
-                                                    <td>S004</td>
-                                                    <td>1A</td>
-                                                    <td><span class="badge badge-info">📝 请假</span></td>
-                                                    <td>--</td>
-                                                    <td>👁️</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section 5: Cyclic -->
-            <section id="cyclic">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">📂 周期性校务管理界面</h2>
-                        <span class="badge badge-info">MOD-CYCL-001 周期性校务</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 style="margin-bottom: 15px;">周期性校务首页</h3>
-                        <div class="screen-mockup">
-                            <div class="screen-header">
-                                <div class="screen-header-left">
-                                    <span class="screen-logo">🏫 耀美学校</span>
-                                    <div class="screen-nav">
-                                        <span>仪表板</span>
-                                        <span class="active">周期性校务</span>
-                                        <span>财务资产</span>
-                                        <span>AI助理</span>
-                                    </div>
-                                </div>
-                                <div class="screen-header-right">
-                                    <span>🔍</span>
-                                    <span>🌐 繁中</span>
-                                    <span>👋 张老师</span>
-                                </div>
-                            </div>
-                            <div class="screen-body">
-                                <div class="screen-sidebar">
-                                    <div class="screen-sidebar-item">📊 仪表板</div>
-                                    <div class="screen-sidebar-item active">📂 周期性</div>
-                                    <div style="padding-left: 25px; font-size: 10px;">
-                                        <div class="screen-sidebar-item">└ 注册</div>
-                                        <div class="screen-sidebar-item">└ 考试</div>
-                                        <div class="screen-sidebar-item">└ 收生</div>
-                                        <div class="screen-sidebar-item">└ 年终</div>
-                                    </div>
-                                    <div class="screen-sidebar-item">💰 财务</div>
-                                    <div class="screen-sidebar-item">🤖 AI助理</div>
-                                    <div class="screen-sidebar-item">⚙️ 设置</div>
-                                </div>
-                                <div class="screen-content">
-                                    <h3 style="margin-bottom: 20px;">📂 周期性校务管理</h3>
-                                    
-                                    <!-- Quick Links -->
-                                    <div class="grid-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px;">
-                                        <div class="quick-link">
-                                            <span class="quick-link-icon">📝</span>
-                                            <span class="quick-link-text">注册管理</span>
-                                        </div>
-                                        <div class="quick-link">
-                                            <span class="quick-link-icon">📋</span>
-                                            <span class="quick-link-text">考试管理</span>
-                                        </div>
-                                        <div class="quick-link">
-                                            <span class="quick-link-icon">🎓</span>
-                                            <span class="quick-link-text">收生管理</span>
-                                        </div>
-                                        <div class="quick-link">
-                                            <span class="quick-link-icon">📦</span>
-                                            <span class="quick-link-text">年终处理</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Current Phase -->
-                                    <div class="screen-card">
-                                        <div class="screen-card-title">📅 当前阶段: 2025-2026学年</div>
-                                        <div style="background: #FEF3C7; border-left: 4px solid var(--warning); padding: 15px; border-radius: 8px;">
-                                            <strong>📌 进行中事项 (5)</strong>
-                                            <div style="margin-top: 10px; font-size: 12px;">
-                                                <div style="padding: 8px 0;">1️⃣ <span class="badge badge-error">DSE报考</span> 截止日期: 2026-06-15 (剩余15天)</div>
-                                                <div style="padding: 8px 0;">2️⃣ <span class="badge badge-warning">中一收生</span> 面试日期: 2026-04-20 (进行中)</div>
-                                                <div style="padding: 8px 0;">3️⃣ <span class="badge badge-info">课本分发</span> 领取期: 2026-08-25 至 08-31</div>
-                                                <div style="padding: 8px 0;">4️⃣ <span class="badge badge-info">学年结算</span> 截止日期: 2026-07-31 (剩余60天)</div>
-                                                <div style="padding: 8px 0;">5️⃣ <span class="badge badge-info">档案清理</span> 截止日期: 2026-08-15 (剩余45天)</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="info-box" style="margin-top: 20px;">
-                            <h4>功能映射</h4>
-                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                                <span class="priority priority-p0">F-ENRL-001 新生注册</span>
-                                <span class="priority priority-p0">F-ENRL-002 AI编班</span>
-                                <span class="priority priority-p1">F-ENRL-003 课本分发</span>
-                                <span class="priority priority-p0">F-EXAM-001 DSE报考</span>
-                                <span class="priority priority-p0">F-EXAM-002 试卷管理</span>
-                                <span class="priority priority-p0">F-EXAM-003 特别考试</span>
-                                <span class="priority priority-p0">F-EXAM-004 成绩单</span>
-                                <span class="priority priority-p0">F-ADM-001 中一收生</span>
-                                <span class="priority priority-p0">F-ADM-002 JUPAS联招</span>
-                                <span class="priority priority-p1">F-YREND-001 档案清理</span>
-                                <span class="priority priority-p0">F-YREND-002 财务结算</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section 6: Finance -->
-            <section id="finance">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">💰 财务资产管理界面</h2>
-                        <span class="badge badge-info">MOD-FIN-001 财务资产</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 style="margin-bottom: 15px;">财务资产首页</h3>
-                        <div class="screen-mockup">
-                            <div class="screen-header">
-                                <div class="screen-header-left">
-                                    <span class="screen-logo">🏫 耀美学校</span>
-                                    <div class="screen-nav">
-                                        <span>仪表板</span>
-                                        <span>周期性校务</span>
-                                        <span class="active">财务资产</span>
-                                        <span>AI助理</span>
-                                    </div>
-                                </div>
-                                <div class="screen-header-right">
-                                    <span>🔍</span>
-                                    <span>🌐 繁中</span>
-                                    <span>👋 张老师</span>
-                                </div>
-                            </div>
-                            <div class="screen-body">
-                                <div class="screen-sidebar">
-                                    <div class="screen-sidebar-item">📊 仪表板</div>
-                                    <div class="screen-sidebar-item">📂 周期性</div>
-                                    <div class="screen-sidebar-item active">💰 财务</div>
-                                    <div style="padding-left: 25px; font-size: 10px;">
-                                        <div class="screen-sidebar-item">└ 学费</div>
-                                        <div class="screen-sidebar-item">└ 报销</div>
-                                        <div class="screen-sidebar-item">└ 资产</div>
-                                        <div class="screen-sidebar-item">└ 场地</div>
-                                    </div>
-                                    <div class="screen-sidebar-item">🤖 AI助理</div>
-                                </div>
-                                <div class="screen-content">
-                                    <h3 style="margin-bottom: 20px;">💰 财务资产管理</h3>
-                                    
-                                    <!-- Quick Links -->
-                                    <div class="grid-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px;">
-                                        <div class="quick-link">
-                                            <span class="quick-link-icon">💵</span>
-                                            <span class="quick-link-text">学费管理</span>
-                                        </div>
-                                        <div class="quick-link">
-                                            <span class="quick-link-icon">💴</span>
-                                            <span class="quick-link-text">报销管理</span>
-                                        </div>
-                                        <div class="quick-link">
-                                            <span class="quick-link-icon">🏷️</span>
-                                            <span class="quick-link-text">资产盘点</span>
-                                        </div>
-                                        <div class="quick-link">
-                                            <span class="quick-link-icon">🏢</span>
-                                            <span class="quick-link-text">场地租借</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Monthly Overview -->
-                                    <div class="screen-card">
-                                        <div class="screen-card-title">📊 本月财务概览 (2026年5月)</div>
-                                        <div class="stats-grid">
-                                            <div class="stat-card">
-                                                <div class="stat-value" style="color: var(--success);">$456,780</div>
-                                                <div class="stat-label">收入</div>
-                                                <div class="stat-change positive">▲ 12%</div>
-                                            </div>
-                                            <div class="stat-card">
-                                                <div class="stat-value" style="color: var(--error);">$123,450</div>
-                                                <div class="stat-label">支出</div>
-                                                <div class="stat-change negative">▼ 5%</div>
-                                            </div>
-                                            <div class="stat-card">
-                                                <div class="stat-value" style="color: var(--primary);">$333,330</div>
-                                                <div class="stat-label">结余</div>
-                                            </div>
-                                            <div class="stat-card">
-                                                <div class="stat-value" style="color: var(--warning);">$45,600</div>
-                                                <div class="stat-label">待收学费</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Alerts -->
-                                    <div class="screen-card" style="background: #FEF2F2; border: 1px solid #FECACA;">
-                                        <div class="screen-card-title" style="color: #991B1B;">⚠️ 待处理事项</div>
-                                        <div style="font-size: 12px;">
-                                            <div style="padding: 5px 0;">• 12名学生学费逾期未缴 (共计 $45,600)</div>
-                                            <div style="padding: 5px 0;">• 5笔报销申请待审批 (共计 $8,900)</div>
-                                            <div style="padding: 5px 0;">• 3项设备保养到期 (空调、投影机)</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="info-box" style="margin-top: 20px;">
-                            <h4>功能映射</h4>
-                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                                <span class="priority priority-p0">F-FIN-001 学费管理</span>
-                                <span class="priority priority-p0">F-FIN-002 零用现金报销</span>
-                                <span class="priority priority-p0">F-FIN-003 奖学金津贴</span>
-                                <span class="priority priority-p1">F-ASSET-001 校产盘点</span>
-                                <span class="priority priority-p1">F-ASSET-002 场地租借</span>
-                                <span class="priority priority-p1">F-ASSET-003 设备保养</span>
-                                <span class="priority priority-p1">F-VEND-001 供应商管理</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section 7: AI Assistant -->
-            <section id="ai">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">🤖 AI 智能助理界面</h2>
-                        <span class="badge badge-info">MOD-AI-001 AI 智能助理</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 style="margin-bottom: 15px;">AI 智能助理对话界面</h3>
-                        <div class="screen-mockup">
-                            <div class="screen-header">
-                                <div class="screen-header-left">
-                                    <span class="screen-logo">🏫 耀美学校</span>
-                                    <div class="screen-nav">
-                                        <span>仪表板</span>
-                                        <span>周期性校务</span>
-                                        <span>财务资产</span>
-                                        <span class="active">AI助理</span>
-                                    </div>
-                                </div>
-                                <div class="screen-header-right">
-                                    <span>🔍</span>
-                                    <span>🌐 繁中</span>
-                                    <span>👋 张老师</span>
-                                </div>
-                            </div>
-                            <div class="screen-body">
-                                <div class="screen-sidebar">
-                                    <div class="screen-sidebar-item">📊 仪表板</div>
-                                    <div class="screen-sidebar-item">📂 周期性</div>
-                                    <div class="screen-sidebar-item">💰 财务</div>
-                                    <div class="screen-sidebar-item active">🤖 AI助理</div>
-                                    <div style="padding-left: 25px; font-size: 10px;">
-                                        <div class="screen-sidebar-item active">└ 对话</div>
-                                        <div class="screen-sidebar-item">└ FAQ</div>
-                                        <div class="screen-sidebar-item">└ 提醒</div>
-                                        <div class="screen-sidebar-item">└ 文档</div>
-                                    </div>
-                                    <div class="screen-sidebar-item">⚙️ 设置</div>
-                                </div>
-                                <div class="screen-content" style="display: flex; justify-content: center; align-items: flex-start; padding-top: 30px;">
-                                    <div class="ai-chat" style="width: 100%; max-width: 600px;">
-                                        <div style="text-align: center; margin-bottom: 20px;">
-                                            <div style="font-size: 50px; margin-bottom: 10px;">🤖</div>
-                                            <h3>你好！我是耀美学校的智能助理</h3>
-                                            <p style="color: #64748B; font-size: 13px; margin-top: 5px;">请选择或输入您想了解的内容</p>
-                                        </div>
-                                        
-                                        <div class="ai-quick-actions">
-                                            <button class="ai-quick-btn">📊 今天有多少学生请假？</button>
-                                            <button class="ai-quick-btn">📈 查看本周出勤报告</button>
-                                            <button class="ai-quick-btn">💰 有哪些费用需要处理？</button>
-                                            <button class="ai-quick-btn">🚌 校车今天运行正常吗？</button>
-                                        </div>
-                                        
-                                        <div class="ai-input">
-                                            <input type="text" placeholder="请输入您的问题...">
-                                            <button>发送</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <hr style="margin: 30px 0; border: none; border-top: 1px solid var(--border);">
-                        
-                        <h3 style="margin-bottom: 15px;">AI 对话示例</h3>
-                        <div class="ai-chat" style="max-width: 700px; margin: 0 auto;">
-                            <div class="ai-message">
-                                <div style="width: 36px; height: 36px; border-radius: 50%; background: #E2E8F0; display: flex; align-items: center; justify-content: center;">👤</div>
-                                <div class="ai-bubble">
-                                    <strong>张老师</strong><br>
-                                    今天的出勤情况如何？
-                                </div>
-                            </div>
-                            
-                            <div class="ai-message">
-                                <div class="ai-avatar">🤖</div>
-                                <div class="ai-bubble">
-                                    <strong>AI 助理</strong><br><br>
-                                    今天是 2026年5月27日（星期三）<br><br>
-                                    <strong>📊 今日出勤概览:</strong><br>
-                                    • 应到人数: 862<br>
-                                    • 实到人数: 849<br>
-                                    • 请假人数: 8<br>
-                                    • 迟到人数: 5<br>
-                                    • 出勤率: <strong style="color: var(--success);">98.5%</strong> (▲ +2.3%)<br><br>
-                                    <strong>⚠️ 需关注:</strong><br>
-                                    • 2B班出勤率偏低 (96.2%)<br>
-                                    • 3名学生未请假未到校<br><br>
-                                    是否需要我帮您发送通知给相关家长？
-                                    <div style="margin-top: 15px;">
-                                        <button class="btn btn-primary" style="margin-right: 10px;">是，发送</button>
-                                        <button class="btn btn-secondary" style="margin-right: 10px;">查看详情</button>
-                                        <button class="btn btn-secondary">不用了</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="ai-input">
-                                <input type="text" placeholder="继续提问...">
-                                <button>发送</button>
-                            </div>
-                        </div>
-                        
-                        <div class="info-box" style="margin-top: 20px;">
-                            <h4>功能映射</h4>
-                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                                <span class="priority priority-p0">F-AI-001 自然语言理解</span>
-                                <span class="priority priority-p0">F-AI-002 FAQ智能匹配</span>
-                                <span class="priority priority-p0">F-AUTO-001 周期性任务</span>
-                                <span class="priority priority-p0">F-AUTO-002 智能提醒</span>
-                                <span class="priority priority-p1">F-AI-003 OCR识别</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section 8: Settings -->
-            <section id="settings">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">⚙️ 系统设置与管理界面</h2>
-                        <span class="badge badge-info">MOD-USER-001 用户管理</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 style="margin-bottom: 15px;">用户管理页面</h3>
-                        <div class="screen-mockup">
-                            <div class="screen-header">
-                                <div class="screen-header-left">
-                                    <span class="screen-logo">🏫 耀美学校</span>
-                                    <div class="screen-nav">
-                                        <span>仪表板</span>
-                                        <span>周期性校务</span>
-                                        <span>财务资产</span>
-                                        <span>AI助理</span>
-                                        <span class="active">设置</span>
-                                    </div>
-                                </div>
-                                <div class="screen-header-right">
-                                    <span>🔍</span>
-                                    <span>🌐 繁中</span>
-                                    <span>👋 张老师</span>
-                                </div>
-                            </div>
-                            <div class="screen-body">
-                                <div class="screen-sidebar">
-                                    <div class="screen-sidebar-item">📊 仪表板</div>
-                                    <div class="screen-sidebar-item">🤖 AI助理</div>
-                                    <div class="screen-sidebar-item active">⚙️ 设置</div>
-                                    <div style="padding-left: 25px; font-size: 10px;">
-                                        <div class="screen-sidebar-item active">└ 用户</div>
-                                        <div class="screen-sidebar-item">└ 角色</div>
-                                        <div class="screen-sidebar-item">└ 权限</div>
-                                        <div class="screen-sidebar-item">└ 审批</div>
-                                        <div class="screen-sidebar-item">└ 审计</div>
-                                        <div class="screen-sidebar-item">└ 系统</div>
-                                    </div>
-                                </div>
-                                <div class="screen-content">
-                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                                        <h3 style="font-size: 16px;">👥 用户管理</h3>
-                                        <div>
-                                            <button class="btn btn-secondary" style="margin-right: 10px;">导出</button>
-                                            <button class="btn btn-primary">新建用户</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Filters -->
-                                    <div class="screen-card" style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
-                                        <span>状态:</span>
-                                        <select style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
-                                            <option>全部</option>
-                                        </select>
-                                        <span>部门:</span>
-                                        <select style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
-                                            <option>全部</option>
-                                        </select>
-                                        <button class="btn btn-primary">筛选</button>
-                                    </div>
-                                    
-                                    <!-- Table -->
-                                    <div class="screen-card">
-                                        <table class="data-table">
-                                            <thead>
-                                                <tr>
-                                                    <th><input type="checkbox"></th>
-                                                    <th>姓名</th>
-                                                    <th>工号</th>
-                                                    <th>部门</th>
-                                                    <th>角色</th>
-                                                    <th>状态</th>
-                                                    <th>操作</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td><input type="checkbox"></td>
-                                                    <td>张三</td>
-                                                    <td>E2024001</td>
-                                                    <td>校务处</td>
-                                                    <td>管理员</td>
-                                                    <td><span class="badge badge-success">🟢 活跃</span></td>
-                                                    <td>👁️ ✏️</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><input type="checkbox"></td>
-                                                    <td>李四</td>
-                                                    <td>E2024002</td>
-                                                    <td>教务处</td>
-                                                    <td>教师</td>
-                                                    <td><span class="badge badge-success">🟢 活跃</span></td>
-                                                    <td>👁️ ✏️</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><input type="checkbox"></td>
-                                                    <td>王五</td>
-                                                    <td>E2024003</td>
-                                                    <td>总务处</td>
-                                                    <td>职工</td>
-                                                    <td><span class="badge badge-warning">🟡 待激活</span></td>
-                                                    <td>👁️ ✏️</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><input type="checkbox"></td>
-                                                    <td>赵六</td>
-                                                    <td>E2024004</td>
-                                                    <td>教务处</td>
-                                                    <td>教师</td>
-                                                    <td><span class="badge badge-error">🔴 停用</span></td>
-                                                    <td>👁️ ✏️</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="info-box" style="margin-top: 20px;">
-                            <h4>功能映射</h4>
-                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                                <span class="priority priority-p0">F-USER-001 用户生命周期</span>
-                                <span class="priority priority-p0">F-USER-002 身份认证</span>
-                                <span class="priority priority-p0">F-USER-003 功能授权</span>
-                                <span class="priority priority-p0">F-USER-004 会话管理</span>
-                                <span class="priority priority-p0">F-USER-005 审计日志</span>
-                                <span class="priority priority-p0">F-USER-006 密码重置</span>
-                                <span class="priority priority-p1">F-USER-007 权限审批</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section 9: i18n -->
-            <section id="i18n">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">🌐 多语言切换界面</h2>
-                        <span class="badge badge-info">MOD-I18N-001 多语言支持</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 style="margin-bottom: 15px;">语言设置界面</h3>
-                        <div class="screen-mockup">
-                            <div class="screen-header">
-                                <div class="screen-header-left">
-                                    <span class="screen-logo">🏫 耀美學校</span>
-                                    <div class="screen-nav">
-                                        <span>儀表板</span>
-                                        <span>周期性校務</span>
-                                        <span>財務資產</span>
-                                        <span>AI助理</span>
-                                        <span class="active">設定</span>
-                                    </div>
-                                </div>
-                                <div class="screen-header-right">
-                                    <span>🔍</span>
-                                    <span>🌐 繁中▼</span>
-                                    <span>👋 張老師</span>
-                                </div>
-                            </div>
-                            <div class="screen-body">
-                                <div class="screen-sidebar">
-                                    <div class="screen-sidebar-item">📊 儀表板</div>
-                                    <div class="screen-sidebar-item">🤖 AI助理</div>
-                                    <div class="screen-sidebar-item active">⚙️ 設定</div>
-                                    <div style="padding-left: 25px; font-size: 10px;">
-                                        <div class="screen-sidebar-item active">└ 語言</div>
-                                        <div class="screen-sidebar-item">└ 通知</div>
-                                        <div class="screen-sidebar-item">└ 安全</div>
-                                    </div>
-                                </div>
-                                <div class="screen-content">
-                                    <h3 style="margin-bottom: 20px;">🌐 語言設定</h3>
-                                    <p style="color: #64748B; margin-bottom: 20px;">選擇您的偏好語言，界面將即時更新</p>
-                                    
-                                    <div class="lang-switch">
-                                        <div class="lang-option selected">
-                                            <div style="font-size: 30px; margin-bottom: 10px;">🌏</div>
-                                            <h4>繁體中文 (香港)</h4>
-                                            <p>預設語言</p>
-                                            <div style="margin-top: 10px;"><span class="badge badge-success">已選擇</span></div>
-                                        </div>
-                                        <div class="lang-option">
-                                            <div style="font-size: 30px; margin-bottom: 10px;">🇨🇳</div>
-                                            <h4>简体中文</h4>
-                                            <p>適用於內地用戶</p>
-                                        </div>
-                                        <div class="lang-option">
-                                            <div style="font-size: 30px; margin-bottom: 10px;">🇬🇧</div>
-                                            <h4>English</h4>
-                                            <p>For international users</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <h3 style="margin: 25px 0 15px;">界面多语言效果对比</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>元素</th>
-                                    <th>繁體中文 (zh-HK)</th>
-                                    <th>简体中文 (zh-CN)</th>
-                                    <th>English (en)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Header</strong></td>
-                                    <td>🏫 耀美學校</td>
-                                    <td>🏫 耀美学校</td>
-                                    <td>🏫 Yaomei School</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Menu</strong></td>
-                                    <td>儀表板</td>
-                                    <td>仪表板</td>
-                                    <td>Dashboard</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Button</strong></td>
-                                    <td>確 認</td>
-                                    <td>确认</td>
-                                    <td>Confirm</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Status</strong></td>
-                                    <td>✅ 已完成</td>
-                                    <td>✅ 已完成</td>
-                                    <td>✅ Completed</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Date</strong></td>
-                                    <td>2026年5月27日</td>
-                                    <td>2026年5月27日</td>
-                                    <td>May 27, 2026</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Currency</strong></td>
-                                    <td>HK$ 1,234</td>
-                                    <td>¥1,234</td>
-                                    <td>$1,234 HKD</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                        <div class="info-box" style="margin-top: 20px;">
-                            <h4>功能映射</h4>
-                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                                <span class="priority priority-p0">F-I18N-001 多语言框架</span>
-                                <span class="priority priority-p0">F-I18N-002 语言检测</span>
-                                <span class="priority priority-p1">F-I18N-003 实时翻译</span>
-                                <span class="priority priority-p1">F-I18N-004 格式本地化</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section 10: Responsive -->
-            <section id="responsive">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">📱 响应式设计说明</h2>
-                    </div>
-                    <div class="card-body">
-                        <h3 style="margin-bottom: 15px;">断点定义</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>设备类型</th>
-                                    <th>断点</th>
-                                    <th>布局变化</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>🖥️ 桌面 (Desktop)</td>
-                                    <td>≥ 1280px</td>
-                                    <td>完整侧边栏 + 主内容区</td>
-                                </tr>
-                                <tr>
-                                    <td>📱 平板 (Tablet)</td>
-                                    <td>768px - 1279px</td>
-                                    <td>折叠侧边栏 + 主内容区</td>
-                                </tr>
-                                <tr>
-                                    <td>📲 手机 (Mobile)</td>
-                                    <td>< 768px</td>
-                                    <td>底部导航 + 全屏内容</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                        <h3 style="margin: 25px 0 15px;">响应式布局示例</h3>
-                        <div class="grid-3">
-                            <div>
-                                <h4 style="margin-bottom: 10px; font-size: 13px;">桌面 (Desktop ≥1280px)</h4>
-                                <div style="background: #1E293B; border-radius: 8px; overflow: hidden; font-size: 10px; color: white;">
-                                    <div style="background: var(--primary); padding: 8px;">Header</div>
-                                    <div style="display: flex;">
-                                        <div style="width: 60px; background: #334155; padding: 10px 5px; text-align: center;">侧栏</div>
-                                        <div style="flex: 1; background: #F8FAFC; color: var(--text); padding: 20px; text-align: center;">Content Area</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <h4 style="margin-bottom: 10px; font-size: 13px;">平板 (Tablet 768-1279px)</h4>
-                                <div style="background: #1E293B; border-radius: 8px; overflow: hidden; font-size: 10px; color: white;">
-                                    <div style="background: var(--primary); padding: 8px;">Header (简略)</div>
-                                    <div style="display: flex;">
-                                        <div style="width: 30px; background: #334155; padding: 10px 2px; text-align: center;">≡</div>
-                                        <div style="flex: 1; background: #F8FAFC; color: var(--text); padding: 20px; text-align: center;">Content Area</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <h4 style="margin-bottom: 10px; font-size: 13px;">手机 (Mobile <768px)</h4>
-                                <div style="background: #1E293B; border-radius: 8px; overflow: hidden; font-size: 10px; color: white;">
-                                    <div style="background: var(--primary); padding: 8px;">☰ Header</div>
-                                    <div style="background: #F8FAFC; color: var(--text); padding: 30px 10px; text-align: center;">Content Area (全屏)</div>
-                                    <div style="background: #334155; padding: 8px; text-align: center;">🏠 📅 💰 🤖 ⚙️</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Section 11: Appendix -->
-            <section id="appendix">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">📋 附录</h2>
-                    </div>
-                    <div class="card-body">
-                        <h3 style="margin-bottom: 15px;">A. 功能编号对照表</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>模块编号</th>
-                                    <th>模块名称</th>
-                                    <th>功能编号</th>
-                                    <th>功能名称</th>
-                                    <th>优先级</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-DAILY-001 每日仪表板</td></tr>
-                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-ATT-001</td><td>出勤统计</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-ATT-002</td><td>迟到/早退记录</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-INQ-001</td><td>家长查询队列</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-LUNCH-001</td><td>午膳订购汇总</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-BUS-001</td><td>校车实时追踪</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-BUS-002</td><td>校车点大名记录</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 1</td><td>每日仪表板</td><td>F-LEAVE-001</td><td>请假申请处理</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                
-                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-CYCL-001 周期性校务</td></tr>
-                                <tr><td>Module 2</td><td>周期性校务</td><td>F-ENRL-001</td><td>新生注册</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 2</td><td>周期性校务</td><td>F-ENRL-002</td><td>AI辅助编班</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 2</td><td>周期性校务</td><td>F-EXAM-001</td><td>DSE报考管理</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 2</td><td>周期性校务</td><td>F-EXAM-004</td><td>成绩单生成发布</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 2</td><td>周期性校务</td><td>F-ADM-001</td><td>中一自行分配</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 2</td><td>周期性校务</td><td>F-ADM-002</td><td>JUPAS联招管理</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                
-                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-FIN-001 财务资产</td></tr>
-                                <tr><td>Module 3</td><td>财务资产</td><td>F-FIN-001</td><td>学费管理</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 3</td><td>财务资产</td><td>F-FIN-002</td><td>零用现金报销</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 3</td><td>财务资产</td><td>F-FIN-003</td><td>奖学金津贴申请</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                
-                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-USER-001 用户管理</td></tr>
-                                <tr><td>Module 4</td><td>用户管理</td><td>F-USER-001</td><td>用户生命周期管理</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 4</td><td>用户管理</td><td>F-USER-002</td><td>身份认证</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 4</td><td>用户管理</td><td>F-USER-003</td><td>功能授权 (RBAC+ABAC)</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                
-                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-AI-001 AI智能助理</td></tr>
-                                <tr><td>Module 5</td><td>AI智能助理</td><td>F-AI-001</td><td>自然语言查询理解</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 5</td><td>AI智能助理</td><td>F-AI-002</td><td>FAQ智能匹配</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 5</td><td>AI智能助理</td><td>F-AUTO-001</td><td>周期性任务触发器</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 5</td><td>AI智能助理</td><td>F-AUTO-002</td><td>智能提醒系统</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                
-                                <tr><td colspan="5" style="background: #F1F5F9; font-weight: 600;">MOD-I18N-001 多语言</td></tr>
-                                <tr><td>Module 8</td><td>多语言</td><td>F-I18N-001</td><td>多语言框架与翻译管理</td><td><span class="priority priority-p0">P0</span></td></tr>
-                                <tr><td>Module 8</td><td>多语言</td><td>F-I18N-002</td><td>语言检测与自动切换</td><td><span class="priority priority-p0">P0</span></td></tr>
-                            </tbody>
-                        </table>
-                        
-                        <h3 style="margin: 25px 0 15px;">B. 优先级说明</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>优先级</th>
-                                    <th>说明</th>
-                                    <th>目标用户</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span class="priority priority-p0">P0</span></td>
-                                    <td>核心功能，必须实现</td>
-                                    <td>全体用户</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="priority priority-p1">P1</span></td>
-                                    <td>重要功能，尽快实现</td>
-                                    <td>大多数用户</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="priority priority-p2">P2</span></td>
-                                    <td>一般功能，计划实现</td>
-                                    <td>部分用户</td>
-                                </tr>
-                                <tr>
-                                    <td><span class="priority priority-p3">P3</span></td>
-                                    <td>低优先级，可选实现</td>
-                                    <td>特殊需求</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                        <h3 style="margin: 25px 0 15px;">C. 参考文档</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>文档名称</th>
-                                    <th>版本</th>
-                                    <th>说明</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>SPEC-COMPLETE.md</td>
-                                    <td>v1.3.0</td>
-                                    <td>完整功能规格书</td>
-                                </tr>
-                                <tr>
-                                    <td>SPEC-SYSTEM-DESIGN.md</td>
-                                    <td>v0.4</td>
-                                    <td>系统架构设计</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Footer -->
-            <footer class="footer">
-                <p><strong>智能校务助理系统 — 界面原型设计文档 v1.0.0</strong></p>
-                <p>输入参考: SPEC-COMPLETE.md v1.3.0 | 创建日期: 2026-05-27 | 状态: 草稿</p>
-                <p>文档维护: 系统架构团队</p>
-            </footer>
-        </main>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🏫 智能校务助理系统</div>
+    <div class="sidebar-sub">SPEC-UI-PROTO v1.2.0</div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">概览</div>
+    <a class="sidebar-item" href="#sec1">📋 文档概述</a>
+    <a class="sidebar-item" href="#sec2">🎨 设计规范</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">核心模块</div>
+    <a class="sidebar-item" href="#sec3">🔐 登录认证</a>
+    <a class="sidebar-item" href="#sec4">📊 仪表板</a>
+    <a class="sidebar-item" href="#sec4b">👥 出勤管理</a>
+    <a class="sidebar-item" href="#sec4c">🚌 校车追踪</a>
+    <a class="sidebar-item" href="#sec4d">📝 请假申请</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">业务模块</div>
+    <a class="sidebar-item" href="#sec5">📂 周期性校务</a>
+    <a class="sidebar-item" href="#sec6">💰 财务管理</a>
+    <a class="sidebar-item" href="#sec7">🤖 AI智能助理</a>
+    <a class="sidebar-item" href="#sec8">⚙️ 系统设置</a>
+    <a class="sidebar-item" href="#sec9">🌐 多语言切换</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">附录</div>
+    <a class="sidebar-item" href="#sec10">📎 功能对照表</a>
+    <a class="sidebar-item" href="#sec11">📑 版本记录</a>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <span>docs/school-admin-system/</span>
+      <span style="color:var(--text);font-weight:600">SPEC-UI-PROTO.md</span>
     </div>
-    
-    <script>
-        // Sidebar navigation
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-                
-                // Update active state
-                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-        
-        // Language option selection
-        document.querySelectorAll('.lang-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
-        
-        // Scroll spy for sidebar
-        const sections = document.querySelectorAll('section[id]');
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (scrollY >= sectionTop - 100) {
-                    current = section.getAttribute('id');
-                }
-            });
-            
-            document.querySelectorAll('.sidebar-link').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + current) {
-                    link.classList.add('active');
-                }
-            });
-        });
-    </script>
+    <div class="topbar-right">
+      <span class="tag gray">v1.2.0</span>
+      <span class="tag orange">📝 Draft</span>
+      <span class="tag gray">SPEC-COMPLETE v1.5.0</span>
+    </div>
+  </div>
+
+  <div class="content-full">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header" id="top">
+      <h1>🏫 智能校务助理系统 — 界面原型设计文档</h1>
+      <h2>Smart School Admin AI System — Screen Layout Prototyping Document</h2>
+      <div class="page-header-meta">
+        <span class="tag">📄 SPEC-SCHOOL-ADMIN-UI-001</span>
+        <span class="tag green">✅ v1.2.0</span>
+        <span class="tag orange">📝 草稿 (Draft)</span>
+        <span class="tag">📅 2026-06-05</span>
+        <span class="tag gray">👤 系统架构团队</span>
+        <span class="tag gray">📖 SPEC-COMPLETE.md v1.5.0</span>
+      </div>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc" id="toc">
+      <div class="toc-title">📑 目录</div>
+      <ol>
+        <li><a href="#sec1">1. 文档概述</a></li>
+        <li><a href="#sec2">2. 设计原则与规范</a></li>
+        <li><a href="#sec3">3. 登录与认证界面</a></li>
+        <li><a href="#sec4">4. 主仪表板界面 (Module 1)</a></li>
+        <li><a href="#sec5">5. 周期性校务管理界面 (Module 2)</a></li>
+        <li><a href="#sec6">6. 财务资产管理界面 (Module 3)</a></li>
+        <li><a href="#sec7">7. AI智能助理界面 (Module 5)</a></li>
+        <li><a href="#sec8">8. 系统设置与管理界面 (Module 4)</a></li>
+        <li><a href="#sec9">9. 多语言切换界面 (Module 8)</a></li>
+        <li><a href="#sec10">10. 功能编号对照表</a></li>
+        <li><a href="#sec11">11. 附录：参考文档 & 版本记录</a></li>
+      </ol>
+    </div>
+
+    <!-- SECTION 1 -->
+    <div class="section" id="sec1">
+      <div class="section-title"><span class="section-num">1</span> 文档概述</div>
+
+      <h3>1.1 目的</h3>
+      <p>本界面原型设计文档用于向高级管理层 (Senior Management) 和部门主管 (Department Heads) 展示智能校务助理系统的用户界面设计，帮助他们全面了解系统的操作体验和功能呈现方式。</p>
+
+      <h3>1.2 适用范围</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>用户角色</th><th>说明</th><th>权限级别</th></tr></thead>
+          <tbody>
+            <tr><td><strong>校务主任</strong></td><td>系统管理员，全面管理</td><td><span class="badge badge-blue">最高权限</span></td></tr>
+            <tr><td><strong>部门主管</strong></td><td>各部门负责人</td><td><span class="badge badge-purple">部门权限</span></td></tr>
+            <tr><td><strong>教职员</strong></td><td>教师、职工</td><td><span class="badge badge-gray">基础权限</span></td></tr>
+            <tr><td><strong>家长</strong></td><td>学生家长查询</td><td><span class="badge badge-gray">只读权限</span></td></tr>
+            <tr><td><strong>AI 助理</strong></td><td>智能问答</td><td><span class="badge badge-gray">系统角色</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>1.3 模块与功能映射</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>模块</th><th>模块名称</th><th>功能数量</th><th>界面复杂度</th></tr></thead>
+          <tbody>
+            <tr><td>Module 1</td><td>MOD-DAILY-001 每日仪表板</td><td>7</td><td><span class="badge badge-blue">⭐⭐⭐ 高</span></td></tr>
+            <tr><td>Module 2</td><td>MOD-CYCL-001 周期性校务</td><td>10</td><td><span class="badge badge-blue">⭐⭐⭐ 高</span></td></tr>
+            <tr><td>Module 3</td><td>MOD-FIN-001 财务资产</td><td>7</td><td><span class="badge badge-blue">⭐⭐⭐ 高</span></td></tr>
+            <tr><td>Module 4</td><td>MOD-USER-001 用户管理</td><td>7</td><td><span class="badge badge-purple">⭐⭐ 中</span></td></tr>
+            <tr><td>Module 5</td><td>MOD-AI-001 AI智能助理</td><td>5</td><td><span class="badge badge-blue">⭐⭐⭐ 高</span></td></tr>
+            <tr><td>Module 6</td><td>MOD-INT-001 系统集成</td><td>6</td><td><span class="badge badge-gray">⭐ 基础</span></td></tr>
+            <tr><td>Module 7</td><td>(合规管理)</td><td>—</td><td><span class="badge badge-purple">⭐⭐ 中</span></td></tr>
+            <tr><td>Module 8</td><td>MOD-I18N-001 多语言</td><td>4</td><td><span class="badge badge-gray">⭐ 基础</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>1.4 参考依据</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>参考文档</th><th>版本</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><strong>SPEC-COMPLETE.md</strong></td><td>v1.5.0</td><td>完整功能规格书，包含 8 大模块、49 个功能函数</td></tr>
+            <tr><td><strong>SPEC-SYSTEM-DESIGN.md</strong></td><td>v0.4</td><td>系统架构设计文档</td></tr>
+            <tr><td><strong>USER-SIMULATION-FEEDBACK.md</strong></td><td>v1.0.0（已审阅）</td><td>用户模拟与反馈报告</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- SECTION 2 -->
+    <div class="section" id="sec2">
+      <div class="section-title"><span class="section-num">2</span> 设计原则与规范</div>
+
+      <h3>2.1 设计系统</h3>
+      <div class="grid-3">
+        <div class="stat-card"><div class="s-icon">⚛️</div><div class="s-val" style="font-size:13px">React 18 + Tailwind CSS</div><div class="s-lbl">设计框架</div></div>
+        <div class="stat-card"><div class="s-icon">🎨</div><div class="s-val" style="font-size:13px">Lucide React</div><div class="s-lbl">图标库</div></div>
+        <div class="stat-card"><div class="s-icon">🔤</div><div class="s-val" style="font-size:13px">Noto Sans HK / Inter</div><div class="s-lbl">中文字体 / 英文字体</div></div>
+      </div>
+      <div class="grid-3 mt">
+        <div class="stat-card"><div class="s-icon">📐</div><div class="s-val" style="font-size:13px">14px / 16px</div><div class="s-lbl">基准字号（正文/标题）</div></div>
+        <div class="stat-card"><div class="s-icon">📏</div><div class="s-val" style="font-size:13px">12列 · 16/24/32px</div><div class="s-lbl">栅格系统</div></div>
+        <div class="stat-card"><div class="s-icon">🔲</div><div class="s-val" style="font-size:13px">4 / 8 / 12px</div><div class="s-lbl">圆角（按钮/卡片/模态框）</div></div>
+      </div>
+
+      <h3>2.2 颜色系统</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>用途</th><th>颜色名</th><th>Hex</th><th>色块</th></tr></thead>
+          <tbody>
+            <tr><td><strong>主色 (Primary)</strong></td><td>深蓝色</td><td><code>#1E40AF</code></td><td><span style="display:inline-block;width:80px;height:22px;background:#1E40AF;border-radius:4px;border:1px solid #ccc"></span></td></tr>
+            <tr><td><strong>辅助色 (Secondary)</strong></td><td>浅蓝色</td><td><code>#3B82F6</code></td><td><span style="display:inline-block;width:80px;height:22px;background:#3B82F6;border-radius:4px;border:1px solid #ccc"></span></td></tr>
+            <tr><td><strong>成功 (Success)</strong></td><td>绿色</td><td><code>#10B981</code></td><td><span style="display:inline-block;width:80px;height:22px;background:#10B981;border-radius:4px;border:1px solid #ccc"></span></td></tr>
+            <tr><td><strong>警告 (Warning)</strong></td><td>橙色</td><td><code>#F59E0B</code></td><td><span style="display:inline-block;width:80px;height:22px;background:#F59E0B;border-radius:4px;border:1px solid #ccc"></span></td></tr>
+            <tr><td><strong>错误 (Error)</strong></td><td>红色</td><td><code>#EF4444</code></td><td><span style="display:inline-block;width:80px;height:22px;background:#EF4444;border-radius:4px;border:1px solid #ccc"></span></td></tr>
+            <tr><td><strong>背景色</strong></td><td>浅灰白</td><td><code>#F8FAFC</code></td><td><span style="display:inline-block;width:80px;height:22px;background:#F8FAFC;border-radius:4px;border:1px solid #ccc"></span></td></tr>
+            <tr><td><strong>文字色</strong></td><td>深灰</td><td><code>#1E293B</code></td><td><span style="display:inline-block;width:80px;height:22px;background:#1E293B;border-radius:4px;border:1px solid #ccc"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>2.3 布局模式</h3>
+      <div class="mock">
+        <span class="mock-label">系统布局架构</span>
+        <div class="mock-screen">
+          <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+          <div class="mock-content">┌──────────────────────────────────────────┐
+│  Header (64px)                              │
+│  Logo │ 导航菜单 │ 搜索 │ 语言 │ 通知 │ 头像 │
+├──────────┬──────────────────────────────────┤
+│ Sidebar  │         Main Content Area             │
+│ (240px) │         (flex-1)                    │
+│          │                                      │
+│ • 仪表板│  ┌────────────────────────────────┐ │
+│ • 校务  │  │  Page Header                   │ │
+│ • 财务  │  │  标题 + 操作按钮 + 筛选器      │ │
+│ • AI助理│  └────────────────────────────────┘ │
+│ • 设置  │  ┌────────────────────────────────┐ │
+│          │  │                                │ │
+│          │  │  数据表格 / 卡片列表 / 表单 / 图表 │ │
+│          │  │                                │ │
+│          │  └────────────────────────────────┘ │
+├──────────┴──────────────────────────────────┤
+│  Footer (32px)  版本信息 │ 支持链接 │ 版权   │
+└──────────────────────────────────────────┘</div>
+        </div>
+      </div>
+
+      <h3>2.4 组件库</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>组件类型</th><th>说明</th><th>使用场景</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Button</strong></td><td>主按钮、次按钮、危险按钮、文字按钮</td><td>操作入口</td></tr>
+            <tr><td><strong>Input</strong></td><td>文本输入、下拉选择、日期选择</td><td>数据录入</td></tr>
+            <tr><td><strong>Table</strong></td><td>数据表格，支持排序、筛选、分页</td><td>数据展示</td></tr>
+            <tr><td><strong>Card</strong></td><td>信息卡片、统计卡片</td><td>数据汇总</td></tr>
+            <tr><td><strong>Modal</strong></td><td>模态对话框</td><td>详情查看/编辑</td></tr>
+            <tr><td><strong>Toast</strong></td><td>成功、警告、错误提示</td><td>操作反馈</td></tr>
+            <tr><td><strong>Badge</strong></td><td>状态标签、计数徽章</td><td>状态标识</td></tr>
+            <tr><td><strong>Avatar</strong></td><td>用户头像、图标</td><td>用户标识</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- SECTION 3 -->
+    <div class="section" id="sec3">
+      <div class="section-title"><span class="section-num">3</span> 登录与认证界面</div>
+
+      <h3>3.1 登录页面 (F-USER-002)</h3>
+      <div class="mock">
+        <span class="mock-label">登录页面 UI 布局</span>
+        <div class="mock-screen">
+          <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+          <div class="mock-content">┌──────────────────────────────────────────────────────┐
+│                                                        │
+│                    ┌───────────────────────┐            │
+│                    │      🏫 学校标志       │            │
+│                    │      学校名称           │            │
+│                    │                       │            │
+│                    │  ┌─────────────────┐ │            │
+│                    │  │ 用户名 / 邮箱   │ │            │
+│                    │  └─────────────────┘ │            │
+│                    │                       │            │
+│                    │  ┌─────────────────┐ │            │
+│                    │  │ 密码        👁  │ │            │
+│                    │  └─────────────────┘ │            │
+│                    │                       │            │
+│                    │  ☐ 记住登录状态      │            │
+│                    │                       │            │
+│                    │  ┌─────────────────┐ │            │
+│                    │  │     登 录        │ │            │
+│                    │  └─────────────────┘ │            │
+│                    │                       │            │
+│                    │  [忘记密码？]         │            │
+│                    │                       │            │
+│                    │  ─────────────────  │            │
+│                    │  其他登录方式:         │            │
+│                    │  🔵 SSO企业登录       │            │
+│                    └───────────────────────┘            │
+│                                                        │
+│  🌐 语言: [繁體中文 ▼]                               │
+└──────────────────────────────────────────────────────┘</div>
+        </div>
+      </div>
+      <div class="info-box">
+        <strong>功能映射：</strong>
+        F-USER-002（身份认证） · F-USER-006（密码重置） · F-I18N-002（语言检测与自动切换）
+      </div>
+
+      <h3>3.2 多因素认证 (MFA) 页面</h3>
+      <div class="mock">
+        <span class="mock-label">MFA 安全验证 UI 布局</span>
+        <div class="mock-screen">
+          <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+          <div class="mock-content">┌──────────────────────────────────────────────────────┐
+│                    ┌───────────────────────┐            │
+│                    │    🔐 安全验证       │            │
+│                    │                       │            │
+│                    │  用户名: zhangsan    │            │
+│                    │                       │            │
+│                    │  请选择验证方式:       │            │
+│                    │                       │            │
+│                    │  ┌─────────────────┐ │            │
+│                    │  │ 📱 手机验证码    │ │ ← 已选     │
+│                    │  └─────────────────┘ │            │
+│                    │  ┌─────────────────┐ │            │
+│                    │  │ 📧 邮箱验证码    │ │            │
+│                    │  └─────────────────┘ │            │
+│                    │                       │            │
+│                    │  ┌───┬───┬───┬───┐   │            │
+│                    │  │ 6 │   │   │   │   │ ← 验证码输入│
+│                    │  └───┴───┴───┴───┘   │            │
+│                    │                       │            │
+│                    │  [ 重新发送 (59s) ] │            │
+│                    │                       │            │
+│                    │  ┌─────────────────┐ │            │
+│                    │  │     验 证        │ │            │
+│                    │  └─────────────────┘ │            │
+│                    │                       │            │
+│                    │  [返回登录]          │            │
+│                    └───────────────────────┘            │
+└──────────────────────────────────────────────────────┘</div>
+        </div>
+      </div>
+      <div class="info-box success">
+        <strong>功能映射：</strong>
+        F-USER-002（身份认证增强安全） · 安全级别：高安全性操作
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- SECTION 4 -->
+    <div class="section" id="sec4">
+      <div class="section-title"><span class="section-num">4</span> 主仪表板界面 (Module 1)</div>
+
+      <h3>4.1 仪表板首页 (MOD-DAILY-001)</h3>
+      <div class="mock">
+        <span class="mock-label">仪表板主视图 UI 布局</span>
+        <div class="mock-screen">
+          <div class="mock-bar"><div class="mock-dot r"></div><div class="mock-dot y"></div><div class="mock-dot g"></div></div>
+          <div class="mock-content">┌──────────────────────────────────────────────────────────────┐
+│  🏫 耀美学校 │ 仪表板 │ 周期性校务 │ 财务资产 │ AI助理 │  🔍  🌐 [繁中▼]  👋│
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │  📅 2026年5月27日 星期三 │ 📍 香港 ☀️ 28°C │ 👤 张老师 │  │
+│  └──────────────────────────────────────────────────────┘  │
+│                                                              │
+│  ╔══════════════════════════════════════════════════════╗  │
+│  ║               📊 今日概览                         ║  │
+│  ╠══════════════════════════════════════════════════════╣  │
+│  ║  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ║  │
+│  ║  │ 👥 出勤   │ │ 🍱 午膳  │ │ 🚌 校车  │ │ 📝 请假  │ ║  │
+│  ║  │  98.5%  │ │  456份   │ │  12班   │ │   3件   │ ║  │
+│  ║  │ ▲ +2.3% │ │  预订中  │ │ 运行正常 │ │  待审批  │ ║  │
+│  ║  └──────────┘ └──────────┘ └──────────┘ └──────────┘ ║  │
+│  ╚══════════════════════════════════════════════════════╝  │
+│                                                              │
+│  ┌──────────────────────┐ ┌──────────────────────────────┐ │
+│  │ 📈 出勤统计            │ │ 🔔 待处理事项 (5
+
+          │  │  [柱状图: 本周出勤趋势] │ │  ☐ [紧急] 请假申请 - 李小明    │  │
+          │  │                         │ │  ☐ [普通] 校车变更 - 1A班      │  │
+          │  │  全校: 98.5%           │ │  ☐ [普通] 午膳调整 - 2B班      │  │
+          │  └─────────────────────────┘ └──────────────────────────────────┘ │
+          │                                                                       │
+          │  ┌─────────────────────────┐ ┌──────────────────────────────────┐ │
+          │  │ 🚌 校车状态               │ │ 💬 AI 智能问答                     │ │
+          │  │                          │ │                                   │ │
+          │  │ 🟢 1号线  正常运行      │ │  ┌──────────────────────────┐  │ │
+          │  │ 🟢 2号线  正常运行      │ │  │ 你好，有什么可以帮到你？   │  │ │
+          │  │ 🟡 3号线  轻微延误      │ │  │                          │  │ │
+          │  │ 🟢 4号线  正常运行      │ │  │ [今天有多少学生请假？]  │  │ │
+          │  └─────────────────────────┘ │  │ [查看本周出勤报告]    │  │ │
+          │                               │  └──────────────────────────┘  │ │
+          │                               └──────────────────────────────────┘ │
+          └───────────────────────────────────────────────────────────────────┘
+ 功能映射: F-DASH-001 · F-ATT-001 · F-BUS-001 · F-LEAVE-001 · F-INQ-001 · F-AI-001
+</div>
+</div>
+
+<!-- S4.2 -->
+<div class="sec2" id="s4b">
+  <h3>4.2 出勤管理页面 (F-ATT-001, F-ATT-002)</h3>
+  <div class="mk">
+    <span class="ml">出勤管理页面 UI</span>
+    <div class="ms">
+      <div class="mb"><div class="md mr"></div><div class="md my"></div><div class="md mg"></div></div>
+      <div class="mc">┌──────────────────────────────────────────────────────────────┐
+│ 🏫 耀美学校 │ 仪表板 │ 周期性校务 │ 财务资产 │ AI助理 │  🔍  🌐  👋│
+├────────────┬─────────────────────────────────────────────────────┤
+│            │  ┌────────────────────────────────────────────┐  │
+│ 📊 仪表板   │  │  👥 出勤管理              [导出] [筛选▼] │  │
+│ 📅 每日     │  └────────────────────────────────────────────┘  │
+│   └ 出勤 ◀ │  ┌────────────────────────────────────────────┐  │
+│   └ 午膳   │  │ 日期: [2026-05-27] 班级: [全部 ▼]  [搜索] │  │
+│   └ 校车   │  └────────────────────────────────────────────┘  │
+│   └ 请假   │  ┌────────────────────────────────────────────┐  │
+│            │  │ 📊 今日出勤概览                              │  │
+│ 📂 周期性   │  │ 全校:98.5% │应到:862 │实到:849 │请假:8 │  │
+│            │  └────────────────────────────────────────────┘  │
+│ 💰 财务     │  ┌────────────────────────────────────────────┐  │
+│            │  │◉全选│学生姓名│学号 │班级│状态│时间│操作│  │
+│ 🤖 AI助理   │  ├────────────────────────────────────────────┤  │
+│ ⚙️ 设置    │  │ ☐    │ 陈小明 │ S001 │ 1A │✅出勤│08:00│👁️│  │
+│            │  │ ☐    │ 李小红 │ S002 │ 1A │✅出勤│08:01│👁️│  │
+│            │  │ ☐    │ 王小华 │ S003 │ 1A │⏰迟到│08:15│👁️│  │
+│            │  │ ☐    │ 张小美 │ S004 │ 1A │📝请假│ -- │👁️│  │
+│            │  └────────────────────────────────────────────┘  │
+│            │  ┌────────────────────────────────────────────┐  │
+│            │  │  ◀ 上一页 │ 第 1/10 页 │ 共862条 │ 下一页 ▶│  │
+│            │  └────────────────────────────────────────────┘  │
+│            │  F-ATT-001 · F-ATT-002 · MOD-DAILY-001         │
+└──────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+  <h4>4.2.1 数据同步状态监控面板 (F-ATT-001 增强)</h4>
+  <div class="box o"><strong>新增功能：</strong>数据源按设备独立展示状态（不合并为"部分成功"）；同步失败时自动生成受影响学生智能列表</div>
+  <div class="mk">
+    <span class="ml">数据同步状态监控面板</span>
+    <div class="ms">
+      <div class="mb"><div class="md mr"></div><div class="md my"></div><div class="md mg"></div></div>
+      <div class="mc">┌──────────────────────────────────────────────────────────────┐
+│  🏫 耀美学校 │ 仪表板 │ 周期性校务 │ 财务资产 │  🔍  🌐  👋│
+├────────────┬─────────────────────────────────────────────────────┤
+│            │  ┌────────────────────────────────────────────┐  │
+│ 📊 仪表板   │  │  👥 出勤数据同步管理        [刷新状态] [设置]│  │
+│ 📅 每日     │  └────────────────────────────────────────────┘  │
+│   └ 出勤 ◀ │  ┌────────────────────────────────────────────┐  │
+│   └ 午膳   │  │  📡 数据源状态                               │  │
+│            │  │                                              │  │
+│            │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐   │  │
+│            │  │  │🟢 eClass│ │🟢 门禁  │ │🟢 人工  │   │  │
+│            │  │  │  API    │ │  刷卡机 │ │  录入   │   │  │
+│            │  │  │ 已连接   │ │ 实时在线 │ │ 待机中   │   │  │
+│            │  │  │07:03同步│ │07:01同步│ │待录入:0│   │  │
+│            │  │  │班级:18/18│ │实时推送 │ │          │   │  │
+│            │  │  └─────────┘ └─────────┘ └─────────┘   │  │
+│            │  └────────────────────────────────────────────┘  │
+│            │  ┌────────────────────────────────────────────┐  │
+│            │  │  📋 同步日志 (今日)                [查看更多]│  │
+│            │  │  07:03 ✅ eClass  S1-S6全量同步完成 862条│  │
+│            │  │  07:02 ✅ 门禁    1A班实时更新      38条 │  │
+│            │  │  07:01 ⚠️ 门禁    2B班连接超时 重试中   │  │
+│            │  └────────────────────────────────────────────┘  │
+│            │  F-ATT-001: 数据拉取 · MOD-DAILY-001           │
+└──────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+  <h4>4.2.2 批量录入确认预览 + 撤销 (F-ATT-001 增强)</h4>
+  <div class="g2">
+    <div class="card cb">
+      <h4>📋 确认预览页</h4>
+      <p class="text-small text-muted">即将录入 <strong>12</strong> 条出勤记录：</p>
+      <ul class="text-small text-muted">
+        <li>班级：1C</li><li>日期：2026-05-27</li>
+        <li>状态：迟到（校车延误）</li>
+        <li>学生：陈大明、李小红…等12人</li>
+      </ul>
+      <p class="text-small" style="margin-top:8px;color:var(--w)">⚠️ 请确认以上信息无误后再保存</p>
+    </div>
+    <div class="card co">
+      <h4>↩️ 批量撤销</h4>
+      <p class="text-small text-muted">批量录入成功后，<strong>5分钟内</strong>可一键撤销全部记录。</p>
+      <p class="text-small text-muted" style="margin-top:8px">撤销后记录将被删除，操作不可恢复。</p>
+      <p class="text-small" style="margin-top:8px;color:var(--w)">剩余撤销时间：<strong>4分32秒</strong></p>
+      <button class="w" style="margin-top:10px">↩️ 撤销全部记录</button>
+    </div>
+  </div>
+
+  <h4>4.2.3 受影响学生智能列表 (F-ATT-001 增强)</h4>
+  <div class="tw">
+    <table>
+      <thead><tr><th>学生</th><th>班级</th><th>受影响来源</th><th>建议操作</th></tr></thead>
+      <tbody>
+        <tr><td>陈大明</td><td>1A</td><td>人脸识别闸机-RFID-003离线</td><td><span class="bdg bg-b">确认到校</span></td></tr>
+        <tr><td>李小红</td><td>1A</td><td>门禁-RFID-005离线</td><td><span class="bdg bg-b">确认到校</span></td></tr>
+        <tr><td>王小华</td><td>1C</td><td>eClass API超时</td><td><span class="bdg bg-o">标记待确认</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- S4.3 -->
+<div class="sec2" id="s4c">
+  <div class="st2"><span class="sn">4.3</span> 校车追踪页面 (F-BUS-001, F-BUS-002)</div>
+
+  <h4>4.3.1 校车追踪主页面</h4>
+  <div class="mk">
+    <span class="ml">校车实时追踪 UI</span>
+    <div class="ms">
+      <div class="mb"><div class="md mr"></div><div class="md my"></div><div class="md mg"></div></div>
+      <div class="mc">┌──────────────────────────────────────────────────────────────┐
+│ 🏫 耀美学校 │ 仪表板 │ 周期性校务 │ 财务资产 │ AI助理 │  🔍  🌐  👋│
+├────────────┬─────────────────────────────────────────────────────┤
+│            │  ┌────────────────────────────────────────────┐  │
+│ 📊 仪表板   │  │  🚌 校车实时追踪              [查看地图] [导出]│  │
+│ 📅 每日     │  └────────────────────────────────────────────┘  │
+│   └ 出勤   │  ┌─────────────────┐ ┌──────────────────────┐ │
+│   └ 校车 ◀ │  │                 │ │  🚌 校车状态列表       │ │
+│     └ 点名 │  │  [地图: 香港东区] │ │                       │ │
+│     └ 路线 │  │                  │ │  ┌─────────────────┐ │ │
+│   └ 请假   │  │  🚌←1号线当前位置 │ │  │🟢 1号线 正常   │ │ │
+│            │  │      ↓            │ │  │  预计08:30到校 │ │ │
+│ 📂 周期性   │  │  🚌←3号线(延误)   │ │  └─────────────────┘ │ │
+│ 💰 财务     │  │                  │ │  ┌─────────────────┐ │ │
+│ 🤖 AI助理   │  │  🏫←学校位置    │ │  │🟡 3号线 延误   │ │ │
+│ ⚙️ 设置    │  └─────────────────┘ │  │  交通堵塞       │ │ │
+│            │                       │  │  预计08:45到校  │ │ │
+│            │  ┌─────────────────┴──────────────────────┐ │
+│            │  │  📋 点名记录 (F-BUS-002)               │ │
+│            │  │  校车: [1号线 ▼]  日期:[2026-05-27]  │ │
+│            │  │  已上车: 15/17  [确认提交] [通知家长]  │ │
+│            │  └───────────────────────────────────────┘ │
+│            │  F-BUS-001 · F-BUS-002 · MOD-DAILY-001    │
+└──────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+  <h4>4.3.2 延误通知 — 意外类型标签 + 乘搭学生列表 (F-BUS-001 增强)</h4>
+  <div class="g2">
+    <div class="card cr">
+      <h4>📢 延误通知模板</h4>
+      <p class="text-small">📢 校车通知：</p>
+      <p class="text-small">因 <strong>東涌公路交通意外</strong>，A2线校车预计延迟约25分钟。</p>
+      <p style="margin-top:6px">🛡️ 意外类型：<span class="bdg bg-o">轻微事故</span></p>
+      <p class="text-small">您的孩子（王小明）已于7:42安全登车，请放心。</p>
+      <p class="text-small">预计到校：<strong>08:05</strong></p>
+    </div>
+    <div class="card cb">
+      <h4>👥 乘搭学生列表 + 一键通知</h4>
+      <p class="text-small text-muted"><strong>BUS-A2 · 東涌線 · 延误 +23分钟</strong></p>
+      <ul class="text-small text-muted" style="margin-top:8px">
+        <li>📋 乘搭学生：38人</li>
+        <li>📱 已通知：32人 · 未通知：6人</li>
+        <li>✅ 家长已读：28人</li>
+      </ul>
+      <button style="margin-top:10px">📱 一键通知全部家长</button>
+    </div>
+  </div>
+
+  <h4>4.3.3 下一站预计到达时间 (F-BUS-001 增强)</h4>
+  <div class="box g"><strong>新增功能：</strong>系统根据GPS和交通数据计算下一站预计到达时间，可提前通知等候站点的家长。</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>校车</th><th>当前位置</th><th>下一站</th><th>预计到达</th><th>等候家长数</th></tr></thead>
+      <tbody>
+        <tr><td>1号线</td><td>寶琳路</td><td>寶琳邨</td><td>08:05 (+2分钟)</td><td>8人</td></tr>
+        <tr><td>2号线</td><td>將軍澳隧道</td><td>坑口站</td><td>08:12 (正常)</td><td>5人</td></tr>
+        <tr><td>3号线</td><td>東涌公路</td><td>東涌市中心</td><td><span style="color:var(--e)">08:45 (延误+15分)</span></td><td>12人</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- S4.4 -->
+<div class="sec2" id="s4d">
+  <div class="st2"><span class="sn">4.4</span> 请假申请处理页面 (F-LEAVE-001)</div>
+
+  <h4>4.4.1 请假申请详情页</h4>
+  <div class="mk">
+    <span class="ml">请假申请处理 UI</span>
+    <div class="ms">
+      <div class="mb"><div class="md mr"></div><div class="md my"></div><div class="md mg"></div></div>
+      <div class="mc">┌──────────────────────────────────────────────────────────────┐
+│ 🏫 耀美学校 │ 仪表板 │ 周期性校务 │ 财务资产 │ AI助理 │  🔍  🌐  👋│
+├────────────┬─────────────────────────────────────────────────────┤
+│            │  ┌────────────────────────────────────────────┐  │
+│ 📊 仪表板   │  │  📝 请假申请处理          [新建申请] [导出] │  │
+│ 📅 每日     │  └────────────────────────────────────────────┘  │
+│   └ 请假 ◀ │  🔔 待审批(3) │ 🟢 已批准(45) │ 🔴 已拒绝(12)│  │
+│            │  ┌────────────────────────────────────────────┐  │
+│ 📂 周期性   │  │  📋 请假详情                        [◀返回] │  │
+│ 💰 财务     │  ├────────────────────────────────────────────┤  │
+│ 🤖 AI助理   │  │  学生: 陈小明 (S001)  班级: 1A班         │  │
+│ ⚙️ 设置    │  │  类型: [病假 ▼]                             │  │
+│            │  │  请假日期: 2026-05-27 至 05-28 (2天)     │  │
+│            │  │  原因: 感冒发烧，医生建议休息             │  │
+│            │  │  附件: [病假纸.pdf] 📎                    │  │
+│            │  │  审批状态: ⏳ 待审批                       │  │
+│            │  │  备注: _________________________________ │  │
+│            │  │             [批准]  [拒绝]  [转交他人]     │  │
+│            │  └────────────────────────────────────────────┘  │
+│            │  F-LEAVE-001 · MOD-DAILY-001                 │
+└──────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+  <h4>4.4.2 审批进度状态条 (F-LEAVE-001 增强)</h4>
+  <div class="card cb">
+    <h4>📊 请假申请审批进度追踪</h4>
+    <div style="margin-top:12px">
+      <div style="display:flex;align-items:center;gap:0;margin-bottom:8px">
+        <div style="flex:1;background:var(--s);color:#fff;padding:8px 12px;border-radius:6px 0 0 6px;text-align:center;font-size:12px">✅ 已提交<br><span style="font-size:10px;opacity:.8">05-27 07:30</span></div>
+        <div style="width:22px;height:22px;background:var(--s);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px">▶</div>
+        <div style="flex:1;background:var(--pl);color:#fff;padding:8px 12px;text-align:center;font-size:12px">⏳ 审批中<br><span style="font-size:10px;opacity:.8">校务主任</span></div>
+        <div style="width:22px;height:22px;background:#E2E8F0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#94A3B8;font-size:10px">▶</div>
+        <div style="flex:1;background:#E2E8F0;color:#94A3B8;padding:8px 12px;border-radius:0 6px 6px 0;text-align:center;font-size:12px">⏸ 待批准</div>
+      </div>
+    </div>
+  </div>
+
+  <h4>4.4.3 OCR进度提示 (F-LEAVE-001 增强 — 家长视角)</h4>
+  <div class="g3">
+    <div class="card cb"><h4>📤 上传中</h4><div class="text-center" style="padding:12px"><div style="font-size:28px">⏳</div><p class="text-small text-muted" style="margin-top:8px">正在上传医生证明...</p></div></div>
+    <div class="card cb"><h4>🔍 识别中</h4><div class="text-center" style="padding:12px"><div style="font-size:28px">🤖</div><p class="text-small text-muted" style="margin-top:8px">正在识别证明文件，请稍候...</p></div></div>
+    <div class="card cg"><h4>✅ 处理完成</h4><div class="text-center" style="padding:12px"><div style="font-size:28px">✅</div><p class="text-small" style="margin-top:8px">请假申请已提交！</p></div></div>
+  </div>
+
+  <h4>4.4.4 代课老师课时数显示 (F-LEAVE-001 增强)</h4>
+  <div class="box"><strong>新增功能：</strong>推荐代课老师时，显示每位候选人的当日已有课时数，避免重复安排。</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>候选人</th><th>任教科目</th><th>当日已排课时数</th><th>操作</th></tr></thead>
+      <tbody>
+        <tr><td>陈老师</td><td>数学</td><td><span class="bdg bg-g">今日已有 2 节课</span></td><td><button>选择</button></td></tr>
+        <tr><td>王老师</td><td>数学</td><td><span class="bdg bg-o">今日已有 4 节课</span></td><td><button class="w">选择</button></td></tr>
+        <tr><td>李老师</td><td>物理</td><td><span class="bdg bg-g">今日已有 1 节课</span></td><td><button>选择</button></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- end content -->
+<hr>
+
+<!-- S5 -->
+<div class="sec2" id="s5">
+  <div class="st2"><span class="sn">5</span> 周期性校务管理界面 (Module 2)</div>
+
+  <h3>5.1 周期性校务首页 (MOD-CYCL-001)</h3>
+  <div class="mk">
+    <span class="ml">周期性校务首页 UI</span>
+    <div class="ms">
+      <div class="mb"><div class="md mr"></div><div class="md my"></div><div class="md mg"></div></div>
+      <div class="mc">┌──────────────────────────────────────────────────────────────┐
+│  🏫 耀美学校 │ 仪表板 │ 周期性校务 │ 财务资产 │ AI助理 │  🔍  🌐  👋│
+├────────────┬─────────────────────────────────────────────────────┤
+│            │  ┌────────────────────────────────────────────┐  │
+│ 📊 仪表板   │  │  📂 周期性校务管理                         │  │
+│ ▶ 周期性 ◀ │  │                                            │  │
+│   └ 注册   │  │  ┌──────────┐ ┌──────────┐ ┌────────┐│  │
+│   └ 考试   │  │  │ 📝注册管理│ │ 📋考试管理│ │ 🎓收生│  │
+│   └ 收生   │  │  └──────────┘ └──────────┘ └────────┘│  │
+│   └ 年终   │  │  ┌──────────┐                              │  │
+│ 💰 财务     │  │  │ 📦年终处理│                              │  │
+│ 🤖 AI助理   │  │  └──────────┘                              │  │
+│ ⚙️ 设置    │  │  📅 当前阶段: 2025-2026学年             │  │
+│            │  │  📌 进行中事项:                            │  │
+│            │  │  1️⃣ DSE报考 截止:06-15 (剩余15天)        │  │
+│            │  │  2️⃣ 中一收生 面试:04-20 (进行中)         │  │
+│            │  │  3️⃣ 课本分发 领取:08-25~08-31            │  │
+│            │  │  4️⃣ 学年结算 截止:07-31 (剩余60天)        │  │
+│            │  └────────────────────────────────────────────┘  │
+│            │  MOD-CYCL-001                                 │
+└──────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+  <h3>5.2 DSE 报考管理页面 (F-EXAM-001)</h3>
+  <div class="mk">
+    <span class="ml">DSE报考管理 UI</span>
+    <div class="ms">
+      <div class="mb"><div class="md mr"></div><div class="md my"></div><div class="md mg"></div></div>
+      <div class="mc">┌──────────────────────────────────────────────────────────────┐
+│  🏫 耀美学校 │ 仪表板 │ 周期性校务 │ 财务资产 │  🔍  🌐  👋│
+├────────────┬─────────────────────────────────────────────────────┤
+│            │  ┌────────────────────────────────────────────┐  │
+│ 📊 仪表板   │  │  🎓 DSE报考管理              [导出报表] [设置]│  │
+│ ▶ 周期性   │  └────────────────────────────────────────────┘  │
+│   └ 注册   │  ┌────────────────────────────────────────────┐  │
+│   └ 考试   │  │ 📊 报考概览                                   │  │
+│     ▶ DSE ◀ │  │ 应届:156人│已确认:142人│待确认:14人│已缴费:138│  │
+│       卷二 │  │ ⚠️ 未完成报名: 3人 (截止前3天需完成)         │  │
+│       卷三 │  └────────────────────────────────────────────┘  │
+│   └ 收生   │  ┌────────────────────────────────────────────┐  │
+│   └ 年终   │  │◉全选│学生│学号│报考科目│状态│费用│操作│  │
+│            │  ├────────────────────────────────────────────┤  │
+│ 💰 财务     │  │☑     │陈小明│S101│中文/英│✅已确认│$1680│👁️│  │
+│ 🤖 AI助理   │  │☑     │李小红│S102│中文/英│✅已确认│$1680│👁️│  │
+│ ⚙️ 设置    │  │☐     │王小华│S103│中文/英│⏳待确认│$1680│👁️│  │
+│            │  │☐     │张小美│S104│中文/英│🔴未缴费│$1680│👁️│  │
+│            │  └────────────────────────────────────────────┘  │
+│            │  F-EXAM-001 · MOD-CYCL-001                    │
+└──────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+  <h3>5.3 JUPAS 推荐信 AI辅助写作 (F-ADM-002 增强)</h3>
+  <div class="g2">
+    <div class="card cp">
+      <h4>✍️ 推荐信编辑界面</h4>
+      <p class="text-small text-muted">学生：陈志强 (6A) · 科目：数学</p>
+      <div style="margin-top:10px;background:#F1F5F9;border-radius:6px;padding:12px">
+        <p class="text-small"><strong>学业表现评价：</strong></p>
+        <p class="text-small text-muted" style="margin-top:6px;font-style:italic">陈志强同学在数学科表现优异，课堂参与积极，逻辑思维能力强...<span style="color:var(--m)">（当前约 45 字）</span></p>
+        <div style="margin-top:8px;display:flex;align-items:center;gap:8px">
+          <span class="text-small text-muted">字数统计：45 / 建议300-500字</span>
+          <span class="bdg bg-o" style="font-size:10px">字数较少</span>
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <span class="bdg bg-b" style="margin:2px">📋 大纲提示</span>
+        <span class="bdg bg-d" style="margin:2px">💡 术语一致性</span>
+        <span class="bdg bg-d" style="margin:2px">📄 历史参考</span>
+      </div>
+    </div>
+    <div class="card cb">
+      <h4>💡 AI写作辅助面板</h4>
+      <p class="text-small text-muted" style="margin-top:8px"><strong>AI大纲建议（基于学生档案）：</strong></p>
+      <ol class="text-small text-muted" style="margin-top:8px">
+        <li><strong>学业表现</strong>（建议100-150字）<br>课堂参与，数学竞赛获奖，成绩趋势</li>
+        <li style="margin-top:8px"><strong>个人特质</strong>（建议100-150字）<br>学习态度，团队合作，领导能力</li>
+        <li style="margin-top:8px"><strong>课外活动</strong>（建议50-100字）<br>参与活动，志愿服务，社团</li>
+      </ol>
+      <div class="box g" style="font-size:12px;padding:10px 14px;margin-top:10px"><strong>✅ AI术语一致性检查通过</strong><br>未发现与系统术语表不一致的表述</div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- S6 -->
+<div class="sec2" id="s6">
+  <div class="st2"><span class="sn">6</span> 财务资产管理界面 (Module 3)</div>
+
+  <h3>6.1 财务资产首页 (MOD-FIN-001)</h3>
+  <div class="mk">
+    <span class="ml">财务资产管理首页 UI</span>
+    <div class="ms">
+      <div class="mb"><div class="md mr"></div><div class="md my"></div><div class="md mg"></div></div>
+      <div class="mc">┌──────────────────────────────────────────────────────────────┐
+│  🏫 耀美学校 │ 仪表板 │ 周期性校务 │ 财务资产 │ AI助理 │  🔍  🌐  👋│
+├────────────┬─────────────────────────────────────────────────────┤
+│            │  ┌────────────────────────────────────────────┐  │
+│ 📊 仪表板   │  │  💰 财务资产管理                             │  │
+│ 📂 周期性   │  │                                            │  │
+│ 💰 财务 ◀   │  │  ┌──────────┐ ┌──────────┐ ┌────────┐│  │
+│   └ 学费   │  │  │ 💵学费管理│ │ 💴报销管理│ │ 🏷️资产 │  │
+│   └ 报销   │  │  └──────────┘ └──────────┘ └────────┘│  │
+│   └ 资产   │  │  ┌────────────────────────────────────┐│  │
+│   └ 场地   │  │  │ 📊 本月财务概览 (2026年5月)        ││  │
+│   └ 供应   │  │  │ 收入:$456,780│支出:$123,450│结余:$333,330││  │
+│ 🤖 AI助理   │  │  │ 待收学费:$45,600│待报销:$8,900│待缴费:$12,300││  │
+│ ⚙️ 设置    │  │  └────────────────────────────────────┘│  │
+│            │  │  ⚠️ 待处理: 12名学生逾期未缴 · 5笔报销待审批 │  │
+│            │  └────────────────────────────────────────────┘  │
+│            │  MOD-FIN-001                                 │
+└──────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+  <h3>6.2 学费管理 — 欠费 sub_status (F-FIN-001 增强)</h3>
+  <div class="box o"><strong>新增功能：</strong>学费欠费报表增加 <code>sub_status</code> 枚举，区分「分期付款中」与「真正欠费」</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>学生</th><th>班级</th><th>应缴金额</th><th>已缴</th><th>欠费金额</th><th>子状态</th></tr></thead>
+      <tbody>
+        <tr><td>王小明</td><td>2B</td><td>HK$3,100</td><td>HK$1,550</td><td>HK$1,550</td><td><span class="bdg bg-b">分期付款中</span></td></tr>
+        <tr><td>陈大文</td><td>3A</td><td>HK$3,100</td><td>HK$0</td><td>HK$3,100</td><td><span class="bdg bg-r">逾期未付</span></td></tr>
+        <tr><td>李小红</td><td>1C</td><td>HK$3,100</td><td>HK$1,550</td><td>HK$1,550</td><td><span class="bdg bg-o">争议中</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.3 零用现金报销 — OCR视觉区分 + 双人见证推送 (F-FIN-002 增强)</h3>
+  <div class="g2">
+    <div class="card cr">
+      <h4>📄 OCR收据识别展示规范</h4>
+      <div class="text-small" style="padding:8px 0">
+        <p style="background:#FEF3C7;padding:10px;border-radius:6px;border-left:4px solid #F59E0B;margin-bottom:10px;color:#92400E;font-weight:700">⚠️ 请人工核对收据原件</p>
+        <p><strong>🤖 OCR识别金额：</strong></p>
+        <p style="color:#92400E;font-weight:700;font-size:16px">HK$856.00</p>
+        <p style="margin-top:8px"><strong>📋 系统登记金额：</strong> HK$856.00</p>
+        <div style="margin-top:10px;background:#F1F5F9;padding:10px;border-radius:6px">
+          <p class="text-small text-muted">收据缩略图预览：</p>
+          <div style="height:60px;background:#E2E8F0;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#64748B">📄 收据图片预览</div>
+        </div>
+      </div>
+    </div>
+    <div class="card cg">
+      <h4>🔔 双人见证实时推送</h4>
+      <div class="text-small" style="padding:8px 0">
+        <p><strong>第一见证人已完成见证</strong></p>
+        <div style="margin-top:10px;background:#D1FAE5;padding:10px;border-radius:6px">
+          <p class="text-small">✅ 见证人1（张同工）已于 11:45 完成见证</p>
+        </div>
+        <p style="margin-top:10px"><strong>📱 见证人2（陈副主任）已收到推送通知：</strong></p>
+        <div style="margin-top:6px;background:#EEF2FF;padding:10px;border-radius:6px">
+          <p class="text-small">🔔 待见证任务</p>
+          <p class="text-small">交易：PC-2026-05-0234 · 金额：HK$856.00</p>
+          <button style="margin-top:8px">立即见证</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>6.4 每日收费 — 电子收据自动推送 + 缴费延迟提示 (F-FEE-001 增强)</h3>
+  <div class="g2">
+    <div class="card cg">
+      <h4>📱 电子收据自动推送</h4>
+      <p class="text-small text-muted">第三方支付（FPS，八达通）收款成功后自动推送</p>
+      <div style="margin-top:10px;background:#D1FAE5;padding:10px;border-radius:6px">
+        <p class="text-small">✅ 缴费成功！</p>
+        <p class="text-small">电子收据已发送至 App / 邮箱</p>
+      </div>
+    </div>
+    <div class="card co">
+      <h4>⏳ 缴费延迟提示</h4>
+      <p class="text-small text-muted">第三方支付存在延迟，界面正确引导用户</p>
+      <div style="margin-top:10px;background:#FEF3C7;padding:10px;border-radius:6px">
+        <p class="text-small" style="color:#92400E">⚠️ 您的缴费已提交，预计5分钟内更新。请勿重复缴费。</p>
+        <p class="text-small text-muted" style="margin-top:6px">上次缴费：2026-05-27 14:23:12</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- S7 -->
+<div class="sec2" id="s7">
+  <div class="st2"><span class="sn">7</span> AI智能助理界面 (Module 5)</div>
+
+  <h3>7.1 AI 智能助理首页 (MOD-AI-001)</h3>
+  <div class="mk">
+    <span class="ml">AI智能助理 UI</span>
+    <div class="ms">
+      <div class="mb"><div class="md mr"></div><div class="md my"></div><div class="md mg"></div></div>
+      <div class="mc">┌──────────────────────────────────────────────────────────────┐
+│  🏫 耀美学校 │ 仪表板 │ 周期性校务 │ 财务资产 │ AI助理 │  🔍  🌐  👋│
+├────────────┬─────────────────────────────────────────────────────┤
+│            │  ┌────────────────────────────────────────────┐  │
+│ 📊 仪表板   │  │  🤖 AI 智能助理                             │  │
+│ 📂 周期性   │  └────────────────────────────────────────────┘  │
+│ 💰 财务     │  ┌────────────────────────────────────────────┐  │
+│ 🤖 AI助理 ◀ │  │                                            │  │
+│   ▶ 对话   │  │         ┌────────────────────────────────┐ │  │
+│     FAQ    │  │         │                                │ │  │
+│     提醒   │  │         │    🤖                          │ │  │
+│     文档   │  │         │                                │ │  │
+│ ⚙️ 设置    │  │         │    你好！我是耀美学校的智能助理  │ │  │
+│            │  │         │                                │ │  │
+│            │  │         │    请选择或输入您想了解的内容:  │ │  │
+│            │  │         │                                │ │  │
+│            │  │         │    ┌────────────────────────┐ │ │  │
+│            │  │         │    │ 📊 今天有哪些学生请假？│ │ │  │
+│            │  │         │    └────────────────────────┘ │ │  │
+│            │  │         │    ┌────────────────────────┐ │ │  │
+│            │  │         │    │ 📈 本周出勤率是多少？ │ │ │  │
+│            │  │         │    └────────────────────────┘ │ │  │
+│            │  │         │                                │ │  │
+│            │  │         │    ┌────────────────────────┐ │ │  │
+│            │  │         │    │ 请输入问题...   [发送]│ │ │  │
+│            │  │         │    └────────────────────────┘ │ │  │
+│            │  │         └────────────────────────────────┘ │  │
+│            │  │  💡 快捷:  📝快速回复 │ ⏰提醒 │ 📄OCR│  │
+│            │  └────────────────────────────────────────────┘  │
+│            │  MOD-AI-001                                 │
+└──────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+  <h3>7.2 消息送达回执机制 + 短信备用 (F-AUTO-002 增强)</h3>
+  <div class="box g"><strong>新增功能：</strong>重要通知建立消息送达回执；高优先级通知启用短信备用渠道；Token健康检查每24小时自动执行。</div>
+  <div class="g3 mt">
+    <div class="card cg">
+      <h4>✅ 送达回执</h4>
+      <p class="text-small text-muted">家长打开通知 → 系统标记"已读"</p>
+      <div style="margin-top:8px;background:#D1FAE5;padding:8px;border-radius:6px">
+        <p class="text-small">📱 校车延误通知</p>
+        <p class="text-small">✅ 家长已读 · 08:05</p>
+      </div>
+    </div>
+    <div class="card cb">
+      <h4>📶 未读跟进</h4>
+      <p class="text-small text-muted">24小时内未读 → 自动重发 + 短信备用</p>
+      <div style="margin-top:8px;background:#EEF2FF;padding:8px;border-radius:6px">
+        <p class="text-small">⏰ 将在 14:35 发送短信备用</p>
+      </div>
+    </div>
+    <div class="card cr">
+      <h4>⚠️ 发送失败告警</h4>
+      <p class="text-small text-muted">推送持续失败 → 告警至校务处</p>
+      <div style="margin-top:8px;background:#FEE2E2;padding:8px;border-radius:6px">
+        <p class="text-small">🔴 通知发送失败 — 王小明家长</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- S8 -->
+<div class="sec2" id="s8">
+  <div class="st2"><span class="sn">8</span> 系统设置与管理界面 (Module 4)</div>
+
+  <h3>8.1 用户管理页面 (F-USER-001)</h3>
+  <div class="mk">
+    <span class="ml">用户管理 UI</span>
+    <div class="ms">
+      <div class="mb"><div class="md mr"></div><div class="md my"></div><div class="md mg"></div></div>
+      <div class="mc">┌──────────────────────────────────────────────────────────────┐
+│  🏫 耀美学校 │ 仪表板 │ 周期性校务 │ 财务资产 │ AI助理 │  🔍  🌐  👋│
+├────────────┬─────────────────────────────────────────────────────┤
+│            │  ┌────────────────────────────────────────────┐  │
+│ ⚙️ 设置    │  │  👥 用户管理                [导出] [筛选▼]│  │
+│   └ 用户 ◀ │  │  用户状态: [全部 ▼] 部门: [全部 ▼] [新建用户]│  │
+│   └ 角色   │  └────────────────────────────────────────────┘  │
+│   └ 权限   │  ┌────────────────────────────────────────────┐  │
+│   └ 审批   │  │◉全选│姓名     │工号    │部门   │角色   │状态 │操作│  │
+│   └ 审计 ◀ │  ├────────────────────────────────────────────┤  │
+│   └ 系统   │  │☐     │张三     │E2024001│校务处 │管理员 │🟢活跃│👁️│  │
+│            │  │☐     │李四     │E2024002│教务处 │教师   │🟢活跃│👁️│  │
+│ 🤖 AI助理   │  │☐     │王五     │E2024003│总务处 │职工   │🟡待激│👁️│  │
+│            │  │...   │...      │...     │...    │...   │... │...│  │
+│            │  └────────────────────────────────────────────┘  │
+│            │  F-USER-001 · F-USER-003 · MOD-USER-001          │
+└──────────────────────────────────────────────────────────────┘
+</div>
+</div>
+
+  <h3>8.2 敏感字段脱敏展示策略 (F-USER-003 增强)</h3>
+  <div class="box r"><strong>合规要求（PDPO）：</strong>即使RBAC授权某用户可访问某字段，界面展示时仍须遵循最小可见原则。</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>字段类别</th><th>默认展示</th><th>查看条件</th><th>审计要求</th></tr></thead>
+      <tbody>
+        <tr><td><strong>香港身份证号</strong></td><td><code>A123456(7)</code> 格式脱敏</td><td>点击「查看」→ 二次确认</td><td>每次查看均记录</td></tr>
+        <tr><td><strong>电话号码</strong></td><td><code>912***567</code> 格式</td><td>点击「查看」→ 二次确认</td><td>每次查看均记录</td></tr>
+        <tr><td><strong>完整地址</strong></td><td>完全隐藏</td><td>仅紧急情况经校务主任授权</td><td>授权理由必填</td></tr>
+        <tr><td><strong>出生日期</strong></td><td>年份+月份：<code>2011-03</code></td><td>默认可见</td><td>无</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>8.3 审计日志页面 (F-USER-005, F-COMP-003)</h3>
+  <div class="box"><strong>新增：</strong>家长通话记录规范（通话时长，下次跟进日期必填）；敏感字段查看记录类型</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>时间</th><th>用户</th><th>事件类型</th><th>操作</th><th>IP</th></tr></thead>
+      <tbody>
+        <tr><td>05-27 14:30</td><td>张三</td><td><span class="bdg bg-g">AUTH.LOGIN_SUCCESS</span></td><td>登录成功</td><td>192.168.1.x</td></tr>
+        <tr><td>05-27 13:45</td><td>王五</td><td><span class="bdg bg-b">DATA.SENSITIVE_VIEW</span></td><td>查看家长身份证</td><td>192.168.1.x</td></tr>
+        <tr><td>05-27 12:00</td><td>李四</td><td><span class="bdg bg-o">PARENT_CALL_LOG</span></td><td>记录通话（3分钟）</td><td>192.168.1.x</td></tr>
+        <tr><td>05-27 11:00</td><td>赵六</td><td><span class="bdg bg-r">AUTH.LOGIN_FAILED</span></td><td>登录失败</td><td>192.168.3.x</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>8.4 权限变更审批 — 证明文件要求 (F-USER-007 增强)</h3>
+  <div class="box o"><strong>新增：</strong>5类敏感权限操作均须上传证明文件（PDF/JPG/PNG，≤10MB），审批人须审查附件后方可批准。</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>操作</th><th>审批人</th><th>必需证明文件</th></tr></thead>
+      <tbody>
+        <tr><td>临时提升为校务主任</td><td>校长</td><td>人事任职通知</td></tr>
+        <tr><td>跨班级数据访问授权</td><td>校务主任</td><td>活动通知/工作安排证明</td></tr>
+        <tr><td>数据导出权限授予</td><td>校务主任</td><td>数据使用说明</td></tr>
+        <tr><td>系统管理员权限变更</td><td>校长 + 校务主任</td><td>权限变更申请单</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr>
+
+<!-- S9 -->
+<div class="sec2" id="s9">
+  <div class="st2"><span class="sn">9</span> 多语言切换界面 (Module 8)</div>
+
+  <h3>9.1 语言切换界面 (F-I18N-002)</h3>
+  <div class="mk">
+    <span class="ml">语言设置 UI</span>
+    <div class="ms">
+      <div class="mb"><div class="md mr"></div><div class="md my"></div><div class="md mg"></div></div>
+      <div class="mc">┌──────────────────────────────────────────────────────┐
+│  🏫 耀美學校  │ 儀表板 │ 周期性校務 │ 財務資產 │ 🌐 [繁中▼] │
+├────────────┬─────────────────────────────────────────────────┤
+│  設定頁面   │  ┌──────────────────────────────────────────┐  │
+│ ⚙️ 設置    │  │  🌐 語言設定 (F-I18N-002)                  │  │
+│   └ 語言 ◀ │  │                                          │  │
+│   └ 通知   │  │  選擇您的偏好語言:                       │  │
+│   └ 安全   │  │                                          │  │
+│            │  │  ┌────────────────────────────────────┐  │  │
+│            │  │  │ 🌏 繁體中文 (香港)                 │  │  │
+│            │  │  │     預設語言                        │  │  │
+│            │  │  └────────────────────────────────────┘  │  │
+│            │  │  ┌────────────────────────────────────┐  │  │
+│            │  │  │ 🇨🇳 簡體中文                    │  │  │
+│            │  │  │     適用於內地用戶                │  │  │
+│            │  │  └────────────────────────────────────┘  │  │
+│            │  │  ┌────────────────────────────────────┐  │  │
+│            │  │  │ 🇬🇧 English                    │  │  │
+│            │  │  │     For international users        │  │  │
+│            │  │  └────────────────────────────────────┘  │  │
+│            │  │  📝 界面將即時更新                      │  │
+│            │  └──────────────────────────────────────────┘  │
+│            │  F-I18N-001 · F-I18N-002 · MOD-I18N-001       │
+└──────────────────────────────────────────────────────┘
+</div>
+</div>
+
+  <h3>9.2 界面多语言效果对比</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>元素</th><th>繁體中文 (zh-HK)</th><th>简体中文 (zh-CN)</th><th>English (en)</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Header</strong></td><td>🏫 耀美學校</td><td>🏫 耀美学校</td><td>🏫 Yaomei School</td></tr>
+        <tr><td><strong>Menu</strong></td><td>儀表板</td><td>仪表板</td><td>Dashboard</td></tr>
+        <tr><td><strong>Button</strong></td><td>確 認</td><td>确认</td><td>Confirm</td></tr>
+        <tr><td><strong>Status</strong></td><td>✅ 已完成</td><td>✅ 已完成</td><td>✅ Completed</td></tr>
+        <tr><td><strong>Date</strong></td><td>2026年5月27日</td><td>2026年5月27日</td><td>May 27, 2026</td></tr>
+        <tr><td><strong>Currency</strong></td><td>HK$ 1,234</td><td>¥1,234</td><td>$1,234 HKD</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr>
+
+<!-- S10 -->
+<div class="sec2" id="s10">
+  <div class="st2"><span class="sn">10</span> 功能编号对照表</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>模块编号</th><th>模块名称</th><th>功能编号</th><th>功能名称</th></tr></thead>
+      <tbody>
+        <tr><td>MOD-DAILY-001</td><td>每日仪表板</td><td>F-DASH-001</td><td>仪表板主视图</td></tr>
+        <tr><td>MOD-DAILY-001</td><td>每日仪表板</td><td>F-ATT-001</td><td>学生出勤概览</td></tr>
+        <tr><td>MOD-DAILY-001</td><td>每日仪表板</td><td>F-ATT-002</td><td>迟到/早退记录</td></tr>
+        <tr><td>MOD-DAILY-001</td><td>每日仪表板</td><td>F-INQ-001</td><td>家长查询队列管理</td></tr>
+        <tr><td>MOD-DAILY-001</td><td>每日仪表板</td><td>F-LUNCH-001</td><td>午膳订单汇总</td></tr>
+        <tr><td>MOD-DAILY-001</td><td>每日仪表板</td><td>F-BUS-001</td><td>校车实时追踪</td></tr>
+        <tr><td>MOD-DAILY-001</td><td>每日仪表板</td><td>F-BUS-002</td><td>校车点大名记录</td></tr>
+        <tr><td>MOD-DAILY-001</td><td>每日仪表板</td><td>F-LEAVE-001</td><td>请假申请处理</td></tr>
+        <tr><td>MOD-DAILY-001</td><td>每日仪表板</td><td>F-FEE-001</td><td>费用收取追踪</td></tr>
+        <tr><td>MOD-CYCL-001</td><td>周期性校务</td><td>F-ENRL-001</td><td>新生注册</td></tr>
+        <tr><td>MOD-CYCL-001</td><td>周期性校务</td><td>F-ENRL-002</td><td>AI辅助编班</td></tr>
+        <tr><td>MOD-CYCL-001</td><td>周期性校务</td><td>F-EXAM-001</td><td>DSE报考管理</td></tr>
+        <tr><td>MOD-CYCL-001</td><td>周期性校务</td><td>F-EXAM-004</td><td>成绩单生成发布</td></tr>
+        <tr><td>MOD-CYCL-001</td><td>周期性校务</td><td>F-ADM-001</td><td>中一自行分配</td></tr>
+        <tr><td>MOD-CYCL-001</td><td>周期性校务</td><td>F-ADM-002</td><td>JUPAS联招管理</td></tr>
+        <tr><td>MOD-CYCL-001</td><td>周期性校务</td><td>F-YREND-001</td><td>档案清理销毁</td></tr>
+        <tr><td>MOD-FIN-001</td><td>财务资产</td><td>F-FIN-001</td><td>学费管理</td></tr>
+        <tr><td>MOD-FIN-001</td><td>财务资产</td><td>F-FIN-002</td><td>零用现金报销</td></tr>
+        <tr><td>MOD-USER-001</td><td>用户管理</td><td>F-USER-001</td><td>用户生命周期管理</td></tr>
+        <tr><td>MOD-USER-001</td><td>用户管理</td><td>F-USER-003</td><td>功能授权 (RBAC+ABAC)</td></tr>
+        <tr><td>MOD-USER-001</td><td>用户管理</td><td>F-USER-005</td><td>审计日志与登录记录</td></tr>
+</tbody>
+    </table>
+  </div>
+</div>
+
+<hr>
+
+<!-- S11 -->
+<div class="sec2" id="s11">
+  <div class="st2"><span class="sn">11</span> 附录：参考文档 & 版本记录</div>
+
+  <h3>11.1 参考文档</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>文档名称</th><th>版本</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SPEC-COMPLETE.md</strong></td><td>v1.5.0</td><td>完整功能规格书，包含 8 大模块、49 个功能函数</td></tr>
+        <tr><td><strong>SPEC-SYSTEM-DESIGN.md</strong></td><td>v0.4</td><td>系统架构设计文档</td></tr>
+        <tr><td><strong>USER-SIMULATION-FEEDBACK.md</strong></td><td>v1.0.0（已审阅）</td><td>用户模拟与反馈报告</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>11.2 SPEC-UI-PROTO 版本变更记录</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>版本</th><th>发布日期</th><th>变更内容</th></tr></thead>
+      <tbody>
+        <tr><td><strong>v1.2.0</strong></td><td>2026-06-05</td><td>对应 SPEC-COMPLETE.md v1.5.0：整合用户模拟反馈，新增敏感字段脱敏界面、双人见证实时推送界面、批量录入确认预览、家长自助变更界面、审批进度条、送达回执等UI规范</td></tr>
+        <tr><td><strong>v1.1.0</strong></td><td>2026-05-27</td><td>对应 SPEC-COMPLETE.md v1.4.0：新增DB-SCHEMA和DATA-DICTIONARY参考，新增界面安全设计原则</td></tr>
+        <tr><td><strong>v1.0.0</strong></td><td>2026-05-27</td><td>初始版本：5大模块界面原型覆盖</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>11.3 功能优先级说明</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>优先级</th><th>说明</th><th>目标用户</th></tr></thead>
+      <tbody>
+        <tr><td><span class="bdg bg-r">P0</span></td><td>核心功能，必须实现</td><td>全体用户</td></tr>
+        <tr><td><span class="bdg bg-o">P1</span></td><td>重要功能，尽快实现</td><td>大多数用户</td></tr>
+        <tr><td><span class="bdg bg-d">P2</span></td><td>一般功能，计划实现</td><td>部分用户</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- end content -->
+</div><!-- end main -->
+</div><!-- end lay -->
+
+<!-- FOOTER -->
+<footer>
+  <span>🏫 智能校务助理系统 — SPEC-UI-PROTO v1.2.0 · 系统架构团队</span>
+  <span><a href="https://github.com/jchu-hk/school-admin-system">GitHub</a> · <a href="docs/school-admin-system/SPEC-UI-PROTO.md">源文件</a></span>
+</footer>
+
 </body>
 </html>
