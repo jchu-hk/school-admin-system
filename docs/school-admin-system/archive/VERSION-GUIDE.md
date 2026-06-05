@@ -10,16 +10,19 @@
 
 ```
 docs/school-admin-system/
-├── SPEC-COMPLETE.md          ← ⚠️ 始终保持为最新版本
-├── SPEC-SYSTEM-DESIGN.md     ← ⚠️ 系统架构设计（独立版本号）
+├── SPEC-COMPLETE.md              ← ⚠️ 始终保持为最新版本 (v1.5.0)
+├── SPEC-SYSTEM-DESIGN.md        ← ⚠️ 系统架构设计（独立版本号）
+├── SPEC-UI-PROTO.md             ← ⚠️ 界面原型设计 (v1.2.0)
 ├── SPEC-README.md
-└── archive/                  ← 历史版本快照（不可编辑）
-    ├── SPEC-SCHOOL-ADMIN-v1.0.0.md
-    ├── SPEC-SCHOOL-ADMIN-v1.1.0.md
-    ├── SPEC-SCHOOL-ADMIN-v1.2.0.md
+└── archive/                     ← 历史版本快照（不可编辑）
+    ├── SPEC-SCHOOL-ADMIN-v1.4.0.md      ← ⚠️ 遗漏归档，已补档 (2026-06-05)
     ├── SPEC-SCHOOL-ADMIN-v1.3.0.md
-    ├── SPEC-SYSTEM-DESIGN-v0.3.md
-    └── VERSION-GUIDE.md       ← 本文件
+    ├── SPEC-SCHOOL-ADMIN-v1.2.0.md
+    ├── SPEC-SCHOOL-ADMIN-v1.1.0.md
+    ├── SPEC-SCHOOL-ADMIN-v1.0.0.md
+    ├── SPEC-UI-PROTO-v1.1.0.md          ← ⚠️ 新增归档 (2026-06-05)
+    ├── SPEC-SYSTEM-DESIGN-v0.4.md
+    └── VERSION-GUIDE.md                  ← 本文件
 ```
 
 > ⚠️ **规则：** `archive/` 内的文件为只读快照，**禁止直接编辑**。
@@ -100,18 +103,27 @@ docs/school-admin-system/
 
 | 版本 | 文件 | 日期 | 状态 | 备注 |
 |------|------|------|------|------|
-| **v1.3.0** | `SPEC-SCHOOL-ADMIN-v1.3.0.md` | 2026-05-25 | ✅ Current | 多语言支持系统添加 (Module 8)，4个新函数，49个功能 |
+| **v1.5.0** | `SPEC-COMPLETE.md` | 2026-06-05 | ✅ Current | 用户模拟反馈整合：48条反馈，17项增强 |
+| **v1.4.0** | `SPEC-SCHOOL-ADMIN-v1.4.0.md` | 2026-06-03 | 📁 Archived | ⚠️ 原遗漏归档，已补档 (2026-06-05)；数据库架构设计 |
+| **v1.3.0** | `SPEC-SCHOOL-ADMIN-v1.3.0.md` | 2026-05-25 | 📁 Archived | 多语言支持系统添加 (Module 8)，4个新函数，49个功能 |
 | **v1.2.0** | `SPEC-SCHOOL-ADMIN-v1.2.0.md` | 2026-05-24 | 📁 Archived | 文档版本管理系统添加 |
 | v1.1.0 | `SPEC-SCHOOL-ADMIN-v1.1.0.md` | 2026-05-24 | 📁 Archived | 用户与权限管理系统添加 |
 | v1.0.0 | `SPEC-SCHOOL-ADMIN-v1.0.0.md` | 2026-05-23 | 📁 Archived | 初始版本，5大模块，38个功能 |
+
+### SPEC-UI-PROTO.md (界面原型)
+
+| 版本 | 文件 | 日期 | 状态 | 备注 |
+|------|------|------|------|------|
+| **v1.2.0** | `SPEC-UI-PROTO.md` | 2026-06-05 | ✅ Current | 对应SPEC-COMPLETE v1.5.0；整合用户模拟反馈UI规范 |
+| **v1.1.0** | `SPEC-UI-PROTO-v1.1.0.md` | 2026-05-27 | 📁 Archived | ⚠️ 原遗漏归档，已补档 (2026-06-05)；新增DB-SCHEMA和界面安全原则 |
+| v1.0.0 | （ overwritten）| 2026-05-27 | 🔄 Superseded | 初始版本，5大模块界面原型 |
 
 ### SPEC-SYSTEM-DESIGN.md (系统架构)
 
 | 版本 | 文件 | 日期 | 状态 | 备注 |
 |------|------|------|------|------|
-| **v0.3** | `SPEC-SYSTEM-DESIGN-v0.3.md` | 2026-05-25 | ✅ Current | 多语言支持架构 (Section 7)，Module 4 详细设计 |
-| v0.2 | (overwritten) | 2026-05-25 | 🔄 Superseded | 章节编号修正 |
-| v0.1 | (overwritten) | 2026-05-25 | 🔄 Superseded | 初始草稿 |
+| **v0.4** | `SPEC-SYSTEM-DESIGN.md` | 2026-05-27 | ✅ Current | — |
+| v0.3 | `SPEC-SYSTEM-DESIGN-v0.3.md` | 2026-05-25 | 📁 Archived | — |
 
 > 📝 **说明：** SPEC-SYSTEM-DESIGN.md 采用独立版本号 (v0.x)，与 SPEC-COMPLETE.md 的语义化版本号不同步。
 
