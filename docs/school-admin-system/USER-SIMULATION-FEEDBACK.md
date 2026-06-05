@@ -7,7 +7,7 @@
 |------|------|
 | 文档编号 | DOC-FEEDBACK-001 |
 | 当前版本 | **v1.0.0** |
-| 文档状态 | 初稿 (Draft) |
+| 文档状态 | ~~初稿 (Draft)~~ **→ 已审阅 (Reviewed)** |
 | 模拟日期 | 2026-06-05 |
 | 存放位置 | `/docs/school-admin-system/USER-SIMULATION-FEEDBACK.md` |
 | 模拟人员 | 系统架构团队 |
