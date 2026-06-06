@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { User, UserStatus } from './user.entity';
+import { User, UserStatus, UserRole } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -16,6 +16,74 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
+  private maskSensitiveFields(user: User, requester: User): User {
+    // 系统管理员和校务主任可以看到完整信息
+    if (
+      requester.role === UserRole.SYSTEM_ADMIN ||
+      requester.role === UserRole.SCHOOL_DIRECTOR ||
+      requester.id === user.id // 用户自己可以看到自己的完整信息
+    ) {
+      return user;
+    }
+
+    // 教师角色：只能看到本班学生的部分信息，敏感字段掩码
+    if (requester.role === UserRole.TEACHER) {
+      if (user.className === requester.className && user.role === UserRole.STUDENT) {
+        // 本班学生，掩码敏感字段
+        return {
+          ...user,
+          hkId: user.hkId ? user.hkId.replace(/(.{2}).*(.{2})/, '$1****$2') : null,
+          phone: user.phone ? user.phone.replace(/(.{3}).*(.{2})/, '$1****$2') : null,
+          whatsapp: user.whatsapp ? user.whatsapp.replace(/(.{3}).*(.{2})/, '$1****$2') : null,
+        };
+      } else {
+        // 非本班学生，所有敏感字段掩码
+        return {
+          ...user,
+          hkId: user.hkId ? '****' : null,
+          phone: user.phone ? '****' : null,
+          whatsapp: user.whatsapp ? '****' : null,
+          email: user.email ? '****' : null,
+        };
+      }
+    }
+
+    // 家长角色：只能看到自己关联学生的信息，其他用户信息掩码
+    if (requester.role === UserRole.PARENT) {
+      if (user.id === requester.relatedStudentId) {
+        // 自己关联的学生，掩码敏感字段
+        return {
+          ...user,
+          hkId: user.hkId ? user.hkId.replace(/(.{2}).*(.{2})/, '$1****$2') : null,
+          phone: user.phone ? user.phone.replace(/(.{3}).*(.{2})/, '$1****$2') : null,
+          whatsapp: user.whatsapp ? user.whatsapp.replace(/(.{3}).*(.{2})/, '$1****$2') : null,
+        };
+      } else {
+        // 其他用户，所有敏感字段掩码
+        return {
+          ...user,
+          hkId: user.hkId ? '****' : null,
+          phone: user.phone ? '****' : null,
+          whatsapp: user.whatsapp ? '****' : null,
+          email: user.email ? '****' : null,
+        };
+      }
+    }
+
+    // 学生角色：只能看到自己的信息，其他用户信息全部掩码
+    if (requester.role === UserRole.STUDENT) {
+      return {
+        ...user,
+        hkId: user.hkId ? '****' : null,
+        phone: user.phone ? '****' : null,
+        whatsapp: user.whatsapp ? '****' : null,
+        email: user.email ? '****' : null,
+      };
+    }
+
+    return user;
+  }
 
   async create(
     createUserDto: CreateUserDto,
@@ -58,6 +126,7 @@ export class UserService {
     limit: number = 10,
     role?: string,
     status?: string,
+    requester?: User,
   ): Promise<{ users: User[]; total: number }> {
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
@@ -76,10 +145,16 @@ export class UserService {
       .take(limit)
       .getManyAndCount();
 
+    // 掩码敏感字段
+    if (requester) {
+      const maskedUsers = users.map(user => this.maskSensitiveFields(user, requester));
+      return { users: maskedUsers, total };
+    }
+
     return { users, total };
   }
 
-  async findOne(id: string): Promise<User> {
+  async findOne(id: string, requester?: User): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['relatedStudent'],
@@ -87,6 +162,11 @@ export class UserService {
 
     if (!user) {
       throw new NotFoundException('用户不存在');
+    }
+
+    // 掩码敏感字段
+    if (requester) {
+      return this.maskSensitiveFields(user, requester);
     }
 
     return user;
@@ -122,9 +202,18 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string, deletedBy?: string): Promise<void> {
     const user = await this.findOne(id);
-    await this.userRepository.remove(user);
+    user.updatedBy = deletedBy;
+    await this.userRepository.save(user);
+    await this.userRepository.softDelete(id);
+  }
+
+  async restore(id: string, updatedBy?: string): Promise<User> {
+    await this.userRepository.restore(id);
+    const user = await this.findOne(id);
+    user.updatedBy = updatedBy;
+    return this.userRepository.save(user);
   }
 
   async toggleStatus(

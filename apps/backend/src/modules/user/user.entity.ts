@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
@@ -40,16 +41,10 @@ export class User {
   name: string;
 
   @ApiProperty({ description: '香港身份证号' })
-  @Transform(({ value }) =>
-    value ? value.replace(/(.{2}).*(.{2})/, '$1****$2') : value,
-  )
   @Column({ length: 20, unique: true, nullable: true })
   hkId: string;
 
   @ApiProperty({ description: '手机号' })
-  @Transform(({ value }) =>
-    value ? value.replace(/(.{3}).*(.{2})/, '$1****$2') : value,
-  )
   @Column({ length: 20, unique: true, nullable: true })
   phone: string;
 
@@ -58,9 +53,6 @@ export class User {
   email: string;
 
   @ApiProperty({ description: 'WhatsApp号' })
-  @Transform(({ value }) =>
-    value ? value.replace(/(.{3}).*(.{2})/, '$1****$2') : value,
-  )
   @Column({ length: 20, nullable: true })
   whatsapp: string;
 
@@ -124,6 +116,10 @@ export class User {
   @ApiProperty({ description: '更新时间' })
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ApiProperty({ description: '删除时间（软删除标记）' })
+  @DeleteDateColumn({ nullable: true })
+  deletedAt: Date;
 
   @ApiProperty({ description: '创建人ID' })
   @Column({ type: 'uuid', nullable: true })
