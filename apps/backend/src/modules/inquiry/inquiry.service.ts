@@ -1,0 +1,375 @@
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import {
+  ParentInquiry,
+  InquiryCategory,
+  InquiryPriority,
+  InquiryStatus,
+} from './inquiry.entity';
+import { InquiryReply, ReplyAuthorType } from './reply.entity';
+import { QuickReplyTemplate } from './template.entity';
+import { CreateInquiryDto, UpdateInquiryDto, CreateReplyDto, SatisfactionDto, CreateTemplateDto, InquiryQueryDto } from './dto/inquiry.dto';
+
+@Injectable()
+export class InquiryService {
+  constructor(
+    @InjectRepository(ParentInquiry)
+    private inquiryRepository: Repository<ParentInquiry>,
+    @InjectRepository(InquiryReply)
+    private replyRepository: Repository<InquiryReply>,
+    @InjectRepository(QuickReplyTemplate)
+    private templateRepository: Repository<QuickReplyTemplate>,
+  ) {}
+
+  /**
+   * 生成查询编号
+   */
+  private generateInquiryNo(): string {
+    const date = new Date();
+    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `INQ-${dateStr}-${random}`;
+  }
+
+  /**
+   * 根据查询类别自动分配处理人
+   */
+  private autoAssignOfficer(category: InquiryCategory): string | null {
+    // 根据类别返回对应的处理队列
+    const categoryMap: Record<InquiryCategory, string | null> = {
+      [InquiryCategory.BUS_SCHEDULE]: 'bus_team',
+      [InquiryCategory.TUITION_FEE]: 'finance_team',
+      [InquiryCategory.ACADEMIC]: 'academic_team',
+      [InquiryCategory.LEAVE]: 'leave_team',
+      [InquiryCategory.LUNCH]: 'lunch_team',
+      [InquiryCategory.GENERAL]: 'general_team',
+      [InquiryCategory.COMPLAINT]: 'director_queue',
+      [InquiryCategory.OTHER]: 'general_team',
+    };
+    // 实际应从用户表查询，这里返回标识符
+    return categoryMap[category] || null;
+  }
+
+  /**
+   * 创建家长查询
+   */
+  async create(dto: CreateInquiryDto, userId: string, schoolId: string): Promise<ParentInquiry> {
+    const inquiry = this.inquiryRepository.create({
+      ...dto,
+      inquiryNo: this.generateInquiryNo(),
+      schoolId,
+      parentSubmittedAt: new Date(),
+      status: InquiryStatus.PENDING,
+      assignedTo: this.autoAssignOfficer(dto.category),
+    });
+
+    const saved = await this.inquiryRepository.save(inquiry);
+
+    // AI分析（模拟，实际应调用AI服务）
+    await this.performAIAnalysis(saved);
+
+    return this.findOne(saved.id);
+  }
+
+  /**
+   * 模拟AI分析（实际应调用Coze/OpenAI）
+   */
+  private async performAIAnalysis(inquiry: ParentInquiry): Promise<void> {
+    // 意图分类映射
+    const intentMap: Record<InquiryCategory, string[]> = {
+      [InquiryCategory.BUS_SCHEDULE]: ['bus_time_inquiry', 'bus_route_inquiry', 'bus_delay'],
+      [InquiryCategory.TUITION_FEE]: ['fee_inquiry', 'payment_method', 'outstanding_fee'],
+      [InquiryCategory.ACADEMIC]: ['grade_inquiry', 'homework', 'exam_schedule'],
+      [InquiryCategory.LEAVE]: ['leave_application', 'leave_status'],
+      [InquiryCategory.LUNCH]: ['lunch_menu', 'lunch_change'],
+      [InquiryCategory.GENERAL]: ['general_info', 'contact_info', 'school_calendar'],
+      [InquiryCategory.COMPLAINT]: ['complaint', 'feedback'],
+      [InquiryCategory.OTHER]: ['other_inquiry'],
+    };
+
+    // 简单的关键词检测
+    const content = inquiry.content.toLowerCase();
+    let sentiment = 'neutral';
+    if (content.includes('緊急') || content.includes('urgent') || content.includes('很急')) {
+      sentiment = 'negative';
+    } else if (content.includes('謝謝') || content.includes('thank')) {
+      sentiment = 'positive';
+    }
+
+    const intents = intentMap[inquiry.category] || ['other_inquiry'];
+    const confidence = 0.7 + Math.random() * 0.25; // 0.70-0.95
+
+    // 检查是否适合自动回复（FAQ匹配）
+    const autoEligible = this.checkAutoResponseEligible(inquiry.content);
+
+    await this.inquiryRepository.update(inquiry.id, {
+      aiIntent: intents[0],
+      aiSentiment: sentiment,
+      aiConfidence: confidence,
+      autoResponseEligible: autoEligible,
+    });
+  }
+
+  /**
+   * 检查是否适合自动回复
+   */
+  private checkAutoResponseEligible(content: string): boolean {
+    const faqPatterns = [
+      '校車時間', '校車路線', '午膳', '餐單', '學費', '繳費',
+      '上課時間', '放學時間', '聯絡電話', '地址',
+    ];
+    return faqPatterns.some((pattern) => content.includes(pattern));
+  }
+
+  /**
+   * 获取查询列表
+   */
+  async findAll(
+    query: InquiryQueryDto,
+    userId: string,
+  ): Promise<{ inquiries: ParentInquiry[]; total: number }> {
+    const page = parseInt(query.page || '1');
+    const limit = parseInt(query.limit || '10');
+
+    const qb = this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .leftJoinAndSelect('inquiry.parent', 'parent')
+      .leftJoinAndSelect('inquiry.student', 'student')
+      .leftJoinAndSelect('inquiry.assignedOfficer', 'assignedOfficer')
+      .orderBy('inquiry.parentSubmittedAt', 'DESC');
+
+    if (query.category) {
+      qb.andWhere('inquiry.category = :category', { category: query.category });
+    }
+    if (query.status) {
+      qb.andWhere('inquiry.status = :status', { status: query.status });
+    }
+    if (query.priority) {
+      qb.andWhere('inquiry.priority = :priority', { priority: query.priority });
+    }
+    if (query.assignedTo) {
+      qb.andWhere('inquiry.assignedTo = :assignedTo', { assignedTo: query.assignedTo });
+    }
+    if (query.startDate) {
+      qb.andWhere('inquiry.parentSubmittedAt >= :startDate', {
+        startDate: new Date(query.startDate),
+      });
+    }
+    if (query.endDate) {
+      qb.andWhere('inquiry.parentSubmittedAt <= :endDate', {
+        endDate: new Date(query.endDate + 'T23:59:59'),
+      });
+    }
+
+    const [inquiries, total] = await qb
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return { inquiries, total };
+  }
+
+  /**
+   * 获取单个查询
+   */
+  async findOne(id: string): Promise<ParentInquiry> {
+    const inquiry = await this.inquiryRepository.findOne({
+      where: { id },
+      relations: ['parent', 'student', 'assignedOfficer'],
+    });
+
+    if (!inquiry) {
+      throw new NotFoundException('查询记录不存在');
+    }
+
+    return inquiry;
+  }
+
+  /**
+   * 更新查询
+   */
+  async update(id: string, dto: UpdateInquiryDto): Promise<ParentInquiry> {
+    const inquiry = await this.findOne(id);
+
+    // 状态变更逻辑
+    if (dto.status === InquiryStatus.PROCESSING && !inquiry.firstResponseAt) {
+      dto = { ...dto, firstResponseAt: new Date() } as any;
+    }
+    if (dto.status === InquiryStatus.REPLIED && !inquiry.firstResponseAt) {
+      dto = { ...dto, firstResponseAt: new Date() } as any;
+    }
+    if (dto.status === InquiryStatus.CLOSED) {
+      dto = { ...dto, resolvedAt: new Date() } as any;
+    }
+
+    await this.inquiryRepository.update(id, dto as any);
+    return this.findOne(id);
+  }
+
+  /**
+   * 添加回复
+   */
+  async addReply(
+    inquiryId: string,
+    dto: CreateReplyDto,
+    authorId: string,
+    authorType: ReplyAuthorType,
+  ): Promise<InquiryReply> {
+    const inquiry = await this.findOne(inquiryId);
+
+    const reply = this.replyRepository.create({
+      ...dto,
+      inquiryId,
+      authorId,
+      authorType,
+    });
+
+    const saved = await this.replyRepository.save(reply);
+
+    // 更新查询状态为已回复（如果是第一次回复）
+    if (!inquiry.firstResponseAt) {
+      await this.inquiryRepository.update(inquiryId, {
+        status: InquiryStatus.REPLIED,
+        firstResponseAt: new Date(),
+      });
+    } else {
+      await this.inquiryRepository.update(inquiryId, {
+        status: InquiryStatus.PROCESSING,
+      });
+    }
+
+    return saved;
+  }
+
+  /**
+   * 获取查询的回复列表
+   */
+  async getReplies(inquiryId: string): Promise<InquiryReply[]> {
+    return this.replyRepository.find({
+      where: { inquiryId },
+      order: { createdAt: 'ASC' },
+    });
+  }
+
+  /**
+   * 标记家长已查看回复
+   */
+  async markReplyViewed(replyId: string): Promise<void> {
+    await this.replyRepository.update(replyId, {
+      parentViewed: true,
+      parentViewedAt: new Date(),
+    });
+  }
+
+  /**
+   * 提交满意度评价
+   */
+  async submitSatisfaction(
+    id: string,
+    dto: SatisfactionDto,
+  ): Promise<ParentInquiry> {
+    const inquiry = await this.findOne(id);
+
+    await this.inquiryRepository.update(id, {
+      satisfactionRating: dto.rating,
+      satisfactionComment: dto.comment,
+    });
+
+    return this.findOne(id);
+  }
+
+  /**
+   * 分配查询
+   */
+  async assign(id: string, assignedTo: string): Promise<ParentInquiry> {
+    await this.inquiryRepository.update(id, {
+      assignedTo,
+      status: InquiryStatus.PROCESSING,
+    });
+    return this.findOne(id);
+  }
+
+  /**
+   * 获取快速回复模板列表
+   */
+  async getTemplates(
+    schoolId: string,
+    category?: string,
+  ): Promise<QuickReplyTemplate[]> {
+    const qb = this.templateRepository
+      .createQueryBuilder('template')
+      .where('template.schoolId = :schoolId', { schoolId })
+      .andWhere('template.isActive = :isActive', { isActive: true });
+
+    if (category) {
+      qb.andWhere('template.category = :category', { category });
+    }
+
+    return qb.orderBy('template.usageCount', 'DESC').getMany();
+  }
+
+  /**
+   * 创建快速回复模板
+   */
+  async createTemplate(
+    dto: CreateTemplateDto,
+    schoolId: string,
+    userId: string,
+  ): Promise<QuickReplyTemplate> {
+    const template = this.templateRepository.create({
+      ...dto,
+      schoolId,
+      createdBy: userId,
+      category: (dto.category || 'general') as any,
+    });
+    return this.templateRepository.save(template);
+  }
+
+  /**
+   * 获取待处理查询统计
+   */
+  async getStatistics(schoolId: string): Promise<any> {
+    const stats = await this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .select('inquiry.status', 'status')
+      .addSelect('inquiry.category', 'category')
+      .addSelect('inquiry.priority', 'priority')
+      .addSelect('COUNT(*)', 'count')
+      .where('inquiry.schoolId = :schoolId', { schoolId })
+      .groupBy('inquiry.status')
+      .addGroupBy('inquiry.category')
+      .addGroupBy('inquiry.priority')
+      .getRawMany();
+
+    const total = stats.reduce((sum, s) => sum + parseInt(s.count), 0);
+    const pending = stats
+      .filter((s) => s.status === InquiryStatus.PENDING)
+      .reduce((sum, s) => sum + parseInt(s.count), 0);
+
+    return { total, pending, stats };
+  }
+
+  /**
+   * SLA检查：超时未回复的查询
+   */
+  async checkSLAViolations(schoolId: string): Promise<ParentInquiry[]> {
+    const now = new Date();
+    const slaHours = { normal: 24, urgent: 2 };
+    const threshold = new Date(now.getTime() - slaHours.normal * 60 * 60 * 1000);
+
+    return this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .where('inquiry.schoolId = :schoolId', { schoolId })
+      .andWhere('inquiry.status IN (:...statuses)', {
+        statuses: [InquiryStatus.PENDING, InquiryStatus.PROCESSING],
+      })
+      .andWhere('inquiry.firstResponseAt IS NULL')
+      .andWhere('inquiry.parentSubmittedAt < :threshold', { threshold })
+      .getMany();
+  }
+}

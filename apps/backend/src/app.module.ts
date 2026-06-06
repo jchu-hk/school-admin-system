@@ -4,6 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthModule } from './modules/health/health.module';
 import { UserModule } from './modules/user/user.module';
 import { User } from './modules/user/user.entity';
+import { AuditModule } from './modules/audit/audit.module';
+import { InquiryModule } from './modules/inquiry/inquiry.module';
+import { LeaveModule } from './modules/leave/leave.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -27,6 +31,10 @@ import { User } from './modules/user/user.entity';
     }),
     HealthModule,
     UserModule,
+    AuditModule,
+    InquiryModule,
+    LeaveModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [],

@@ -14,6 +14,25 @@ export enum AuditAction {
   USER_STATUS_CHANGE = 'user_status_change',
   USER_PASSWORD_RESET = 'user_password_reset',
   PERMISSION_CHANGE = 'permission_change',
+  // 家长查询模块
+  INQUIRY_CREATE = 'inquiry_create',
+  INQUIRY_UPDATE = 'inquiry_update',
+  INQUIRY_REPLY = 'inquiry_reply',
+  INQUIRY_ASSIGN = 'inquiry_assign',
+  INQUIRY_CLOSE = 'inquiry_close',
+  INQUIRY_SATISFACTION = 'inquiry_satisfaction',
+  INQUIRY_TEMPLATE_CREATE = 'inquiry_template_create',
+  // 请假申请模块
+  LEAVE_CREATE = 'leave_create',
+  LEAVE_UPDATE = 'leave_update',
+  LEAVE_APPROVE = 'leave_approve',
+  LEAVE_REJECT = 'leave_reject',
+  LEAVE_CANCEL = 'leave_cancel',
+  LEAVE_CHECKIN = 'leave_checkin',
+  // 多渠道通知模块
+  NOTIFICATION_SEND = 'notification_send',
+  NOTIFICATION_TEMPLATE_CREATE = 'notification_template_create',
+  NOTIFICATION_TEMPLATE_UPDATE = 'notification_template_update',
 }
 
 @Entity('audit_logs')
@@ -26,12 +45,9 @@ export class AuditLog {
   @Column({ type: 'uuid', nullable: true })
   operatorId: string;
 
-  @ApiProperty({ description: '操作类型', enum: AuditAction })
-  @Column({
-    type: 'enum',
-    enum: AuditAction,
-  })
-  action: AuditAction;
+  @ApiProperty({ description: '操作类型' })
+  @Column({ type: 'varchar', length: 50 })
+  action: string;
 
   @ApiProperty({ description: '操作内容描述' })
   @Column({ type: 'text', nullable: true })
