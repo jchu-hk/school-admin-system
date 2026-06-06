@@ -76,7 +76,13 @@ export class UserController {
   @ApiQuery({ name: 'role', required: false, description: '用户角色筛选' })
   @ApiQuery({ name: 'status', required: false, description: '用户状态筛选' })
   @ApiResponse({ status: 200, description: '获取用户列表成功' })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF, UserRole.TEACHER, UserRole.PARENT)
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+    UserRole.PARENT,
+  )
   findAll(
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
@@ -118,7 +124,11 @@ export class UserController {
     @Request() req,
   ) {
     try {
-      const user = await this.userService.update(id, updateUserDto, req.user.id);
+      const user = await this.userService.update(
+        id,
+        updateUserDto,
+        req.user.id,
+      );
       await this.auditService.log(
         AuditAction.USER_UPDATE,
         req.user.id,
@@ -242,7 +252,11 @@ export class UserController {
     @Request() req,
   ) {
     try {
-      const user = await this.userService.resetPassword(id, password, req.user.id);
+      const user = await this.userService.resetPassword(
+        id,
+        password,
+        req.user.id,
+      );
       await this.auditService.log(
         AuditAction.USER_PASSWORD_RESET,
         req.user.id,

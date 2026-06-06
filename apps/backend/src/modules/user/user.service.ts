@@ -29,13 +29,22 @@ export class UserService {
 
     // 教师角色：只能看到本班学生的部分信息，敏感字段掩码
     if (requester.role === UserRole.TEACHER) {
-      if (user.className === requester.className && user.role === UserRole.STUDENT) {
+      if (
+        user.className === requester.className &&
+        user.role === UserRole.STUDENT
+      ) {
         // 本班学生，掩码敏感字段
         return {
           ...user,
-          hkId: user.hkId ? user.hkId.replace(/(.{2}).*(.{2})/, '$1****$2') : null,
-          phone: user.phone ? user.phone.replace(/(.{3}).*(.{2})/, '$1****$2') : null,
-          whatsapp: user.whatsapp ? user.whatsapp.replace(/(.{3}).*(.{2})/, '$1****$2') : null,
+          hkId: user.hkId
+            ? user.hkId.replace(/(.{2}).*(.{2})/, '$1****$2')
+            : null,
+          phone: user.phone
+            ? user.phone.replace(/(.{3}).*(.{2})/, '$1****$2')
+            : null,
+          whatsapp: user.whatsapp
+            ? user.whatsapp.replace(/(.{3}).*(.{2})/, '$1****$2')
+            : null,
         };
       } else {
         // 非本班学生，所有敏感字段掩码
@@ -55,9 +64,15 @@ export class UserService {
         // 自己关联的学生，掩码敏感字段
         return {
           ...user,
-          hkId: user.hkId ? user.hkId.replace(/(.{2}).*(.{2})/, '$1****$2') : null,
-          phone: user.phone ? user.phone.replace(/(.{3}).*(.{2})/, '$1****$2') : null,
-          whatsapp: user.whatsapp ? user.whatsapp.replace(/(.{3}).*(.{2})/, '$1****$2') : null,
+          hkId: user.hkId
+            ? user.hkId.replace(/(.{2}).*(.{2})/, '$1****$2')
+            : null,
+          phone: user.phone
+            ? user.phone.replace(/(.{3}).*(.{2})/, '$1****$2')
+            : null,
+          whatsapp: user.whatsapp
+            ? user.whatsapp.replace(/(.{3}).*(.{2})/, '$1****$2')
+            : null,
         };
       } else {
         // 其他用户，所有敏感字段掩码
@@ -147,7 +162,9 @@ export class UserService {
 
     // 掩码敏感字段
     if (requester) {
-      const maskedUsers = users.map(user => this.maskSensitiveFields(user, requester));
+      const maskedUsers = users.map((user) =>
+        this.maskSensitiveFields(user, requester),
+      );
       return { users: maskedUsers, total };
     }
 

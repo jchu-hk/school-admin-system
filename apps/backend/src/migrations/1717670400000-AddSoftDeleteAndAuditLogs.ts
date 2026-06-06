@@ -52,6 +52,8 @@ export class AddSoftDeleteAndAuditLogs1717670400000 implements MigrationInterfac
     await queryRunner.query(`DROP TYPE IF EXISTS audit_action`);
 
     // 删除 users 表的 deletedAt 字段
-    await queryRunner.query(`ALTER TABLE users DROP COLUMN IF EXISTS deletedAt`);
+    await queryRunner.query(
+      `ALTER TABLE users DROP COLUMN IF EXISTS deletedAt`,
+    );
   }
 }
