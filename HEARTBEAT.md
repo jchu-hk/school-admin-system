@@ -1,5 +1,40 @@
-# HEARTBEAT.md
+# HEARTBEAT.md — 进度跟踪
 
-# Keep this file empty (or with only comments) to skip heartbeat API calls.
+## 每2小时自动进度报告任务
 
-# Add tasks below when you want the agent to check something periodically.
+### 触发条件
+每2小时自动检查团队各角色完成状态，汇总后发送给PM。
+
+### 检查范围
+1. DEV1 开发进度（权限审批模块、ABAC）
+2. DEV2 开发进度（家长查询队列、请假模块、通知服务）
+3. QA1 测试进度（API功能测试）
+4. QA2 测试进度（E2E自动化测试）
+
+### 报告格式
+```
+## 📊 进度报告 [时间]
+
+### 🚧 开发进度
+| 模块 | 负责人 | 完成度 | 状态 |
+|------|--------|--------|------|
+
+### 🧪 测试进度
+| 测试项 | 负责人 | 结果 | 遗留问题 |
+|--------|--------|--------|--------|
+
+### ✅ CHECKER审查
+| 审查项 | 结果 | 问题 |
+|--------|------|------|
+
+### ⏭️ 下一步
+待办事项清单
+```
+
+### CHECKER审查触发条件
+每当DEV完成一个模块，立即触发CHECKER审查该模块质量，审查通过后才能进入下一模块。
+
+### 执行策略
+- 使用session_status获取当前时间
+- 检查各feature分支的git log获取最新提交
+- 汇总后通过message工具发送到WeChat
