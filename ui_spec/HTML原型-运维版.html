@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>学校运维管理平台 - 界面原型 v1.0.0</title>
+<title>学校运维管理平台 - 界面原型 v1.1.0</title>
 <style>
 :root {
     --bg-primary: #0f172a;
@@ -1153,6 +1153,9 @@ function syncScreenTabs() {
 </script>
 </head>
 <body>
+<div style="background:linear-gradient(90deg,#0f172a,#1e3a8a);color:#f1f5f9;text-align:center;padding:8px 16px;font-size:12px;font-weight:600">
+📋 界面原型 v1.1.0 — P0整改：运维告警操作入口 + 告警详情弹窗 | UI规范 v1.3.0 | 告警闭环状态：OPEN → ACKNOWLEDGED → RESOLVED / DISMISSED
+</div>
 <div id="toast-container"></div>
 
 <div class="app-shell">
@@ -1849,10 +1852,12 @@ function syncScreenTabs() {
                                     <td><span class="badge badge-danger">未处理</span></td>
                                     <td>-</td>
                                     <td>
-                                        <div style="display:flex; gap:4px;">
-                                            <button class="btn btn-sm btn-danger" onclick="showToast('告警已确认', 'success')">确认</button>
-                                            <button class="btn btn-sm btn-warning" onclick="showToast('正在处理中', 'warning')">处理</button>
-                                            <button class="btn btn-sm btn-secondary">详情</button>
+                                        <div style="display:flex;gap:4px;flex-wrap:wrap">
+                                            <button class="btn btn-sm btn-success" onclick="showToast('告警已确认','success')">确认</button>
+                                            <button class="btn btn-sm btn-warning" onclick="showToast('已转入工单','success')">转工单</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showAlertDetail('ALERT-2026-0615-001','磁盘使用率超限','CRITICAL')">详情</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showToast('告警已忽略','warning')">忽略</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showToast('已添加备注','success')">备注</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -1866,10 +1871,12 @@ function syncScreenTabs() {
                                     <td><span class="badge badge-danger">未处理</span></td>
                                     <td>-</td>
                                     <td>
-                                        <div style="display:flex; gap:4px;">
-                                            <button class="btn btn-sm btn-danger" onclick="showToast('告警已确认', 'success')">确认</button>
-                                            <button class="btn btn-sm btn-warning" onclick="showToast('正在处理中', 'warning')">处理</button>
-                                            <button class="btn btn-sm btn-secondary">详情</button>
+                                        <div style="display:flex;gap:4px;flex-wrap:wrap">
+                                            <button class="btn btn-sm btn-success" onclick="showToast('告警已确认','success')">确认</button>
+                                            <button class="btn btn-sm btn-warning" onclick="showToast('已转入工单','success')">转工单</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showAlertDetail('ALERT-2026-0615-002','数据库连接超限','CRITICAL')">详情</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showToast('告警已忽略','warning')">忽略</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showToast('已添加备注','success')">备注</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -1883,9 +1890,11 @@ function syncScreenTabs() {
                                     <td><span class="badge badge-warning">已确认</span></td>
                                     <td>运维管理员</td>
                                     <td>
-                                        <div style="display:flex; gap:4px;">
-                                            <button class="btn btn-sm btn-success" onclick="showToast('已解决', 'success')">解决</button>
-                                            <button class="btn btn-sm btn-secondary">详情</button>
+                                        <div style="display:flex;gap:4px;flex-wrap:wrap">
+                                            <button class="btn btn-sm btn-success" onclick="showToast('告警已解决','success')">解决</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showAlertDetail('ALERT-2026-0612-003','Coze API配额告急','CRITICAL')">详情</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showToast('告警已忽略','warning')">忽略</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showToast('已添加备注','success')">备注</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -1927,10 +1936,12 @@ function syncScreenTabs() {
                                     <td><span class="badge badge-danger">未处理</span></td>
                                     <td>-</td>
                                     <td>
-                                        <div style="display:flex; gap:4px;">
-                                            <button class="btn btn-sm btn-success" onclick="showToast('告警已确认', 'success')">确认</button>
-                                            <button class="btn btn-sm btn-danger" onclick="showToast('续期任务已启动', 'success')">续期</button>
-                                            <button class="btn btn-sm btn-secondary">详情</button>
+                                        <div style="display:flex;gap:4px;flex-wrap:wrap">
+                                            <button class="btn btn-sm btn-success" onclick="showToast('告警已确认','success')">确认</button>
+                                            <button class="btn btn-sm btn-warning" onclick="showToast('已转入工单','success')">转工单</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showAlertDetail('ALERT-2026-0614-004','SSL证书即将过期','HIGH')">详情</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showToast('告警已忽略','warning')">忽略</button>
+                                            <button class="btn btn-sm btn-secondary" onclick="showToast('已添加备注','success')">备注</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -2766,5 +2777,144 @@ function syncScreenTabs() {
         </div>
     </div>
 </div>
+
+<!-- ======= 告警详情弹窗 ======= -->
+<div class="modal-overlay" id="modal-alert-detail" style="display:none;z-index:1100" onclick="if(event.target===this)document.getElementById('modal-alert-detail').style.display='none'">
+<div class="modal" style="max-width:720px;background:var(--bg-secondary);border:1px solid var(--border-color)">
+<div class="modal-header" style="border-bottom-color:var(--border-color)">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="font-size:20px" id="detail-alert-icon">🔴</span>
+<div>
+<div style="font-size:16px;font-weight:700" id="detail-alert-name">磁盘使用率超限</div>
+<div style="font-size:12px;color:var(--text-muted);margin-top:2px" id="detail-alert-id">告警ID: ALERT-2026-0615-001</div>
+</div>
+</div>
+<button class="modal-close" onclick="document.getElementById('modal-alert-detail').style.display='none'">✕</button>
+</div>
+<div style="padding:20px 24px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+<div>
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">级别</div>
+<div id="detail-alert-level"><span class="badge badge-danger">🔴 CRITICAL</span></div>
+</div>
+<div>
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">状态</div>
+<div id="detail-alert-status"><span class="badge badge-danger">未处理</span></div>
+</div>
+<div>
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">触发时间</div>
+<div style="font-size:13px;font-weight:600">2026-06-06 15:15:00</div>
+</div>
+<div>
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">持续时间</div>
+<div style="font-size:13px;font-weight:600;color:var(--danger)">45 分钟</div>
+</div>
+<div>
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">来源</div>
+<div style="font-size:13px">系统监控 · 磁盘健康检查</div>
+</div>
+<div>
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">主机 / IP</div>
+<div style="font-size:13px;font-family:monospace">192.168.1.10</div>
+</div>
+</div>
+
+<div style="margin-bottom:20px">
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">告警描述</div>
+<div style="background:var(--bg-primary);border:1px solid var(--border-color);border-radius:8px;padding:14px;font-size:13px;line-height:1.6">
+/data 分区使用率达到 85%，超过告警阈值 80%。磁盘空间剩余约 14.2GB，建议及时清理或扩展磁盘容量。
+</div>
+</div>
+
+<div style="margin-bottom:20px">
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">影响范围</div>
+<div style="background:var(--warning-bg);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:14px;font-size:13px">
+<span style="color:var(--warning);font-weight:600">⚠️ 中等影响</span> — 系统正常运行但磁盘空间不足，可能导致日志写入失败、数据写入阻塞，建议尽快处理
+</div>
+</div>
+
+<div style="margin-bottom:20px">
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">当前处理人</div>
+<div style="font-size:13px;color:var(--text-muted)">-（未分配）</div>
+</div>
+
+<div style="margin-bottom:20px">
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">添加备注</div>
+<div style="display:flex;gap:8px">
+<input class="form-input" style="flex:1;background:var(--bg-primary);border-color:var(--border-color);color:var(--text-primary)" placeholder="输入备注信息...">
+<button class="btn btn-secondary btn-sm" onclick="showToast('备注已添加','success')">添加</button>
+</div>
+</div>
+
+<div style="margin-bottom:20px">
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">操作历史</div>
+<div style="background:var(--bg-primary);border:1px solid var(--border-color);border-radius:8px;padding:12px">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border-color)">
+<div style="width:8px;height:8px;border-radius:50%;background:var(--info);flex-shrink:0"></div>
+<div style="flex:1">
+<div style="font-size:12px">告警已确认 — <strong>运维管理员</strong></div>
+<div style="font-size:11px;color:var(--text-muted)">2026-06-06 15:30:00</div>
+</div>
+<span class="badge badge-info">确认</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border-color)">
+<div style="width:8px;height:8px;border-radius:50%;background:var(--danger);flex-shrink:0"></div>
+<div style="flex:1">
+<div style="font-size:12px">告警首次触发</div>
+<div style="font-size:11px;color:var(--text-muted)">2026-06-06 15:15:00</div>
+</div>
+<span class="badge badge-gray">触发</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;padding:8px 0">
+<div style="width:8px;height:8px;border-radius:50%;background:var(--success);flex-shrink:0"></div>
+<div style="flex:1">
+<div style="font-size:12px">备注：已联系IDC机房，预计18:00扩容</div>
+<div style="font-size:11px;color:var(--text-muted)">2026-06-06 16:00:00 · 运维管理员</div>
+</div>
+<span class="badge badge-gray">备注</span>
+</div>
+</div>
+</div>
+
+<div style="margin-bottom:16px">
+<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">告警闭环状态流</div>
+<div style="display:flex;align-items:center;gap:0">
+<div style="flex:1;padding:10px 16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px 0 0 8px;text-align:center">
+<div style="font-size:12px;font-weight:700;color:var(--danger)">OPEN</div>
+<div style="font-size:11px;color:var(--text-muted)">未处理</div>
+</div>
+<div style="width:24px;height:2px;background:var(--text-muted)"></div>
+<div style="flex:1;padding:10px 16px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:0;text-align:center">
+<div style="font-size:12px;font-weight:700;color:var(--info)">ACKNOWLEDGED</div>
+<div style="font-size:11px;color:var(--text-muted)">已确认</div>
+</div>
+<div style="width:24px;height:2px;background:var(--text-muted)"></div>
+<div style="flex:1;padding:10px 16px;border-radius:0 8px 8px 0;border:1px solid var(--border-color)">
+<div style="font-size:12px;font-weight:700;color:var(--text-muted)">RESOLVED / DISMISSED</div>
+<div style="font-size:11px;color:var(--text-muted)">已解决 / 已忽略</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn btn-success" onclick="showToast('告警已确认！','success');document.getElementById('modal-alert-detail').style.display='none'">✅ 确认告警</button>
+<button class="btn btn-secondary" onclick="showToast('告警已忽略','warning');document.getElementById('modal-alert-detail').style.display='none'">🚫 忽略</button>
+<button class="btn btn-warning" onclick="showToast('已转入工单系统','success')">📝 转工单</button>
+<button class="btn btn-secondary" onclick="showToast('备注已添加','success')">💬 添加备注</button>
+<button class="btn btn-success" onclick="showToast('告警已解决！','success');document.getElementById('modal-alert-detail').style.display='none'">✅ 解决</button>
+</div>
+</div>
+</div>
+
+<script>
+function showAlertDetail(alertId, alertName, severity) {
+var iconMap={'CRITICAL':'🔴','HIGH':'🟠','MEDIUM':'🟡','LOW':'🔵'};
+document.getElementById('detail-alert-icon').textContent=iconMap[severity]||'🔴';
+document.getElementById('detail-alert-name').textContent=alertName;
+document.getElementById('detail-alert-id').textContent='告警ID: '+alertId;
+document.getElementById('modal-alert-detail').style.display='flex';
+}
+</script>
+
 </body>
 </html>
