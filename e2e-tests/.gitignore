@@ -1,0 +1,11 @@
+node_modules/
+dist/
+playwright/.auth/
+reports/html/
+reports/junit/
+reports/allure/
+reports/screenshots/
+test-results/
+*.log
+.env
+coverage/

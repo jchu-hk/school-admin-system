@@ -1,0 +1,42 @@
+{
+  "name": "@school-admin/e2e-tests",
+  "version": "1.0.0",
+  "description": "智能校务助理系统 E2E 自动化测试",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:regression": "playwright test --grep @regression",
+    "test:auth": "playwright test tests/auth/",
+    "test:user-mgmt": "playwright test tests/user-management/",
+    "test:leave": "playwright test tests/leave/",
+    "test:notification": "playwright test tests/notification/",
+    "test:permission": "playwright test tests/permission/",
+    "report": "playwright show-report",
+    "report:allure": "allure serve reports/allure",
+    "codegen": "playwright codegen",
+    "lint": "eslint tests/ --ext .ts",
+    "format": "prettier --write 'tests/**/*.ts' 'pages/**/*.ts' 'fixtures/**/*.ts' 'utils/**/*.ts'",
+    "typecheck": "tsc --noEmit",
+    "test:api": "playwright test tests/api/",
+    "playwright:install": "playwright install --with-deps",
+    "pretest": "playwright test --project=setup"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.0",
+    "@types/node": "^20.17.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "allure-playwright": "^3.2.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-playwright": "^1.0.0",
+    "prettier": "^3.3.0",
+    "typescript": "^5.6.0"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^9.0.0",
+    "dotenv": "^16.4.0"
+  }
+}
