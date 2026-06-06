@@ -3,8 +3,23 @@ import { LoginPage } from '../pages/LoginPage';
 import { DashboardPage } from '../pages/DashboardPage';
 
 /**
- * 测试辅助工具函数
+ * Test helper utility functions
  */
+
+/**
+ * Get current date in Asia/Hong_Kong timezone, formatted as YYYY-MM-DD
+ */
+function hkDate(daysOffset: number = 0): string {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Hong_Kong',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  const d = new Date();
+  d.setDate(d.getDate() + daysOffset);
+  return formatter.format(d);
+}
 
 /**
  * 登录辅助函数
@@ -54,35 +69,41 @@ export async function waitForStable(
 }
 
 /**
- * 生成随机日期 (未来 N 天内)
+ * Generate random date in the future (within N days)
+ * Uses Asia/Hong_Kong timezone
  */
 export function getRandomFutureDate(daysAhead: number = 7): string {
-  const d = new Date();
-  d.setDate(d.getDate() + Math.floor(Math.random() * daysAhead) + 1);
-  return d.toISOString().split('T')[0];
+  const offset = Math.floor(Math.random() * daysAhead) + 1;
+  return hkDate(offset);
 }
 
 /**
- * 生成随机日期 (过去 N 天内)
+ * Generate random date in the past (within N days)
+ * Uses Asia/Hong_Kong timezone
  */
 export function getRandomPastDate(daysBack: number = 30): string {
-  const d = new Date();
-  d.setDate(d.getDate() - Math.floor(Math.random() * daysBack) - 1);
-  return d.toISOString().split('T')[0];
+  const offset = -(Math.floor(Math.random() * daysBack) + 1);
+  return hkDate(offset);
 }
 
 /**
- * 格式化日期为 YYYY-MM-DD
+ * Format date as YYYY-MM-DD (in Asia/Hong_Kong timezone)
  */
 export function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Hong_Kong',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  return formatter.format(date);
 }
 
 /**
- * 获取今天日期
+ * Get today's date (in Asia/Hong_Kong timezone)
  */
 export function getToday(): string {
-  return formatDate(new Date());
+  return hkDate(0);
 }
 
 /**

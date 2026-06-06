@@ -1,5 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { getMockOTP } from '../fixtures/users';
 
 /**
  * 请假申请页面 Page Object
@@ -132,12 +133,12 @@ export class LeavePage extends BasePage {
   /**
    * 批准请假 (带二次认证)
    */
-  async approveLeave(leaveId: string, otp: string = '123456'): Promise<void> {
+  async approveLeave(leaveId: string, otp?: string): Promise<void> {
     const row = this.leaveRows.filter({ has: this.page.locator(`[data-testid="leave-id-${leaveId}"]`) });
     await row.getByTestId('approve-leave-button').click();
     // 等待 MFA 弹窗
     await expect(this.mfaModal).toBeVisible({ timeout: 5000 });
-    await this.otpInput.fill(otp);
+    await this.otpInput.fill(otp || getMockOTP());
     await this.safeClick(this.verifyOtpButton);
   }
 

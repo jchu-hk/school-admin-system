@@ -2,183 +2,116 @@ import { defineConfig, devices } from '@playwright/test';
 import * as path from 'path';
 
 /**
- * Playwright E2E 测试配置
- * 智能校务助理系统 - 自动化测试框架
+ * Playwright E2E Test Configuration
+ * Smart School Admin System - Automation Test Framework
  * 
- * 支持环境:
- * - dev: 开发环境 (http://localhost:3000)
- * - staging: 预发布环境
- * - ci: CI 环境 (CI=true)
+ * Supported environments:
+ * - dev: Development (http://localhost:3000)
+ * - staging: Staging
+ * - ci: CI (CI=true)
  */
 export default defineConfig({
-  // 测试目录
   testDir: './tests',
-
-  // 完全并行执行测试文件
   fullyParallel: true,
-
-  // CI: 并行3个 workers，本地: 使用所有可用 CPU
   workers: process.env.CI ? 3 : undefined,
-
-  // 重试策略: CI 失败重试2次，本地不重试
   retries: process.env.CI ? 2 : 0,
-
-  // 每个测试的全局超时
   timeout: 60 * 1000,
-
-  // expect 断言超时
-  expect: {
-    timeout: 10 * 1000,
-  },
-
-  // 全局 setup / teardown
+  expect: { timeout: 10 * 1000 },
   globalSetup: path.resolve(__dirname, './utils/global-setup.ts'),
   globalTeardown: path.resolve(__dirname, './utils/global-teardown.ts'),
 
-  // 测试报告配置
   reporter: [
-    // 终端列表报告
     ['list'],
-    // HTML 可交互报告
-    [
-      'html',
-      {
-        outputFolder: 'reports/html',
-        open: process.env.CI ? 'never' : 'on-failure',
-      },
-    ],
-    // JUnit XML (CI 集成)
+    ['html', { outputFolder: 'reports/html', open: process.env.CI ? 'never' : 'on-failure' }],
     ['junit', { outputFile: 'reports/junit/results.xml' }],
-    // Allure 报告
-    [
-      'allure-playwright',
-      {
-        detail: true,
-        outputFolder: 'reports/allure',
-        suiteTitle: false,
-      },
-    ],
+    ['allure-playwright', { detail: true, outputFolder: 'reports/allure', suiteTitle: false }],
   ],
 
-  // 共享配置
   use: {
-    // 基础 URL
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
-
-    // 浏览器上下文
     headless: process.env.CI ? true : false,
-
-    // Playwright tracing (调试)
     trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
-
-    // 失败截图
     screenshot: 'only-on-failure',
-
-    // 失败视频
     video: 'on-first-retry',
-
-    // 默认视口
     viewport: { width: 1440, height: 900 },
-
-    // 动作超时 (点击、填写等)
     actionTimeout: 15 * 1000,
-
-    // 导航超时 (页面跳转)
     navigationTimeout: 30 * 1000,
-
-    // 测试 ID 属性
     testIdAttribute: 'data-testid',
-
-    // 忽略 HTTPS 错误 (测试环境)
     ignoreHTTPSErrors: true,
-
-    // 权限 (地理位置、通知等)
     permissions: ['geolocation', 'notifications'],
-
-    // 额外 HTTP 头
-    extraHTTPHeaders: {
-      'X-Test-Environment': process.env.TEST_ENV || 'dev',
-    },
+    extraHTTPHeaders: { 'X-Test-Environment': process.env.TEST_ENV || 'dev' },
   },
 
-  // 项目配置
   projects: [
-    // ── Setup 项目: 认证状态预填充 ──────────────────────────────────
-    {
-      name: 'setup',
-      testMatch: '**/*.setup.ts',
-    },
+    // Setup: Multi-role auth state pre-population
+    { name: 'setup', testMatch: '**/*.setup.ts' },
 
-    // ── Chromium (主浏览器) ──────────────────────────────────────────
+    // Chromium (main browser) - admin role (default)
     {
       name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        // 复用 setup 阶段的认证状态
-        storageState: 'playwright/.auth/user.json',
-      },
+      use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/admin.json' },
       dependencies: ['setup'],
     },
 
-    // ── Firefox ─────────────────────────────────────────────────────
+    // Role-specific projects
+    {
+      name: 'chromium-officer',
+      use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/officer.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'chromium-teacher',
+      use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/teacher.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'chromium-parent',
+      use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/parent.json' },
+      dependencies: ['setup'],
+    },
+
+    // Firefox
     {
       name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        storageState: 'playwright/.auth/user.json',
-      },
+      use: { ...devices['Desktop Firefox'], storageState: 'playwright/.auth/admin.json' },
       dependencies: ['setup'],
     },
 
-    // ── WebKit / Safari ─────────────────────────────────────────────
+    // WebKit/Safari
     {
       name: 'webkit',
-      use: {
-        ...devices['Desktop Safari'],
-        storageState: 'playwright/.auth/user.json',
-      },
+      use: { ...devices['Desktop Safari'], storageState: 'playwright/.auth/admin.json' },
       dependencies: ['setup'],
     },
 
-    // ── 移动端 Chrome ───────────────────────────────────────────────
+    // Mobile Chrome
     {
       name: 'mobile-chrome',
-      use: {
-        ...devices['Pixel 7'],
-        storageState: 'playwright/.auth/user.json',
-      },
+      use: { ...devices['Pixel 7'], storageState: 'playwright/.auth/admin.json' },
       dependencies: ['setup'],
     },
 
-    // ── 移动端 Safari ───────────────────────────────────────────────
+    // Mobile Safari
     {
       name: 'mobile-safari',
-      use: {
-        ...devices['iPhone 14'],
-        storageState: 'playwright/.auth/user.json',
-      },
+      use: { ...devices['iPhone 14'], storageState: 'playwright/.auth/admin.json' },
       dependencies: ['setup'],
     },
 
-    // ── API 测试 (无 UI) ───────────────────────────────────────────
+    // API tests (no UI)
     {
       name: 'api',
       testMatch: '**/api/**/*.spec.ts',
-      use: {
-        baseURL: process.env.API_BASE_URL || 'http://localhost:3000/api/v1',
-      },
+      use: { baseURL: process.env.API_BASE_URL || 'http://localhost:3000/api/v1' },
     },
   ],
 
-  // 本地开发: 启动被测应用
-  webServer: process.env.CI
-    ? undefined
-    : {
-        command: 'cd /workspace/projects/workspace && pnpm dev',
-        url: 'http://localhost:3000',
-        reuseExistingServer: true,
-        timeout: 120 * 1000,
-        stdout: 'pipe',
-        stderr: 'pipe',
-      },
+  webServer: process.env.CI ? undefined : {
+    command: 'cd /workspace/projects/workspace && pnpm dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: true,
+    timeout: 120 * 1000,
+    stdout: 'pipe',
+    stderr: 'pipe',
+  },
 });

@@ -1,7 +1,23 @@
 import { faker } from '@faker-js/faker';
 
 /**
- * 测试班级数据
+ * Helper: Get current date in Asia/Hong_Kong timezone, formatted as YYYY-MM-DD
+ * Ensures consistent date calculations regardless of server timezone
+ */
+function hkDate(daysOffset: number = 0): string {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Hong_Kong',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  const d = new Date();
+  d.setDate(d.getDate() + daysOffset);
+  return formatter.format(d);
+}
+
+/**
+ * Test class data
  */
 export const testClasses = [
   { code: '1A', level: 'S1', year: 1, studentCount: 30 },
@@ -79,16 +95,8 @@ export const leaveApplications = {
   validSickLeave: {
     studentId: '2023S20101',
     leaveType: leaveTypes.sick.code,
-    startDate: (() => {
-      const d = new Date();
-      d.setDate(d.getDate() + 1);
-      return d.toISOString().split('T')[0];
-    })(),
-    endDate: (() => {
-      const d = new Date();
-      d.setDate(d.getDate() + 1);
-      return d.toISOString().split('T')[0];
-    })(),
+    startDate: hkDate(1),
+    endDate: hkDate(1),
     reason: '轻微感冒',
     hasCertificate: false,
   },
@@ -97,16 +105,8 @@ export const leaveApplications = {
   sickLeaveWithCertificate: {
     studentId: '2023S20102',
     leaveType: leaveTypes.sick.code,
-    startDate: (() => {
-      const d = new Date();
-      d.setDate(d.getDate() + 1);
-      return d.toISOString().split('T')[0];
-    })(),
-    endDate: (() => {
-      const d = new Date();
-      d.setDate(d.getDate() + 3);
-      return d.toISOString().split('T')[0];
-    })(),
+    startDate: hkDate(1),
+    endDate: hkDate(3),
     reason: '支气管炎',
     hasCertificate: true,
     certificateNumber: 'MC-2026-001',
@@ -116,16 +116,8 @@ export const leaveApplications = {
   personalLeave: {
     studentId: '2023S20103',
     leaveType: leaveTypes.personal.code,
-    startDate: (() => {
-      const d = new Date();
-      d.setDate(d.getDate() + 3);
-      return d.toISOString().split('T')[0];
-    })(),
-    endDate: (() => {
-      const d = new Date();
-      d.setDate(d.getDate() + 3);
-      return d.toISOString().split('T')[0];
-    })(),
+    startDate: hkDate(3),
+    endDate: hkDate(3),
     reason: '家庭事务',
     hasCertificate: false,
   },
@@ -134,16 +126,8 @@ export const leaveApplications = {
   invalidSickLeaveNoCert: {
     studentId: '2023S20104',
     leaveType: leaveTypes.sick.code,
-    startDate: (() => {
-      const d = new Date();
-      d.setDate(d.getDate() + 5);
-      return d.toISOString().split('T')[0];
-    })(),
-    endDate: (() => {
-      const d = new Date();
-      d.setDate(d.getDate() + 7);
-      return d.toISOString().split('T')[0];
-    })(),
+    startDate: hkDate(5),
+    endDate: hkDate(7),
     reason: '旅行',
     hasCertificate: false,
   },

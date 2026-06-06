@@ -84,9 +84,10 @@ export const passwordResetData = {
 
 /**
  * 获取测试 OTP (Mock)
+ * 从环境变量 TEST_OTP_CODE 读取，默认为 '123456'
  */
 export function getMockOTP(): string {
-  return '123456';
+  return process.env.TEST_OTP_CODE || '123456';
 }
 
 /**
