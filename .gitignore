@@ -2,6 +2,7 @@ node_modules/
 dist/
 build/
 *.log
+pnpm-lock.yaml
 .env
 .env.local
 .env.*.local
