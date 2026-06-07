@@ -8,6 +8,7 @@ import { AuditModule } from './modules/audit/audit.module';
 import { InquiryModule } from './modules/inquiry/inquiry.module';
 import { LeaveModule } from './modules/leave/leave.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { AbacModule } from './modules/abac/abac.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { NotificationModule } from './modules/notification/notification.module';
     InquiryModule,
     LeaveModule,
     NotificationModule,
+    AbacModule,
   ],
   controllers: [],
   providers: [],
