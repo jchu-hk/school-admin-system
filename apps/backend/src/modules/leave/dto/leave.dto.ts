@@ -5,9 +5,6 @@ import {
   IsOptional,
   IsUUID,
   IsDateString,
-  IsInt,
-  Min,
-  Max,
   MaxLength,
 } from 'class-validator';
 import { LeaveType, LeaveStatus } from '../leave.entity';
@@ -62,6 +59,19 @@ export class ApproveLeaveDto {
   @IsString()
   @MaxLength(500)
   comment?: string;
+
+  @ApiProperty({ description: '代课老师ID（可选）', required: false })
+  @IsOptional()
+  @IsUUID()
+  substituteTeacherId?: string;
+}
+
+export class LeaveApprovalResponseDto {
+  @ApiProperty({ description: '请假申请' })
+  application: LeaveApplication;
+
+  @ApiProperty({ description: '代课老师当日已排课时数', required: false })
+  substituteTeacherClassHours?: number;
 }
 
 export class RejectLeaveDto {

@@ -8,28 +8,29 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../user/user.entity';
+import { Student } from '../user/user.entity';
+import { Class } from '../user/class.entity';
 
 export enum LeaveType {
-  SICK = 'sick',             // 病假
-  PERSONAL = 'personal',     // 事假
+  SICK = 'sick', // 病假
+  PERSONAL = 'personal', // 事假
   COMPASSIONATE = 'compassionate', // 丧假
-  OTHER = 'other',           // 其他
+  OTHER = 'other', // 其他
 }
 
 export enum LeaveStatus {
-  PENDING = 'pending',             // 待审批
+  PENDING = 'pending', // 待审批
   PENDING_DIRECTOR = 'pending_director', // 待校务主任审批（超过3天）
-  APPROVED = 'approved',           // 已批准
-  REJECTED = 'rejected',           // 已拒绝
-  CANCELLED = 'cancelled',        // 已取消（家长取消）
-  CHECKED_IN = 'checked_in',       // 已销假
+  APPROVED = 'approved', // 已批准
+  REJECTED = 'rejected', // 已拒绝
+  CANCELLED = 'cancelled', // 已取消（家长取消）
+  CHECKED_IN = 'checked_in', // 已销假
 }
 
 export enum ApprovalLevel {
-  CLASS_TEACHER = 'class_teacher',     // 班主任审批
-  SCHOOL_ADMIN = 'school_admin',        // 校务处备案
-  SCHOOL_DIRECTOR = 'school_director',  // 校务主任审批（>3天）
+  CLASS_TEACHER = 'class_teacher', // 班主任审批
+  SCHOOL_ADMIN = 'school_admin', // 校务处备案
+  SCHOOL_DIRECTOR = 'school_director', // 校务主任审批（>3天）
 }
 
 @Entity('leave_applications')
@@ -51,18 +52,18 @@ export class LeaveApplication {
   studentId: string;
 
   @ApiProperty({ description: '学生信息' })
-  @ManyToOne(() => User)
+  @ManyToOne(() => Student)
   @JoinColumn({ name: 'studentId' })
-  student: User;
+  student: Student;
 
   @ApiProperty({ description: '班级ID' })
   @Column({ type: 'uuid' })
   classId: string;
 
   @ApiProperty({ description: '班级信息' })
-  @ManyToOne(() => User)
+  @ManyToOne(() => Class)
   @JoinColumn({ name: 'classId' })
-  class: User;
+  class: Class;
 
   @ApiProperty({ description: '请假类型', enum: LeaveType })
   @Column({

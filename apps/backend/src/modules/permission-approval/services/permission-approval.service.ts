@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, LessThan } from 'typeorm';
 import {
   PermissionApprovalRequest,
   ApprovalRequestStatus,
@@ -18,7 +18,7 @@ import {
   RejectPermissionRequestDto,
   CancelPermissionRequestDto,
 } from '../dto/permission-approval.dto';
-import { User } from '../../user/entities/user.entity';
+import { User } from '../../user/user.entity';
 import { AuditService } from '../../audit/services/audit.service';
 import { NotificationService } from '../../notification/services/notification.service';
 import { PermissionService } from '../../permission/services/permission.service';
@@ -385,18 +385,39 @@ export class PermissionApprovalService {
     if (!currentStep) return;
 
     // Get all users with the required approver role in the same school
-    // TODO: Implement fetching approvers
-    const approvers: User[] = []; // Replace with actual implementation
+    // Use RoleService to fetch approvers by role name
+    const approverRoleName = currentStep.approverRole === ApprovalRole.SCHOOL_ADMIN
+      ? 'school_admin'
+      : 'system_admin';
 
-    for (const approver of approvers) {
+    let approverIds: string[];
+    try {
+      approverIds = await this.roleService.getUsersByRole(
+        approverRoleName,
+        request.schoolId,
+      );
+    } catch (error) {
+      console.warn(
+        `[PermissionApproval] Failed to fetch approvers for role ${approverRoleName}:`,
+        error,
+      );
+      approverIds = [];
+    }
+
+    for (const approverId of approverIds) {
+      // Don't notify the requester if they happen to have the approver role
+      if (approverId === request.requesterId) continue;
+
       await this.notificationService.sendNotification({
-        userId: approver.id,
+        userId: approverId,
         title: 'New permission approval request',
-        content: `A new permission change request for user ${request.targetUser.name} requires your approval.`,
+        content: `A new permission change request (Risk: ${request.riskLevel}) requires your approval.`,
         type: 'system',
-        priority: 'high',
+        priority: request.riskLevel === 'high' ? 'high' : 'normal',
         metadata: {
           requestId: request.id,
+          targetUserId: request.targetUserId,
+          changeType: request.changeType,
         },
       });
     }
@@ -462,7 +483,3 @@ export class PermissionApprovalService {
   }
 }
 
-// Helper function for date query
-function LessThan(date: Date) {
-  return (qb) => qb.where('created_at < :date', { date });
-}

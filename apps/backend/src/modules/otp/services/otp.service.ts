@@ -22,7 +22,7 @@ import {
   UnbindOtpDto,
   GenerateOtpDto,
 } from '../dto/otp.dto';
-import { User } from '../../user/user.entity';
+import { User, UserStatus } from '../../user/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { AuditService } from '../../audit/audit.service';
 
@@ -40,6 +40,8 @@ export class OtpService {
     private readonly otpSessionRepository: Repository<OtpSession>,
     @InjectRepository(OtpTrustedSession)
     private readonly otpTrustedSessionRepository: Repository<OtpTrustedSession>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
     private readonly auditService: AuditService,
   ) {
@@ -211,8 +213,24 @@ export class OtpService {
       });
 
       if (session.failedAttempts >= this.MAX_FAILED_ATTEMPTS) {
+        // Lock out the user account
+        await this.userRepository.update(
+          { id: user.id },
+          { status: UserStatus.DISABLED, updatedAt: new Date() },
+        );
+        await this.auditService.log({
+          userId: user.id,
+          action: 'USER_ACCOUNT_LOCKED',
+          resourceType: 'User',
+          resourceId: user.id,
+          details: {
+            reason: 'OTP failed attempts exceeded',
+            lockedAt: new Date().toISOString(),
+            failedAttempts: session.failedAttempts,
+          },
+        });
         throw new ForbiddenException(
-          `Too many failed attempts. Please try again after ${this.LOCKOUT_DURATION_HOURS} hour`,
+          `Account has been locked due to too many failed attempts. Please contact your administrator.`,
         );
       }
 
@@ -222,6 +240,17 @@ export class OtpService {
     // Mark session as used
     session.status = OtpSessionStatus.USED;
     await this.otpSessionRepository.save(session);
+
+    // Update user last login time and reset failed attempts counter
+    await this.userRepository.update(
+      { id: user.id },
+      {
+        lastLoginAt: new Date(),
+        lastLoginIp: ipAddress || null,
+        status: UserStatus.ACTIVE, // Reset status in case it was previously locked
+        updatedAt: new Date(),
+      },
+    );
 
     // Create trusted session
     const trustedSession = this.otpTrustedSessionRepository.create({
@@ -491,5 +520,3 @@ export class OtpService {
     return code === '123456';
   }
 }
-
-
