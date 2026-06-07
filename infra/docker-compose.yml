@@ -1,38 +1,177 @@
 version: '3.8'
+
+# ============================================================
+# Smart School Admin System - Docker Compose Production Stack
+# ============================================================
+# Usage:
+#   Development: docker-compose up -d
+#   Production:  docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#   Logs:        docker-compose logs -f backend
+# ============================================================
+
 services:
+  # ------------------------------------------------------------
+  # PostgreSQL Database
+  # ------------------------------------------------------------
   postgres:
     image: postgres:16-alpine
     container_name: school-admin-postgres
     environment:
-      POSTGRES_USER: school_admin
-      POSTGRES_PASSWORD: school_admin123
-      POSTGRES_DB: school_admin
+      POSTGRES_USER: ${DB_USER:-school_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-school_admin123}
+      POSTGRES_DB: ${DB_NAME:-school_admin}
+      POSTGRES_INITDB_ARGS: '--encoding=UTF8 --locale=C'
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ../packages/database/migrations:/docker-entrypoint-initdb.d
+      # Initialize database with migrations on first start
+      - ./packages/database/migrations:/docker-entrypoint-initdb.d:ro
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U school_admin"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-school_admin} -d ${DB_NAME:-school_admin}"]
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
+    networks:
+      - school-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
 
+  # ------------------------------------------------------------
+  # Redis Cache
+  # ------------------------------------------------------------
   redis:
     image: redis:7-alpine
     container_name: school-admin-redis
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru --appendonly yes
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
+      interval: 10s
+      timeout: 3s
       retries: 5
+    networks:
+      - school-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
+  # ------------------------------------------------------------
+  # Backend API Service (NestJS)
+  # ------------------------------------------------------------
+  backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: ${NODE_ENV:-development}
+        NPM_REGISTRY: ${NPM_REGISTRY:-}
+    container_name: school-admin-backend
+    environment:
+      # Application
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3000
+      APP_NAME: SmartSchoolAdmin
+
+      # Database
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-school_admin}
+      DB_PASSWORD: ${DB_PASSWORD:-school_admin123}
+      DB_NAME: ${DB_NAME:-school_admin}
+
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      # JWT
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+
+      # OPA (Open Policy Agent)
+      OPA_URL: ${OPA_URL:-http://opa:8181}
+
+      # Notification
+      NOTIFICATION_CHANNEL: ${NOTIFICATION_CHANNEL:-mock}
+
+      # AI Service (Coze)
+      COZE_API_KEY: ${COZE_API_KEY:-}
+      COZE_BOT_ID: ${COZE_BOT_ID:-}
+
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    volumes:
+      # Mount source code in development for hot reload
+      - ./apps/backend/src:/app/src:ro
+      - ./packages:/app/packages:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - school-network
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+    command: >
+      sh -c "
+        echo 'Waiting for database...' &&
+        sleep 5 &&
+        npx typeorm migration:run -d dist/migrations/data-source.js 2>/dev/null || true &&
+        node dist/main.js
+      "
+
+  # ------------------------------------------------------------
+  # Frontend Web Application (React)
+  # ------------------------------------------------------------
+  frontend:
+    build:
+      context: ./school-admin-frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${FRONTEND_API_URL:-http://localhost:3000/api}
+        REACT_APP_ENV: ${NODE_ENV:-development}
+    container_name: school-admin-frontend
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - school-network
+
+  # ------------------------------------------------------------
+  # Kafka (Event Streaming)
+  # ------------------------------------------------------------
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
     container_name: school-admin-zookeeper
@@ -40,6 +179,12 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     restart: unless-stopped
+    networks:
+      - school-network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
@@ -47,7 +192,7 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"
+      - "${KAFKA_PORT:-9092}:9092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -55,47 +200,103 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_RETENTION_HOURS: 72
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "kafka-topics --list --bootstrap-server localhost:9092"]
-      interval: 10s
+      interval: 30s
       timeout: 10s
       retries: 5
+    networks:
+      - school-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
+  # ------------------------------------------------------------
+  # OPA (Open Policy Agent) - ABAC Policy Engine
+  # ------------------------------------------------------------
+  opa:
+    image: openpolicyagent/opa:0.62.0
+    container_name: school-admin-opa
+    ports:
+      - "${OPA_PORT:-8181}:8181"
+    command: run --server --log-level info --set=decision_logs.console=true
+    volumes:
+      - ./infra/opa/policies:/policies:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8181/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - school-network
+
+  # ------------------------------------------------------------
+  # Prometheus Metrics
+  # ------------------------------------------------------------
   prometheus:
     image: prom/prometheus:v2.47.0
     container_name: school-admin-prometheus
     ports:
-      - "9091:9090"
+      - "${PROMETHEUS_PORT:-9091}:9090"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
-    restart: unless-stopped
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    restart: unless-stopped
+    networks:
+      - school-network
 
+  # ------------------------------------------------------------
+  # Grafana Dashboards
+  # ------------------------------------------------------------
   grafana:
     image: grafana/grafana:10.1.0
     container_name: school-admin-grafana
     ports:
-      - "3001:3000"
+      - "${GRAFANA_PORT:-3001}:3000"
     environment:
-      GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin123
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin123}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: "${GRAFANA_ROOT_URL:-}"
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-    restart: unless-stopped
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
     depends_on:
       - prometheus
+    restart: unless-stopped
+    networks:
+      - school-network
 
+# ============================================================
+# Networks
+# ============================================================
+networks:
+  school-network:
+    driver: bridge
+    name: school-admin-network
+
+# ============================================================
+# Volumes (Persistent Data)
+# ============================================================
 volumes:
   postgres_data:
+    name: school-admin-postgres-data
   redis_data:
+    name: school-admin-redis-data
   prometheus_data:
+    name: school-admin-prometheus-data
   grafana_data:
+    name: school-admin-grafana-data
