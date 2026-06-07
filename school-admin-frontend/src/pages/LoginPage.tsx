@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
 import { Lock, User, AlertCircle } from 'lucide-react';
 import { authAPI, tokenManager } from '../api/auth';
-import type { LoginRequest, APIError } from '../types/auth';
+import type { APIError } from '../types/auth';
 
 // 表单验证Schema
 const loginSchema = z.object({
@@ -30,7 +30,6 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [pendingUsername, setPendingUsername] = useState<string>('');
 
   const {
     register,
@@ -55,7 +54,6 @@ export default function LoginPage() {
         // 检查是否需要OTP验证
         if (response.data.user.type === 'TEACHER' || response.data.user.type === 'OFFICER') {
           // 需要OTP二次认证,跳转到OTP页面
-          setPendingUsername(data.username);
           localStorage.setItem('pendingUsername', data.username);
           navigate('/otp');
         } else {

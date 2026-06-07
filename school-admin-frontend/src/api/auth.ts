@@ -2,8 +2,8 @@
  * 认证API客户端
  */
 
-import axios, { AxiosInstance, AxiosError } from 'axios';
-import {
+import axios, { type AxiosInstance, type AxiosError } from 'axios';
+import type {
   LoginRequest,
   LoginResponse,
   VerifyOTPRequest,
@@ -46,9 +46,13 @@ apiClient.interceptors.request.use(
   }
 );
 
-// 响应拦截器 - 统一错误处理
+// 响应拦截器 - 统一错误处理,并自动提取data字段
 apiClient.interceptors.response.use(
-  (response) => response.data,
+  (response) => {
+    // 后端返回格式: { code, message, data, timestamp }
+    // 自动提取外层结构,保持原样返回
+    return response.data;
+  },
   (error: AxiosError<APIError>) => {
     if (error.response?.data) {
       const apiError = error.response.data;
@@ -113,8 +117,7 @@ export const authAPI = {
    * POST /api/v1/auth/login
    */
   login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await apiClient.post<LoginResponse>('/auth/login', data);
-    return response;
+    return apiClient.post('/auth/login', data) as unknown as LoginResponse;
   },
 
   /**
@@ -122,8 +125,7 @@ export const authAPI = {
    * POST /api/v1/auth/otp/verify
    */
   verifyOTP: async (data: VerifyOTPRequest): Promise<VerifyOTPResponse> => {
-    const response = await apiClient.post<VerifyOTPResponse>('/auth/otp/verify', data);
-    return response;
+    return apiClient.post('/auth/otp/verify', data) as unknown as VerifyOTPResponse;
   },
 
   /**
@@ -131,8 +133,7 @@ export const authAPI = {
    * POST /api/v1/auth/otp/send
    */
   resendOTP: async (data: ResendOTPRequest): Promise<ResendOTPResponse> => {
-    const response = await apiClient.post<ResendOTPResponse>('/auth/otp/send', data);
-    return response;
+    return apiClient.post('/auth/otp/send', data) as unknown as ResendOTPResponse;
   },
 
   /**
@@ -144,10 +145,9 @@ export const authAPI = {
     if (!refreshToken) {
       throw new Error('No refresh token available');
     }
-    const response = await apiClient.post<VerifyOTPResponse>('/auth/refresh', {
+    return apiClient.post('/auth/refresh', {
       refreshToken,
-    });
-    return response;
+    }) as unknown as VerifyOTPResponse;
   },
 
   /**

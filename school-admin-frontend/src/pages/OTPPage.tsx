@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Shield, AlertCircle, RefreshCw } from 'lucide-react';
 import { authAPI, tokenManager } from '../api/auth';
 import type { APIError } from '../types/auth';
@@ -23,7 +23,6 @@ type OTPFormData = z.infer<typeof otpSchema>;
 
 export default function OTPPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(120); // 2分钟倒计时
@@ -40,17 +39,19 @@ export default function OTPPage() {
     }
 
     // 倒计时逻辑
-    let interval: NodeJS.Timeout;
-    if (countdown > 0) {
-      interval = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-    } else {
-      setCanResend(true);
-    }
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          setCanResend(true);
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
     return () => clearInterval(interval);
-  }, [countdown, username, navigate]);
+  }, [username, navigate]);
 
   // 格式化倒计时
   const formatCountdown = (seconds: number) => {
