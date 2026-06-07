@@ -1,10 +1,8 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Repository } from 'typeorm';
+import { UserRole } from '../user/user.entity';
+import { NotificationService } from '../notification/notification.service';
 import {
   ParentInquiry,
   InquiryCategory,
@@ -13,7 +11,14 @@ import {
 } from './inquiry.entity';
 import { InquiryReply, ReplyAuthorType } from './reply.entity';
 import { QuickReplyTemplate } from './template.entity';
-import { CreateInquiryDto, UpdateInquiryDto, CreateReplyDto, SatisfactionDto, CreateTemplateDto, InquiryQueryDto } from './dto/inquiry.dto';
+import {
+  CreateInquiryDto,
+  UpdateInquiryDto,
+  CreateReplyDto,
+  SatisfactionDto,
+  CreateTemplateDto,
+  InquiryQueryDto,
+} from './dto/inquiry.dto';
 
 @Injectable()
 export class InquiryService {
@@ -24,6 +29,7 @@ export class InquiryService {
     private replyRepository: Repository<InquiryReply>,
     @InjectRepository(QuickReplyTemplate)
     private templateRepository: Repository<QuickReplyTemplate>,
+    private readonly notificationService: NotificationService,
   ) {}
 
   /**
@@ -58,7 +64,11 @@ export class InquiryService {
   /**
    * 创建家长查询
    */
-  async create(dto: CreateInquiryDto, userId: string, schoolId: string): Promise<ParentInquiry> {
+  async create(
+    dto: CreateInquiryDto,
+    userId: string,
+    schoolId: string,
+  ): Promise<ParentInquiry> {
     const inquiry = this.inquiryRepository.create({
       ...dto,
       inquiryNo: this.generateInquiryNo(),
@@ -73,21 +83,40 @@ export class InquiryService {
     // AI分析（模拟，实际应调用AI服务）
     await this.performAIAnalysis(saved);
 
+    // 自动通知校务人员：有新的家长查询
+    await this.sendInquirySubmissionNotification(saved);
+
     return this.findOne(saved.id);
   }
 
   /**
-   * 模拟AI分析（实际应调用Coze/OpenAI）
+   * 发送家长查询提交通知给校务人员（实际应调用Coze/OpenAI）
    */
   private async performAIAnalysis(inquiry: ParentInquiry): Promise<void> {
     // 意图分类映射
     const intentMap: Record<InquiryCategory, string[]> = {
-      [InquiryCategory.BUS_SCHEDULE]: ['bus_time_inquiry', 'bus_route_inquiry', 'bus_delay'],
-      [InquiryCategory.TUITION_FEE]: ['fee_inquiry', 'payment_method', 'outstanding_fee'],
-      [InquiryCategory.ACADEMIC]: ['grade_inquiry', 'homework', 'exam_schedule'],
+      [InquiryCategory.BUS_SCHEDULE]: [
+        'bus_time_inquiry',
+        'bus_route_inquiry',
+        'bus_delay',
+      ],
+      [InquiryCategory.TUITION_FEE]: [
+        'fee_inquiry',
+        'payment_method',
+        'outstanding_fee',
+      ],
+      [InquiryCategory.ACADEMIC]: [
+        'grade_inquiry',
+        'homework',
+        'exam_schedule',
+      ],
       [InquiryCategory.LEAVE]: ['leave_application', 'leave_status'],
       [InquiryCategory.LUNCH]: ['lunch_menu', 'lunch_change'],
-      [InquiryCategory.GENERAL]: ['general_info', 'contact_info', 'school_calendar'],
+      [InquiryCategory.GENERAL]: [
+        'general_info',
+        'contact_info',
+        'school_calendar',
+      ],
       [InquiryCategory.COMPLAINT]: ['complaint', 'feedback'],
       [InquiryCategory.OTHER]: ['other_inquiry'],
     };
@@ -95,7 +124,11 @@ export class InquiryService {
     // 简单的关键词检测
     const content = inquiry.content.toLowerCase();
     let sentiment = 'neutral';
-    if (content.includes('緊急') || content.includes('urgent') || content.includes('很急')) {
+    if (
+      content.includes('緊急') ||
+      content.includes('urgent') ||
+      content.includes('很急')
+    ) {
       sentiment = 'negative';
     } else if (content.includes('謝謝') || content.includes('thank')) {
       sentiment = 'positive';
@@ -120,18 +153,28 @@ export class InquiryService {
    */
   private checkAutoResponseEligible(content: string): boolean {
     const faqPatterns = [
-      '校車時間', '校車路線', '午膳', '餐單', '學費', '繳費',
-      '上課時間', '放學時間', '聯絡電話', '地址',
+      '校車時間',
+      '校車路線',
+      '午膳',
+      '餐單',
+      '學費',
+      '繳費',
+      '上課時間',
+      '放學時間',
+      '聯絡電話',
+      '地址',
     ];
     return faqPatterns.some((pattern) => content.includes(pattern));
   }
 
   /**
    * 获取查询列表
+   * 按角色过滤：家长只能看到自己关联的查询
    */
   async findAll(
     query: InquiryQueryDto,
     userId: string,
+    userRole: UserRole = UserRole.SCHOOL_STAFF,
   ): Promise<{ inquiries: ParentInquiry[]; total: number }> {
     const page = parseInt(query.page || '1');
     const limit = parseInt(query.limit || '10');
@@ -143,6 +186,12 @@ export class InquiryService {
       .leftJoinAndSelect('inquiry.assignedOfficer', 'assignedOfficer')
       .orderBy('inquiry.parentSubmittedAt', 'DESC');
 
+    // 按角色过滤
+    if (userRole === UserRole.PARENT) {
+      // 家长只能看到自己提交的查询
+      qb.andWhere('inquiry.parentId = :userId', { userId });
+    }
+
     if (query.category) {
       qb.andWhere('inquiry.category = :category', { category: query.category });
     }
@@ -153,7 +202,9 @@ export class InquiryService {
       qb.andWhere('inquiry.priority = :priority', { priority: query.priority });
     }
     if (query.assignedTo) {
-      qb.andWhere('inquiry.assignedTo = :assignedTo', { assignedTo: query.assignedTo });
+      qb.andWhere('inquiry.assignedTo = :assignedTo', {
+        assignedTo: query.assignedTo,
+      });
     }
     if (query.startDate) {
       qb.andWhere('inquiry.parentSubmittedAt >= :startDate', {
@@ -243,7 +294,34 @@ export class InquiryService {
       });
     }
 
+    // 自动通知家长：校务人员已回复
+    await this.sendReplyNotification(saved, inquiry);
+
     return saved;
+  }
+
+  /**
+   * 发送回复通知给家长
+   */
+  private async sendReplyNotification(
+    reply: InquiryReply,
+    inquiry: ParentInquiry,
+  ): Promise<void> {
+    try {
+      await this.notificationService.sendNotification({
+        recipientIds: [inquiry.parentId],
+        title: '您的查询已有新回复',
+        content: `您关于"${inquiry.title}"的查询已收到回复，请查看。`,
+        type: 'system',
+        priority: 'normal',
+        relatedEntityType: 'parent_inquiry',
+        relatedEntityId: inquiry.id,
+        senderId: reply.authorId,
+        schoolId: inquiry.schoolId,
+      });
+    } catch (error) {
+      console.warn('[Inquiry] Failed to send reply notification:', error);
+    }
   }
 
   /**
@@ -273,7 +351,7 @@ export class InquiryService {
     id: string,
     dto: SatisfactionDto,
   ): Promise<ParentInquiry> {
-    const inquiry = await this.findOne(id);
+    await this.findOne(id); // 验证查询是否存在
 
     await this.inquiryRepository.update(id, {
       satisfactionRating: dto.rating,
@@ -356,20 +434,51 @@ export class InquiryService {
 
   /**
    * SLA检查：超时未回复的查询
+   * 同时检查 normal(24h) 和 urgent(2h) 两种SLA
    */
-  async checkSLAViolations(schoolId: string): Promise<ParentInquiry[]> {
+  async checkSLAViolations(
+    schoolId: string,
+  ): Promise<{ normal: ParentInquiry[]; urgent: ParentInquiry[] }> {
     const now = new Date();
-    const slaHours = { normal: 24, urgent: 2 };
-    const threshold = new Date(now.getTime() - slaHours.normal * 60 * 60 * 1000);
 
-    return this.inquiryRepository
+    // Normal SLA: 24小时
+    const normalThreshold = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    // Urgent SLA: 2小时
+    const urgentThreshold = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+
+    // 查询Normal级别超时
+    const normalViolations = await this.inquiryRepository
       .createQueryBuilder('inquiry')
       .where('inquiry.schoolId = :schoolId', { schoolId })
       .andWhere('inquiry.status IN (:...statuses)', {
         statuses: [InquiryStatus.PENDING, InquiryStatus.PROCESSING],
       })
       .andWhere('inquiry.firstResponseAt IS NULL')
-      .andWhere('inquiry.parentSubmittedAt < :threshold', { threshold })
+      .andWhere('inquiry.parentSubmittedAt < :threshold', {
+        threshold: normalThreshold,
+      })
+      .andWhere('inquiry.priority = :priority', {
+        priority: InquiryPriority.NORMAL,
+      })
       .getMany();
+
+    // 查询Urgent级别超时（2小时内未处理）
+    const urgentViolations = await this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .where('inquiry.schoolId = :schoolId', { schoolId })
+      .andWhere('inquiry.status IN (:...statuses)', {
+        statuses: [InquiryStatus.PENDING, InquiryStatus.PROCESSING],
+      })
+      .andWhere('inquiry.firstResponseAt IS NULL')
+      .andWhere('inquiry.parentSubmittedAt < :threshold', {
+        threshold: urgentThreshold,
+      })
+      .andWhere('inquiry.priority = :priority', {
+        priority: InquiryPriority.URGENT,
+      })
+      .getMany();
+
+    return { normal: normalViolations, urgent: urgentViolations };
   }
 }

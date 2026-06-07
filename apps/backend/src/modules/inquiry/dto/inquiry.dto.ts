@@ -5,10 +5,11 @@ import {
   IsOptional,
   IsUUID,
   IsInt,
+  IsBoolean,
+  IsNumber,
   Min,
   Max,
   MaxLength,
-  IsUrl,
 } from 'class-validator';
 import {
   InquiryCategory,
@@ -81,8 +82,8 @@ export class UpdateInquiryDto {
 
   @ApiProperty({ description: '是否升级处理' })
   @IsOptional()
-  @IsString()
-  escalationRequired?: string;
+  @IsBoolean()
+  escalationRequired?: boolean;
 
   @ApiProperty({ description: 'AI分析结果-意图分类', required: false })
   @IsOptional()
@@ -96,8 +97,8 @@ export class UpdateInquiryDto {
 
   @ApiProperty({ description: 'AI分析结果-置信度', required: false })
   @IsOptional()
-  @IsString()
-  aiConfidence?: string;
+  @IsNumber()
+  aiConfidence?: number;
 
   @ApiProperty({ description: 'AI建议回复', required: false })
   @IsOptional()
@@ -154,17 +155,29 @@ export class InquiryQueryDto {
   @IsString()
   limit?: string;
 
-  @ApiProperty({ description: '查询类别', enum: InquiryCategory, required: false })
+  @ApiProperty({
+    description: '查询类别',
+    enum: InquiryCategory,
+    required: false,
+  })
   @IsOptional()
   @IsEnum(InquiryCategory)
   category?: InquiryCategory;
 
-  @ApiProperty({ description: '处理状态', enum: InquiryStatus, required: false })
+  @ApiProperty({
+    description: '处理状态',
+    enum: InquiryStatus,
+    required: false,
+  })
   @IsOptional()
   @IsEnum(InquiryStatus)
   status?: InquiryStatus;
 
-  @ApiProperty({ description: '优先级', enum: InquiryPriority, required: false })
+  @ApiProperty({
+    description: '优先级',
+    enum: InquiryPriority,
+    required: false,
+  })
   @IsOptional()
   @IsEnum(InquiryPriority)
   priority?: InquiryPriority;

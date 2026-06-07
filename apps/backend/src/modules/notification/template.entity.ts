@@ -8,37 +8,37 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum NotificationChannel {
-  APP_PUSH = 'app_push',     // APP推送
-  SMS = 'sms',              // 短信
-  EMAIL = 'email',          // 邮件
-  WHATSAPP = 'whatsapp',    // WhatsApp
-  FEISHU = 'feishu',        // 飞书
+  APP_PUSH = 'app_push', // APP推送
+  SMS = 'sms', // 短信
+  EMAIL = 'email', // 邮件
+  WHATSAPP = 'whatsapp', // WhatsApp
+  FEISHU = 'feishu', // 飞书
 }
 
 export enum NotificationUrgency {
-  INFO = 'info',           // 普通
-  NORMAL = 'normal',      // 一般
-  HIGH = 'high',          // 紧急
-  CRITICAL = 'critical',   // 关键
+  INFO = 'info', // 普通
+  NORMAL = 'normal', // 一般
+  HIGH = 'high', // 紧急
+  CRITICAL = 'critical', // 关键
 }
 
 export enum NotificationCategory {
-  BUS = 'bus',             // 校车通知
+  BUS = 'bus', // 校车通知
   ATTENDANCE = 'attendance', // 出勤通知
-  ACADEMIC = 'academic',   // 成绩通知
-  FEE = 'fee',             // 缴费通知
-  ACTIVITY = 'activity',   // 活动通知
+  ACADEMIC = 'academic', // 成绩通知
+  FEE = 'fee', // 缴费通知
+  ACTIVITY = 'activity', // 活动通知
   EMERGENCY = 'emergency', // 紧急通知
-  DAILY = 'daily',         // 日常通知
+  DAILY = 'daily', // 日常通知
 }
 
 export enum NotificationStatus {
-  PENDING = 'pending',     // 待发送
-  SENDING = 'sending',     // 发送中
-  SENT = 'sent',           // 已发送
+  PENDING = 'pending', // 待发送
+  SENDING = 'sending', // 发送中
+  SENT = 'sent', // 已发送
   DELIVERED = 'delivered', // 已送达
-  READ = 'read',           // 已读
-  FAILED = 'failed',       // 发送失败
+  READ = 'read', // 已读
+  FAILED = 'failed', // 发送失败
   CANCELLED = 'cancelled', // 已取消
 }
 

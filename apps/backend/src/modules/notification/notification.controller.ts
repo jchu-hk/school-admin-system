@@ -3,13 +3,11 @@ import {
   Get,
   Post,
   Put,
-  Patch,
   Body,
   Param,
   Query,
   UseGuards,
   Request,
-  HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import {
@@ -58,12 +56,23 @@ export class NotificationController {
       req.user.id,
       req.user.schoolId,
     );
+    // 完善审计日志：包含recipientIds、channel、urgency等关键信息
     await this.auditService.log(
       'notification_send' as any,
       req.user.id,
       `发送通知: ${result.notificationNo}`,
       req.ip,
-      { recipientType: dto.recipientType, channel: dto.channel },
+      {
+        notificationId: result.id,
+        notificationNo: result.notificationNo,
+        recipientType: dto.recipientType,
+        recipientIds: dto.recipientIds,
+        channel: dto.channel || result.channel,
+        urgency: dto.urgency,
+        title: dto.title,
+        isBatch: result.isBatch,
+        batchTotal: result.batchTotal,
+      },
       HttpStatus.CREATED,
     );
     return result;
@@ -80,7 +89,10 @@ export class NotificationController {
     UserRole.STUDENT,
   )
   findAll(@Query() query: NotificationQueryDto, @Request() req) {
-    return this.notificationService.findAllNotifications(query, req.user.schoolId);
+    return this.notificationService.findAllNotifications(
+      query,
+      req.user.schoolId,
+    );
   }
 
   @Get('statistics')
@@ -134,10 +146,7 @@ export class NotificationController {
   @ApiOperation({ summary: '获取送达记录' })
   @ApiResponse({ status: 200, description: '送达记录列表' })
   @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  findDeliveries(
-    @Param('id') id: string,
-    @Query('status') status: string,
-  ) {
+  findDeliveries(@Param('id') id: string, @Query('status') status: string) {
     return this.notificationService.findDeliveries(id, status);
   }
 
@@ -145,13 +154,15 @@ export class NotificationController {
   @ApiOperation({ summary: '标记通知为已读' })
   @ApiResponse({ status: 200, description: '标记成功' })
   @Roles(
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
     UserRole.PARENT,
     UserRole.STUDENT,
-    UserRole.TEACHER,
-    UserRole.SCHOOL_STAFF,
+    UserRole.SYSTEM_ADMIN,
   )
   markAsRead(@Param('id') id: string, @Request() req) {
-    return this.notificationService.markAsRead(id, req.user.id);
+    return this.notificationService.markAsRead(id, req.user.id, req.user.role);
   }
 
   // ==================== 模板管理 ====================
@@ -159,11 +170,7 @@ export class NotificationController {
   @Get('templates')
   @ApiOperation({ summary: '获取通知模板列表' })
   @ApiResponse({ status: 200, description: '模板列表' })
-  @Roles(
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-    UserRole.TEACHER,
-  )
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF, UserRole.TEACHER)
   getTemplates(@Query('category') category: string, @Request() req) {
     return this.notificationService.getTemplates(req.user.schoolId, category);
   }
@@ -213,11 +220,7 @@ export class NotificationController {
   @Get('templates/:id')
   @ApiOperation({ summary: '获取模板详情' })
   @ApiResponse({ status: 200, description: '模板详情' })
-  @Roles(
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-    UserRole.TEACHER,
-  )
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF, UserRole.TEACHER)
   getTemplate(@Param('id') id: string) {
     return this.notificationService.getTemplate(id);
   }

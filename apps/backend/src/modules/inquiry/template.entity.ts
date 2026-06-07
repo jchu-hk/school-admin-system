@@ -8,11 +8,11 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum TemplateCategory {
-  BUS = 'bus',             // 校车
-  LUNCH = 'lunch',         // 午膳
-  FEE = 'fee',             // 收费
-  LEAVE = 'leave',         // 请假
-  GENERAL = 'general',     // 一般
+  BUS = 'bus', // 校车
+  LUNCH = 'lunch', // 午膳
+  FEE = 'fee', // 收费
+  LEAVE = 'leave', // 请假
+  GENERAL = 'general', // 一般
 }
 
 @Entity('quick_reply_templates')

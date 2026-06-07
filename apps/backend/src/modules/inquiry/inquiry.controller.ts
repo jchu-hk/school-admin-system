@@ -2,14 +2,12 @@ import {
   Controller,
   Get,
   Post,
-  Put,
   Patch,
   Body,
   Param,
   Query,
   UseGuards,
   Request,
-  HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import {
@@ -48,7 +46,11 @@ export class InquiryController {
   @ApiResponse({ status: 201, description: '创建成功' })
   @Roles(UserRole.PARENT, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
   async create(@Body() dto: CreateInquiryDto, @Request() req) {
-    const result = await this.inquiryService.create(dto, req.user.id, req.user.schoolId);
+    const result = await this.inquiryService.create(
+      dto,
+      req.user.id,
+      req.user.schoolId,
+    );
     await this.auditService.log(
       'inquiry_create' as any,
       req.user.id,
@@ -70,7 +72,7 @@ export class InquiryController {
     UserRole.PARENT,
   )
   findAll(@Query() query: InquiryQueryDto, @Request() req) {
-    return this.inquiryService.findAll(query, req.user.id);
+    return this.inquiryService.findAll(query, req.user.id, req.user.role);
   }
 
   @Get('statistics')
@@ -92,11 +94,7 @@ export class InquiryController {
   @Get('templates')
   @ApiOperation({ summary: '获取快速回复模板' })
   @ApiResponse({ status: 200, description: '模板列表' })
-  @Roles(
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-    UserRole.TEACHER,
-  )
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF, UserRole.TEACHER)
   getTemplates(@Query('category') category: string, @Request() req) {
     return this.inquiryService.getTemplates(req.user.schoolId, category);
   }
@@ -106,7 +104,11 @@ export class InquiryController {
   @ApiResponse({ status: 201, description: '创建成功' })
   @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   async createTemplate(@Body() dto: CreateTemplateDto, @Request() req) {
-    const result = await this.inquiryService.createTemplate(dto, req.user.schoolId, req.user.id);
+    const result = await this.inquiryService.createTemplate(
+      dto,
+      req.user.schoolId,
+      req.user.id,
+    );
     await this.auditService.log(
       'inquiry_template_create' as any,
       req.user.id,
@@ -127,7 +129,7 @@ export class InquiryController {
     UserRole.TEACHER,
     UserRole.PARENT,
   )
-  findOne(@Param('id') id: string, @Request() req) {
+  findOne(@Param('id') id: string) {
     return this.inquiryService.findOne(id);
   }
 
@@ -135,7 +137,11 @@ export class InquiryController {
   @ApiOperation({ summary: '更新查询' })
   @ApiResponse({ status: 200, description: '更新成功' })
   @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  async update(@Param('id') id: string, @Body() dto: UpdateInquiryDto, @Request() req) {
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateInquiryDto,
+    @Request() req,
+  ) {
     const result = await this.inquiryService.update(id, dto);
     await this.auditService.log(
       'inquiry_update' as any,
@@ -152,7 +158,11 @@ export class InquiryController {
   @ApiOperation({ summary: '分配查询' })
   @ApiResponse({ status: 200, description: '分配成功' })
   @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  async assign(@Param('id') id: string, @Body('assignedTo') assignedTo: string, @Request() req) {
+  async assign(
+    @Param('id') id: string,
+    @Body('assignedTo') assignedTo: string,
+    @Request() req,
+  ) {
     const result = await this.inquiryService.assign(id, assignedTo);
     await this.auditService.log(
       'inquiry_assign' as any,
@@ -179,7 +189,7 @@ export class InquiryController {
       id,
       dto,
       req.user.id,
-      isParent ? 'parent' as any : 'officer' as any,
+      isParent ? ('parent' as any) : ('officer' as any),
     );
     await this.auditService.log(
       'inquiry_reply' as any,

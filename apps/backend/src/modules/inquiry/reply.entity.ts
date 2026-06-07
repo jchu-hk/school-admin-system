@@ -10,9 +10,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ParentInquiry } from './inquiry.entity';
 
 export enum ReplyAuthorType {
-  OFFICER = 'officer',   // 校务处员工
-  AI = 'ai',             // AI自动回复
-  PARENT = 'parent',     // 家长补充
+  OFFICER = 'officer', // 校务处员工
+  AI = 'ai', // AI自动回复
+  PARENT = 'parent', // 家长补充
 }
 
 @Entity('inquiry_replies')

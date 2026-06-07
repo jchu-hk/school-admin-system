@@ -6,40 +6,39 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User, UserRole } from '../user/user.entity';
+import { Student, Parent, User } from '../user/user.entity';
 
 export enum InquiryCategory {
-  BUS_SCHEDULE = 'bus_schedule',     // 校车相关
-  TUITION_FEE = 'tuition_fee',       // 学费相关
-  ACADEMIC = 'academic',             // 成绩相关
-  LEAVE = 'leave',                   // 请假相关
-  LUNCH = 'lunch',                   // 午膳相关
-  GENERAL = 'general',               // 一般行政
-  COMPLAINT = 'complaint',           // 投诉
-  OTHER = 'other',                   // 其他
+  BUS_SCHEDULE = 'bus_schedule', // 校车相关
+  TUITION_FEE = 'tuition_fee', // 学费相关
+  ACADEMIC = 'academic', // 成绩相关
+  LEAVE = 'leave', // 请假相关
+  LUNCH = 'lunch', // 午膳相关
+  GENERAL = 'general', // 一般行政
+  COMPLAINT = 'complaint', // 投诉
+  OTHER = 'other', // 其他
 }
 
 export enum InquiryChannel {
-  PHONE = 'phone',           // 电话
-  EMAIL = 'email',           // 邮件
-  WHATSAPP = 'whatsapp',     // WhatsApp
-  IN_PERSON = 'in_person',   // 亲自到访
-  APP = 'app',               // APP/微信
+  PHONE = 'phone', // 电话
+  EMAIL = 'email', // 邮件
+  WHATSAPP = 'whatsapp', // WhatsApp
+  IN_PERSON = 'in_person', // 亲自到访
+  APP = 'app', // APP/微信
 }
 
 export enum InquiryPriority {
-  NORMAL = 'normal',         // 普通（24小时回复）
-  URGENT = 'urgent',         // 紧急（2小时回复）
+  NORMAL = 'normal', // 普通（24小时回复）
+  URGENT = 'urgent', // 紧急（2小时回复）
 }
 
 export enum InquiryStatus {
-  PENDING = 'pending',               // 待处理
-  PROCESSING = 'processing',         // 处理中
-  REPLIED = 'replied',               // 已回复
-  CLOSED = 'closed',                 // 已关闭
+  PENDING = 'pending', // 待处理
+  PROCESSING = 'processing', // 处理中
+  REPLIED = 'replied', // 已回复
+  CLOSED = 'closed', // 已关闭
 }
 
 @Entity('parent_inquiries')
@@ -61,18 +60,18 @@ export class ParentInquiry {
   parentId: string;
 
   @ApiProperty({ description: '家长信息' })
-  @ManyToOne(() => User)
+  @ManyToOne(() => Parent)
   @JoinColumn({ name: 'parentId' })
-  parent: User;
+  parent: Parent;
 
   @ApiProperty({ description: '关联学生ID' })
   @Column({ type: 'uuid', nullable: true })
   studentId: string;
 
   @ApiProperty({ description: '关联学生信息' })
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => Student, { nullable: true })
   @JoinColumn({ name: 'studentId' })
-  student: User;
+  student: Student;
 
   @ApiProperty({ description: '查询类别', enum: InquiryCategory })
   @Column({

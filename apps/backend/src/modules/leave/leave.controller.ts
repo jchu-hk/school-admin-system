@@ -2,14 +2,12 @@ import {
   Controller,
   Get,
   Post,
-  Put,
   Patch,
   Body,
   Param,
   Query,
   UseGuards,
   Request,
-  HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import {
@@ -48,7 +46,11 @@ export class LeaveController {
   @ApiResponse({ status: 201, description: '创建成功' })
   @Roles(UserRole.PARENT, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
   async create(@Body() dto: CreateLeaveDto, @Request() req) {
-    const result = await this.leaveService.create(dto, req.user.id, req.user.schoolId);
+    const result = await this.leaveService.create(
+      dto,
+      req.user.id,
+      req.user.schoolId,
+    );
     await this.auditService.log(
       'leave_create' as any,
       req.user.id,
@@ -130,13 +132,19 @@ export class LeaveController {
   @Post(':id/class-teacher-approve')
   @ApiOperation({ summary: '班主任审批通过' })
   @ApiResponse({ status: 200, description: '审批成功' })
-  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF, UserRole.TEACHER)
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   async classTeacherApprove(
     @Param('id') id: string,
     @Body() dto: ApproveLeaveDto,
     @Request() req,
   ) {
-    const result = await this.leaveService.classTeacherApprove(id, dto, req.user.id);
+    const result = await this.leaveService.classTeacherApprove(
+      id,
+      dto,
+      req.user.id,
+      req.user.role,
+      req.user.classId,
+    );
     await this.auditService.log(
       'leave_approve' as any,
       req.user.id,
@@ -157,7 +165,11 @@ export class LeaveController {
     @Body() dto: ApproveLeaveDto,
     @Request() req,
   ) {
-    const result = await this.leaveService.directorApprove(id, dto, req.user.id);
+    const result = await this.leaveService.directorApprove(
+      id,
+      dto,
+      req.user.id,
+    );
     await this.auditService.log(
       'leave_approve' as any,
       req.user.id,
@@ -172,7 +184,7 @@ export class LeaveController {
   @Post(':id/reject')
   @ApiOperation({ summary: '拒绝请假申请' })
   @ApiResponse({ status: 200, description: '拒绝成功' })
-  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF, UserRole.TEACHER)
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   async reject(
     @Param('id') id: string,
     @Body() dto: RejectLeaveDto,
@@ -210,7 +222,7 @@ export class LeaveController {
   @Post(':id/check-in')
   @ApiOperation({ summary: '销假（学生返校）' })
   @ApiResponse({ status: 200, description: '销假成功' })
-  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF, UserRole.TEACHER)
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   async checkIn(@Param('id') id: string, @Request() req) {
     const result = await this.leaveService.checkIn(id, req.user.id);
     await this.auditService.log(

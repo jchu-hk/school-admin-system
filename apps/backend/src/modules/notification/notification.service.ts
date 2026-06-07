@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   NotificationTemplate,
   NotificationChannel,
@@ -12,16 +12,27 @@ import {
   NotificationStatus,
   DeliveryStatus,
 } from './template.entity';
-import {
-  Notification,
-  NotificationDelivery,
-} from './notification.entity';
+import { Notification, NotificationDelivery } from './notification.entity';
 import {
   SendNotificationDto,
   CreateTemplateDto,
   UpdateTemplateDto,
   NotificationQueryDto,
 } from './dto/notification.dto';
+
+/**
+ * HTML转义函数，防止XSS攻击
+ */
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  };
+  return text.replace(/[&<>"']/g, (char) => map[char]);
+}
 
 @Injectable()
 export class NotificationService {
@@ -132,7 +143,8 @@ export class NotificationService {
   // ==================== 通知发送 ====================
 
   /**
-   * 变量替换
+   * 变量替换（带XSS防护）
+   * 对所有用户输入进行HTML转义，防止XSS攻击
    */
   private replaceVariables(
     content: string,
@@ -140,7 +152,9 @@ export class NotificationService {
   ): string {
     let result = content;
     for (const [key, value] of Object.entries(variables)) {
-      result = result.replace(new RegExp(`{{${key}}}`, 'g'), value);
+      // 对变量值进行HTML转义
+      const escapedValue = escapeHtml(value);
+      result = result.replace(new RegExp(`{{${key}}}`, 'g'), escapedValue);
     }
     return result;
   }
@@ -148,9 +162,7 @@ export class NotificationService {
   /**
    * 检查免打扰时间
    */
-  private isInQuietHours(
-    template: NotificationTemplate,
-  ): boolean {
+  private isInQuietHours(template: NotificationTemplate): boolean {
     if (!template.quietHoursStart || !template.quietHoursEnd) {
       return false;
     }
@@ -164,6 +176,7 @@ export class NotificationService {
 
   /**
    * 发送通知
+   * 紧急通知自动启用短信备用渠道
    */
   async sendNotification(
     dto: SendNotificationDto,
@@ -180,7 +193,7 @@ export class NotificationService {
       template = await this.getTemplate(dto.templateId);
       channels = JSON.parse(template.channels || '["app_push"]');
 
-      // 替换变量
+      // 替换变量（带XSS防护）
       if (template.appPushContent && dto.variables) {
         template.appPushContent = this.replaceVariables(
           template.appPushContent,
@@ -210,6 +223,18 @@ export class NotificationService {
       content = dto.content || template.appPushContent || template.name;
     }
 
+    // 紧急通知自动启用短信备用渠道（SPEC F-AUTO-002要求）
+    const urgency = dto.urgency || NotificationUrgency.NORMAL;
+    if (
+      urgency === NotificationUrgency.HIGH ||
+      urgency === NotificationUrgency.CRITICAL
+    ) {
+      // 如果还没有SMS渠道，自动添加
+      if (!channels.includes(NotificationChannel.SMS)) {
+        channels.push(NotificationChannel.SMS);
+      }
+    }
+
     // 创建通知记录
     const notification = this.notificationRepository.create({
       notificationNo: this.generateNotificationNo(),
@@ -218,14 +243,12 @@ export class NotificationService {
       title,
       content,
       channel: channels[0] as NotificationChannel,
-      urgency: dto.urgency || NotificationUrgency.NORMAL,
+      urgency: urgency,
       recipientType: JSON.stringify({
         type: dto.recipientType,
         ids: dto.recipientIds || [],
       }),
-      recipientIds: dto.recipientIds
-        ? JSON.stringify(dto.recipientIds)
-        : null,
+      recipientIds: dto.recipientIds ? JSON.stringify(dto.recipientIds) : null,
       senderId,
       relatedEntityType: dto.relatedEntityType,
       relatedEntityId: dto.relatedEntityId,
@@ -261,7 +284,8 @@ export class NotificationService {
     notification: Notification,
     recipientIds: string[],
     channels: string[],
-    template: NotificationTemplate | null,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _template: NotificationTemplate | null,
   ): Promise<void> {
     const deliveries = recipientIds.flatMap((recipientId) =>
       channels.map((channel) =>
@@ -280,6 +304,7 @@ export class NotificationService {
 
   /**
    * 处理送达记录（模拟各渠道发送）
+   * 改为并行处理，提升批量发送性能
    */
   private async processDeliveries(
     notificationId: string,
@@ -289,39 +314,40 @@ export class NotificationService {
       where: { notificationId },
     });
 
-    const results = { sent: 0, failed: 0 };
+    // 并行处理所有送达记录
+    const results = await Promise.all(
+      deliveries.map(async (delivery) => {
+        try {
+          const success = await this.simulateSend(delivery, template);
 
-    for (const delivery of deliveries) {
-      try {
-        // 模拟发送
-        const success = await this.simulateSend(delivery, template);
-
-        if (success) {
-          await this.deliveryRepository.update(delivery.id, {
-            status: DeliveryStatus.SUCCESS,
-            sentAt: new Date(),
-            externalMessageId: `ext_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
-          });
-          results.sent++;
-        } else {
-          // 重试逻辑
+          if (success) {
+            await this.deliveryRepository.update(delivery.id, {
+              status: DeliveryStatus.SUCCESS,
+              sentAt: new Date(),
+              externalMessageId: `ext_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+            });
+            return { sent: 1, failed: 0 };
+          } else {
+            await this.handleDeliveryFailure(delivery, template);
+            return { sent: 0, failed: 1 };
+          }
+        } catch (error) {
           await this.handleDeliveryFailure(delivery, template);
-          results.failed++;
+          return { sent: 0, failed: 1 };
         }
-      } catch (error) {
-        await this.handleDeliveryFailure(delivery, template);
-        results.failed++;
-      }
-    }
+      }),
+    );
+
+    // 汇总结果
+    const totalSent = results.reduce((sum, r) => sum + r.sent, 0);
+    const totalFailed = results.reduce((sum, r) => sum + r.failed, 0);
 
     // 更新通知汇总
     await this.notificationRepository.update(notificationId, {
-      batchSent: results.sent,
-      batchFailed: results.failed,
+      batchSent: totalSent,
+      batchFailed: totalFailed,
       status:
-        results.failed === 0
-          ? NotificationStatus.SENT
-          : NotificationStatus.SENT,
+        totalFailed === 0 ? NotificationStatus.SENT : NotificationStatus.SENT,
       sentAt: new Date(),
     });
   }
@@ -330,8 +356,10 @@ export class NotificationService {
    * 模拟发送（实际应调用各渠道API）
    */
   private async simulateSend(
-    delivery: NotificationDelivery,
-    template: NotificationTemplate | null,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _delivery: NotificationDelivery,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _template: NotificationTemplate | null,
   ): Promise<boolean> {
     // 模拟95%成功率
     return Math.random() > 0.05;
@@ -339,9 +367,11 @@ export class NotificationService {
 
   /**
    * 处理送达失败（重试或降级）
+   * 注意：template参数在当前实现中用于备用渠道降级，当前版本暂未使用
    */
   private async handleDeliveryFailure(
     delivery: NotificationDelivery,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     template: NotificationTemplate | null,
   ): Promise<void> {
     const newRetryCount = delivery.retryCount + 1;
@@ -415,6 +445,7 @@ export class NotificationService {
 
     const qb = this.notificationRepository
       .createQueryBuilder('notification')
+      .where('notification.schoolId = :schoolId', { schoolId })
       .orderBy('notification.createdAt', 'DESC');
 
     if (query.channel) {
@@ -464,11 +495,36 @@ export class NotificationService {
 
   /**
    * 标记送达记录为已读
+   * 添加归属校验：用户只能标记自己发送的或发给自己的通知
    */
   async markAsRead(
     notificationId: string,
     recipientId: string,
+    userRole?: string,
   ): Promise<void> {
+    // 获取通知详情
+    const notification = await this.notificationRepository.findOne({
+      where: { id: notificationId },
+    });
+
+    if (!notification) {
+      throw new NotFoundException('通知不存在');
+    }
+
+    // 权限校验：用户只能标记自己发送的或发给自己的通知
+    // SYSTEM_ADMIN 和 SCHOOL_DIRECTOR 可以标记任何通知
+    const isSender = notification.senderId === recipientId;
+    const isRecipient = this.isRecipientOfNotification(
+      notification,
+      recipientId,
+    );
+    const isPrivileged =
+      userRole === 'system_admin' || userRole === 'school_director';
+
+    if (!isSender && !isRecipient && !isPrivileged) {
+      throw new BadRequestException('您无权标记此通知为已读');
+    }
+
     await this.deliveryRepository.update(
       { notificationId, recipientId },
       {
@@ -476,6 +532,25 @@ export class NotificationService {
         readAt: new Date(),
       },
     );
+  }
+
+  /**
+   * 检查用户是否为通知的接收者
+   */
+  private isRecipientOfNotification(
+    notification: Notification,
+    recipientId: string,
+  ): boolean {
+    if (!notification.recipientIds) {
+      return false;
+    }
+
+    try {
+      const recipientIds = JSON.parse(notification.recipientIds);
+      return recipientIds.includes(recipientId);
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -532,7 +607,7 @@ export class NotificationService {
     }
 
     // 重新处理
-    const notification = await this.findOneNotification(notificationId);
+    await this.findOneNotification(notificationId); // 验证通知存在
     await this.processDeliveries(notificationId, null);
   }
 }
