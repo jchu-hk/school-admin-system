@@ -13,11 +13,12 @@ const DashboardPage: React.FC = () => {
   const [attendanceTrend, setAttendanceTrend] = useState<AttendanceChartData[]>([]);
   const [classComparison, setClassComparison] = useState<ClassAttendanceComparison[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [timeRange, setTimeRange] = useState<'7d' | '30d'>('7d');
 
   useEffect(() => {
     checkAuth();
     fetchData();
-  }, []);
+  }, [timeRange]);
 
   const checkAuth = () => {
     const token = localStorage.getItem('auth_token');
@@ -29,12 +30,13 @@ const DashboardPage: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     setError(null);
+    const days = timeRange === '7d' ? 7 : 30;
 
     try {
       const [statsRes, activitiesRes, trendRes, comparisonRes] = await Promise.allSettled([
         dashboardApi.getStats(),
         dashboardApi.getRecentActivities(10),
-        dashboardApi.getAttendanceTrend(7),
+        dashboardApi.getAttendanceTrend(days),
         dashboardApi.getClassComparison(),
       ]);
 
@@ -231,7 +233,7 @@ const DashboardPage: React.FC = () => {
                 </button>
               }
             >
-              <AttendanceTrendChart data={attendanceTrend} loading={loading} />
+              <AttendanceTrendChart data={attendanceTrend} loading={loading} timeRange={timeRange} onTimeRangeChange={setTimeRange} />
             </Card>
           </div>
 
