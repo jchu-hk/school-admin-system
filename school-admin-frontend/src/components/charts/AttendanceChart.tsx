@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   LineChart,
   Line,
@@ -22,6 +22,17 @@ export const AttendanceTrendChart: React.FC<AttendanceChartProps> = ({
   data,
   loading,
 }) => {
+  const [timeRange, setTimeRange] = useState<'7d' | '30d'>('7d');
+
+  // Filter data based on selected time range
+  const filteredData = useMemo(() => {
+    if (!data || data.length === 0) return [];
+    const days = timeRange === '7d' ? 7 : 30;
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    return data.filter((item) => new Date(item.date) >= cutoffDate);
+  }, [data, timeRange]);
+
   if (loading) {
     return (
       <div className="h-64 flex items-center justify-center">
@@ -34,7 +45,7 @@ export const AttendanceTrendChart: React.FC<AttendanceChartProps> = ({
     );
   }
 
-  if (!data || data.length === 0) {
+  if (!filteredData || filteredData.length === 0) {
     return (
       <div className="h-64 flex items-center justify-center text-slate-500">
         暂无数据
@@ -43,8 +54,32 @@ export const AttendanceTrendChart: React.FC<AttendanceChartProps> = ({
   }
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={data}>
+    <div>
+      {/* Time Range Toggle */}
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={() => setTimeRange('7d')}
+          className={`px-3 py-1 text-sm rounded-l-md border ${
+            timeRange === '7d'
+              ? 'bg-blue-600 text-white'
+              : 'bg-white text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          7天
+        </button>
+        <button
+          onClick={() => setTimeRange('30d')}
+          className={`px-3 py-1 text-sm rounded-r-md border ${
+            timeRange === '30d'
+              ? 'bg-blue-600 text-white'
+              : 'bg-white text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          30天
+        </button>
+      </div>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={filteredData}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
         <XAxis
           dataKey="date"
