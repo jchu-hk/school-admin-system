@@ -1,0 +1,55 @@
+{
+  "name": "school-admin-system",
+  "version": "1.0.0",
+  "description": "Smart School Admin System",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "e2e-tests"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev:backend": "pnpm --filter @school-admin/backend dev",
+    "dev:frontend": "pnpm --filter @school-admin/frontend dev",
+    "dev": "concurrently \"pnpm dev:backend\" \"pnpm dev:frontend\"",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "infra:up": "cd infra && docker-compose up -d",
+    "infra:down": "cd infra && docker-compose down",
+    "infra:logs": "cd infra && docker-compose logs -f",
+    "migrate:dev": "pnpm --filter @school-admin/database migrate:dev",
+    "migrate:prod": "pnpm --filter @school-admin/database migrate:prod",
+    "test:e2e": "pnpm --filter @school-admin/e2e-tests test",
+    "test:e2e:smoke": "pnpm --filter @school-admin/e2e-tests test:smoke",
+    "test:e2e:headed": "pnpm --filter @school-admin/e2e-tests test:headed",
+    "test:e2e:ui": "pnpm --filter @school-admin/e2e-tests test:ui",
+    "test:e2e:auth": "pnpm --filter @school-admin/e2e-tests test:auth",
+    "test:e2e:leave": "pnpm --filter @school-admin/e2e-tests test:leave",
+    "test:e2e:notification": "pnpm --filter @school-admin/e2e-tests test:notification",
+    "test:e2e:permission": "pnpm --filter @school-admin/e2e-tests test:permission",
+    "test:e2e:report": "pnpm --filter @school-admin/e2e-tests report"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "concurrently": "^8.2.0",
+    "eslint": "^8.42.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.1.3"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "main": "index.js",
+  "repository": "https://github.com/jchu-hk/school-admin-system.git",
+  "author": "CHECKER <checker@openclaw.ai>",
+  "license": "MIT",
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.2.5",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.17.0",
+    "tailwind-merge": "^3.6.0"
+  }
+}
