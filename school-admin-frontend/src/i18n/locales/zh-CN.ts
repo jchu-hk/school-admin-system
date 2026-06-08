@@ -1,0 +1,59 @@
+// 简体中文翻译
+export const zhCN = {
+  // 登录页
+  login: {
+    title: '智慧校园管理系统',
+    subtitle: '请登录以继续',
+    username: '用户名',
+    password: '密码',
+    usernamePlaceholder: 'admin',
+    passwordPlaceholder: '••••••',
+    loginButton: '登录',
+    loggingIn: '登录中...',
+    error: '用户名或密码错误',
+  },
+  // 导航
+  nav: {
+    dashboard: '仪表盘',
+    studentManagement: '学生管理',
+    leaveManagement: '请假管理',
+    parentInquiry: '家长查询',
+    notificationManagement: '通知管理',
+    courseManagement: '课程管理',
+    systemSettings: '系统设置',
+    logout: '退出登录',
+  },
+  // 仪表盘
+  dashboard: {
+    title: '仪表盘',
+    totalStudents: '学生总数',
+    totalTeachers: '教师总数',
+    totalCourses: '课程总数',
+    todayAttendance: '今日出勤率',
+    weeklyTrend: '本周出勤趋势',
+    todayOverview: '今日出勤概览',
+    attendance: '出勤',
+    absence: '缺勤',
+    addStudent: '添加学生',
+    addCourse: '添加课程',
+    quickActions: '快捷操作',
+    sevenDays: '近7天',
+    thirtyDays: '近30天',
+    attendanceRate: '出勤率',
+  },
+  // 通用
+  common: {
+    save: '保存',
+    cancel: '取消',
+    confirm: '确定',
+    delete: '删除',
+    edit: '编辑',
+    add: '添加',
+    search: '搜索',
+    loading: '加载中...',
+    noData: '暂无数据',
+    success: '操作成功',
+    error: '操作失败',
+    language: '语言',
+  },
+}

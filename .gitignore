@@ -1,43 +1,18 @@
-# Dependencies
 node_modules/
-.pnp
-.pnp.js
-
-# Build outputs
 dist/
 build/
-*.tsbuildinfo
-
-# Environment variables
+*.log
+pnpm-lock.yaml
 .env
 .env.local
 .env.*.local
-
-# IDE
+.DS_Store
+*.tmp
+*.swp
+coverage/
 .idea/
 .vscode/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-
-# Testing
-coverage/
-.nyc_output/
-
-# Temporary files
-*.tmp
-*.temp
-.cache/
-
-# Sensitive data
-*.pem
-*.key
-secrets/
+*.tsbuildinfo
+infra/data/
+infra/*.pid
+packages/database/migrations/*.sql.tmp
