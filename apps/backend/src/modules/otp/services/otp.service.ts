@@ -25,6 +25,7 @@ import {
 import { User } from '../../user/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { AuditService } from '../../audit/audit.service';
+import { AuditAction } from '../../audit/audit-log.entity';
 
 @Injectable()
 export class OtpService {
@@ -121,7 +122,7 @@ export class OtpService {
 
     await this.auditService.log({
       userId: user.id,
-      action: 'OTP_GENERATED',
+      action: AuditAction.OTP_GENERATED,
       resourceType: 'OTP',
       resourceId: session.id,
       details: {
@@ -199,7 +200,7 @@ export class OtpService {
 
       await this.auditService.log({
         userId: user.id,
-        action: 'OTP_VERIFY_FAILED',
+        action: AuditAction.OTP_VERIFY_FAILED,
         resourceType: 'OTP',
         resourceId: session.id,
         details: {
@@ -237,7 +238,7 @@ export class OtpService {
 
     await this.auditService.log({
       userId: user.id,
-      action: 'OTP_VERIFY_SUCCESS',
+      action: AuditAction.OTP_VERIFY_SUCCESS,
       resourceType: 'OTP',
       resourceId: session.id,
       details: {
@@ -306,7 +307,7 @@ export class OtpService {
 
     await this.auditService.log({
       userId: user.id,
-      action: 'OTP_BIND_INITIATED',
+      action: AuditAction.OTP_BIND_INITIATED,
       resourceType: 'OTP',
       resourceId: otpConfig.id,
       details: {
@@ -371,7 +372,7 @@ export class OtpService {
 
     await this.auditService.log({
       userId: user.id,
-      action: 'OTP_BIND_SUCCESS',
+      action: AuditAction.OTP_BIND_SUCCESS,
       resourceType: 'OTP',
       resourceId: otpConfig.id,
       details: {
@@ -427,7 +428,7 @@ export class OtpService {
 
     await this.auditService.log({
       userId: user.id,
-      action: 'OTP_UNBIND_SUCCESS',
+      action: AuditAction.OTP_UNBIND_SUCCESS,
       resourceType: 'OTP',
       resourceId: otpConfig.id,
       details: {

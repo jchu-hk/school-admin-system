@@ -1,11 +1,12 @@
 import { Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, BookOpen, Settings, LogOut, GraduationCap, Calendar, MessageCircle } from 'lucide-react'
+import { LayoutDashboard, Users, BookOpen, Settings, LogOut, GraduationCap, Calendar, MessageCircle, Bell } from 'lucide-react'
 
 const navItems = [
   { label: '仪表盘', icon: LayoutDashboard, path: '/dashboard' },
   { label: '学生管理', icon: Users, path: '/students' },
   { label: '请假管理', icon: Calendar, path: '/leaves' },
   { label: '家长查询', icon: MessageCircle, path: '/inquiries' },
+  { label: '通知管理', icon: Bell, path: '/notifications' },
   { label: '课程管理', icon: BookOpen, path: '/courses' },
   { label: '系统设置', icon: Settings, path: '/settings' },
 ]

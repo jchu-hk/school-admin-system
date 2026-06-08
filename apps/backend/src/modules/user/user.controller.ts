@@ -84,11 +84,11 @@ export class UserController {
     UserRole.PARENT,
   )
   findAll(
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '10',
+    @Request() req: any,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
     @Query('role') role?: string,
     @Query('status') status?: string,
-    @Request() req,
   ) {
     return this.userService.findAll(
       parseInt(page),

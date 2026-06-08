@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import StudentPage from './pages/StudentPage'
 import LeavePage from './pages/LeavePage'
 import InquiryPage from './pages/InquiryPage'
+import NotificationPage from './pages/NotificationPage'
 import Layout from './components/Layout'
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="students" element={<StudentPage />} />
           <Route path="leaves" element={<LeavePage />} />
           <Route path="inquiries" element={<InquiryPage />} />
+          <Route path="notifications" element={<NotificationPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

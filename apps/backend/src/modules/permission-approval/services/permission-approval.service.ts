@@ -18,11 +18,12 @@ import {
   RejectPermissionRequestDto,
   CancelPermissionRequestDto,
 } from '../dto/permission-approval.dto';
-import { User } from '../../user/entities/user.entity';
-import { AuditService } from '../../audit/services/audit.service';
-import { NotificationService } from '../../notification/services/notification.service';
-import { PermissionService } from '../../permission/services/permission.service';
-import { RoleService } from '../../role/services/role.service';
+import { User, UserRole } from '../../user/user.entity';
+import { AuditService } from '../../audit/audit.service';
+import { AuditAction } from '../../audit/audit-log.entity';
+import { NotificationService } from '../../notification/notification.service';
+import { PermissionService } from '../../permission/permission.service';
+import { RoleService } from '../../role/role.service';
 
 @Injectable()
 export class PermissionApprovalService {
@@ -97,7 +98,7 @@ export class PermissionApprovalService {
     // Log audit
     await this.auditService.log({
       userId: user.id,
-      action: 'PERMISSION_APPROVAL_REQUEST_CREATED',
+      action: AuditAction.PERMISSION_APPROVAL_REQUEST_CREATED,
       resourceType: 'PERMISSION_APPROVAL',
       resourceId: request.id,
       details: {
@@ -134,7 +135,7 @@ export class PermissionApprovalService {
       !isRequester &&
       !isTargetUser &&
       !isApprover &&
-      !user.roles.some((r) => r.name === 'super_admin')
+      user.role !== UserRole.SYSTEM_ADMIN
     ) {
       throw new ForbiddenException('You are not allowed to view this request');
     }
@@ -157,8 +158,8 @@ export class PermissionApprovalService {
   }
 
   async getMyPendingApprovals(user: User) {
-    // Get user roles
-    const userRoles = user.roles.map((r) => r.name);
+    // Get user role
+    const userRole = user.role;
 
     const requests = await this.approvalRequestRepository
       .createQueryBuilder('request')
@@ -173,7 +174,7 @@ export class PermissionApprovalService {
       .andWhere('steps.status = :stepStatus', {
         stepStatus: ApprovalStepStatus.PENDING,
       })
-      .andWhere('steps.approverRole IN (:...roles)', { roles: userRoles })
+      .andWhere('steps.approverRole = :role', { role: userRole })
       .getMany();
 
     return requests;
@@ -198,10 +199,8 @@ export class PermissionApprovalService {
     }
 
     // Check if user is allowed to approve this step
-    const isAllowed = user.roles.some(
-      (r) => r.name === currentStep.approverRole,
-    );
-    if (!isAllowed && !user.roles.some((r) => r.name === 'super_admin')) {
+    const isAllowed = String(user.role) === String(currentStep.approverRole);
+    if (!isAllowed && user.role !== UserRole.SYSTEM_ADMIN) {
       throw new ForbiddenException(
         'You are not allowed to approve this request',
       );
@@ -223,22 +222,18 @@ export class PermissionApprovalService {
       await this.applyPermissionChange(request);
 
       // Notify requester
-      await this.notificationService.sendNotification({
-        userId: request.requesterId,
-        title: 'Permission request approved',
-        content: `Your permission change request for user ${request.targetUser.name} has been approved.`,
-        type: 'system',
-        priority: 'high',
-      });
+      await this.notificationService.sendNotification(
+        request.requesterId,
+        'Permission request approved',
+        `Your permission change request for user ${request.targetUser.name} has been approved.`,
+      );
 
       // Notify target user
-      await this.notificationService.sendNotification({
-        userId: request.targetUserId,
-        title: 'Your permissions have been updated',
-        content: `Your permissions have been updated based on an approved request.`,
-        type: 'system',
-        priority: 'high',
-      });
+      await this.notificationService.sendNotification(
+        request.targetUserId,
+        'Your permissions have been updated',
+        `Your permissions have been updated based on an approved request.`,
+      );
     } else {
       // Notify next approver
       await this.sendApprovalNotification(request);
@@ -249,7 +244,7 @@ export class PermissionApprovalService {
     // Log audit
     await this.auditService.log({
       userId: user.id,
-      action: 'PERMISSION_APPROVAL_REQUEST_APPROVED',
+      action: AuditAction.PERMISSION_APPROVAL_REQUEST_APPROVED,
       resourceType: 'PERMISSION_APPROVAL',
       resourceId: request.id,
       details: {
@@ -280,10 +275,8 @@ export class PermissionApprovalService {
     }
 
     // Check if user is allowed to reject this step
-    const isAllowed = user.roles.some(
-      (r) => r.name === currentStep.approverRole,
-    );
-    if (!isAllowed && !user.roles.some((r) => r.name === 'super_admin')) {
+    const isAllowed = String(user.role) === String(currentStep.approverRole);
+    if (!isAllowed && user.role !== UserRole.SYSTEM_ADMIN) {
       throw new ForbiddenException(
         'You are not allowed to reject this request',
       );
@@ -301,18 +294,16 @@ export class PermissionApprovalService {
     await this.approvalRequestRepository.save(request);
 
     // Notify requester
-    await this.notificationService.sendNotification({
-      userId: request.requesterId,
-      title: 'Permission request rejected',
-      content: `Your permission change request for user ${request.targetUser.name} has been rejected. Reason: ${rejectDto.rejectionReason}`,
-      type: 'system',
-      priority: 'high',
-    });
+    await this.notificationService.sendNotification(
+      request.requesterId,
+      'Permission request rejected',
+      `Your permission change request for user ${request.targetUser.name} has been rejected. Reason: ${rejectDto.rejectionReason}`,
+    );
 
     // Log audit
     await this.auditService.log({
       userId: user.id,
-      action: 'PERMISSION_APPROVAL_REQUEST_REJECTED',
+      action: AuditAction.PERMISSION_APPROVAL_REQUEST_REJECTED,
       resourceType: 'PERMISSION_APPROVAL',
       resourceId: request.id,
       details: {
@@ -337,7 +328,7 @@ export class PermissionApprovalService {
 
     if (
       request.requesterId !== user.id &&
-      !user.roles.some((r) => r.name === 'super_admin')
+      user.role !== UserRole.SYSTEM_ADMIN
     ) {
       throw new ForbiddenException(
         'You are not allowed to cancel this request',
@@ -355,7 +346,7 @@ export class PermissionApprovalService {
     // Log audit
     await this.auditService.log({
       userId: user.id,
-      action: 'PERMISSION_APPROVAL_REQUEST_CANCELLED',
+      action: AuditAction.PERMISSION_APPROVAL_REQUEST_CANCELLED,
       resourceType: 'PERMISSION_APPROVAL',
       resourceId: request.id,
       details: {
@@ -370,11 +361,11 @@ export class PermissionApprovalService {
     request: PermissionApprovalRequest,
     user: User,
   ): Promise<boolean> {
-    const userRoles = user.roles.map((r) => r.name);
+    const userRoles = [user.role];
     return request.steps.some(
       (s) =>
         s.status === ApprovalStepStatus.PENDING &&
-        userRoles.includes(s.approverRole),
+        [user.role].map(String).includes(String(s.approverRole)),
     );
   }
 
@@ -389,16 +380,11 @@ export class PermissionApprovalService {
     const approvers: User[] = []; // Replace with actual implementation
 
     for (const approver of approvers) {
-      await this.notificationService.sendNotification({
-        userId: approver.id,
-        title: 'New permission approval request',
-        content: `A new permission change request for user ${request.targetUser.name} requires your approval.`,
-        type: 'system',
-        priority: 'high',
-        metadata: {
-          requestId: request.id,
-        },
-      });
+      await this.notificationService.sendNotification(
+        approver.id,
+        'New permission approval request',
+        `A new permission change request for user ${request.targetUser.name} requires your approval.`,
+      );
     }
   }
 
@@ -437,32 +423,27 @@ export class PermissionApprovalService {
   async expireOldRequests() {
     // Expire requests older than 30 days
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const requestsToExpire = await this.approvalRequestRepository.find({
-      where: {
+    const requestsToExpire = await this.approvalRequestRepository
+      .createQueryBuilder('request')
+      .where('request.status = :status', {
         status: ApprovalRequestStatus.PENDING,
-        createdAt: LessThan(thirtyDaysAgo),
-      },
-    });
+      })
+      .andWhere('request.createdAt < :date', { date: thirtyDaysAgo })
+      .getMany();
 
     for (const request of requestsToExpire) {
       request.status = ApprovalRequestStatus.EXPIRED;
       await this.approvalRequestRepository.save(request);
 
       // Notify requester
-      await this.notificationService.sendNotification({
-        userId: request.requesterId,
-        title: 'Permission request expired',
-        content: `Your permission change request for user ${request.targetUser.name} has expired.`,
-        type: 'system',
-        priority: 'medium',
-      });
+      await this.notificationService.sendNotification(
+        request.requesterId,
+        'Permission request expired',
+        `Your permission change request has expired.`,
+        undefined,
+      );
     }
 
     return { expiredCount: requestsToExpire.length };
   }
-}
-
-// Helper function for date query
-function LessThan(date: Date) {
-  return (qb) => qb.where('created_at < :date', { date });
 }

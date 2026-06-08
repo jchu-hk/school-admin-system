@@ -9,7 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { User } from '../../user/user.entity';
-import { Role } from '../../role/role.entity';
+import { Role } from '../../role/entities/role.entity';
 
 export enum ApprovalRequestStatus {
   PENDING = 'pending',
