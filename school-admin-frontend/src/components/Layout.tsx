@@ -1,18 +1,11 @@
 import { Outlet, useNavigate } from 'react-router-dom'
 import { LayoutDashboard, Users, BookOpen, Settings, LogOut, GraduationCap, Calendar, MessageCircle, Bell } from 'lucide-react'
-
-const navItems = [
-  { label: '仪表盘', icon: LayoutDashboard, path: '/dashboard' },
-  { label: '学生管理', icon: Users, path: '/students' },
-  { label: '请假管理', icon: Calendar, path: '/leaves' },
-  { label: '家长查询', icon: MessageCircle, path: '/inquiries' },
-  { label: '通知管理', icon: Bell, path: '/notifications' },
-  { label: '课程管理', icon: BookOpen, path: '/courses' },
-  { label: '系统设置', icon: Settings, path: '/settings' },
-]
+import LanguageSelector from './LanguageSelector'
+import { useI18n } from '../i18n'
 
 export default function Layout() {
   const navigate = useNavigate()
+  const { t } = useI18n()
   const token = localStorage.getItem('token')
 
   const handleLogout = () => {
@@ -21,6 +14,16 @@ export default function Layout() {
   }
 
   if (!token) { window.location.href = '/login'; return null }
+
+  const navItems = [
+    { label: t.nav.dashboard, icon: LayoutDashboard, path: '/dashboard' },
+    { label: t.nav.studentManagement, icon: Users, path: '/students' },
+    { label: t.nav.leaveManagement, icon: Calendar, path: '/leaves' },
+    { label: t.nav.parentInquiry, icon: MessageCircle, path: '/inquiries' },
+    { label: t.nav.notificationManagement, icon: Bell, path: '/notifications' },
+    { label: t.nav.courseManagement, icon: BookOpen, path: '/courses' },
+    { label: t.nav.systemSettings, icon: Settings, path: '/settings' },
+  ]
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -37,10 +40,11 @@ export default function Layout() {
             </button>
           ))}
         </nav>
-        <div className="p-4 border-t">
-          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-red-500 hover:bg-red-50 transition">
+        <div className="p-4 border-t flex items-center justify-between">
+          <LanguageSelector />
+          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-red-500 hover:bg-red-50 transition">
             <LogOut size={20} />
-            退出登录
+            {t.nav.logout}
           </button>
         </div>
       </aside>

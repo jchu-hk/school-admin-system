@@ -44,9 +44,10 @@ export const dashboardApi = {
   // 获取出勤趋势
   getAttendanceTrend: async (period: 'week' | 'month' = 'week'): Promise<AttendanceTrend[]> => {
     const token = localStorage.getItem('token');
+    const days = period === 'week' ? 7 : 30;
     const response = await axios.get<ApiResponse<AttendanceTrend[]>>('/api/dashboard/attendance-trend', {
       headers: { Authorization: `Bearer ${token}` },
-      params: { period }
+      params: { period, days }
     });
     return response.data.data;
   },

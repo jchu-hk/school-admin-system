@@ -65,11 +65,30 @@ export const handlers = [
     await delay(MOCK_DELAY);
     const url = new URL(request.url);
     const period = url.searchParams.get('period') || 'week';
-    
+    const days = parseInt(url.searchParams.get('days') || (period === 'month' ? '30' : '7'));
+
+    // 根据 days 参数返回不同的数据
+    const weekData = [
+      { name: '周一', value: 95 },
+      { name: '周二', value: 92 },
+      { name: '周三', value: 97 },
+      { name: '周四', value: 90 },
+      { name: '周五', value: 94 },
+    ];
+    const monthData = [
+      { name: '1日', value: 91 },
+      { name: '5日', value: 88 },
+      { name: '10日', value: 95 },
+      { name: '15日', value: 93 },
+      { name: '20日', value: 89 },
+      { name: '25日', value: 94 },
+      { name: '30日', value: 96 },
+    ];
+
     return HttpResponse.json({
       requestId: 'req_' + Date.now(),
       success: true,
-      data: mockAttendanceTrend,
+      data: days > 7 ? monthData : weekData,
     });
   }),
 

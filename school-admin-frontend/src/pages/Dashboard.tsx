@@ -1,51 +1,59 @@
 import { useEffect, useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { Users, BookOpen, TrendingUp, Activity } from 'lucide-react'
-import dashboardApi, { DashboardStats } from '../api/dashboard'
+import dashboardApi, { DashboardStats, AttendanceTrend } from '../api/dashboard'
+import { useI18n } from '../i18n'
 
-interface ChartData {
-  name: string
-  value: number
-}
+type Period = 'week' | 'month'
 
 export default function Dashboard() {
+  const { t } = useI18n()
   const [stats, setStats] = useState<DashboardStats>({ students: 0, teachers: 0, courses: 0, attendance: 0 })
   const [loading, setLoading] = useState(true)
+  const [period, setPeriod] = useState<Period>('week')
+  const [trendData, setTrendData] = useState<AttendanceTrend[]>([])
 
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (!token) { window.location.href = '/login'; return }
     
-    // 使用统一的 API 模块
     dashboardApi.getStats()
       .then(data => { setStats(data); setLoading(false) })
       .catch(() => setLoading(false))
   }, [])
 
+  // 加载出勤趋势数据，支持 period 切换
+  useEffect(() => {
+    dashboardApi.getAttendanceTrend(period)
+      .then(data => setTrendData(data))
+      .catch(() => setTrendData([]))
+  }, [period])
+
   const pieData = [
-    { name: '出勤', value: stats.attendance },
-    { name: '缺勤', value: 100 - stats.attendance },
+    { name: t.dashboard.attendance, value: stats.attendance },
+    { name: t.dashboard.absence, value: 100 - stats.attendance },
   ]
   const COLORS = ['#22c55e', '#ef4444']
 
+  const statCards = [
+    { label: t.dashboard.totalStudents, value: stats.students, icon: Users, lightColor: 'bg-blue-500' },
+    { label: t.dashboard.totalTeachers, value: stats.teachers, icon: BookOpen, lightColor: 'bg-green-500' },
+    { label: t.dashboard.totalCourses, value: stats.courses, icon: TrendingUp, lightColor: 'bg-purple-500' },
+    { label: t.dashboard.todayAttendance, value: `${stats.attendance}%`, icon: Activity, lightColor: 'bg-orange-500' },
+  ]
+
   return (
     <div className="space-y-4 md:space-y-6 p-4 md:p-0">
-      <h2 className="text-xl md:text-2xl font-bold text-gray-800">仪表盘</h2>
+      <h2 className="text-xl md:text-2xl font-bold text-gray-800">{t.dashboard.title}</h2>
       
-      {/* 统计卡片 - 移动端单列布局 */}
+      {/* 统计卡片 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-        {[
-          { label: '学生总数', value: stats.students, icon: Users, color: 'bg-primary-800', lightColor: 'bg-blue-500' },
-          { label: '教师总数', value: stats.teachers, icon: BookOpen, color: 'bg-primary-800', lightColor: 'bg-green-500' },
-          { label: '课程总数', value: stats.courses, icon: TrendingUp, color: 'bg-primary-800', lightColor: 'bg-purple-500' },
-          { label: '今日出勤率', value: `${stats.attendance}%`, icon: Activity, color: 'bg-primary-800', lightColor: 'bg-orange-500' },
-        ].map(({ label, value, icon: Icon, color, lightColor }) => (
+        {statCards.map(({ label, value, icon: Icon, lightColor }) => (
           <div 
             key={label} 
             className="bg-white rounded-xl shadow-card hover:shadow-card-hover transition-shadow p-4 md:p-5 flex items-center gap-3 md:gap-4 cursor-pointer active:scale-[0.98] transition-transform"
           >
-            {/* 移动端使用主题色，桌面端使用原有颜色 */}
-            <div className={`${lightColor} md:${lightColor} text-white p-2.5 md:p-3 rounded-lg`}>
+            <div className={`${lightColor} text-white p-2.5 md:p-3 rounded-lg`}>
               <Icon size={20} className="md:w-6 md:h-6" />
             </div>
             <div className="flex-1">
@@ -59,10 +67,27 @@ export default function Dashboard() {
       {/* 图表区域 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <div className="bg-white rounded-xl shadow-card p-4 md:p-5">
-          <h3 className="font-semibold mb-3 md:mb-4 text-gray-700 text-sm md:text-base">本周出勤趋势</h3>
+          <div className="flex items-center justify-between mb-3 md:mb-4">
+            <h3 className="font-semibold text-gray-700 text-sm md:text-base">{t.dashboard.weeklyTrend}</h3>
+            {/* 7天/30天切换 */}
+            <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+              <button
+                onClick={() => setPeriod('week')}
+                className={`px-3 py-1 rounded-md text-xs font-medium transition ${period === 'week' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                {t.dashboard.sevenDays}
+              </button>
+              <button
+                onClick={() => setPeriod('month')}
+                className={`px-3 py-1 rounded-md text-xs font-medium transition ${period === 'month' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                {t.dashboard.thirtyDays}
+              </button>
+            </div>
+          </div>
           <div className="h-[180px] md:h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={[{ name: '周一', v: 95 }, { name: '周二', v: 92 }, { name: '周三', v: 97 }, { name: '周四', v: 90 }, { name: '周五', v: 94 }]}>
+              <BarChart data={trendData.length > 0 ? trendData.map(d => ({ name: d.name, v: d.value })) : []}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" fontSize={10} tick={{ fontSize: 10 }} />
                 <YAxis fontSize={10} domain={[80, 100]} tick={{ fontSize: 10 }} />
@@ -80,7 +105,7 @@ export default function Dashboard() {
         </div>
         
         <div className="bg-white rounded-xl shadow-card p-4 md:p-5">
-          <h3 className="font-semibold mb-3 md:mb-4 text-gray-700 text-sm md:text-base">今日出勤概览</h3>
+          <h3 className="font-semibold mb-3 md:mb-4 text-gray-700 text-sm md:text-base">{t.dashboard.todayOverview}</h3>
           <div className="h-[180px] md:h-[200px] flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -109,17 +134,17 @@ export default function Dashboard() {
         </div>
       </div>
       
-      {/* 移动端快捷操作区域 */}
+      {/* 移动端快捷操作 */}
       <div className="lg:hidden mt-4">
-        <h3 className="font-semibold mb-3 text-gray-700 text-sm">快捷操作</h3>
+        <h3 className="font-semibold mb-3 text-gray-700 text-sm">{t.dashboard.quickActions}</h3>
         <div className="grid grid-cols-1 gap-2">
           <button className="w-full bg-primary-800 hover:bg-primary-900 text-white font-medium py-3 px-4 rounded-lg transition flex items-center justify-center gap-2 active:scale-[0.98]">
             <Users size={18} />
-            <span>添加学生</span>
+            <span>{t.dashboard.addStudent}</span>
           </button>
           <button className="w-full bg-primary-800 hover:bg-primary-900 text-white font-medium py-3 px-4 rounded-lg transition flex items-center justify-center gap-2 active:scale-[0.98]">
             <BookOpen size={18} />
-            <span>添加课程</span>
+            <span>{t.dashboard.addCourse}</span>
           </button>
         </div>
       </div>
