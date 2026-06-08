@@ -4,6 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthModule } from './modules/health/health.module';
 import { UserModule } from './modules/user/user.module';
 import { User } from './modules/user/user.entity';
+import { PermissionModule } from './modules/permission/permission.module';
+import { RoleModule } from './modules/role/role.module';
+import { LeaveModule } from './modules/leave/leave.module';
 
 @Module({
   imports: [
@@ -27,6 +30,9 @@ import { User } from './modules/user/user.entity';
     }),
     HealthModule,
     UserModule,
+    PermissionModule,
+    RoleModule,
+    LeaveModule,
   ],
   controllers: [],
   providers: [],
