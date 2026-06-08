@@ -22,9 +22,9 @@ export interface TokenPayload {
 }
 
 export interface LoginResult {
-  accessToken?: string;
-  refreshToken?: string;
-  tempToken?: string;
+  access_token?: string;
+  refresh_token?: string;
+  temp_token?: string;
   sessionId?: string;
   requiresOtp?: boolean;
   otpType?: OtpType;
@@ -94,8 +94,8 @@ export class AuthService {
     const tokens = await this.generateTokens(user);
 
     return {
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
+      access_token: tokens.accessToken,
+      refresh_token: tokens.refreshToken,
       user: {
         id: user.id,
         username: user.username,
@@ -174,8 +174,8 @@ export class AuthService {
     const tokens = await this.generateTokens(user);
 
     return {
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
+      access_token: tokens.accessToken,
+      refresh_token: tokens.refreshToken,
       user: {
         id: user.id,
         username: user.username,
@@ -189,7 +189,7 @@ export class AuthService {
   /**
    * 刷新access token
    */
-  async refreshToken(refreshToken: string): Promise<{ accessToken: string; message: string }> {
+  async refreshToken(refreshToken: string): Promise<{ access_token: string; message: string }> {
     try {
       // 验证refresh token
       const payload = this.jwtService.verify(refreshToken, {
@@ -226,7 +226,7 @@ export class AuthService {
       );
 
       return {
-        accessToken,
+        access_token,
         message: 'Token刷新成功',
       };
     } catch (error) {
@@ -283,7 +283,7 @@ export class AuthService {
     console.log(`[AuthService] OTP for ${user.username}: ${otpCode}`);
 
     return {
-      tempToken,
+      temp_token,
       sessionId: session.id,
       requiresOtp: true,
       otpType: OtpType.EMAIL,

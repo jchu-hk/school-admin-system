@@ -13,7 +13,7 @@ import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('认证')
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -25,8 +25,8 @@ export class AuthController {
     description: '登录成功或需要OTP验证',
     schema: {
       example: {
-        accessToken: 'eyJhbGciOiJIUzI1NiIs...',
-        refreshToken: 'eyJhbGciOiJIUzI1NiIs...',
+        access_token: 'eyJhbGciOiJIUzI1NiIs...',
+        refresh_token: 'eyJhbGciOiJIUzI1NiIs...',
         user: {
           id: 'user-id',
           username: 'admin',
@@ -56,8 +56,8 @@ export class AuthController {
     description: 'OTP验证成功',
     schema: {
       example: {
-        accessToken: 'eyJhbGciOiJIUzI1NiIs...',
-        refreshToken: 'eyJhbGciOiJIUzI1NiIs...',
+        access_token: 'eyJhbGciOiJIUzI1NiIs...',
+        refresh_token: 'eyJhbGciOiJIUzI1NiIs...',
         user: {
           id: 'user-id',
           username: 'admin',
@@ -89,7 +89,7 @@ export class AuthController {
     description: 'Token刷新成功',
     schema: {
       example: {
-        accessToken: 'eyJhbGciOiJIUzI1NiIs...',
+        access_token: 'eyJhbGciOiJIUzI1NiIs...',
         message: 'Token刷新成功',
       },
     },
@@ -98,7 +98,7 @@ export class AuthController {
     status: HttpStatus.UNAUTHORIZED,
     description: '刷新令牌无效或已过期',
   })
-  async refreshToken(@Body() dto: RefreshTokenDto): Promise<{ accessToken: string; message: string }> {
+  async refreshToken(@Body() dto: RefreshTokenDto): Promise<{ access_token: string; message: string }> {
     return this.authService.refreshToken(dto.refreshToken);
   }
 }
