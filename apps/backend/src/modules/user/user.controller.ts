@@ -31,7 +31,7 @@ import { AuditService } from '../audit/audit.service';
 import { AuditAction } from '../audit/audit-log.entity';
 
 @ApiTags('用户管理')
-@Controller('api/users')
+@Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class UserController {
