@@ -2,14 +2,16 @@ import {
   Controller,
   Get,
   Post,
-  Put,
-  Delete,
+  Patch,
   Body,
   Param,
   Query,
   ParseUUIDPipe,
-  UseGuards,
   Request,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -26,21 +28,21 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../user/user.entity';
 
-@ApiTags('咨询管理')
-@Controller('api/inquiries')
+@ApiTags('家长查询')
+@Controller('inquiries')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class InquiryController {
   constructor(private readonly inquiryService: InquiryService) {}
 
   @Get()
-  @ApiOperation({ summary: '获取咨询列表' })
+  @ApiOperation({ summary: '查询列表' })
   @ApiQuery({ name: 'page', required: false, description: '页码，默认1' })
   @ApiQuery({ name: 'limit', required: false, description: '每页数量，默认10' })
   @ApiQuery({ name: 'status', required: false, description: '状态筛选' })
   @ApiQuery({ name: 'inquiryType', required: false, description: '类型筛选' })
   @ApiQuery({ name: 'parentId', required: false, description: '家长ID筛选' })
-  @ApiResponse({ status: 200, description: '获取咨询列表成功' })
+  @ApiResponse({ status: 200, description: '获取查询列表成功' })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -54,25 +56,37 @@ export class InquiryController {
     @Query('status') status?: InquiryStatus,
     @Query('inquiryType') inquiryType?: string,
     @Query('parentId') parentId?: string,
+    @Request() req?: any,
   ): Promise<{ inquiries: Inquiry[]; total: number }> {
+    // 家长只能看到自己的查询
+    let filterParentId = parentId;
+    if (req?.user?.role === UserRole.PARENT) {
+      filterParentId = req.user.id;
+    }
+    
     return this.inquiryService.findAll(
       page ? parseInt(page, 10) : 1,
       limit ? parseInt(limit, 10) : 10,
       status,
       inquiryType,
-      parentId,
+      filterParentId,
     );
   }
 
   @Post()
-  @ApiOperation({ summary: '创建咨询' })
-  @ApiResponse({ status: 201, description: '咨询创建成功', type: Inquiry })
-  @Roles(UserRole.PARENT, UserRole.TEACHER, UserRole.SCHOOL_STAFF)
+  @ApiOperation({ summary: '提交查询' })
+  @ApiResponse({ status: 201, description: '查询提交成功', type: Inquiry })
+  @Roles(
+    UserRole.PARENT,
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+  )
   create(
     @Body() createDto: CreateInquiryDto,
     @Request() req,
   ): Promise<Inquiry> {
-    // If parentId not provided, use current user
+    // 如果没有提供parentId，使用当前用户
     if (!createDto.parentId) {
       createDto.parentId = req.user.id;
     }
@@ -80,8 +94,8 @@ export class InquiryController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: '获取咨询详情' })
-  @ApiResponse({ status: 200, description: '获取咨询详情成功', type: Inquiry })
+  @ApiOperation({ summary: '查询详情' })
+  @ApiResponse({ status: 200, description: '获取查询详情成功' })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -89,13 +103,20 @@ export class InquiryController {
     UserRole.TEACHER,
     UserRole.PARENT,
   )
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Inquiry> {
-    return this.inquiryService.findOne(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string, @Request() req) {
+    const result = await this.inquiryService.findOneWithReplies(id);
+    
+    // 家长只能查看自己的查询
+    if (req.user.role === UserRole.PARENT && result.inquiry.parentId !== req.user.id) {
+      throw new BadRequestException('无权查看此查询');
+    }
+    
+    return result;
   }
 
-  @Put(':id')
-  @ApiOperation({ summary: '更新咨询' })
-  @ApiResponse({ status: 200, description: '咨询更新成功', type: Inquiry })
+  @Patch(':id')
+  @ApiOperation({ summary: '更新查询' })
+  @ApiResponse({ status: 200, description: '查询更新成功', type: Inquiry })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -109,33 +130,9 @@ export class InquiryController {
     return this.inquiryService.update(id, updateDto, req.user.id);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: '删除咨询' })
-  @ApiResponse({ status: 204, description: '咨询删除成功' })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
-  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    return this.inquiryService.remove(id);
-  }
-
-  @Get(':id/replies')
-  @ApiOperation({ summary: '获取咨询回复列表' })
-  @ApiResponse({ status: 200, description: '获取回复列表成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-    UserRole.TEACHER,
-    UserRole.PARENT,
-  )
-  findReplies(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<InquiryReply[]> {
-    return this.inquiryService.findReplies(id);
-  }
-
   @Post(':id/replies')
-  @ApiOperation({ summary: '回复咨询' })
-  @ApiResponse({ status: 201, description: '回复创建成功', type: InquiryReply })
+  @ApiOperation({ summary: '回复查询' })
+  @ApiResponse({ status: 201, description: '回复成功', type: InquiryReply })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -144,12 +141,51 @@ export class InquiryController {
   )
   createReply(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body('content') content: string,
+    @Body() createDto: CreateInquiryReplyDto,
     @Request() req,
   ): Promise<InquiryReply> {
     return this.inquiryService.createReply(
-      { inquiryId: id, content },
+      { inquiryId: id, content: createDto.content },
       req.user.id,
     );
+  }
+
+  @Patch(':id/close')
+  @ApiOperation({ summary: '关闭查询' })
+  @ApiResponse({ status: 200, description: '关闭成功', type: Inquiry })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+  )
+  close(@Param('id', ParseUUIDPipe) id: string, @Request() req) {
+    return this.inquiryService.close(id, req.user.id);
+  }
+
+  @Post(':id/rating')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '满意度评价' })
+  @ApiResponse({ status: 200, description: '评价成功', type: Inquiry })
+  @Roles(UserRole.PARENT)
+  addRating(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('rating') rating: number,
+    @Body('comment') comment: string,
+    @Request() req,
+  ) {
+    return this.inquiryService.addRating(id, req.user.id, rating, comment);
+  }
+
+  @Get('stats/overview')
+  @ApiOperation({ summary: '获取查询统计' })
+  @ApiResponse({ status: 200, description: '获取统计成功' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+  )
+  getStats() {
+    return this.inquiryService.getStats();
   }
 }

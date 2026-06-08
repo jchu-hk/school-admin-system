@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Inquiry, InquiryReply, InquiryStatus } from './inquiry.entity';
@@ -21,9 +21,9 @@ export class InquiryService {
     parentId?: string,
   ): Promise<{ inquiries: Inquiry[]; total: number }> {
     const queryBuilder = this.inquiryRepository.createQueryBuilder('inquiry')
-      .leftJoinAndSelect('inquiry.replies', 'replies')
       .leftJoinAndSelect('inquiry.parent', 'parent')
-      .leftJoinAndSelect('inquiry.assignee', 'assignee');
+      .leftJoinAndSelect('inquiry.assignee', 'assignee')
+      .where('inquiry.deletedAt IS NULL');
 
     if (status) {
       queryBuilder.andWhere('inquiry.status = :status', { status });
@@ -48,15 +48,27 @@ export class InquiryService {
 
   async findOne(id: string): Promise<Inquiry> {
     const inquiry = await this.inquiryRepository.findOne({
-      where: { id },
-      relations: ['replies', 'parent', 'assignee', 'closer'],
+      where: { id, deletedAt: null },
+      relations: ['parent', 'assignee', 'closer'],
     });
 
     if (!inquiry) {
-      throw new NotFoundException(`咨询不存在: ${id}`);
+      throw new NotFoundException('查询不存在');
     }
 
     return inquiry;
+  }
+
+  async findOneWithReplies(id: string): Promise<{ inquiry: Inquiry; replies: InquiryReply[] }> {
+    const inquiry = await this.findOne(id);
+    
+    const replies = await this.replyRepository.find({
+      where: { inquiryId: id, deletedAt: null },
+      relations: ['replier'],
+      order: { createdAt: 'ASC' },
+    });
+
+    return { inquiry, replies };
   }
 
   async create(createDto: CreateInquiryDto): Promise<Inquiry> {
@@ -64,14 +76,18 @@ export class InquiryService {
       ...createDto,
       status: InquiryStatus.PENDING,
     });
-
     return this.inquiryRepository.save(inquiry);
   }
 
   async update(id: string, updateDto: UpdateInquiryDto, updatedBy?: string): Promise<Inquiry> {
     const inquiry = await this.findOne(id);
 
-    // If status is being changed to closed, set closedAt and closedBy
+    // 如果分配了处理人，更新状态为处理中
+    if (updateDto.assignedTo && inquiry.status === InquiryStatus.PENDING) {
+      updateDto.status = InquiryStatus.PROCESSING;
+    }
+
+    // 如果状态变为已关闭，设置关闭时间和关闭人
     if (updateDto.status === InquiryStatus.CLOSED && inquiry.status !== InquiryStatus.CLOSED) {
       inquiry.closedAt = new Date();
       inquiry.closedBy = updatedBy;
@@ -86,10 +102,9 @@ export class InquiryService {
     await this.inquiryRepository.softRemove(inquiry);
   }
 
-  // Reply methods
   async findReplies(inquiryId: string): Promise<InquiryReply[]> {
     return this.replyRepository.find({
-      where: { inquiryId },
+      where: { inquiryId, deletedAt: null },
       relations: ['replier'],
       order: { createdAt: 'ASC' },
     });
@@ -98,17 +113,102 @@ export class InquiryService {
   async createReply(createDto: CreateInquiryReplyDto, replierId: string): Promise<InquiryReply> {
     const inquiry = await this.findOne(createDto.inquiryId);
 
-    // Update inquiry status to processing if it's pending
+    if (inquiry.status === InquiryStatus.CLOSED) {
+      throw new BadRequestException('该查询已关闭，无法回复');
+    }
+
+    // 更新查询状态为处理中
     if (inquiry.status === InquiryStatus.PENDING) {
-      inquiry.status = InquiryStatus.PROCESSING;
-      await this.inquiryRepository.save(inquiry);
+      await this.inquiryRepository.update(createDto.inquiryId, {
+        status: InquiryStatus.PROCESSING,
+        assignedTo: replierId,
+      });
     }
 
     const reply = this.replyRepository.create({
-      ...createDto,
+      inquiryId: createDto.inquiryId,
       replierId,
+      content: createDto.content,
     });
 
     return this.replyRepository.save(reply);
+  }
+
+  async close(inquiryId: string, closedBy: string): Promise<Inquiry> {
+    const inquiry = await this.findOne(inquiryId);
+
+    if (inquiry.status === InquiryStatus.CLOSED) {
+      throw new BadRequestException('该查询已经是关闭状态');
+    }
+
+    await this.inquiryRepository.update(inquiryId, {
+      status: InquiryStatus.CLOSED,
+      closedBy,
+      closedAt: new Date(),
+    });
+
+    return this.findOne(inquiryId);
+  }
+
+  async addRating(
+    inquiryId: string,
+    parentId: string,
+    rating: number,
+    comment?: string,
+  ): Promise<Inquiry> {
+    const inquiry = await this.findOne(inquiryId);
+
+    if (inquiry.parentId !== parentId) {
+      throw new BadRequestException('只有查询提交者可以评价');
+    }
+
+    if (inquiry.status !== InquiryStatus.CLOSED) {
+      throw new BadRequestException('查询未关闭，无法评价');
+    }
+
+    if (inquiry.rating !== null && inquiry.rating !== undefined) {
+      throw new BadRequestException('已经评价过了');
+    }
+
+    await this.inquiryRepository.update(inquiryId, {
+      rating,
+      ratingComment: comment,
+    });
+
+    return this.findOne(inquiryId);
+  }
+
+  async getStats(): Promise<{
+    total: number;
+    pending: number;
+    processing: number;
+    closed: number;
+    averageRating: number;
+  }> {
+    const total = await this.inquiryRepository.count({ where: { deletedAt: null } });
+    const pending = await this.inquiryRepository.count({ 
+      where: { status: InquiryStatus.PENDING, deletedAt: null } 
+    });
+    const processing = await this.inquiryRepository.count({ 
+      where: { status: InquiryStatus.PROCESSING, deletedAt: null } 
+    });
+    const closed = await this.inquiryRepository.count({ 
+      where: { status: InquiryStatus.CLOSED, deletedAt: null } 
+    });
+
+    const ratingResult = await this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .select('AVG(inquiry.rating)', 'averageRating')
+      .where('inquiry.rating IS NOT NULL')
+      .andWhere('inquiry.deletedAt IS NULL')
+      .getRawOne();
+
+    return {
+      total,
+      pending,
+      processing,
+      closed,
+      averageRating: ratingResult?.averageRating ? parseFloat(ratingResult.averageRating) : 0,
+    };
   }
 }
