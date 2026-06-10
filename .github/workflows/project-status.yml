@@ -1,0 +1,37 @@
+name: Project Status Automation
+
+on:
+  schedule:
+    # 每2小时检查一次
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-status:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check Issues Status
+        run: |
+          echo "## 📊 项目状态检查 $(date '+%Y-%m-%d %H:%M')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "### 🔴 超时任务" >> $GITHUB_STEP_SUMMARY
+          gh issue list --state open --search "截止" --limit 10 --json number,title >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 进行中任务" >> $GITHUB_STEP_SUMMARY
+          gh issue list --state open --limit 20 --json number,title,assignees >> $GITHUB_STEP_SUMMARY
+
+      - name: Check for Overdue Issues
+        if: github.event_name == 'schedule'
+        run: |
+          # 检查超时的Issue并添加提醒
+          OVERDUE=$(gh issue list --state open --limit 50 --json number,title --jq '.[] | select(.title | contains("截止") or contains("QA") or contains("验收"))')
+          
+          if [ -n "$OVERDUE" ]; then
+            echo "⚠️ 发现可能超时的任务"
+            # 可以添加自动评论等后续操作
+          fi
