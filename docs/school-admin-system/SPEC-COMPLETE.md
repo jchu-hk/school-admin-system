@@ -9,7 +9,7 @@
 |------|------|
 | 文档名称 | 智能校务助理系统 — 完整功能规格书 |
 | 文档编号 | SPEC-SCHOOL-ADMIN-001 |
-| 当前版本 | **v1.7.0** |
+| 当前版本 | **v1.7.1** |
 | 文档状态 | ~~已核准 (Approved)~~ **→ 变更中 (Change in Progress)** |
 | 存放位置 | `/docs/school-admin-system/SPEC-COMPLETE.md` |
 | 主维护人 | 系统架构团队 |
@@ -546,6 +546,20 @@ def aggregate_attendance(records, group_by="class"):
 2. **情感分析：** 检测紧急程度
 3. **自动回复生成：** 匹配FAQ数据库
 4. **路由分配：** 分配给适当人员或自动回复
+
+#### 验收标准 (AC)
+
+| # | Given（前置条件）| When（操作）| Then（预期结果）|
+|---|----------------|------------|----------------|
+| AC-01 | 家长致电校务处查询小明今日校车情况 | 校务处同工在家长查询队列看到该来电，标记为phone渠道 | 系统记录来电渠道=phone，通话结束后弹出通话记录表单（通话时长、结果、家长情绪为必填项）|
+| AC-02 | 家长WhatsApp消息咨询午膳餐单 | 系统接收WhatsApp消息，AI自动识别意图为lunch_menu | AI分析intent=lunch_menu，urgency=low，自动匹配FAQ模板「午膳餐单」，建议回复可一键发送 |
+| AC-03 | 家长通过微信门户提交校车延误投诉（情绪激动）| AI分析该消息内容 | sentiment=negative，urgency=medium，触发高优先级标记，自动升级至校务主任处理 |
+| AC-04 | 家长查询队列中有多条pending状态的查询（>10分钟未处理）| 系统例行检查 | 超时标记warning，推送提醒至校务处同工App |
+| AC-05 | 校务处同工使用快速回复模板回复家长 | 选择「校車延誤通知」模板，填写延误时间=15分钟，点击发送 | 系统生成回复内容（包含延误时间、原因、预计到校时间），通过微信/短信/邮件发送，家长收到通知 |
+| AC-06 | 家长查询涉及跨部门问题（如校车+午膳）| 校务处同工标记为需要转交 | 系统支持将该查询转交给其他部门同事，原始记录保留处理历史 |
+| AC-07 | 家长通过App提交文字查询（学校假期安排）| AI分析intent=general_admin | 系统匹配合适FAQ回复，自动回复家长（无需人工处理），query_status=auto_replied |
+| AC-08 | 家长通过电话查询，沟通内容涉及敏感信息（如家庭情况）| 校务处同工记录通话内容 | 通话记录仅记录元数据（时长、结果、情绪），不记录敏感内容摘要，PDPO合规 |
+
 
 **输出：**
 ```json
@@ -1546,6 +1560,56 @@ Step 6: 数据汇总与归档 (Summary & Archive)
 
 ### Function F-FIN-002: 零用现金报销
 
+**功能ID：** F-FIN-002
+**功能名称：** 零用现金报销
+**模块：** MOD-FIN-001 (财务资产管理)
+**子模块：** 收费
+**优先级：** P0
+**责任人：** 校务处同工
+
+#### 功能描述
+
+零用现金报销功能允许校务处同工通过系统提交零用现金（ Petty Cash ）支出申请，经双人见证（适用于超过 HK$500 的交易）和校务主任审批后完成报销。系统支持 OCR 收据识别、自动双人见证推送和备用金余额追踪。
+
+#### 验收标准 (AC)
+
+| # | Given（前置条件）| When（操作）| Then（预期结果）|
+|---|----------------|------------|----------------|
+| AC-01 | 校务处同工提交一笔HK$856的文具采购报销申请，上传收据 | 提交报销申请 | 系统自动执行OCR识别，显示「🤖 OCR识别金额: HK$856.00」并以黄色底色高亮；同时显示「📋 系统登记金额」；显示「⚠️ 请人工核对收据原件」复核提示 |
+| AC-02 | OCR识别金额与实际收据金额一致，校务处同工确认提交 | 提交双人见证 | 系统自动向第一见证人（李主任）发送见证任务推送（App + 短信），显示交易摘要和金额 |
+| AC-03 | 第一见证人完成见证操作 | 第一见证人点击「确认见证」| 系统记录见证时间戳，自动向第二见证人（陈副主任）发送待见证任务推送，见证状态更新为「待第二见证人」 |
+| AC-04 | 第二见证人完成见证操作 | 第二见证人点击「确认见证」| 系统锁定交易，状态更新为「待审批」，当前备用金余额自动扣减HK$856 |
+| AC-05 | 校务主任收到审批待办通知，审批该笔报销 | 校务主任点击「批准」| 系统记录审批时间和审批人，交易状态更新为「已批准」，校务处同工收到批准通知 |
+| AC-06 | 单笔报销金额超过HK$3,000（动态限额上限）| 校务处同工尝试提交 | 系统显示警告：「单笔交易超过HK$3,000限额，请联系校务主任调整动态限额」并阻止提交 |
+| AC-07 | 第一见证人在30分钟内未完成见证 | 系统例行检查（每5分钟）| 系统发送提醒至第一见证人；超过30分钟自动提醒校务主任介入处理 |
+| AC-08 | 校务主任选择拒绝该报销申请 | 点击「拒绝」并填写拒绝原因 | 系统记录拒绝原因，交易状态更新为「已拒绝」，申请人收到拒绝通知（含原因）|
+| AC-09 | OCR识别金额与系统登记金额不一致 | OCR识别完成后 | 系统以红色高亮显示差异金额，弹出警告：「⚠️ OCR识别金额与系统登记金额不一致，请人工核对收据」|
+| AC-10 | 备用金余额低于HK$500，申请人尝试提交报销 | 提交报销申请 | 系统显示警告：「⚠️ 备用金余额不足（当前HK$324），请先申请备用金补充」，可选择继续提交或取消 |
+
+#### 测试用例
+
+| # | 测试场景 | 预期结果 |
+|---|----------|---------|
+| TC-01 | 小额报销（≤HK$500）单人见证 | 系统跳过第二见证人流程，直接进入审批 |
+| TC-02 | 大额报销（>HK$500）双人见证 | 第一见证人完成后自动推送第二见证人任务 |
+| TC-03 | OCR识别成功，金额一致 | 显示绿色状态「OCR识别成功」，黄色高亮显示金额 |
+| TC-04 | OCR识别失败 | 显示「⚠️ OCR识别失败，请手动输入金额」，系统仍可正常提交 |
+| TC-05 | 见证人手机无网络 | 推送失败后自动重试3次，仍失败则发送短信备用通知 |
+| TC-06 | 备用金余额为0 | 禁止提交任何报销申请，提示先补充备用金 |
+| TC-07 | 报销单据丢失 | 支持重新上传收据图片，保留历史记录审计 |
+| TC-08 | 动态限额CPI调整生效 | 学年切换时系统自动计算新限额并通知校务主任确认 |
+
+#### 异常处理
+
+| 异常情况 | 处理方式 |
+|----------|---------|
+| OCR识别失败 | 降级为手动输入金额，显示「⚠️ 请手动输入金额」提示 |
+| 第一见证人超时未见证 | 30分钟后提醒，1小时后通知校务主任可指定替代见证人 |
+| 第二见证人拒绝见证 | 记录拒绝原因，退回申请人重新提交或说明情况 |
+| 审批人离线 | 系统保留待审批状态，待审批人上线后处理 |
+| 网络中断 | 本地缓存提交内容，网络恢复后自动重试并通知结果 |
+| 备用金不足 | 阻止提交，提示先通过F-FIN-001申请备用金补充 |
+
 **业务规则（评审报告修正 — 业务逻辑不合理#3）：**
 - **单笔交易限额：动态限额机制（评审修正）**：单笔HK$3,000限额为基础限额，每学年根据香港政府统计处公布的综合消费物价指数（CPI）自动调整，公式：`实际限额 = 基础限额 × (当年CPI指数 / 基准CPI指数)`；调整结果由校务主任确认后生效，并在系统公告通知
 - 现金交易>HK$500需双重授权
@@ -1865,6 +1929,355 @@ Step 6: 数据汇总与归档 (Summary & Archive)
 > - **费用收取（❌ 无权限）**：TEACHER角色**不可**操作收费界面、录入收款记录或修改费用数据。收费操作（录入、审批、豁免）仅限SCHOOL_ADMIN和OFFICER角色。
 > - **费用查询（✅ 本班学生费用状态）**：TEACHER角色可查看所教班级学生的费用缴纳状态（如欠费提醒确认），用于辅助班主任了解学生家庭情况以便给予适当支持。**但不得查看金额详情，仅显示"已缴清"/"欠费"/"分期付款"等状态标签。**
 > - **家长费用查询（✅ 子女缴费记录）**：PARENT角色可查看所绑定子女的完整缴费记录和费用明细。
+
+**ABAC规则引擎详细示例（Open Policy Agent / Rego — v1.7.0新增）：**
+
+> 以下为OPA Rego策略示例，展示各类典型ABAC规则的实现方式。实际部署时可将此作为参考实现。
+
+##### 1. 班级范围控制规则
+
+```rego
+# 班级范围控制：教师仅能操作所教班级的学生数据
+package school.auth
+
+# 教师班级范围规则
+teacher_class_scope[grant] {
+    input.user.role == "TEACHER"
+    input.resource.type == "student_record"
+    
+    # 获取教师所教班级列表
+    teacher_classes := teacher_assigned_classes[input.user.id]
+    
+    # 检查目标学生是否在教师所教班级
+    student_class := input.resource.student_class
+    student_class == teacher_classes[_]
+    
+    grant := {
+        "decision": "allow",
+        "scope": "class_based",
+        "permitted_classes": teacher_classes
+    }
+}
+
+# 教师所教班级列表（实际从数据库/IDP获取）
+teacher_assigned_classes[user_id] := classes {
+    # 从HR系统或eClass同步的教师-班级关系
+    data.teachers[user_id].assigned_classes[classes]
+}
+
+# 默认拒绝：教师访问非所教班级数据
+default teacher_class_scope = false
+teacher_class_scope[grant] {
+    input.user.role == "TEACHER"
+    input.resource.type == "student_record"
+    grant := {"decision": "deny", "reason": "student_not_in_assigned_class"}
+}
+```
+
+##### 2. 家长子女范围控制规则
+
+```rego
+# 家长子女范围规则：家长仅能查看所绑定子女的数据
+package school.auth
+
+# 家长绑定的子女列表
+parent_bound_children[parent_id] := child_ids {
+    # 从家长-学生绑定关系表获取
+    data.parent_student_bindings[parent_id].children[child_ids]
+}
+
+# 家长数据访问规则
+parent_data_access[grant] {
+    input.user.role == "PARENT"
+    
+    # 获取家长绑定的子女
+    bound_children := parent_bound_children[input.user.id]
+    
+    # 检查目标学生是否在绑定列表
+    student_id := input.resource.student_id
+    student_id == bound_children[_]
+    
+    grant := {
+        "decision": "allow",
+        "scope": "child_based",
+        "permitted_children": bound_children
+    }
+}
+
+# 默认拒绝：家长访问非绑定子女数据
+default parent_data_access = false
+parent_data_access[grant] {
+    input.user.role == "PARENT"
+    grant := {"decision": "deny", "reason": "student_not_bound_to_parent"}
+}
+```
+
+##### 3. 敏感字段访问控制规则
+
+```rego
+# 敏感字段访问规则：身份证号、电话号码、完整地址
+package school.auth
+
+# 敏感字段列表
+sensitive_fields := {"hkid", "phone", "full_address", "bank_account"}
+
+# 判断是否为敏感字段
+is_sensitive_field(field) {
+    sensitive_fields[field]
+}
+
+# 敏感字段默认拒绝（需显式授权）
+sensitive_field_access[grant] {
+    is_sensitive_field(input.resource.field)
+    
+    # 检查用户角色是否有敏感字段查看权限
+    allowed_roles := {"SCHOOL_ADMIN", "OFFICER", "SYSTEM"}
+    input.user.role == allowed_roles[_]
+    
+    grant := {
+        "decision": "allow",
+        "warning": "sensitive_field_access_logged"
+    }
+}
+
+sensitive_field_access[grant] {
+    is_sensitive_field(input.resource.field)
+    input.user.role == "TEACHER"
+    
+    # 教师仅能查看家长联系方式（同电话号码规则）
+    input.resource.field == "parent_phone"
+    
+    grant := {
+        "decision": "allow",
+        "masked_display": true,
+        "warning": "field_displayed_masked"
+    }
+}
+
+# 完整地址：仅紧急情况经校务主任授权后可见
+sensitive_field_access[grant] {
+    input.resource.field == "full_address"
+    input.context.emergency_flag == true
+    input.user.role == "SCHOOL_ADMIN"
+    
+    grant := {
+        "decision": "allow",
+        "unmasked_display": true,
+        "reason": "emergency_access_authorized"
+    }
+}
+
+default sensitive_field_access = false
+sensitive_field_access[grant] {
+    is_sensitive_field(input.resource.field)
+    grant := {"decision": "deny", "reason": "sensitive_field_access_denied"}
+}
+```
+
+##### 4. 时间范围控制规则（财务数据学年隔离）
+
+```rego
+# 财务数据学年隔离规则
+package school.auth
+
+# 获取当前学年
+current_academic_year := "2025-2026" {
+    time.now_ns() >= time.parse("2006-01-02", "2025-09-01")[0]
+} else = "2024-2025"
+
+# 历史财务数据仅读权限
+financial_data_access[grant] {
+    input.resource.category == "financial"
+    
+    # 获取数据所属学年
+    data_year := input.resource.academic_year
+    
+    # 当前学年：可读写
+    data_year == current_academic_year
+    write_actions := {"create", "update", "delete"}
+    
+    input.action == write_actions[_]
+    
+    # 需检查财务报销权限
+    input.user.role == "OFFICER"
+    
+    grant := {"decision": "allow", "scope": "current_year_write"}
+}
+
+financial_data_access[grant] {
+    input.resource.category == "financial"
+    
+    # 历史学年：仅读
+    data_year := input.resource.academic_year
+    data_year != current_academic_year
+    input.action == "read"
+    
+    grant := {"decision": "allow", "scope": "historical_read_only"}
+}
+
+financial_data_access[grant] {
+    input.resource.category == "financial"
+    data_year := input.resource.academic_year
+    data_year != current_academic_year
+    input.action != "read"
+    
+    grant := {"decision": "deny", "reason": "historical_data_no_write_access"}
+}
+```
+
+##### 5. 紧急例外规则（学生安全）
+
+```rego
+# 学生安全紧急情况：临时提升访问权限
+package school.auth
+
+# 紧急访问规则：学生安全相关可临时提升权限
+emergency_access_override[grant] {
+    input.context.emergency_type == "student_safety"
+    
+    # 仅校务主任或系统管理员可触发紧急访问
+    allowed_roles := {"SCHOOL_ADMIN", "SYSTEM"}
+    input.user.role == allowed_roles[_]
+    
+    # 记录紧急访问原因
+    grant := {
+        "decision": "allow",
+        "override": true,
+        "scope": "full_access",
+        "audit_required": true,
+        "reason": input.context.emergency_reason,
+        "valid_until": time.add_date(time.now_ns() / 1000000000, 0, 0, 1)
+    }
+}
+```
+
+##### 6. 操作类型权限规则
+
+```rego
+# 操作类型权限：CREATE / READ / UPDATE / DELETE / EXPORT / PRINT
+package school.auth
+
+# 操作类型权限矩阵
+operation_permissions[permission] {
+    input.user.role == "TEACHER"
+    input.resource.type == "student_record"
+    
+    permission := {
+        "action": input.action,
+        "allowed": allowed_actions,
+        "conditions": ["class_scope", "own_class_only"]
+    }
+    
+    # 教师可读、可更新本班学生记录
+    allowed_actions := {"read", "update"}
+    allowed_actions[input.action]
+}
+
+operation_permissions[permission] {
+    input.user.role == "PARENT"
+    input.resource.type == "student_record"
+    
+    permission := {
+        "action": input.action,
+        "allowed": {"read"},
+        "conditions": ["child_scope"]
+    }
+    
+    # 家长仅能读取绑定子女记录
+    input.action == "read"
+}
+
+# 导出权限：需额外检查
+export_permission[grant] {
+    input.action == "export"
+    
+    # 检查是否在导出白名单
+    allowed_exports := {
+        {"role": "SCHOOL_ADMIN", "resource": "any"},
+        {"role": "OFFICER", "resource": "financial"},
+        {"role": "OFFICER", "resource": "attendance"},
+        {"role": "TEACHER", "resource": "own_class_grades"}
+    }
+    
+    match := {"role": input.user.role, "resource": input.resource.category}
+    match == allowed_exports[_]
+    
+    grant := {"decision": "allow", "export_format": "xlsx"}
+}
+
+export_permission[grant] {
+    input.action == "export"
+    grant := {"decision": "deny", "reason": "export_not_allowed"}
+}
+```
+
+##### 7. 完整授权评估入口
+
+```rego
+# 主授权评估入口
+package school.auth
+
+# 综合授权评估
+default authz = {"decision": "deny", "reason": "no_matching_rule"}
+
+authz[grant] {
+    # 1. 检查账户状态
+    account_status := check_account_status(input.user.id)
+    account_status.active == true
+    
+    # 2. 评估班级/子女范围
+    scope_result := teacher_class_scope[_]
+    scope_result.decision == "allow"
+    
+    # 3. 评估敏感字段规则
+    sensitive_result := sensitive_field_access[_]
+    sensitive_result.decision == "allow"
+    
+    grant := {
+        "decision": "allow",
+        "user_id": input.user.id,
+        "role": input.user.role,
+        "resource": input.resource,
+        "action": input.action,
+        "policies_matched": ["account_active", "class_scope", "sensitive_field"],
+        "evaluated_at": time.now_ns()
+    }
+}
+
+authz[grant] {
+    input.context.emergency_type == "student_safety"
+    emergency_result := emergency_access_override[_]
+    emergency_result.decision == "allow"
+    
+    grant := emergency_result
+}
+
+# 账户状态检查
+check_account_status(user_id) = status {
+    user := data.users[user_id]
+    status := {
+        "active": user.status == "active",
+        "disabled": user.disabled == true,
+        "expired": time.now_ns() > time.parse_rfc3339(user.account_expires_at)[0]
+    }
+}
+```
+
+##### ABAC规则测试用例
+
+| 测试场景 | 输入 | 预期结果 |
+|----------|------|---------|
+| 教师A（教2A班）查看学生B（2A班）出勤记录 | role=TEACHER, class=2A | ✅ Allow, scope=class_based |
+| 教师A查看学生C（3B班）出勤记录 | role=TEACHER, class=3B | ❌ Deny, student_not_in_assigned_class |
+| 家长X绑定学生Y，家长X查看学生Y成绩 | role=PARENT, child_id=Y | ✅ Allow, scope=child_based |
+| 家长X尝试查看未绑定的学生Z成绩 | role=PARENT, child_id=Z | ❌ Deny, student_not_bound_to_parent |
+| 校务主任查看学生香港身份证 | role=SCHOOL_ADMIN, field=hkid | ✅ Allow, sensitive_field_access_logged |
+| 教师尝试查看学生完整地址 | role=TEACHER, field=full_address | ❌ Deny, sensitive_field_access_denied |
+| 家长查看2023-2024学年（历史）学费记录 | role=PARENT, year=2023-2024 | ✅ Allow, historical_read_only |
+| 家长修改2023-2024学年学费记录 | role=PARENT, year=2023-2024, action=update | ❌ Deny, historical_data_no_write_access |
+| 校务主任紧急情况访问学生完整地址 | role=SCHOOL_ADMIN, emergency=true | ✅ Allow, override=true, audit_required=true |
+| 校务处同工导出生均成绩记录 | role=OFFICER, action=export, resource=grades | ✅ Allow, format=xlsx |
+| 教师尝试导出全校成绩记录 | role=TEACHER, action=export, resource=all_grades | ❌ Deny, export_not_allowed |
 
 **数据范围控制（ABAC规则 — 评审报告修正 — 权限设计缺陷#1）：**
 
@@ -4273,6 +4686,8 @@ MOD-OPS-001 (运维自动化与监控/v1.7.0)
 
 | 版本 | 发布日期 | 发布者 | 变更类型 | 变更摘要 | 审批人 |
 |------|----------|--------|----------|----------|--------|
+| **v1.7.1** | 2026-06-09 | 系统架构团队 | Minor | **需求文档补充**：依据GitHub Issues优先级清单（P0/P1/P2共8项缺失）全面补充：① **UI文档补充（SPEC-UI-PROTO.md v1.3.0）**：新增家长门户完整UI设计（10个页面）、午膳管理独立页面（4个页面）、财务报销管理页面、灾难恢复操作界面、运维仪表板详细设计、家长自助变更微信端页面；② **SPEC-COMPLETE.md AC补充**：F-INQ-001新增8条Given/When/Then格式AC验收标准、F-FIN-002新增10条完整AC验收标准+8条测试用例+6类异常处理、F-USER-003新增ABAC规则详细示例（7个OPA/Rego代码示例+11条测试用例）；③ 新增MOD-PARENT-001/MOD-LUNCH-001功能编号对照；④ 文档版本同步更新 | （待填）|
+
 | **v1.7.0-Patch1** | 2026-06-06 | 系统架构团队 | Patch | **v1.7.0质检修复**：① **F-ENRL-003补全**（🔴致命）：新增完整输入字段定义（16个字段）、6步处理流程、8条Given/When/Then验收标准AC；② **RBAC权限矛盾修正**（🟡重要）：拆分「费用收取」与「费用查询」，明确TEACHER角色对「费用收取」无操作权限（❌），对「费用查询」有本班学生费用状态查看权限（✅），并增加安全澄清注释；③ **新增7个关键函数AC验收标准**：F-ATT-001（8条）、F-LEAVE-001（6条）、F-BUS-001（6条）、F-FIN-001（4条）、F-USER-001（7条）、F-AUTO-002（5条）、F-NEW-003/004/006（各5条）；④ **跨模块数据流转自洽**：验证MOD-DAILY-001→MOD-FIN-001费用数据流（每日收费→学费管理）、MOD-CYCL→MOD-USER-001（编班→班级归属→出勤范围）、MOD-OPS→MOD-USER-001（运维告警→审计日志→审计完整性），无矛盾；⑤ **归档**：archive/SPEC-SCHOOL-ADMIN-v1.7.0.md 已归档 |
 
 | **v1.7.0** | 2026-06-06 | 系统架构团队 | Minor | 依据运维催生功能优化需求清单（v1.0.0，2026-06-06）P0优先级清单全面修订：**新增 Module 11（MOD-OPS-001）**，新增9项运维自动化与监控功能：F-OPS-001数据库健康检查与WAL积压自动处理(P0)、F-OPS-002 SSL证书到期自动续期(P0)、F-OPS-003 WebSAMS Token自动刷新(P0)、F-OPS-004一键灾难恢复脚本(P0)、F-OPS-005审计日志写入完整性监控(P0)、F-OPS-006 Coze API配额实时监控(P0)、F-OPS-007敏感字段查看频率告警(P0)、F-OPS-008数据库DDL操作审计(P0)、F-OPS-009运维健康仪表板(P0)；**新增20项Prometheus监控指标**；**增强F-NEW-006**（运维健康仪表板覆盖全部10项P0运维监控点）；F-NEW-006优先级由P2升级为P0；功能函数总数55→65，模块数9→12（新增Module 11）；F-OPS-004对F-NEW-001实现脚本落地增强（RTO≤30分钟）| （待填）|
@@ -4673,6 +5088,7 @@ Total: 38 functions across 5 modules
 
 | 版本 | 评审日期 | 评审人 | 角色 | 评审结果 | 备注 |
 |------|----------|--------|------|----------|------|
+| **v1.7.1** | 2026-06-09 | 系统架构团队 | 系统架构团队 | 需求文档补充 | UI设计+AC验收标准+ABAC示例补充 |
 | v1.7.0-Patch1 | 2026-06-06 | 系统架构团队 | 系统架构团队 | 质检报告修复 | F-ENRL-003补全/RBAC修正/7个函数AC新增/跨模块数据流验证 |
 | v1.7.0 | 2026-06-06 | 系统架构团队 | 系统架构团队 | 依据运维催生功能优化需求清单 v1.0.0 修订 | 新增9项运维自动化功能/新增20项监控指标 |
 | v1.6.0 | 2026-06-06 | 系统架构团队 | 系统架构团队 | 依据功能评审报告 REVIEW-FUNC-001 修订 | 新增6项功能/修正7项业务点 |
