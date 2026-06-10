@@ -83,3 +83,27 @@ school-admin-system/
 
 ## License
 MIT
+
+---
+
+## 📊 项目管理 (GitHub同步)
+
+所有项目管理通过GitHub同步，详见 [GitHub项目管理同步方案](./docs/project-management/GITHUB-SYNC.md)
+
+### 快速链接
+- [看板](./KANBAN-BOARD.md) - 项目状态总览
+- [流程文档](./docs/process/PHASE2-WORKFLOW.md) - 开发与验收流程
+- [PM文档](./docs/pm/) - 项目管理记录
+- [QA报告](./qa_report/) - 测试验收报告
+
+### GitHub Issue查询
+```bash
+# 查看所有进行中任务
+gh issue list --state open --limit 50
+
+# 查看P1优先级任务
+gh issue list --label "p1" --state open
+
+# 查看某个模块任务
+gh issue list --label "mod-daily" --state open
+```
