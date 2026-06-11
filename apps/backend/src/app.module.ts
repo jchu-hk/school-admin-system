@@ -7,6 +7,8 @@ import { User } from './modules/user/user.entity';
 import { PermissionModule } from './modules/permission/permission.module';
 import { RoleModule } from './modules/role/role.module';
 import { LeaveModule } from './modules/leave/leave.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
+import { ScholarshipModule } from './modules/scholarship/scholarship.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { InquiryModule } from './modules/inquiry/inquiry.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -38,6 +40,8 @@ import { PermissionApprovalModule } from './modules/permission-approval/permissi
     PermissionModule,
     RoleModule,
     LeaveModule,
+    AttendanceModule,
+    ScholarshipModule,
     NotificationModule,
     InquiryModule,
     AuthModule,

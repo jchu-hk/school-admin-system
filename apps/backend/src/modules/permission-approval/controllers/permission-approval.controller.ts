@@ -23,9 +23,9 @@ import {
   RejectPermissionRequestDto,
   CancelPermissionRequestDto,
 } from '../dto/permission-approval.dto';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../common/guards/roles.guard';
+import { Roles } from '../../../common/decorators/roles.decorator';
 import { UserRole } from '../../user/user.entity';
 
 @ApiTags('ABAC权限审批')
@@ -38,7 +38,7 @@ export class PermissionApprovalController {
   ) {}
 
   @Post()
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_ADMIN, UserRole.SCHOOL_STAFF)
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   @ApiOperation({ summary: '创建权限变更申请' })
   async createRequest(
     @Request() req: any,
@@ -54,17 +54,14 @@ export class PermissionApprovalController {
 
   @Get('my-requests')
   @ApiOperation({ summary: '获取我发起的权限申请列表' })
-  @ApiQuery({ name: 'status', required: false, enum: ['pending', 'approved', 'rejected', 'expired', 'cancelled'] })
+  @ApiQuery({ name: 'status', required: false })
   async getMyRequests(@Request() req: any, @Query('status') status?: string) {
     const user = req.user as any;
-    return this.permissionApprovalService.getMyRequests(
-      user,
-      status as any,
-    );
+    return this.permissionApprovalService.getMyRequests(user, status as any);
   }
 
   @Get('pending-approvals')
-  @Roles(UserRole.SCHOOL_ADMIN, UserRole.SYSTEM_ADMIN)
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SYSTEM_ADMIN)
   @ApiOperation({ summary: '获取待我审批的权限申请列表' })
   async getPendingApprovals(@Request() req: any) {
     const user = req.user as any;
@@ -79,7 +76,7 @@ export class PermissionApprovalController {
   }
 
   @Patch(':id/approve')
-  @Roles(UserRole.SCHOOL_ADMIN, UserRole.SYSTEM_ADMIN)
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SYSTEM_ADMIN)
   @ApiOperation({ summary: '审批通过权限申请' })
   async approveRequest(
     @Request() req: any,
@@ -91,7 +88,7 @@ export class PermissionApprovalController {
   }
 
   @Patch(':id/reject')
-  @Roles(UserRole.SCHOOL_ADMIN, UserRole.SYSTEM_ADMIN)
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SYSTEM_ADMIN)
   @ApiOperation({ summary: '驳回权限申请' })
   async rejectRequest(
     @Request() req: any,

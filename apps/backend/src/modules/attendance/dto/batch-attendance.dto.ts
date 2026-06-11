@@ -3,6 +3,7 @@ import {
   IsOptional,
   IsUUID,
   IsEnum,
+  IsDateString,
 } from 'class-validator';
 import { AttendanceStatus } from '../attendance.entity';
 
