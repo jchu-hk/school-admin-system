@@ -26,6 +26,13 @@ export enum InquiryType {
   OTHER = 'other',
 }
 
+export enum InquiryPriority {
+  LOW = 'low',
+  NORMAL = 'normal',
+  HIGH = 'high',
+  URGENT = 'urgent',
+}
+
 @Entity('inquiries')
 export class Inquiry {
   @PrimaryGeneratedColumn('uuid')
@@ -47,6 +54,17 @@ export class Inquiry {
     name: 'inquiry_type',
   })
   inquiryType: InquiryType;
+
+  @Column({
+    type: 'enum',
+    enum: InquiryPriority,
+    default: InquiryPriority.NORMAL,
+    name: 'priority',
+  })
+  priority: InquiryPriority;
+
+  @Column({ name: 'is_urgent', default: false })
+  isUrgent: boolean;
 
   @Column({ type: 'varchar', length: 200 })
   title: string;

@@ -1,8 +1,8 @@
-import { IsString, IsEnum, IsOptional, IsUUID, IsInt } from 'class-validator';
-import { InquiryType, InquiryStatus } from '../inquiry.entity';
+import { IsString, IsEnum, IsOptional, IsUUID, IsInt, IsBoolean } from 'class-validator';
+import { InquiryType, InquiryStatus, InquiryPriority } from '../inquiry.entity';
 
 // Re-export enums for convenience
-export { InquiryType, InquiryStatus };
+export { InquiryType, InquiryStatus, InquiryPriority };
 
 export class CreateInquiryDto {
   @IsUUID()
@@ -38,6 +38,14 @@ export class UpdateInquiryDto {
   @IsString()
   @IsOptional()
   ratingComment?: string;
+
+  @IsEnum(InquiryPriority)
+  @IsOptional()
+  priority?: InquiryPriority;
+
+  @IsBoolean()
+  @IsOptional()
+  isUrgent?: boolean;
 }
 
 export class CreateInquiryReplyDto {
@@ -66,4 +74,12 @@ export class InquiryQueryDto {
   @IsUUID()
   @IsOptional()
   parentId?: string;
+
+  @IsEnum(InquiryPriority)
+  @IsOptional()
+  priority?: InquiryPriority;
+
+  @IsBoolean()
+  @IsOptional()
+  isUrgent?: boolean;
 }

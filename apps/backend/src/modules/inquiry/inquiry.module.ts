@@ -2,12 +2,19 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { InquiryController } from './inquiry.controller';
 import { InquiryService } from './inquiry.service';
+import { InquiryIntentService } from './inquiry-intent.service';
+import { InquiryEscalationService } from './inquiry-escalation.service';
 import { Inquiry, InquiryReply } from './inquiry.entity';
+import { User } from '../user/user.entity';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Inquiry, InquiryReply])],
+  imports: [
+    TypeOrmModule.forFeature([Inquiry, InquiryReply, User]),
+    NotificationModule,
+  ],
   controllers: [InquiryController],
-  providers: [InquiryService],
-  exports: [InquiryService],
+  providers: [InquiryService, InquiryIntentService, InquiryEscalationService],
+  exports: [InquiryService, InquiryIntentService],
 })
 export class InquiryModule {}

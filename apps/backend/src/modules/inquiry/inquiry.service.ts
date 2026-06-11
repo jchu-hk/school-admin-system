@@ -1,16 +1,28 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Inquiry, InquiryReply, InquiryStatus } from './inquiry.entity';
+import { Inquiry, InquiryReply, InquiryStatus, InquiryPriority } from './inquiry.entity';
 import { CreateInquiryDto, UpdateInquiryDto, CreateInquiryReplyDto } from './dto/inquiry.dto';
+import { InquiryIntentService, IntentClassificationResult, IntentType } from './inquiry-intent.service';
+import { InquiryEscalationService, EscalationResult } from './inquiry-escalation.service';
+
+export interface CreateInquiryResult {
+  inquiry: Inquiry;
+  intent?: IntentClassificationResult;
+  escalation?: EscalationResult;
+}
 
 @Injectable()
 export class InquiryService {
+  private readonly logger = new Logger(InquiryService.name);
+
   constructor(
     @InjectRepository(Inquiry)
     private inquiryRepository: Repository<Inquiry>,
     @InjectRepository(InquiryReply)
     private replyRepository: Repository<InquiryReply>,
+    private readonly intentService: InquiryIntentService,
+    private readonly escalationService: InquiryEscalationService,
   ) {}
 
   async findAll(
@@ -19,6 +31,8 @@ export class InquiryService {
     status?: InquiryStatus,
     inquiryType?: string,
     parentId?: string,
+    priority?: InquiryPriority,
+    isUrgent?: boolean,
   ): Promise<{ inquiries: Inquiry[]; total: number }> {
     const queryBuilder = this.inquiryRepository.createQueryBuilder('inquiry')
       .leftJoinAndSelect('inquiry.parent', 'parent')
@@ -37,8 +51,18 @@ export class InquiryService {
       queryBuilder.andWhere('inquiry.parentId = :parentId', { parentId });
     }
 
+    if (priority) {
+      queryBuilder.andWhere('inquiry.priority = :priority', { priority });
+    }
+
+    if (isUrgent !== undefined) {
+      queryBuilder.andWhere('inquiry.isUrgent = :isUrgent', { isUrgent });
+    }
+
     const [inquiries, total] = await queryBuilder
-      .orderBy('inquiry.createdAt', 'DESC')
+      .orderBy('inquiry.isUrgent', 'DESC')
+      .addOrderBy('inquiry.priority', 'DESC')
+      .addOrderBy('inquiry.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
@@ -72,11 +96,88 @@ export class InquiryService {
   }
 
   async create(createDto: CreateInquiryDto): Promise<Inquiry> {
-    const inquiry = this.inquiryRepository.create({
+    // AI意图分类
+    const intentResult = this.intentService.classify(
+      `${createDto.title} ${createDto.content}`,
+    );
+    this.logger.debug(
+      `[AI Intent] ${createDto.title}: ${intentResult.primaryIntent.intent} (${intentResult.primaryIntent.confidence})`,
+    );
+
+    // 自动升级检查
+    const escalationResult = await this.escalationService.checkAndEscalate(
+      '', // 新建时尚无ID，先生成，后续更新
+      createDto.content,
+      createDto.title,
+    );
+
+    // 构建查询数据
+    const inquiryData: Partial<Inquiry> = {
       ...createDto,
       status: InquiryStatus.PENDING,
-    });
+      isUrgent: escalationResult.isEscalated,
+      priority: escalationResult.priority || InquiryPriority.NORMAL,
+    };
+
+    const inquiry = this.inquiryRepository.create(inquiryData);
     return this.inquiryRepository.save(inquiry);
+  }
+
+  /**
+   * 创建查询并返回AI分析结果
+   */
+  async createWithAnalysis(createDto: CreateInquiryDto): Promise<CreateInquiryResult> {
+    // AI意图分类
+    const intentResult = this.intentService.classify(
+      `${createDto.title} ${createDto.content}`,
+    );
+    this.logger.debug(
+      `[AI Intent] "${createDto.title}": ${intentResult.primaryIntent.intent} (${intentResult.primaryIntent.confidence})`,
+    );
+
+    // 自动升级检查（先用占位符，后续更新ID）
+    const escalationResult = await this.escalationService.checkAndEscalate(
+      'pending',
+      createDto.content,
+      createDto.title,
+    );
+
+    const inquiryData: Partial<Inquiry> = {
+      ...createDto,
+      status: InquiryStatus.PENDING,
+      isUrgent: escalationResult.isEscalated,
+      priority: escalationResult.priority || InquiryPriority.NORMAL,
+    };
+
+    const inquiry = this.inquiryRepository.create(inquiryData);
+    const savedInquiry = await this.inquiryRepository.save(inquiry);
+
+    // 紧急查询：更新通知中的查询ID
+    if (escalationResult.isEscalated) {
+      await this.escalationService.notifyAdmins(
+        savedInquiry.id,
+        {
+          keywords: [],
+          category: escalationResult.category || '紧急',
+          priority: escalationResult.priority || InquiryPriority.HIGH,
+          notificationTemplate: `紧急查询 [${savedInquiry.id}] 请立即处理`,
+        },
+        [],
+      );
+    }
+
+    return {
+      inquiry: savedInquiry,
+      intent: intentResult,
+      escalation: escalationResult,
+    };
+  }
+
+  /**
+   * AI意图分类分析（仅分析，不创建记录）
+   */
+  analyzeIntent(text: string, title?: string): IntentClassificationResult {
+    return this.intentService.classify(`${title || ''} ${text}`.trim());
   }
 
   async update(id: string, updateDto: UpdateInquiryDto, updatedBy?: string): Promise<Inquiry> {
@@ -210,5 +311,13 @@ export class InquiryService {
       closed,
       averageRating: ratingResult?.averageRating ? parseFloat(ratingResult.averageRating) : 0,
     };
+  }
+
+  async getUrgentInquiries(): Promise<Inquiry[]> {
+    return this.inquiryRepository.find({
+      where: { isUrgent: true, deletedAt: null },
+      relations: ['parent', 'assignee'],
+      order: { updatedAt: 'DESC' },
+    });
   }
 }

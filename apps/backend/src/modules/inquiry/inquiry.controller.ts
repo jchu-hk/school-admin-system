@@ -22,7 +22,13 @@ import {
 } from '@nestjs/swagger';
 import { InquiryService } from './inquiry.service';
 import { Inquiry, InquiryReply, InquiryStatus } from './inquiry.entity';
-import { CreateInquiryDto, UpdateInquiryDto, CreateInquiryReplyDto } from './dto/inquiry.dto';
+import {
+  CreateInquiryDto,
+  UpdateInquiryDto,
+  CreateInquiryReplyDto,
+  InquiryQueryDto,
+  InquiryPriority,
+} from './dto/inquiry.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -42,6 +48,8 @@ export class InquiryController {
   @ApiQuery({ name: 'status', required: false, description: '状态筛选' })
   @ApiQuery({ name: 'inquiryType', required: false, description: '类型筛选' })
   @ApiQuery({ name: 'parentId', required: false, description: '家长ID筛选' })
+  @ApiQuery({ name: 'priority', required: false, description: '优先级筛选' })
+  @ApiQuery({ name: 'isUrgent', required: false, description: '紧急查询筛选' })
   @ApiResponse({ status: 200, description: '获取查询列表成功' })
   @Roles(
     UserRole.SYSTEM_ADMIN,
@@ -56,6 +64,8 @@ export class InquiryController {
     @Query('status') status?: InquiryStatus,
     @Query('inquiryType') inquiryType?: string,
     @Query('parentId') parentId?: string,
+    @Query('priority') priority?: InquiryPriority,
+    @Query('isUrgent') isUrgent?: string,
     @Request() req?: any,
   ): Promise<{ inquiries: Inquiry[]; total: number }> {
     // 家长只能看到自己的查询
@@ -64,17 +74,23 @@ export class InquiryController {
       filterParentId = req.user.id;
     }
     
+    const parsedIsUrgent = isUrgent !== undefined
+      ? isUrgent === 'true'
+      : undefined;
+
     return this.inquiryService.findAll(
       page ? parseInt(page, 10) : 1,
       limit ? parseInt(limit, 10) : 10,
       status,
       inquiryType,
       filterParentId,
+      priority,
+      parsedIsUrgent,
     );
   }
 
   @Post()
-  @ApiOperation({ summary: '提交查询' })
+  @ApiOperation({ summary: '提交查询（AI分析版）' })
   @ApiResponse({ status: 201, description: '查询提交成功', type: Inquiry })
   @Roles(
     UserRole.PARENT,
@@ -91,6 +107,58 @@ export class InquiryController {
       createDto.parentId = req.user.id;
     }
     return this.inquiryService.create(createDto);
+  }
+
+  @Post('create-with-analysis')
+  @ApiOperation({ summary: '提交查询并返回AI意图分析结果' })
+  @ApiResponse({ status: 201, description: '查询提交成功' })
+  @Roles(
+    UserRole.PARENT,
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+  )
+  createWithAnalysis(
+    @Body() createDto: CreateInquiryDto,
+    @Request() req,
+  ) {
+    if (!createDto.parentId) {
+      createDto.parentId = req.user.id;
+    }
+    return this.inquiryService.createWithAnalysis(createDto);
+  }
+
+  @Post('analyze-intent')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'AI意图分析（仅分析，不创建记录）' })
+  @ApiResponse({ status: 200, description: '意图分析结果' })
+  @Roles(
+    UserRole.PARENT,
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+  )
+  analyzeIntent(
+    @Body('text') text: string,
+    @Body('title') title?: string,
+  ) {
+    if (!text) {
+      throw new BadRequestException('text字段不能为空');
+    }
+    return this.inquiryService.analyzeIntent(text, title);
+  }
+
+  @Get('urgent')
+  @ApiOperation({ summary: '获取所有紧急查询' })
+  @ApiResponse({ status: 200, description: '紧急查询列表' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+  )
+  getUrgentInquiries() {
+    return this.inquiryService.getUrgentInquiries();
   }
 
   @Get(':id')
