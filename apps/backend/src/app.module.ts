@@ -11,6 +11,7 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { InquiryModule } from './modules/inquiry/inquiry.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { PermissionApprovalModule } from './modules/permission-approval/permission-approval.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     InquiryModule,
     AuthModule,
     DashboardModule,
+    PermissionApprovalModule,
   ],
   controllers: [],
   providers: [],
