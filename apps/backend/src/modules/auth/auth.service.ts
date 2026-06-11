@@ -226,7 +226,7 @@ export class AuthService {
       );
 
       return {
-        access_token,
+        access_token: accessToken,
         message: 'Token刷新成功',
       };
     } catch (error) {
@@ -283,7 +283,7 @@ export class AuthService {
     console.log(`[AuthService] OTP for ${user.username}: ${otpCode}`);
 
     return {
-      temp_token,
+      temp_token: tempToken,
       sessionId: session.id,
       requiresOtp: true,
       otpType: OtpType.EMAIL,

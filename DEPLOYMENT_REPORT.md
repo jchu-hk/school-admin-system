@@ -1,6 +1,26 @@
 # DEPLOYMENT_REPORT.md - School Admin System
 
-> Last Updated: 2026-06-08 12:50 GMT+8
+> Last Updated: 2026-06-11 08:20 GMT+8
+> Phase 2 部署已完成
+
+---
+
+## 部署阶段概览
+
+| 阶段 | 日期 | 状态 | 说明 |
+|------|------|------|------|
+| Phase 1 | 2026-06-08 | ✅ 已完成 | 基础架构部署 |
+| **Phase 2** | **2026-06-11** | **✅ 已完成** | **ABAC权限、用户管理、认证服务** |
+
+### Phase 2 部署模块
+
+| 模块 | 状态 | 端点 |
+|------|------|------|
+| ABAC权限服务 | ✅ 已部署 | 8个REST API |
+| 用户管理模块 | ✅ 已部署 | 已在Phase 1验证 |
+| 基础认证服务 | ✅ 已部署 | 已在Phase 1验证 |
+
+**详细报告**: 参见 [DEPLOYMENT_REPORT_PHASE2.md](./DEPLOYMENT_REPORT_PHASE2.md)
 
 ---
 

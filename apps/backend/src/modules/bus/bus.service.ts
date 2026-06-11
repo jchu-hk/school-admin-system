@@ -58,9 +58,6 @@ export class BusService {
 
   async updateRoute(id: string, updateDto: UpdateBusRouteDto): Promise<BusRoute> {
     const route = await this.findRouteById(id);
-    if (updateDto.viaStops) {
-      updateDto.viaStops = JSON.stringify(updateDto.viaStops);
-    }
     Object.assign(route, updateDto);
     return this.busRouteRepository.save(route);
   }

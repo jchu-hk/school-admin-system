@@ -1,12 +1,16 @@
 # 项目看板 (Kanban Board)
 
-最后更新：2026-06-11 07:45
+最后更新：2026-06-11 08:20
 
 ## 📋 Backlog / 待处理
 
 ### P0 - 最高优先级
 | Issue | 标题 | 标签 | 指派 |
 |-------|------|------|------|
+| #71 | AI意图分类功能缺失 (F-INQ-001) | p0, bug, inquiry, ai | @CHECKER |
+| #72 | 紧急查询升级功能缺失 (F-INQ-001) | p0, bug, inquiry | @CHECKER |
+| #74 | AI核验机制缺失 (F-LEAVE-001) | p0, bug, leave, ai | @CHECKER |
+| #75 | 病假医生证明验证缺失 (F-LEAVE-001) | p0, bug, leave | @CHECKER |
 | #21 | [P0] 财政模块完全未开发 - 菜单和功能缺失 | enhancement, backend, p0 | - |
 | #20 | [P0] 补齐课程管理和系统设置页面 | bug, frontend, p0 | - |
 | #29 | [REQ] 家长门户整体UI严重不足 | req, ui, portal, p0 | @REQ |
@@ -14,6 +18,9 @@
 ### P1 - 高优先级 - 核心功能模块
 | Issue | 标题 | 标签 | 指派 |
 |-------|------|------|------|
+| #73 | 自动回复建议功能缺失 (F-INQ-001) | p1, bug, inquiry, ai | @CHECKER |
+| #76 | 跟进提醒功能缺失 (F-LEAVE-001) | p1, bug, leave | @CHECKER |
+| #77 | [CHECKER] 复核QA验收缺陷报告 | checker, review | @CHECKER |
 | #22 | [REQ] 家长查询AC验收标准缺失 | req, spec, p1 | @REQ |
 | #23 | [REQ] 午膳管理独立页面设计缺失 | req, ui, p1 | @REQ |
 | #25 | [REQ] 财务报销完整AC缺失 | req, spec, p1 | @REQ |
@@ -164,6 +171,13 @@
 - ✅ 更新看板状态，添加开发进度区块
 - ✅ 创建自动化进度检查脚本
 - ✅ 创建标准化流程文档 PHASE2-WORKFLOW.md
+
+### 2026-06-11 08:20 (PM安排CHECKER复核)
+- ✅ **QA验收缺陷**: 发现6个缺陷Issue已创建 (#71-#76)
+- ✅ **P0缺陷**: #71, #72, #74, #75 需立即修复
+- ✅ **P1缺陷**: #73, #76 后续修复
+- ✅ **CHECKER任务**: #77 复核缺陷定级和优先级
+- ⏳ **等待CHECKER**: 10:00前完成复核
 
 ### 2026-06-10 22:05 (PM紧急协调)
 - ⚠️ **发现问题**: Issue #62, #63, #64 无实际指派，导致任务无人认领

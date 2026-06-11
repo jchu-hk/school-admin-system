@@ -3,6 +3,8 @@ import {
   IsNumber,
   IsOptional,
   IsEnum,
+  IsNotEmpty,
+  IsUUID,
   Min,
 } from 'class-validator';
 import { ApplicationStatus } from '../scholarship.entity';
