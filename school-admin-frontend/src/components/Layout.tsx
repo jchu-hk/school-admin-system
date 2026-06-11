@@ -2,18 +2,19 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import { LayoutDashboard, Users, BookOpen, Settings, LogOut, GraduationCap, Calendar, MessageCircle, Bell } from 'lucide-react'
 import LanguageSelector from './LanguageSelector'
 import { useI18n } from '../i18n'
+import { getToken, removeToken } from '../utils/tokenService'
 
 export default function Layout() {
   const navigate = useNavigate()
   const { t } = useI18n()
-  const token = localStorage.getItem('token')
+  const token = getToken()
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
+    removeToken()
     navigate('/login')
   }
 
-  if (!token) { window.location.href = '/login'; return null }
+  if (!token) { navigate('/login', { replace: true }); return null }
 
   const navItems = [
     { label: t.nav.dashboard, icon: LayoutDashboard, path: '/dashboard' },

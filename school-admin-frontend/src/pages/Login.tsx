@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useNavigate } from 'react-router-dom'
 import apiClient from '../api/client'
 import { Eye, EyeOff, LogIn, Shield } from 'lucide-react'
 import { useI18n } from '../i18n'
+import { setToken } from '../utils/tokenService'
 
 const loginSchema = z.object({
   username: z.string().min(1, '请输入用户名'),
@@ -29,6 +31,7 @@ interface LoginResponse {
 
 export default function Login() {
   const { t } = useI18n()
+  const navigate = useNavigate()
   const [showPwd, setShowPwd] = useState(false)
   const [error, setError] = useState('')
   const [step, setStep] = useState<'login' | 'otp'>('login')
@@ -62,9 +65,10 @@ export default function Login() {
       }
       
       // 直接返回access_token的情况
-      if (res.data.access_token) {
-        localStorage.setItem('token', res.data.access_token)
-        window.location.href = '/dashboard'
+      const token = res.data?.access_token
+      if (token && typeof token === 'string' && token !== 'undefined' && token !== 'null') {
+        setToken(token)
+        navigate('/dashboard')
         return
       }
       
@@ -87,9 +91,10 @@ export default function Login() {
         otpType: loginData?.otpType || 'email',
       })
       
-      if (res.data.access_token) {
-        localStorage.setItem('token', res.data.access_token)
-        window.location.href = '/dashboard'
+      const token = res.data?.access_token
+      if (token && typeof token === 'string' && token !== 'undefined' && token !== 'null') {
+        setToken(token)
+        navigate('/dashboard')
       } else {
         setError('验证失败，未获取到访问令牌')
         setIsSubmitting(false)

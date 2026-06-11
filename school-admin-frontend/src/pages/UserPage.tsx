@@ -8,6 +8,7 @@ import {
   Key, Upload, Download, Lock, UserCog, Settings2
 } from 'lucide-react'
 import apiClient, { isAxiosError } from '../api/client'
+import { getToken } from '../utils/tokenService'
 
 // ============ Types & Enums ============
 enum UserRole {
@@ -188,7 +189,7 @@ export default function UserPage() {
   const fetchUsers = useCallback(async () => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       if (!token) {
         window.location.href = '/login'
         return
@@ -221,7 +222,7 @@ export default function UserPage() {
 
   const fetchRoles = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const response = await apiClient.get<Role[]>('/api/roles', {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -239,7 +240,7 @@ export default function UserPage() {
   // Handlers
   const handleCreate = async (data: UserFormData) => {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       await apiClient.post('/api/users', {
         ...data,
         status: UserStatus.ACTIVE,
@@ -259,7 +260,7 @@ export default function UserPage() {
     if (!selectedUser) return
     
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const updateData = { ...data }
       if (!updateData.password) {
         delete (updateData as Partial<UserFormData>).password
@@ -281,7 +282,7 @@ export default function UserPage() {
     if (!selectedUser) return
     
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       await apiClient.delete(`/api/users/${selectedUser.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -295,7 +296,7 @@ export default function UserPage() {
 
   const handleToggleStatus = async (user: User) => {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const newStatus = user.status === UserStatus.ACTIVE ? UserStatus.DISABLED : UserStatus.ACTIVE
       await apiClient.patch(`/api/users/${user.id}`, { status: newStatus }, {
         headers: { Authorization: `Bearer ${token}` },
@@ -310,7 +311,7 @@ export default function UserPage() {
     if (!selectedUser || !newPassword) return
     
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       await apiClient.post(`/api/users/${selectedUser.id}/reset-password`, { password: newPassword }, {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -335,7 +336,7 @@ export default function UserPage() {
       formData.append('file', file)
       
       try {
-        const token = localStorage.getItem('token')
+        const token = getToken()
         await apiClient.post('/api/users/import', formData, {
           headers: { 
             Authorization: `Bearer ${token}`,
@@ -1218,7 +1219,7 @@ function PermissionModal({ role, onClose }: PermissionModalProps) {
 
   const handleSave = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       await apiClient.patch(`/api/roles/${role.id}`, { permissions: selectedPermissions }, {
         headers: { Authorization: `Bearer ${token}` },
       })

@@ -7,6 +7,7 @@ import {
   User, Phone, Mail, Calendar, Users, Filter, CheckCircle, XCircle
 } from 'lucide-react'
 import apiClient, { isAxiosError } from '../api/client'
+import { getToken } from '../utils/tokenService'
 
 // ============ Types & Enums ============
 enum UserRole {
@@ -143,7 +144,7 @@ export default function StudentPage() {
   const fetchStudents = useCallback(async () => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       if (!token) {
         window.location.href = '/login'
         return
@@ -181,7 +182,7 @@ export default function StudentPage() {
   // Handlers
   const handleCreate = async (data: StudentFormData) => {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       await apiClient.post('/api/users', {
         ...data,
         role: UserRole.STUDENT,
@@ -202,7 +203,7 @@ export default function StudentPage() {
     if (!selectedStudent) return
     
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const updateData = { ...data }
       if (!updateData.password) {
         delete (updateData as Partial<StudentFormData>).password
@@ -224,7 +225,7 @@ export default function StudentPage() {
     if (!selectedStudent) return
     
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       await apiClient.delete(`/api/users/${selectedStudent.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })

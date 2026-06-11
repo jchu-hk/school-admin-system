@@ -1,4 +1,13 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
+import { getToken, removeToken } from '../utils/tokenService'
+
+// 创建一个全局 navigate 函数引用
+let globalNavigate: ((path: string) => void) | null = null
+
+// 设置全局 navigate 函数（在 App 初始化时调用）
+export function setGlobalNavigate(navigate: (path: string) => void) {
+  globalNavigate = navigate
+}
 
 // 创建axios实例
 const apiClient = axios.create({
@@ -12,7 +21,7 @@ const apiClient = axios.create({
 // 请求拦截器
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -29,8 +38,13 @@ apiClient.interceptors.response.use(
   (error) => {
     // 处理401错误，统一跳转登录
     if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-      window.location.href = '/login'
+      removeToken()
+      if (globalNavigate) {
+        globalNavigate('/login')
+      } else {
+        // 如果 navigate 还未设置，使用 window.location 作为后备
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }

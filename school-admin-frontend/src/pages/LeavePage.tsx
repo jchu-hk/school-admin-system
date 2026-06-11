@@ -8,6 +8,7 @@ import {
   Filter, Upload, History, ArrowRight, AlertCircle
 } from 'lucide-react'
 import apiClient, { isAxiosError } from '../api/client'
+import { getToken } from '../utils/tokenService'
 
 // ============ Types & Enums ============
 enum LeaveType {
@@ -214,7 +215,7 @@ export default function LeavePage() {
   // Fetch teachers for substitute teacher selection
   const fetchTeachers = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       if (!token) return
 
       const response = await apiClient.get('/api/users?role=teacher&limit=100', {
@@ -230,7 +231,7 @@ export default function LeavePage() {
   const fetchLeaves = useCallback(async () => {
     setLoading(true)
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       if (!token) {
         window.location.href = '/login'
         return
@@ -286,7 +287,7 @@ export default function LeavePage() {
   // Handlers
   const handleCreate = async (data: LeaveFormData) => {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const user = getCurrentUser()
       
       if (!user) {
@@ -314,7 +315,7 @@ export default function LeavePage() {
     if (!selectedLeave) return
 
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const user = getCurrentUser()
       
       await apiClient.post(`/api/leaves/${selectedLeave.id}/approve`, {
@@ -339,7 +340,7 @@ export default function LeavePage() {
     if (!selectedLeave) return
 
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const user = getCurrentUser()
       
       await apiClient.post(`/api/leaves/${selectedLeave.id}/reject`, {
@@ -361,7 +362,7 @@ export default function LeavePage() {
     if (!selectedLeave) return
 
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const user = getCurrentUser()
       
       await apiClient.post(`/api/leaves/${selectedLeave.id}/cancel`, {

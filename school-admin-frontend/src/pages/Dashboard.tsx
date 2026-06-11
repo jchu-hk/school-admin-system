@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Users, BookOpen, TrendingUp, Activity } from 'lucide-react'
 import dashboardApi, { DashboardStats, AttendanceTrend } from '../api/dashboard'
 import { useI18n } from '../i18n'
+import { getToken } from '../utils/tokenService'
 
 type Period = 'week' | 'month'
 
@@ -14,7 +15,7 @@ export default function Dashboard() {
   const [trendData, setTrendData] = useState<AttendanceTrend[]>([])
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     if (!token) { window.location.href = '/login'; return }
     
     dashboardApi.getStats()
