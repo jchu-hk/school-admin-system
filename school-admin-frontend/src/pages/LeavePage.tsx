@@ -7,7 +7,7 @@ import {
   Calendar, Clock, FileText, User, CheckCircle, XCircle, 
   Filter, Upload, History, ArrowRight, AlertCircle
 } from 'lucide-react'
-import axios from 'axios'
+import apiClient, { isAxiosError } from '../api/client'
 
 // ============ Types & Enums ============
 enum LeaveType {
@@ -217,7 +217,7 @@ export default function LeavePage() {
       const token = localStorage.getItem('token')
       if (!token) return
 
-      const response = await axios.get('/api/users?role=teacher&limit=100', {
+      const response = await apiClient.get('/api/users?role=teacher&limit=100', {
         headers: { Authorization: `Bearer ${token}` },
       })
       setTeachers(response.data.data || [])
@@ -247,7 +247,7 @@ export default function LeavePage() {
       if (statusFilter) params.append('status', statusFilter)
       if (typeFilter) params.append('leaveType', typeFilter)
 
-      const response = await axios.get<PaginatedResponse>(`/api/leaves?${params.toString()}`, {
+      const response = await apiClient.get<PaginatedResponse>(`/api/leaves?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -270,7 +270,7 @@ export default function LeavePage() {
       setTotal(response.data.total || 0)
     } catch (error) {
       console.error('Failed to fetch leaves:', error)
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
+      if (isAxiosError(error) && error.response?.status === 401) {
         window.location.href = '/login'
       }
     } finally {
@@ -293,7 +293,7 @@ export default function LeavePage() {
         throw new Error('用户未登录')
       }
 
-      await axios.post('/api/leaves', {
+      await apiClient.post('/api/leaves', {
         ...data,
         applicantId: user.id,
         totalDays,
@@ -317,7 +317,7 @@ export default function LeavePage() {
       const token = localStorage.getItem('token')
       const user = getCurrentUser()
       
-      await axios.post(`/api/leaves/${selectedLeave.id}/approve`, {
+      await apiClient.post(`/api/leaves/${selectedLeave.id}/approve`, {
         approved: true,
         approvalComment: data.comment,
         substituteTeacherId: data.substituteTeacherId,
@@ -342,7 +342,7 @@ export default function LeavePage() {
       const token = localStorage.getItem('token')
       const user = getCurrentUser()
       
-      await axios.post(`/api/leaves/${selectedLeave.id}/reject`, {
+      await apiClient.post(`/api/leaves/${selectedLeave.id}/reject`, {
         rejectionReason: data.comment,
         approverId: user?.id,
       }, {
@@ -364,7 +364,7 @@ export default function LeavePage() {
       const token = localStorage.getItem('token')
       const user = getCurrentUser()
       
-      await axios.post(`/api/leaves/${selectedLeave.id}/cancel`, {
+      await apiClient.post(`/api/leaves/${selectedLeave.id}/cancel`, {
         cancelledBy: user?.id,
       }, {
         headers: { Authorization: `Bearer ${token}` },

@@ -6,7 +6,7 @@ import {
   Search, Plus, Edit2, Trash2, Eye, X, ChevronLeft, ChevronRight,
   User, Phone, Mail, Calendar, Users, Filter, CheckCircle, XCircle
 } from 'lucide-react'
-import axios from 'axios'
+import apiClient, { isAxiosError } from '../api/client'
 
 // ============ Types & Enums ============
 enum UserRole {
@@ -158,7 +158,7 @@ export default function StudentPage() {
       if (statusFilter) params.append('status', statusFilter)
       if (searchTerm) params.append('search', searchTerm)
 
-      const response = await axios.get<PaginatedResponse<User>>(`/api/users?${params.toString()}`, {
+      const response = await apiClient.get<PaginatedResponse<User>>(`/api/users?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -166,7 +166,7 @@ export default function StudentPage() {
       setTotal(response.data.total || 0)
     } catch (error) {
       console.error('Failed to fetch students:', error)
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
+      if (isAxiosError(error) && error.response?.status === 401) {
         window.location.href = '/login'
       }
     } finally {
@@ -182,7 +182,7 @@ export default function StudentPage() {
   const handleCreate = async (data: StudentFormData) => {
     try {
       const token = localStorage.getItem('token')
-      await axios.post('/api/users', {
+      await apiClient.post('/api/users', {
         ...data,
         role: UserRole.STUDENT,
         status: UserStatus.ACTIVE,
@@ -208,7 +208,7 @@ export default function StudentPage() {
         delete (updateData as Partial<StudentFormData>).password
       }
       
-      await axios.patch(`/api/users/${selectedStudent.id}`, updateData, {
+      await apiClient.patch(`/api/users/${selectedStudent.id}`, updateData, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setShowEditModal(false)
@@ -225,7 +225,7 @@ export default function StudentPage() {
     
     try {
       const token = localStorage.getItem('token')
-      await axios.delete(`/api/users/${selectedStudent.id}`, {
+      await apiClient.delete(`/api/users/${selectedStudent.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setShowDeleteConfirm(false)

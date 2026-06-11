@@ -18,28 +18,52 @@ export default function Dashboard() {
     if (!token) { window.location.href = '/login'; return }
     
     dashboardApi.getStats()
-      .then(data => { setStats(data); setLoading(false) })
-      .catch(() => setLoading(false))
+      .then(data => { 
+        // 防御性编程：确保数据有效
+        if (data && typeof data === 'object') {
+          setStats(data)
+        } else {
+          console.warn('Dashboard stats returned invalid data:', data)
+        }
+        setLoading(false) 
+      })
+      .catch((err) => {
+        console.error('Failed to load dashboard stats:', err)
+        setLoading(false)
+      })
   }, [])
 
   // 加载出勤趋势数据，支持 period 切换
   useEffect(() => {
     dashboardApi.getAttendanceTrend(period)
-      .then(data => setTrendData(data))
-      .catch(() => setTrendData([]))
+      .then(data => {
+        // 防御性编程：确保数据是数组
+        if (Array.isArray(data)) {
+          setTrendData(data)
+        } else {
+          console.warn('Attendance trend returned invalid data:', data)
+          setTrendData([])
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load attendance trend:', err)
+        setTrendData([])
+      })
   }, [period])
 
+  // 防御性编程：确保attendance有有效值
+  const attendanceValue = stats?.attendance ?? 0
   const pieData = [
-    { name: t.dashboard.attendance, value: stats.attendance },
-    { name: t.dashboard.absence, value: 100 - stats.attendance },
+    { name: t.dashboard.attendance, value: attendanceValue },
+    { name: t.dashboard.absence, value: 100 - attendanceValue },
   ]
   const COLORS = ['#22c55e', '#ef4444']
 
   const statCards = [
-    { label: t.dashboard.totalStudents, value: stats.students, icon: Users, lightColor: 'bg-blue-500' },
-    { label: t.dashboard.totalTeachers, value: stats.teachers, icon: BookOpen, lightColor: 'bg-green-500' },
-    { label: t.dashboard.totalCourses, value: stats.courses, icon: TrendingUp, lightColor: 'bg-purple-500' },
-    { label: t.dashboard.todayAttendance, value: `${stats.attendance}%`, icon: Activity, lightColor: 'bg-orange-500' },
+    { label: t.dashboard.totalStudents, value: stats?.students ?? 0, icon: Users, lightColor: 'bg-blue-500' },
+    { label: t.dashboard.totalTeachers, value: stats?.teachers ?? 0, icon: BookOpen, lightColor: 'bg-green-500' },
+    { label: t.dashboard.totalCourses, value: stats?.courses ?? 0, icon: TrendingUp, lightColor: 'bg-purple-500' },
+    { label: t.dashboard.todayAttendance, value: `${attendanceValue}%`, icon: Activity, lightColor: 'bg-orange-500' },
   ]
 
   return (
@@ -87,7 +111,7 @@ export default function Dashboard() {
           </div>
           <div className="h-[180px] md:h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={trendData.length > 0 ? trendData.map(d => ({ name: d.name, v: d.value })) : []}>
+              <BarChart data={(trendData || []).map(d => ({ name: d?.name || '', v: d?.value || 0 }))}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" fontSize={10} tick={{ fontSize: 10 }} />
                 <YAxis fontSize={10} domain={[80, 100]} tick={{ fontSize: 10 }} />
@@ -110,16 +134,16 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie 
-                  data={pieData} 
+                  data={pieData || []} 
                   cx="50%" 
                   cy="50%" 
                   innerRadius={40} 
                   outerRadius={60}
                   dataKey="value" 
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name || ''} ${((percent || 0) * 100).toFixed(0)}%`}
                   labelLine={false}
                 >
-                  {pieData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  {(pieData || []).map((_, i) => <Cell key={i} fill={COLORS[i % (COLORS?.length || 1)]} />)}
                 </Pie>
                 <Tooltip 
                   contentStyle={{ 

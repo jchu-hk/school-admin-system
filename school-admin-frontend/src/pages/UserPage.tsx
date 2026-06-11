@@ -7,7 +7,7 @@ import {
   User, Phone, Mail, Users, Filter, CheckCircle, XCircle, Shield,
   Key, Upload, Download, Lock, UserCog, Settings2
 } from 'lucide-react'
-import axios from 'axios'
+import apiClient, { isAxiosError } from '../api/client'
 
 // ============ Types & Enums ============
 enum UserRole {
@@ -203,7 +203,7 @@ export default function UserPage() {
       if (departmentFilter) params.append('department', departmentFilter)
       if (searchTerm) params.append('search', searchTerm)
 
-      const response = await axios.get<PaginatedResponse<User>>(`/api/users?${params.toString()}`, {
+      const response = await apiClient.get<PaginatedResponse<User>>(`/api/users?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -211,7 +211,7 @@ export default function UserPage() {
       setTotal(response.data.total || 0)
     } catch (error) {
       console.error('Failed to fetch users:', error)
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
+      if (isAxiosError(error) && error.response?.status === 401) {
         window.location.href = '/login'
       }
     } finally {
@@ -222,7 +222,7 @@ export default function UserPage() {
   const fetchRoles = useCallback(async () => {
     try {
       const token = localStorage.getItem('token')
-      const response = await axios.get<Role[]>('/api/roles', {
+      const response = await apiClient.get<Role[]>('/api/roles', {
         headers: { Authorization: `Bearer ${token}` },
       })
       setRoles(response.data || [])
@@ -240,7 +240,7 @@ export default function UserPage() {
   const handleCreate = async (data: UserFormData) => {
     try {
       const token = localStorage.getItem('token')
-      await axios.post('/api/users', {
+      await apiClient.post('/api/users', {
         ...data,
         status: UserStatus.ACTIVE,
       }, {
@@ -265,7 +265,7 @@ export default function UserPage() {
         delete (updateData as Partial<UserFormData>).password
       }
       
-      await axios.patch(`/api/users/${selectedUser.id}`, updateData, {
+      await apiClient.patch(`/api/users/${selectedUser.id}`, updateData, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setShowEditModal(false)
@@ -282,7 +282,7 @@ export default function UserPage() {
     
     try {
       const token = localStorage.getItem('token')
-      await axios.delete(`/api/users/${selectedUser.id}`, {
+      await apiClient.delete(`/api/users/${selectedUser.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setShowDeleteConfirm(false)
@@ -297,7 +297,7 @@ export default function UserPage() {
     try {
       const token = localStorage.getItem('token')
       const newStatus = user.status === UserStatus.ACTIVE ? UserStatus.DISABLED : UserStatus.ACTIVE
-      await axios.patch(`/api/users/${user.id}`, { status: newStatus }, {
+      await apiClient.patch(`/api/users/${user.id}`, { status: newStatus }, {
         headers: { Authorization: `Bearer ${token}` },
       })
       fetchUsers()
@@ -311,7 +311,7 @@ export default function UserPage() {
     
     try {
       const token = localStorage.getItem('token')
-      await axios.post(`/api/users/${selectedUser.id}/reset-password`, { password: newPassword }, {
+      await apiClient.post(`/api/users/${selectedUser.id}/reset-password`, { password: newPassword }, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setShowResetPasswordModal(false)
@@ -336,7 +336,7 @@ export default function UserPage() {
       
       try {
         const token = localStorage.getItem('token')
-        await axios.post('/api/users/import', formData, {
+        await apiClient.post('/api/users/import', formData, {
           headers: { 
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
@@ -1219,7 +1219,7 @@ function PermissionModal({ role, onClose }: PermissionModalProps) {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem('token')
-      await axios.patch(`/api/roles/${role.id}`, { permissions: selectedPermissions }, {
+      await apiClient.patch(`/api/roles/${role.id}`, { permissions: selectedPermissions }, {
         headers: { Authorization: `Bearer ${token}` },
       })
       onClose()

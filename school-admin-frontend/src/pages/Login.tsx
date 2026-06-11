@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import axios from 'axios'
+import apiClient from '../api/client'
 import { Eye, EyeOff, LogIn, Shield } from 'lucide-react'
 import { useI18n } from '../i18n'
 
@@ -51,7 +51,7 @@ export default function Login() {
     try {
       setError('')
       setIsSubmitting(true)
-      const res = await axios.post<LoginResponse>('/api/auth/login', data)
+      const res = await apiClient.post<LoginResponse>('/api/auth/login', data)
       
       // 如果需要OTP验证
       if (res.data.requiresOtp) {
@@ -81,7 +81,7 @@ export default function Login() {
       setError('')
       setIsSubmitting(true)
       
-      const res = await axios.post<{ access_token: string }>('/api/auth/verify-otp', {
+      const res = await apiClient.post<{ access_token: string }>('/api/auth/verify-otp', {
         tempToken: loginData?.temp_token,
         code: data.otpCode,
         otpType: loginData?.otpType || 'email',
