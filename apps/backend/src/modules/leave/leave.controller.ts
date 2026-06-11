@@ -23,7 +23,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../user/user.entity';
 
 @ApiTags('请假管理')
-@Controller('api/leaves')
+@Controller('leaves')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class LeaveController {

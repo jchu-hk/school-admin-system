@@ -29,7 +29,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../user/user.entity';
 
 @ApiTags('校车管理')
-@Controller('api/bus')
+@Controller('bus')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class BusController {

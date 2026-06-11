@@ -13,6 +13,8 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { InquiryModule } from './modules/inquiry/inquiry.module';
 import { TuitionModule } from './modules/tuition/tuition.module';
 import { FeeModule } from './modules/fee/fee.module';
+import { LunchModule } from './modules/lunch/lunch.module';
+import { BusModule } from './modules/bus/bus.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { PermissionApprovalModule } from './modules/permission-approval/permission-approval.module';
@@ -48,6 +50,8 @@ import { PermissionApprovalModule } from './modules/permission-approval/permissi
     InquiryModule,
     TuitionModule,
     FeeModule,
+    LunchModule,
+    BusModule,
     AuthModule,
     DashboardModule,
     PermissionApprovalModule,

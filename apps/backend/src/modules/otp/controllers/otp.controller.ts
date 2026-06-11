@@ -25,7 +25,7 @@ import {
 import { Request as ExpressRequest } from 'express';
 
 @ApiTags('OTP')
-@Controller('api/v1/otp')
+@Controller('v1/otp')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class OtpController {

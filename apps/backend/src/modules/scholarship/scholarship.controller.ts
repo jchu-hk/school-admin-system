@@ -31,7 +31,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../user/user.entity';
 
 @ApiTags('奖学金管理')
-@Controller('api/scholarships')
+@Controller('scholarships')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class ScholarshipController {

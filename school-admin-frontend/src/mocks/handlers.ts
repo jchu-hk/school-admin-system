@@ -41,7 +41,23 @@ const authHandlers = [
       requestId: 'req_' + Date.now(),
       success: true,
       data: {
-        token: 'mock_token_' + Date.now(),
+        temp_token: 'mock_temp_token_' + Date.now(),
+        sessionId: 'mock_session_' + Date.now(),
+        requiresOtp: true,
+        otpType: 'email',
+        message: '请查收OTP验证码',
+      },
+    });
+  }),
+
+  // OTP验证接口
+  http.post('/api/auth/verify-otp', async () => {
+    await delay(MOCK_DELAY);
+    return HttpResponse.json({
+      requestId: 'req_' + Date.now(),
+      success: true,
+      data: {
+        access_token: 'mock_access_token_' + Date.now(),
         user: { id: '1', name: '管理员', role: 'system_admin' },
       },
     });

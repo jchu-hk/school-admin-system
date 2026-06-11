@@ -21,7 +21,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../user/user.entity';
 
 @ApiTags('午膳管理')
-@Controller('api/lunch')
+@Controller('lunch')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class LunchController {

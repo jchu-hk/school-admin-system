@@ -22,7 +22,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../user/user.entity';
 
 @ApiTags('出勤管理')
-@Controller('api/attendances')
+@Controller('attendances')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class AttendanceController {
