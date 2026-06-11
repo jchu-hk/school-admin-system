@@ -11,6 +11,8 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
 import { ScholarshipModule } from './modules/scholarship/scholarship.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { InquiryModule } from './modules/inquiry/inquiry.module';
+import { TuitionModule } from './modules/tuition/tuition.module';
+import { FeeModule } from './modules/fee/fee.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { PermissionApprovalModule } from './modules/permission-approval/permission-approval.module';
@@ -44,6 +46,8 @@ import { PermissionApprovalModule } from './modules/permission-approval/permissi
     ScholarshipModule,
     NotificationModule,
     InquiryModule,
+    TuitionModule,
+    FeeModule,
     AuthModule,
     DashboardModule,
     PermissionApprovalModule,
