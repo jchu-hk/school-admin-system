@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
-      - run: pnpm install --approve-builds
+      - run: pnpm install
       - run: pnpm lint
 
   test:
@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
-      - run: pnpm install --approve-builds
+      - run: pnpm install
       - run: pnpm test
 
   build:
@@ -50,7 +50,7 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
-      - run: pnpm install --approve-builds
+      - run: pnpm install
       - run: pnpm build
 
   deploy:
