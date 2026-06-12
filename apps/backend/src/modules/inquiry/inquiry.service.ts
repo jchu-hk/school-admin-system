@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException, Logger } from '@nes
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Inquiry, InquiryReply, InquiryStatus, InquiryPriority } from './inquiry.entity';
+import { InquiryEscalationHistory } from './inquiry-escalation-history.entity';
 import { CreateInquiryDto, UpdateInquiryDto, CreateInquiryReplyDto } from './dto/inquiry.dto';
 import { InquiryIntentService, IntentClassificationResult, IntentType } from './inquiry-intent.service';
 import { InquiryEscalationService, EscalationResult } from './inquiry-escalation.service';
@@ -111,12 +112,15 @@ export class InquiryService {
       createDto.title,
     );
 
-    // 构建查询数据
+    // 构建查询数据（包含AI意图标签）
     const inquiryData: Partial<Inquiry> = {
       ...createDto,
       status: InquiryStatus.PENDING,
       isUrgent: escalationResult.isEscalated,
       priority: escalationResult.priority || InquiryPriority.NORMAL,
+      intentType: intentResult.primaryIntent.intent,
+      intentConfidence: intentResult.primaryIntent.confidence,
+      intentKeywords: intentResult.primaryIntent.matchedKeywords.join(','),
     };
 
     const inquiry = this.inquiryRepository.create(inquiryData);
@@ -147,6 +151,9 @@ export class InquiryService {
       status: InquiryStatus.PENDING,
       isUrgent: escalationResult.isEscalated,
       priority: escalationResult.priority || InquiryPriority.NORMAL,
+      intentType: intentResult.primaryIntent.intent,
+      intentConfidence: intentResult.primaryIntent.confidence,
+      intentKeywords: intentResult.primaryIntent.matchedKeywords.join(','),
     };
 
     const inquiry = this.inquiryRepository.create(inquiryData);
@@ -319,5 +326,32 @@ export class InquiryService {
       relations: ['parent', 'assignee'],
       order: { updatedAt: 'DESC' },
     });
+  }
+
+  /**
+   * F-INQ-001 #71: AI意图分类
+   * 识别家长查询意图（出勤/成绩/通知/其他），自动打标签，智能推荐回复
+   */
+  classifyIntent(content: string): IntentClassificationResult {
+    return this.intentService.classify(content);
+  }
+
+  /**
+   * F-INQ-001 #72: 紧急升级
+   * 识别紧急关键字，自动升级到高优先级队列，发送通知，记录升级历史
+   */
+  async urgentUpgrade(
+    inquiryId: string,
+    reason: string,
+    triggeredBy: string,
+  ): Promise<EscalationResult> {
+    return this.escalationService.manualEscalate(inquiryId, reason, triggeredBy);
+  }
+
+  /**
+   * 获取查询的升级历史
+   */
+  async getEscalationHistory(inquiryId: string): Promise<InquiryEscalationHistory[]> {
+    return this.escalationService.getEscalationHistory(inquiryId);
   }
 }

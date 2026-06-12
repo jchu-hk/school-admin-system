@@ -21,7 +21,11 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { InquiryService } from './inquiry.service';
-import { Inquiry, InquiryReply, InquiryStatus } from './inquiry.entity';
+import {
+  Inquiry,
+  InquiryReply,
+  InquiryStatus,
+} from './inquiry.entity';
 import {
   CreateInquiryDto,
   UpdateInquiryDto,
@@ -255,5 +259,65 @@ export class InquiryController {
   )
   getStats() {
     return this.inquiryService.getStats();
+  }
+
+  // =====================
+  // F-INQ-001 AI意图分类 (#71) & 紧急升级 (#72)
+  // =====================
+
+  @Post('classify')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'F-INQ-001 AI意图分类 - 识别家长查询意图（出勤/成绩/通知/其他）并推荐回复' })
+  @ApiResponse({ status: 200, description: '意图分类结果' })
+  @Roles(
+    UserRole.PARENT,
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+  )
+  classifyIntent(
+    @Body('content') content: string,
+    @Body('title') title?: string,
+  ) {
+    if (!content) {
+      throw new BadRequestException('content字段不能为空');
+    }
+    return this.inquiryService.classifyIntent(`${title || ''} ${content}`.trim());
+  }
+
+  @Post('urgent-upgrade')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'F-INQ-001 紧急升级 - 识别紧急关键字，自动升级高优先级队列并通知管理员' })
+  @ApiResponse({ status: 200, description: '紧急升级结果' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+  )
+  async urgentUpgrade(
+    @Body('inquiryId') inquiryId: string,
+    @Body('reason') reason: string,
+    @Request() req,
+  ) {
+    if (!inquiryId) {
+      throw new BadRequestException('inquiryId字段不能为空');
+    }
+    if (!reason) {
+      throw new BadRequestException('reason字段不能为空');
+    }
+    return this.inquiryService.urgentUpgrade(inquiryId, reason, req.user.id);
+  }
+
+  @Get(':id/escalation-history')
+  @ApiOperation({ summary: '获取查询的升级历史记录' })
+  @ApiResponse({ status: 200, description: '升级历史列表' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+  )
+  getEscalationHistory(@Param('id', ParseUUIDPipe) id: string) {
+    return this.inquiryService.getEscalationHistory(id);
   }
 }
