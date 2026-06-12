@@ -204,11 +204,11 @@ export default function UserPage() {
       if (departmentFilter) params.append('department', departmentFilter)
       if (searchTerm) params.append('search', searchTerm)
 
-      const response = await apiClient.get<PaginatedResponse<User>>(`/api/users?${params.toString()}`, {
+      const response = await apiClient.get<{ users: User[]; total: number; page?: number; limit?: number; totalPages?: number }>(`/api/users?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
-      setUsers(response.data.data || [])
+      setUsers(response.data.users || [])
       setTotal(response.data.total || 0)
     } catch (error) {
       console.error('Failed to fetch users:', error)
