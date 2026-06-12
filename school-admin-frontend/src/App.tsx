@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import StudentPage from './pages/StudentPage'
+import UserPage from './pages/UserPage'
 import LeavePage from './pages/LeavePage'
 import InquiryPage from './pages/InquiryPage'
 import NotificationPage from './pages/NotificationPage'
@@ -41,6 +42,7 @@ export default function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="students" element={<StudentPage />} />
+            <Route path="users" element={<UserPage />} />
             <Route path="leaves" element={<LeavePage />} />
             <Route path="inquiries" element={<InquiryPage />} />
             <Route path="notifications" element={<NotificationPage />} />

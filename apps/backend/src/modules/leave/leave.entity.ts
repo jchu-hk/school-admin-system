@@ -27,6 +27,45 @@ export enum LeaveStatus {
   CANCELLED = 'cancelled',
 }
 
+// AI核验结果结构
+export interface AiVerifyResult {
+  verified: boolean;
+  risk: 'low' | 'medium' | 'high';
+  message: string;
+  recognizedType?: string;
+  anomalyFlags: string[];
+  requireMedicalCertificate: boolean;
+  verifiedAt: Date;
+  details?: {
+    historicalPattern?: {
+      totalLeavesLast30Days: number;
+      sickLeavesLast30Days: number;
+      avgDaysPerLeave: number;
+    };
+    recommendations: string[];
+  };
+}
+
+// 医生证明验证结果结构
+export interface CertificateVerifyResult {
+  valid: boolean;
+  status: 'verified' | 'invalid' | 'suspicious' | 'error';
+  message: string;
+  confidence: number;
+  riskFlags: string[];
+  details?: {
+    hospitalName?: string;
+    doctorName?: string;
+    diagnosisDate?: string;
+    patientName?: string;
+    suggestedRestDays?: number;
+    certificateType?: string;
+    certificateNumber?: string;
+    rawOcrText?: string;
+  };
+  verifiedAt: Date;
+}
+
 @Entity('leaves')
 export class Leave {
   @PrimaryGeneratedColumn('uuid')
@@ -99,6 +138,31 @@ export class Leave {
 
   @Column({ name: 'attachment_url', nullable: true })
   attachmentUrl: string;
+
+  // AI核验相关字段
+  @Column({
+    name: 'ai_verify_result',
+    type: 'jsonb',
+    nullable: true,
+  })
+  aiVerifyResult: AiVerifyResult;
+
+  @Column({
+    name: 'certificate_verify_result',
+    type: 'jsonb',
+    nullable: true,
+  })
+  certificateVerifyResult: CertificateVerifyResult;
+
+  @Column({ name: 'certificate_url', nullable: true })
+  certificateUrl: string;
+
+  @Column({
+    name: 'verified_at',
+    type: 'timestamp',
+    nullable: true,
+  })
+  verifiedAt: Date;
 
   @Column({ name: 'created_by' })
   createdBy: string;

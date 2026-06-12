@@ -102,6 +102,33 @@ export class Inquiry {
   @Column({ name: 'rating_comment', type: 'text', nullable: true })
   ratingComment: string;
 
+  /** AI识别的意图类型 */
+  @Column({
+    name: 'intent_type',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
+  intentType: string;
+
+  /** AI意图置信度 (0-1) */
+  @Column({
+    name: 'intent_confidence',
+    type: 'decimal',
+    precision: 3,
+    scale: 2,
+    nullable: true,
+  })
+  intentConfidence: number;
+
+  /** 意图匹配关键词 */
+  @Column({
+    name: 'intent_keywords',
+    type: 'text',
+    nullable: true,
+  })
+  intentKeywords: string;
+
   @OneToMany(() => InquiryReply, (reply) => reply.inquiry)
   replies: InquiryReply[];
 

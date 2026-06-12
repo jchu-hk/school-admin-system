@@ -14,6 +14,7 @@ export const en = {
   nav: {
     dashboard: 'Dashboard',
     studentManagement: 'Student Management',
+    userManagement: 'User Management',
     leaveManagement: 'Leave Management',
     parentInquiry: 'Parent Inquiry',
     notificationManagement: 'Notification Management',

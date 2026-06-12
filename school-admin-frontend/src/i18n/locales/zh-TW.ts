@@ -16,6 +16,7 @@ export const zhTW: typeof zhCN = {
   nav: {
     dashboard: '儀表盤',
     studentManagement: '學生管理',
+    userManagement: '用戶管理',
     leaveManagement: '請假管理',
     parentInquiry: '家長查詢',
     notificationManagement: '通知管理',

@@ -229,6 +229,9 @@ export default function LeavePage() {
 
   // API calls
   const fetchLeaves = useCallback(async () => {
+    // 防止重复请求：如果已经有请求在进行中，先取消
+    const controller = new AbortController()
+    
     setLoading(true)
     try {
       const token = getToken()
@@ -245,36 +248,73 @@ export default function LeavePage() {
         params.append('applicantId', currentUser.id)
       }
 
+      // 只传递后端支持的参数
       if (statusFilter) params.append('status', statusFilter)
-      if (typeFilter) params.append('leaveType', typeFilter)
+      // leaveType 筛选移至客户端执行（后端暂不支持此参数）
+      // if (typeFilter) params.append('leaveType', typeFilter)
 
-      const response = await apiClient.get<PaginatedResponse>(`/api/leaves?${params.toString()}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const response = await apiClient.get<{ leaves?: Leave[]; data?: Leave[]; total?: number }>(
+        `/api/leaves?${params.toString()}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          signal: controller.signal, // 支持 AbortController
+          timeout: 15000, // 15秒超时
+        }
+      )
 
-      let filteredLeaves = response.data.leaves || []
+      // 兼容不同的响应格式
+      let apiLeaves: Leave[] = []
+      if (response.data) {
+        apiLeaves = response.data.leaves || response.data.data || []
+      }
 
-      // Client-side search by applicant name
+      // 客户端筛选：leaveType
+      let filteredLeaves = apiLeaves
+      if (typeFilter) {
+        filteredLeaves = filteredLeaves.filter(leave => leave.leaveType === typeFilter)
+      }
+
+      // 客户端筛选：搜索申请人姓名
       if (searchTerm) {
+        const term = searchTerm.toLowerCase()
         filteredLeaves = filteredLeaves.filter(leave =>
-          leave.applicant?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          leave.applicant?.username?.toLowerCase().includes(searchTerm.toLowerCase())
+          leave.applicant?.name?.toLowerCase().includes(term) ||
+          leave.applicant?.username?.toLowerCase().includes(term)
         )
       }
 
-      // Filter pending for approval tab (simplified logic - in real app, check approver roles)
+      // 筛选 pending tab
       if (activeTab === 'pending') {
         filteredLeaves = filteredLeaves.filter(leave => leave.status === LeaveStatus.PENDING)
       }
 
       setLeaves(filteredLeaves)
-      setTotal(response.data.total || 0)
-    } catch (error) {
+      setTotal(response.data?.total || filteredLeaves.length)
+    } catch (error: unknown) {
       console.error('Failed to fetch leaves:', error)
-      if (isAxiosError(error) && error.response?.status === 401) {
-        window.location.href = '/login'
+      
+      // 检查是否是取消的请求
+      if (error instanceof Error && error.name === 'CanceledError') {
+        console.log('Request was cancelled, ignoring')
+        return
       }
+      
+      if (isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          window.location.href = '/login'
+          return
+        }
+        // 网络错误或超时
+        if (error.code === 'ECONNABORTED' || !error.response) {
+          console.error('Network error or timeout')
+        }
+      }
+      
+      // 出错时清空列表，避免显示旧数据
+      setLeaves([])
+      setTotal(0)
     } finally {
+      // 确保 loading 状态总是被重置
       setLoading(false)
     }
   }, [page, statusFilter, typeFilter, searchTerm, activeTab, currentUser])

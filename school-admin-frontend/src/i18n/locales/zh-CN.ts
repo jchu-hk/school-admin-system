@@ -16,6 +16,7 @@ export const zhCN = {
   nav: {
     dashboard: '仪表盘',
     studentManagement: '学生管理',
+    userManagement: '用户管理',
     leaveManagement: '请假管理',
     parentInquiry: '家长查询',
     notificationManagement: '通知管理',

@@ -36,6 +36,8 @@ export interface IntentClassificationResult {
   allIntents: IntentMatch[];
   originalText: string;
   classifiedAt: Date;
+  /** 智能推荐回复列表 */
+  suggestions: string[];
 }
 
 /**
@@ -115,6 +117,55 @@ export class InquiryIntentService {
       keywords: [],
       weight: 0,
     },
+  };
+
+  // 智能推荐回复模板
+  private readonly replySuggestions: Record<IntentType, string[]> = {
+    [IntentType.ATTENDANCE]: [
+      '感谢您的查询。请提供孩子的姓名和班级，我们会立即核查出勤记录。',
+      '已收到您的出勤相关咨询，班主任会在1个工作日内与您联系确认。',
+      '关于出勤情况，建议您登录学校考勤系统查看详细记录。',
+    ],
+    [IntentType.TUITION]: [
+      '您好！关于学费相关问题，请告知您想了解的具体项目（学费/杂费/餐费等），我们会尽快解答。',
+      '已收到您的费用咨询，学校财务部门会在2个工作日内发送正式账单到您的邮箱。',
+      '如需查询具体费用明细，请提供孩子的学号，我们将为您详细说明。',
+    ],
+    [IntentType.LEAVE]: [
+      '已收到请假申请。请通过学校请假系统提交正式请假申请，注明请假原因和日期。',
+      '关于请假流程，请说明预计请假时间和原因，我们会及时转交班主任处理。',
+      '如需紧急请假，请直接联系班主任或学校前台电话。',
+    ],
+    [IntentType.DISCIPLINE]: [
+      '感谢您的反馈。我们会认真对待每一起纪律相关问题，请提供更多细节以便调查。',
+      '已记录您的反馈，学校会根据相关政策进行调查处理，并尽快与您沟通结果。',
+      '如需紧急沟通，请直接联系班主任或学生处。',
+    ],
+    [IntentType.HEALTH]: [
+      '您好！如孩子身体不适，请第一时间就医并通知班主任。请提供孩子的具体症状。',
+      '已收到健康相关咨询，请说明孩子的情况，我们会及时通知校医跟进。',
+      '如需紧急医疗协助，请立即拨打学校医务室电话或120急救电话。',
+    ],
+    [IntentType.ACADEMIC]: [
+      '您好！关于学业相关问题，请说明您想了解的具体科目或考试名称。',
+      '已收到您的学业咨询，各科老师会在1-2个工作日内回复。',
+      '如需了解孩子的具体成绩，请登录学校成绩系统或联系班主任。',
+    ],
+    [IntentType.SAFETY]: [
+      '【重要】我们非常重视安全问题。请立即说明具体情况，以便我们立即介入处理。',
+      '如情况紧急，请立即拨打学校安保电话或110报警。我们会同步启动调查。',
+      '已收到您的安全相关反馈，请提供尽可能多的细节，我们会第一时间处理。',
+    ],
+    [IntentType.OTHER]: [
+      '感谢您的查询。我们已将您的需求记录，会尽快给予回复。',
+      '已收到您的信息，如有需要补充的内容，请随时告知。',
+      '感谢您的来信，我们会尽快处理您的问题。',
+    ],
+    [IntentType.UNKNOWN]: [
+      '感谢您的来信。我们已收到您的消息，会尽快给予回复。',
+      '请提供更多详细信息，以便我们更好地帮助您。',
+      '如有任何疑问，请随时与我们联系。',
+    ],
   };
 
   /**
@@ -198,12 +249,34 @@ export class InquiryIntentService {
             reasoning: '未识别到任何已知意图关键词',
           };
 
+    // 获取推荐回复：优先用高置信度意图的回复，次选用前两个意图组合
+    const suggestions = this.getSuggestions(primaryIntent.intent, allIntents);
+
     return {
       primaryIntent,
       allIntents,
       originalText,
       classifiedAt: new Date(),
+      suggestions,
     };
+  }
+
+  /**
+   * 根据意图类型获取智能推荐回复
+   */
+  private getSuggestions(primaryIntent: IntentType, allIntents: IntentMatch[]): string[] {
+    const baseSuggestions = this.replySuggestions[primaryIntent] || this.replySuggestions[IntentType.OTHER];
+
+    // 如果安全意图且置信度高，增加紧急回复
+    if (primaryIntent === IntentType.SAFETY && allIntents[0]?.confidence >= 0.5) {
+      return [
+        '【紧急】我们非常重视安全问题。请立即说明具体情况，我们会立即介入处理。',
+        '如情况紧急，请立即拨打学校安保电话或报警。',
+        ...baseSuggestions,
+      ];
+    }
+
+    return baseSuggestions;
   }
 
   private buildReasoning(intent: IntentType, keywords: string[], matchCount: number): string {

@@ -829,6 +829,7 @@ export default function UserPage() {
             onCancel={() => setShowCreateModal(false)}
             isSubmitting={isSubmitting}
             register={register}
+            handleSubmit={handleSubmit}
             errors={errors}
           />
         </Modal>
@@ -842,6 +843,7 @@ export default function UserPage() {
             onCancel={() => setShowEditModal(false)}
             isSubmitting={isSubmitting}
             register={register}
+            handleSubmit={handleSubmit}
             errors={errors}
             isEdit
           />
@@ -972,11 +974,12 @@ interface UserFormProps {
   onCancel: () => void
   isSubmitting: boolean
   register: ReturnType<typeof useForm<UserFormData>>['register']
+  handleSubmit: ReturnType<typeof useForm<UserFormData>>['handleSubmit']
   errors: ReturnType<typeof useForm<UserFormData>>['formState']['errors']
   isEdit?: boolean
 }
 
-function UserForm({ onSubmit, onCancel, isSubmitting, register, errors, isEdit }: UserFormProps) {
+function UserForm({ onSubmit, onCancel, isSubmitting, register, handleSubmit, errors, isEdit }: UserFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
