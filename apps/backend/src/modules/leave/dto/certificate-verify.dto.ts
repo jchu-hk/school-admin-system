@@ -1,6 +1,40 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
+export class CertificateDetailsDto {
+  @ApiPropertyOptional({ description: '医院/诊所名称' })
+  @IsOptional()
+  hospitalName?: string;
+
+  @ApiPropertyOptional({ description: '医生姓名' })
+  @IsOptional()
+  doctorName?: string;
+
+  @ApiPropertyOptional({ description: '诊断日期' })
+  @IsOptional()
+  diagnosisDate?: string;
+
+  @ApiPropertyOptional({ description: '患者姓名' })
+  @IsOptional()
+  patientName?: string;
+
+  @ApiPropertyOptional({ description: '建议休息天数' })
+  @IsOptional()
+  suggestedRestDays?: number;
+
+  @ApiPropertyOptional({ description: '证明类型' })
+  @IsOptional()
+  certificateType?: string;
+
+  @ApiPropertyOptional({ description: '证明编号' })
+  @IsOptional()
+  certificateNumber?: string;
+
+  @ApiPropertyOptional({ description: 'OCR识别的原始文本（调试用）' })
+  @IsOptional()
+  rawOcrText?: string;
+}
+
 export class CertificateVerifyResponseDto {
   @ApiProperty({ description: '证明是否有效', example: true })
   valid: boolean;
@@ -11,37 +45,13 @@ export class CertificateVerifyResponseDto {
   @ApiProperty({ description: '验证消息' })
   message: string;
 
-  @ApiPropertyOptional({ description: '提取的详细信息' })
-  details?: {
-    @ApiPropertyOptional({ description: '医院/诊所名称' })
-    hospitalName?: string;
+  @ApiPropertyOptional({ description: '提取的详细信息', type: CertificateDetailsDto })
+  details?: CertificateDetailsDto;
 
-    @ApiPropertyOptional({ description: '医生姓名' })
-    doctorName?: string;
-
-    @ApiPropertyOptional({ description: '诊断日期' })
-    diagnosisDate?: string;
-
-    @ApiPropertyOptional({ description: '患者姓名' })
-    patientName?: string;
-
-    @ApiPropertyOptional({ description: '建议休息天数' })
-    suggestedRestDays?: number;
-
-    @ApiPropertyOptional({ description: '证明类型' })
-    certificateType?: string;
-
-    @ApiPropertyOptional({ description: '证明编号' })
-    certificateNumber?: string;
-
-    @ApiPropertyOptional({ description: 'OCR识别的原始文本（调试用）' })
-    rawOcrText?: string;
-  };
-
-  @ApiProperty({ description: '置信度分数 0-1' })
+  @ApiProperty({ description: '置信度分数 0-1', example: 0.95 })
   confidence: number;
 
-  @ApiProperty({ description: '风险标记' })
+  @ApiProperty({ description: '风险标记', example: [] })
   riskFlags: string[];
 
   @ApiProperty({ description: '验证时间' })
