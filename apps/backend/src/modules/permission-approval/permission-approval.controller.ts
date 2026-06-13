@@ -2,42 +2,52 @@ import {
   Controller,
   Get,
   Post,
+  Put,
+  Delete,
   Body,
   Param,
   Query,
   UseGuards,
-  Request,
+  Req,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
+  ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { PermissionApprovalService } from './services/permission-approval.service';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { PermissionApprovalService } from '../services/permission-approval.service';
 import {
   CreatePermissionApprovalRequestDto,
   ApprovePermissionRequestDto,
   RejectPermissionRequestDto,
   CancelPermissionRequestDto,
-} from './dto/permission-approval.dto';
-import { Roles } from '../../common/decorators/roles.decorator';
-import { RolesGuard } from '../../common/guards/roles.guard';
+} from '../dto/permission-approval.dto';
+import { ApprovalRequestStatus } from '../entities/permission-approval.entity';
 
-@ApiTags('Permission Approval')
-@Controller('api/v1/permission-approvals')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@ApiTags('permission-approval')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Controller('permission-approval')
 export class PermissionApprovalController {
   constructor(
     private readonly permissionApprovalService: PermissionApprovalService,
   ) {}
 
-  @Post()
+  @Post('requests')
+  @Roles('school_admin', 'system_admin')
   @ApiOperation({ summary: 'Create a new permission approval request' })
-  @Roles('school_admin', 'school_staff', 'system_admin')
+  @ApiResponse({
+    status: 201,
+    description: 'Permission approval request created successfully',
+  })
   async createRequest(
-    @Request() req,
+    @Req() req,
     @Body() createDto: CreatePermissionApprovalRequestDto,
   ) {
     return this.permissionApprovalService.createRequest(
@@ -47,35 +57,53 @@ export class PermissionApprovalController {
     );
   }
 
-  @Get(':id')
+  @Get('requests/:id')
+  @Roles('school_admin', 'system_admin')
   @ApiOperation({ summary: 'Get a permission approval request by ID' })
-  async getRequest(@Param('id') id: string, @Request() req) {
+  @ApiResponse({
+    status: 200,
+    description: 'Permission approval request retrieved successfully',
+  })
+  async getRequestById(@Req() req, @Param('id') id: string) {
     return this.permissionApprovalService.getRequestById(id, req.user);
   }
 
-  @Get('my/requests')
+  @Get('requests/my')
+  @Roles('school_admin', 'system_admin')
   @ApiOperation({ summary: 'Get my permission approval requests' })
-  @Roles('school_admin', 'school_staff', 'system_admin')
+  @ApiResponse({
+    status: 200,
+    description: 'My permission approval requests retrieved successfully',
+  })
   async getMyRequests(
-    @Request() req,
-    @Query('status') status?: string,
+    @Req() req,
+    @Query('status') status?: ApprovalRequestStatus,
   ) {
-    return this.permissionApprovalService.getMyRequests(req.user, status as any);
+    return this.permissionApprovalService.getMyRequests(req.user, status);
   }
 
-  @Get('my/pending')
-  @ApiOperation({ summary: 'Get my pending approval tasks' })
+  @Get('pending-approvals')
   @Roles('school_admin', 'system_admin')
-  async getMyPendingApprovals(@Request() req) {
+  @ApiOperation({ summary: 'Get pending approvals for current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Pending approvals retrieved successfully',
+  })
+  async getMyPendingApprovals(@Req() req) {
     return this.permissionApprovalService.getMyPendingApprovals(req.user);
   }
 
-  @Post(':id/approve')
-  @ApiOperation({ summary: 'Approve a permission request' })
+  @Put('requests/:id/approve')
   @Roles('school_admin', 'system_admin')
-  async approve(
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Approve a permission approval request' })
+  @ApiResponse({
+    status: 200,
+    description: 'Permission approval request approved successfully',
+  })
+  async approveRequest(
+    @Req() req,
     @Param('id') id: string,
-    @Request() req,
     @Body() approveDto: ApprovePermissionRequestDto,
   ) {
     return this.permissionApprovalService.approveRequest(
@@ -85,26 +113,33 @@ export class PermissionApprovalController {
     );
   }
 
-  @Post(':id/reject')
-  @ApiOperation({ summary: 'Reject a permission request' })
+  @Put('requests/:id/reject')
   @Roles('school_admin', 'system_admin')
-  async reject(
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reject a permission approval request' })
+  @ApiResponse({
+    status: 200,
+    description: 'Permission approval request rejected successfully',
+  })
+  async rejectRequest(
+    @Req() req,
     @Param('id') id: string,
-    @Request() req,
     @Body() rejectDto: RejectPermissionRequestDto,
   ) {
-    return this.permissionApprovalService.rejectRequest(
-      id,
-      req.user,
-      rejectDto,
-    );
+    return this.permissionApprovalService.rejectRequest(id, req.user, rejectDto);
   }
 
-  @Post(':id/cancel')
-  @ApiOperation({ summary: 'Cancel a permission request' })
-  async cancel(
+  @Put('requests/:id/cancel')
+  @Roles('school_admin', 'system_admin')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Cancel a permission approval request' })
+  @ApiResponse({
+    status: 200,
+    description: 'Permission approval request cancelled successfully',
+  })
+  async cancelRequest(
+    @Req() req,
     @Param('id') id: string,
-    @Request() req,
     @Body() cancelDto: CancelPermissionRequestDto,
   ) {
     return this.permissionApprovalService.cancelRequest(id, req.user, cancelDto);

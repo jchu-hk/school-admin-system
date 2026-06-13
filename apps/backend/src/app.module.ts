@@ -9,6 +9,7 @@ import { InquiryModule } from './modules/inquiry/inquiry.module';
 import { LeaveModule } from './modules/leave/leave.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { AbacModule } from './modules/abac/abac.module';
+import { PermissionApprovalModule } from './modules/permission-approval/permission-approval.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AbacModule } from './modules/abac/abac.module';
     LeaveModule,
     NotificationModule,
     AbacModule,
+    PermissionApprovalModule,
   ],
   controllers: [],
   providers: [],
