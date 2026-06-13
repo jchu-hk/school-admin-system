@@ -16,7 +16,12 @@ import { User, UserRole, UserStatus } from '../user/user.entity';
 import { RoleService } from '../role/services/role.service';
 import { PermissionService } from '../permission/services/permission.service';
 import { OtpService } from '../otp/services/otp.service';
-import { OtpConfig, OtpSession, OtpTrustedSession, OtpType } from '../otp/entities/otp.entity';
+import {
+  OtpConfig,
+  OtpSession,
+  OtpTrustedSession,
+  OtpType,
+} from '../otp/entities/otp.entity';
 import { ConfigService } from '@nestjs/config';
 import { AuditService } from '../audit/audit.service';
 

@@ -386,9 +386,10 @@ export class PermissionApprovalService {
 
     // Get all users with the required approver role in the same school
     // Use RoleService to fetch approvers by role name
-    const approverRoleName = currentStep.approverRole === ApprovalRole.SCHOOL_ADMIN
-      ? 'school_admin'
-      : 'system_admin';
+    const approverRoleName =
+      currentStep.approverRole === ApprovalRole.SCHOOL_ADMIN
+        ? 'school_admin'
+        : 'system_admin';
 
     let approverIds: string[];
     try {
@@ -482,4 +483,3 @@ export class PermissionApprovalService {
     return { expiredCount: requestsToExpire.length };
   }
 }
-

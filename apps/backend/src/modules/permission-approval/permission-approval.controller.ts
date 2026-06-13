@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Put,
-  Delete,
+  
   Body,
   Param,
   Query,
@@ -126,7 +126,11 @@ export class PermissionApprovalController {
     @Param('id') id: string,
     @Body() rejectDto: RejectPermissionRequestDto,
   ) {
-    return this.permissionApprovalService.rejectRequest(id, req.user, rejectDto);
+    return this.permissionApprovalService.rejectRequest(
+      id,
+      req.user,
+      rejectDto,
+    );
   }
 
   @Put('requests/:id/cancel')
@@ -142,6 +146,10 @@ export class PermissionApprovalController {
     @Param('id') id: string,
     @Body() cancelDto: CancelPermissionRequestDto,
   ) {
-    return this.permissionApprovalService.cancelRequest(id, req.user, cancelDto);
+    return this.permissionApprovalService.cancelRequest(
+      id,
+      req.user,
+      cancelDto,
+    );
   }
 }

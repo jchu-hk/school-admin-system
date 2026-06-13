@@ -28,7 +28,7 @@ export class PermissionService {
   }
 
   async assignPermissionsToUser(
-    userId: string,
+    _userId: string,
     permissionIds: string[],
   ): Promise<void> {
     // Stub: In production, this would create user_permission records
@@ -39,7 +39,7 @@ export class PermissionService {
   }
 
   async removePermissionsFromUser(
-    userId: string,
+    _userId: string,
     permissionIds: string[],
   ): Promise<void> {
     // Stub: In production, this would remove user_permission records
@@ -48,7 +48,7 @@ export class PermissionService {
     );
   }
 
-  async getUserPermissions(userId: string): Promise<Permission[]> {
+  async getUserPermissions(_userId: string): Promise<Permission[]> {
     // Stub: In production, this would query the user_permissions join table
     return [];
   }

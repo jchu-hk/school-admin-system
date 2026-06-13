@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, IsNull, LessThan, MoreThan } from 'typeorm';
+import { Repository,   MoreThan } from 'typeorm';
 
 export interface Role {
   id: string;
@@ -52,7 +52,7 @@ export class RoleService {
    * Assign a role to a user with optional validity period
    */
   async assignRoleToUser(
-    userId: string,
+    _userId: string,
     roleId: string,
     validUntil?: Date,
   ): Promise<void> {
@@ -67,17 +67,15 @@ export class RoleService {
   /**
    * Remove a role from a user
    */
-  async removeRoleFromUser(userId: string, roleId: string): Promise<void> {
+  async removeRoleFromUser(_userId: string, roleId: string): Promise<void> {
     // Stub: In production, this would delete user_role_assignment records
-    console.log(
-      `[RoleService] Removing role ${roleId} from user ${userId}`,
-    );
+    console.log(`[RoleService] Removing role ${roleId} from user ${userId}`);
   }
 
   /**
    * Check if a user has a specific role
    */
-  async userHasRole(userId: string, roleName: string): Promise<boolean> {
+  async userHasRole(_userId: string, _roleName: string): Promise<boolean> {
     // Stub: In production, this would check the user_role_assignments table
     return false;
   }
@@ -85,10 +83,7 @@ export class RoleService {
   /**
    * Get all users with a specific role in a school
    */
-  async getUsersByRole(
-    roleName: string,
-    schoolId: string,
-  ): Promise<string[]> {
+  async getUsersByRole(_roleName: string, schoolId: string): Promise<string[]> {
     // Stub: In production, this would query user_role_assignments + users
     // For now, return empty array - real implementation would join tables
     console.log(

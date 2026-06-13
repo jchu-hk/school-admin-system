@@ -679,7 +679,7 @@ describe('AbacService', () => {
       });
 
       // 等待异步日志完成
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       // 验证日志被调用
       expect(loggerSpy).toHaveBeenCalled();
@@ -700,7 +700,7 @@ describe('AbacService', () => {
         },
       });
 
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
       expect(loggerSpy).toHaveBeenCalled();
       loggerSpy.mockRestore();
     });
@@ -773,5 +773,4 @@ describe('AbacService', () => {
       await failingService.onModuleDestroy();
     });
   });
-
 });

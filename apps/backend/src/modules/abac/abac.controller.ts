@@ -18,7 +18,12 @@ import {
   UseGuards,
   Logger,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { AbacService } from './abac.service';
 import { AbacGuard, AbacResource, AbacAction } from './abac.guard';
 import {
@@ -89,7 +94,9 @@ export class AbacController {
   @Post('evaluate')
   @ApiOperation({ summary: '手动触发权限评估（调试用）' })
   @ApiResponse({ status: 200, description: '决策结果' })
-  async evaluate(@Body() request: AbacDecisionRequest): Promise<AbacDecisionResult> {
+  async evaluate(
+    @Body() request: AbacDecisionRequest,
+  ): Promise<AbacDecisionResult> {
     this.logger.debug(`[ABAC] 手动评估请求: ${JSON.stringify(request.input)}`);
     return this.abacService.evaluate(request);
   }
@@ -104,8 +111,14 @@ export class AbacController {
   @AbacAction('read')
   @ApiOperation({ summary: '查询 ABAC 决策历史' })
   @ApiResponse({ status: 200, description: '决策历史记录' })
-  async getAuditHistory(@Query('userId') userId?: string, @Query('limit') limit = '100') {
-    const logs = await this.abacService.getDecisionHistory(userId, parseInt(limit, 10));
+  async getAuditHistory(
+    @Query('userId') userId?: string,
+    @Query('limit') limit = '100',
+  ) {
+    const logs = await this.abacService.getDecisionHistory(
+      userId,
+      parseInt(limit, 10),
+    );
     return {
       logs,
       count: logs.length,

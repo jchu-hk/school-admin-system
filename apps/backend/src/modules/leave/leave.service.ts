@@ -426,11 +426,12 @@ export class LeaveService {
     // 如果提供了代课老师，计算其当日已有课时
     let substituteTeacherClassHours: number | undefined;
     if (dto.substituteTeacherId) {
-      substituteTeacherClassHours = await this.computeSubstituteTeacherClassHours(
-        dto.substituteTeacherId,
-        application.startDate.toISOString().split('T')[0],
-        application.classId,
-      );
+      substituteTeacherClassHours =
+        await this.computeSubstituteTeacherClassHours(
+          dto.substituteTeacherId,
+          application.startDate.toISOString().split('T')[0],
+          application.classId,
+        );
     }
 
     await this.leaveRepository.update(id, {
@@ -468,11 +469,12 @@ export class LeaveService {
     // 如果提供了代课老师，计算其当日已有课时
     let substituteTeacherClassHours: number | undefined;
     if (dto.substituteTeacherId) {
-      substituteTeacherClassHours = await this.computeSubstituteTeacherClassHours(
-        dto.substituteTeacherId,
-        application.startDate.toISOString().split('T')[0],
-        application.classId,
-      );
+      substituteTeacherClassHours =
+        await this.computeSubstituteTeacherClassHours(
+          dto.substituteTeacherId,
+          application.startDate.toISOString().split('T')[0],
+          application.classId,
+        );
     }
 
     await this.leaveRepository.update(id, {
@@ -650,7 +652,6 @@ export class LeaveService {
     });
     return this.findOne(id);
   }
-
 
   /**
    * 发送请假审批通过通知给家长

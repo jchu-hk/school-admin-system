@@ -13,9 +13,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LeaveService } from '../leave/leave.service';
-import { LeaveApplication, LeaveType, LeaveStatus } from '../leave/leave.entity';
+import {
+  LeaveApplication,
+  LeaveType,
+  LeaveStatus,
+} from '../leave/leave.entity';
 import { NotificationService } from '../notification/notification.service';
-import { CreateLeaveDto, ApproveLeaveDto, RejectLeaveDto } from '../leave/dto/leave.dto';
+import {
+  CreateLeaveDto,
+  ApproveLeaveDto,
+  RejectLeaveDto,
+} from '../leave/dto/leave.dto';
 
 describe('Leave → Notification System Integration', () => {
   let leaveService: LeaveService;

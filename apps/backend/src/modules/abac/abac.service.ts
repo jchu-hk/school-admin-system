@@ -48,7 +48,8 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
   constructor(private readonly configService: ConfigService) {}
 
   async onModuleInit() {
-    const opaUrl = this.configService.get<string>('OPA_URL') || 'http://localhost:8181';
+    const opaUrl =
+      this.configService.get<string>('OPA_URL') || 'http://localhost:8181';
     const opaEnabled = this.configService.get<boolean>('OPA_ENABLED') ?? false;
 
     if (opaEnabled) {
@@ -64,9 +65,13 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
       try {
         /* istanbul ignore next: requires OPA Sidecar running */
         const res = await this.opaClient.get('/health');
-        this.logger.log(`OPA 健康检查通过: ${opaUrl}, version=${res.data?.version}`);
+        this.logger.log(
+          `OPA 健康检查通过: ${opaUrl}, version=${res.data?.version}`,
+        );
       } catch (err) {
-        this.logger.warn(`OPA 健康检查失败，将使用内嵌评估: ${(err as Error).message}`);
+        this.logger.warn(
+          `OPA 健康检查失败，将使用内嵌评估: ${(err as Error).message}`,
+        );
         this.opaEnabled = false;
       }
     } else {
@@ -135,7 +140,9 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
    * 通过 OPA Sidecar 进行评估（HTTP API）
    */
   /* istanbul ignore next: OPA Sidecar mode only, tested in integration tests */
-  private async evaluateWithOpa(request: AbacDecisionRequest): Promise<AbacDecisionResult> {
+  private async evaluateWithOpa(
+    request: AbacDecisionRequest,
+  ): Promise<AbacDecisionResult> {
     try {
       const response = await this.opaClient.post(
         '/v1/data/school/authz',
@@ -157,7 +164,9 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
       };
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        this.logger.error(`[ABAC] OPA 调用失败: ${err.message}, 降级到内嵌评估`);
+        this.logger.error(
+          `[ABAC] OPA 调用失败: ${err.message}, 降级到内嵌评估`,
+        );
         return this.evaluateEmbedded(request);
       }
       throw err;
@@ -190,10 +199,14 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
    * 与 school.authz.rego 规则保持完全一致
    */
   private evaluateRules(input: AbacInput): boolean {
-    const { role, action, resource, user, resourceData, currentTime, weekday } = input;
+    const { role, action, resource, user, resourceData, currentTime, weekday } =
+      input;
 
     // === 规则: 校务主任全权限 ===
-    if (role === 'SCHOOL_DIRECTOR' && ['read', 'create', 'update', 'delete', 'export', 'print'].includes(action)) {
+    if (
+      role === 'SCHOOL_DIRECTOR' &&
+      ['read', 'create', 'update', 'delete', 'export', 'print'].includes(action)
+    ) {
       return true;
     }
 
@@ -202,7 +215,10 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
       const teacherClassIds = user?.classIds || [];
       const targetClassId = resourceData?.classId;
 
-      if (action === 'read' && ['student', 'score', 'attendance'].includes(resource)) {
+      if (
+        action === 'read' &&
+        ['student', 'score', 'attendance'].includes(resource)
+      ) {
         if (!targetClassId) return false;
         if (!teacherClassIds.includes(targetClassId)) return false;
         return true;
@@ -220,7 +236,10 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
       const parentStudentIds = user?.relatedStudentIds || [];
       const targetStudentId = resourceData?.studentId;
 
-      if (['read', 'create'].includes(action) && ['student', 'score', 'attendance', 'leave'].includes(resource)) {
+      if (
+        ['read', 'create'].includes(action) &&
+        ['student', 'score', 'attendance', 'leave'].includes(resource)
+      ) {
         if (!targetStudentId) return false;
         if (!parentStudentIds.includes(targetStudentId)) return false;
         return true;
@@ -237,7 +256,13 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
       if (!currentTime || !weekday) return false;
 
       const timeValid = currentTime >= '09:00' && currentTime <= '18:00';
-      const workdayValid = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].includes(weekday);
+      const workdayValid = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+      ].includes(weekday);
 
       return timeValid && workdayValid;
     }
@@ -249,7 +274,11 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
 
     // === 校务处同工业业务范围 ===
     if (role === 'OFFICER' && ['read', 'create', 'update'].includes(action)) {
-      if (['student', 'attendance', 'leave', 'inquiry', 'notification'].includes(resource)) {
+      if (
+        ['student', 'attendance', 'leave', 'inquiry', 'notification'].includes(
+          resource,
+        )
+      ) {
         return true;
       }
     }
@@ -277,7 +306,10 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
       try {
         /* istanbul ignore next: OPA Sidecar mode only */
         // 读取本地 Rego 策略文件
-        const regoFile = path.resolve(__dirname, './policies/school.authz.rego');
+        const regoFile = path.resolve(
+          __dirname,
+          './policies/school.authz.rego',
+        );
         const regoCode = fs.readFileSync(regoFile, 'utf-8');
 
         /* istanbul ignore next: OPA Sidecar mode only */
@@ -414,18 +446,24 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
    * 获取规则元数据
    */
   getRuleMetadata(): AbacRuleMetadata {
-    return this.ruleMetadata || {
-      name: 'school.authz',
-      description: 'ABAC权限规则',
-      version: '1.0.0',
-      lastUpdated: new Date().toISOString(),
-    };
+    return (
+      this.ruleMetadata || {
+        name: 'school.authz',
+        description: 'ABAC权限规则',
+        version: '1.0.0',
+        lastUpdated: new Date().toISOString(),
+      }
+    );
   }
 
   /**
    * 健康检查
    */
-  async healthCheck(): Promise<{ status: string; opaEnabled: boolean; version?: string }> {
+  async healthCheck(): Promise<{
+    status: string;
+    opaEnabled: boolean;
+    version?: string;
+  }> {
     if (this.opaEnabled) {
       try {
         /* istanbul ignore next: OPA Sidecar mode only */

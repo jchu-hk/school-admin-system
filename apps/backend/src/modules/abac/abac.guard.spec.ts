@@ -63,9 +63,12 @@ describe('AbacGuard', () => {
     } = overrides;
 
     const mockHandler = jest.fn();
-    if (resourceMeta !== undefined) Reflect.defineMetadata('abac_resource', resourceMeta, mockHandler);
-    if (actionMeta !== undefined) Reflect.defineMetadata('abac_action', actionMeta, mockHandler);
-    if (skipAbac !== undefined) Reflect.defineMetadata('abac_skip', skipAbac, mockHandler);
+    if (resourceMeta !== undefined)
+      Reflect.defineMetadata('abac_resource', resourceMeta, mockHandler);
+    if (actionMeta !== undefined)
+      Reflect.defineMetadata('abac_action', actionMeta, mockHandler);
+    if (skipAbac !== undefined)
+      Reflect.defineMetadata('abac_skip', skipAbac, mockHandler);
 
     const mockRequest: any = { user, params, query, body, method };
 
@@ -88,7 +91,10 @@ describe('AbacGuard', () => {
         evaluatedAt: new Date().toISOString(),
       });
 
-      const ctx = createMockContext({ resourceMeta: 'student', actionMeta: 'read' });
+      const ctx = createMockContext({
+        resourceMeta: 'student',
+        actionMeta: 'read',
+      });
       const result = await guard.canActivate(ctx);
 
       expect(result).toBe(true);
@@ -109,7 +115,10 @@ describe('AbacGuard', () => {
         evaluatedAt: new Date().toISOString(),
       });
 
-      const ctx = createMockContext({ resourceMeta: 'student', actionMeta: 'read' });
+      const ctx = createMockContext({
+        resourceMeta: 'student',
+        actionMeta: 'read',
+      });
       await expect(guard.canActivate(ctx)).rejects.toThrow(ForbiddenException);
     });
   });
@@ -192,10 +201,16 @@ describe('AbacGuard', () => {
 
   describe('决策结果附加到请求', () => {
     it('允许的决策结果附加到 request.abacDecision', async () => {
-      const decision = { allow: true, decisionTimeMs: 2, evaluatedAt: new Date().toISOString() };
+      const decision = {
+        allow: true,
+        decisionTimeMs: 2,
+        evaluatedAt: new Date().toISOString(),
+      };
       mockAbacService.evaluate.mockResolvedValue(decision);
 
-      const mockRequest: any = { user: { id: 'user-001', role: 'TEACHER', classIds: ['1A'] } };
+      const mockRequest: any = {
+        user: { id: 'user-001', role: 'TEACHER', classIds: ['1A'] },
+      };
       const mockHandler = jest.fn();
       Reflect.defineMetadata('abac_skip', false, mockHandler);
       Reflect.defineMetadata('abac_resource', 'student', mockHandler);
@@ -223,7 +238,10 @@ describe('AbacGuard', () => {
         evaluatedAt: new Date().toISOString(),
       });
 
-      const ctx = createMockContext({ resourceMeta: 'student', actionMeta: 'read' });
+      const ctx = createMockContext({
+        resourceMeta: 'student',
+        actionMeta: 'read',
+      });
 
       try {
         await guard.canActivate(ctx);

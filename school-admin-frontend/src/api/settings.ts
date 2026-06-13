@@ -116,7 +116,7 @@ export const settingsApi = {
   },
 
   // 获取系统用户
-  getUsers: async (params: { page?: number; pageSize?: number; role?: string; status?: string } = {}): Promise<UserListResponse> => {
+  getUsers: async (params: { page?: number; pageSize?: number; keyword?: string; role?: string; status?: string } = {}): Promise<UserListResponse> => {
     const response = await fetch(
       `${API_BASE_URL}/settings/users?${new URLSearchParams(params as any).toString()}`,
       {

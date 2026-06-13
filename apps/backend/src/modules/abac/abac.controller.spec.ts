@@ -22,9 +22,7 @@ describe('AbacController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AbacController],
-      providers: [
-        { provide: AbacService, useValue: mockAbacService },
-      ],
+      providers: [{ provide: AbacService, useValue: mockAbacService }],
     }).compile();
 
     controller = module.get<AbacController>(AbacController);
@@ -164,7 +162,10 @@ describe('AbacController', () => {
       const result = await controller.getAuditHistory('user-001', '50');
       expect(result.logs).toHaveLength(1);
       expect(result.count).toBe(1);
-      expect(mockAbacService.getDecisionHistory).toHaveBeenCalledWith('user-001', 50);
+      expect(mockAbacService.getDecisionHistory).toHaveBeenCalledWith(
+        'user-001',
+        50,
+      );
     });
 
     it('不带参数查询历史', async () => {
@@ -172,7 +173,10 @@ describe('AbacController', () => {
 
       const result = await controller.getAuditHistory(undefined, '100');
       expect(result.logs).toHaveLength(0);
-      expect(mockAbacService.getDecisionHistory).toHaveBeenCalledWith(undefined, 100);
+      expect(mockAbacService.getDecisionHistory).toHaveBeenCalledWith(
+        undefined,
+        100,
+      );
     });
   });
 

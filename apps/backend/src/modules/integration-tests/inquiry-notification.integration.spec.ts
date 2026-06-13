@@ -19,10 +19,7 @@ import {
   InquiryPriority,
   InquiryStatus,
 } from '../inquiry/inquiry.entity';
-import {
-  InquiryReply,
-  ReplyAuthorType,
-} from '../inquiry/reply.entity';
+import { InquiryReply, ReplyAuthorType } from '../inquiry/reply.entity';
 import { CreateInquiryDto, CreateReplyDto } from '../inquiry/dto/inquiry.dto';
 
 describe('Inquiry → Notification System Integration', () => {

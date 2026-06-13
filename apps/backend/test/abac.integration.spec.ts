@@ -31,7 +31,8 @@ describe('ABAC 集成测试', () => {
     await app.init();
 
     abacService = app.get<AbacService>(AbacService);
-    cacheService = app.get<AbacCacheService<AbacDecisionResult>>(AbacCacheService);
+    cacheService =
+      app.get<AbacCacheService<AbacDecisionResult>>(AbacCacheService);
   });
 
   afterAll(async () => {

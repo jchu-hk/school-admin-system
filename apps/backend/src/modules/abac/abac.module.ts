@@ -29,7 +29,6 @@
 import { Module, Global } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { AbacService } from './abac.service';
-import { AbacGuard } from './abac.guard';
 import { AbacController } from './abac.controller';
 
 @Global()
@@ -38,7 +37,6 @@ import { AbacController } from './abac.controller';
   providers: [
     AbacService,
     // 注册为全局守卫（可选，全局启用 ABAC）
-    // { provide: APP_GUARD, useClass: AbacGuard },
   ],
   exports: [AbacService],
 })

@@ -75,7 +75,11 @@ export const AbacAction = (action: AbacInput['action']) => {
  * 用法: @AbacSkip()
  */
 export const AbacSkip = () => {
-  return (target: object, propertyKey?: string | symbol, descriptor?: PropertyDescriptor) => {
+  return (
+    target: object,
+    propertyKey?: string | symbol,
+    descriptor?: PropertyDescriptor,
+  ) => {
     if (descriptor) {
       Reflect.defineMetadata(ABAC_SKIP_KEY, true, descriptor.value);
     } else if (propertyKey) {
@@ -95,7 +99,11 @@ export const AbacResourceData = (resourceData: Record<string, string>) => {
     descriptor?: PropertyDescriptor,
   ) => {
     if (descriptor) {
-      Reflect.defineMetadata(ABAC_RESOURCE_DATA_KEY, resourceData, descriptor.value);
+      Reflect.defineMetadata(
+        ABAC_RESOURCE_DATA_KEY,
+        resourceData,
+        descriptor.value,
+      );
     }
   };
 };
@@ -133,15 +141,16 @@ export class AbacGuard implements CanActivate {
     }
 
     // 4. 构建 ABAC 输入
-    const resource = this.reflector.get<string>(
-      ABAC_RESOURCE_KEY,
-      context.getHandler(),
-    ) || request.params?.resource || 'unknown';
+    const resource =
+      this.reflector.get<string>(ABAC_RESOURCE_KEY, context.getHandler()) ||
+      request.params?.resource ||
+      'unknown';
 
-    const action = this.reflector.get<AbacInput['action']>(
-      ABAC_ACTION_KEY,
-      context.getHandler(),
-    ) || this.inferAction(context);
+    const action =
+      this.reflector.get<AbacInput['action']>(
+        ABAC_ACTION_KEY,
+        context.getHandler(),
+      ) || this.inferAction(context);
 
     // 5. 构建资源数据（从请求参数中提取）
     const resourceData = this.extractResourceData(request, context);
@@ -172,7 +181,7 @@ export class AbacGuard implements CanActivate {
     if (!decision.allow) {
       this.logger.warn(
         `[ABAC] 权限拒绝: user=${user.id}, role=${abacInput.role}, ` +
-        `action=${action}, resource=${resource}, reason=${decision.reason}`,
+          `action=${action}, resource=${resource}, reason=${decision.reason}`,
       );
       throw new ForbiddenException({
         statusCode: 403,
@@ -191,7 +200,7 @@ export class AbacGuard implements CanActivate {
 
     this.logger.debug(
       `[ABAC] 权限允许: user=${user.id}, role=${abacInput.role}, ` +
-      `action=${action}, resource=${resource} (${decision.decisionTimeMs}ms)`,
+        `action=${action}, resource=${resource} (${decision.decisionTimeMs}ms)`,
     );
 
     return true;
@@ -200,7 +209,10 @@ export class AbacGuard implements CanActivate {
   /**
    * 从请求中提取资源数据
    */
-  private extractResourceData(request: any, context: ExecutionContext): AbacInput['resourceData'] {
+  private extractResourceData(
+    request: any,
+    context: ExecutionContext,
+  ): AbacInput['resourceData'] {
     const resourceDataMetadata = this.reflector.get<Record<string, string>>(
       ABAC_RESOURCE_DATA_KEY,
       context.getHandler(),
@@ -218,8 +230,12 @@ export class AbacGuard implements CanActivate {
     }
 
     // 自动从标准路径提取
-    resourceData.classId = resourceData.classId || request.params?.classId || request.query?.classId;
-    resourceData.studentId = resourceData.studentId || request.params?.studentId || request.query?.studentId;
+    resourceData.classId =
+      resourceData.classId || request.params?.classId || request.query?.classId;
+    resourceData.studentId =
+      resourceData.studentId ||
+      request.params?.studentId ||
+      request.query?.studentId;
 
     return resourceData;
   }
@@ -257,7 +273,15 @@ export class AbacGuard implements CanActivate {
    * 获取当前星期几（英文）
    */
   private getCurrentWeekday(): string {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const days = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
     return days[new Date().getDay()];
   }
 

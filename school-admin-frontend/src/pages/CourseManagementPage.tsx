@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/button';
 import { courseApi, Course, CourseFormData, CourseQueryParams } from '../api/course';
-import { useI18n } from '../i18n';
 import {
   Plus,
   Search,
@@ -18,7 +17,6 @@ import {
 } from 'lucide-react';
 
 const CourseManagementPage: React.FC = () => {
-  const { t } = useI18n();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -249,15 +247,21 @@ const CourseManagementPage: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between">
-              <Button onClick={handleSearch}>
-                <Filter className="w-4 h-4 mr-2" />
+              <button
+                onClick={handleSearch}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <Filter className="w-4 h-4" />
                 应用筛选
-              </Button>
+              </button>
 
-              <Button onClick={() => handleOpenModal()}>
-                <Plus className="w-4 h-4 mr-2" />
+              <button
+                onClick={() => handleOpenModal()}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
                 新增课程
-              </Button>
+              </button>
             </div>
           </div>
         </Card>
@@ -322,23 +326,23 @@ const CourseManagementPage: React.FC = () => {
                       <td className="py-4 px-4">{getStatusBadge(course.status)}</td>
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-2">
-                          <Button
+                          <button
                             onClick={() => handleOpenModal(course)}
-                            className="p-2"
+                            className="p-2 hover:bg-slate-100 rounded"
                             title="编辑"
                           >
-                            <Edit2 className="w-4 h-4" />
-                          </Button>
-                          <Button
+                            <Edit2 className="w-4 h-4 text-slate-600" />
+                          </button>
+                          <button
                             onClick={() => {
                               setDeletingCourseId(course.id);
                               setShowDeleteConfirm(true);
                             }}
-                            className="p-2 text-red-600 hover:bg-red-50"
+                            className="p-2 hover:bg-red-50 rounded"
                             title="删除"
                           >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                            <Trash2 className="w-4 h-4 text-red-600" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -355,20 +359,20 @@ const CourseManagementPage: React.FC = () => {
                 共 {totalCount} 条记录，第 {currentPage} 页
               </div>
               <div className="flex items-center gap-2">
-                <Button
+                <button
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-2"
+                  className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   上一页
-                </Button>
-                <Button
+                </button>
+                <button
                   onClick={() => setCurrentPage((p) => p + 1)}
                   disabled={currentPage * pageSize >= totalCount}
-                  className="px-3 py-2"
+                  className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   下一页
-                </Button>
+                </button>
               </div>
             </div>
           )}
@@ -539,12 +543,20 @@ const CourseManagementPage: React.FC = () => {
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
-                  <Button onClick={handleCloseModal} className="px-6">
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    className="px-6 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200"
+                  >
                     取消
-                  </Button>
-                  <Button type="submit" disabled={submitting} className="px-6">
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     {submitting ? '保存中...' : '保存'}
-                  </Button>
+                  </button>
                 </div>
               </form>
             </div>
@@ -568,18 +580,21 @@ const CourseManagementPage: React.FC = () => {
                 </p>
 
                 <div className="flex justify-end gap-3">
-                  <Button
+                  <button
                     onClick={() => {
                       setShowDeleteConfirm(false);
                       setDeletingCourseId(null);
                     }}
-                    className="px-6"
+                    className="px-6 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200"
                   >
                     取消
-                  </Button>
-                  <Button onClick={handleDelete} className="px-6 text-red-600 hover:bg-red-50">
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  >
                     删除
-                  </Button>
+                  </button>
                 </div>
               </div>
             </div>

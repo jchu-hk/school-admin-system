@@ -85,9 +85,18 @@ describe('OTP Authentication → User Management Integration', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OtpService,
-        { provide: getRepositoryToken(OtpConfig), useValue: mockOtpConfigRepository },
-        { provide: getRepositoryToken(OtpSession), useValue: mockOtpSessionRepository },
-        { provide: getRepositoryToken(OtpTrustedSession), useValue: mockOtpTrustedSessionRepository },
+        {
+          provide: getRepositoryToken(OtpConfig),
+          useValue: mockOtpConfigRepository,
+        },
+        {
+          provide: getRepositoryToken(OtpSession),
+          useValue: mockOtpSessionRepository,
+        },
+        {
+          provide: getRepositoryToken(OtpTrustedSession),
+          useValue: mockOtpTrustedSessionRepository,
+        },
         { provide: getRepositoryToken(User), useValue: mockUserRepository },
         { provide: ConfigService, useValue: mockConfigService },
         { provide: AuditService, useValue: mockAuditService },
@@ -97,7 +106,9 @@ describe('OTP Authentication → User Management Integration', () => {
     otpService = module.get<OtpServiceClass>(OtpService);
     otpConfigRepository = module.get(getRepositoryToken(OtpConfig));
     otpSessionRepository = module.get(getRepositoryToken(OtpSession));
-    otpTrustedSessionRepository = module.get(getRepositoryToken(OtpTrustedSession));
+    otpTrustedSessionRepository = module.get(
+      getRepositoryToken(OtpTrustedSession),
+    );
     userRepository = module.get(getRepositoryToken(User));
   });
 
@@ -136,7 +147,9 @@ describe('OTP Authentication → User Management Integration', () => {
         userId: 'user-001',
         expiresAt: new Date(),
       } as OtpTrustedSession);
-      mockOtpTrustedSessionRepository.save.mockResolvedValue({} as OtpTrustedSession);
+      mockOtpTrustedSessionRepository.save.mockResolvedValue(
+        {} as OtpTrustedSession,
+      );
       mockUserRepository.update.mockResolvedValue({ affected: 1 } as any);
 
       // Act
@@ -199,7 +212,11 @@ describe('OTP Authentication → User Management Integration', () => {
 
       await otpService.verifyOtp(
         testUser,
-        { sessionId: 'session-002', otpType: OtpType.GOOGLE_AUTHENTICATOR, code: '000000' },
+        {
+          sessionId: 'session-002',
+          otpType: OtpType.GOOGLE_AUTHENTICATOR,
+          code: '000000',
+        },
         'session-id-xyz',
       );
 
@@ -246,15 +263,18 @@ describe('OTP Authentication → User Management Integration', () => {
         ...otpSession,
         failedAttempts: 3,
       };
-      mockOtpSessionRepository.save.mockResolvedValue(updatedSession as OtpSession);
+      mockOtpSessionRepository.save.mockResolvedValue(
+        updatedSession as OtpSession,
+      );
       mockUserRepository.update.mockResolvedValue({ affected: 1 } as any);
 
       // Act & Assert
       await expect(
-        otpService.verifyOtp(
-          testUser,
-          { sessionId: 'session-003', otpType: OtpType.EMAIL, code: 'WRONG_CODE' },
-        ),
+        otpService.verifyOtp(testUser, {
+          sessionId: 'session-003',
+          otpType: OtpType.EMAIL,
+          code: 'WRONG_CODE',
+        }),
       ).rejects.toThrow(ForbiddenException);
 
       // Assert: User account was locked
@@ -299,10 +319,11 @@ describe('OTP Authentication → User Management Integration', () => {
       mockUserRepository.update.mockResolvedValue({ affected: 1 } as any);
 
       try {
-        await otpService.verifyOtp(
-          testUser,
-          { sessionId: 'session-004', otpType: OtpType.SMS, code: 'WRONG' },
-        );
+        await otpService.verifyOtp(testUser, {
+          sessionId: 'session-004',
+          otpType: OtpType.SMS,
+          code: 'WRONG',
+        });
       } catch (e) {
         // Expected to throw
       }
@@ -354,10 +375,11 @@ describe('OTP Authentication → User Management Integration', () => {
       } as OtpSession);
 
       await expect(
-        otpService.verifyOtp(
-          testUser,
-          { sessionId: 'session-005', otpType: OtpType.EMAIL, code: 'WRONG' },
-        ),
+        otpService.verifyOtp(testUser, {
+          sessionId: 'session-005',
+          otpType: OtpType.EMAIL,
+          code: 'WRONG',
+        }),
       ).rejects.toThrow(BadRequestException);
 
       expect(mockAuditService.log).toHaveBeenCalledWith(
