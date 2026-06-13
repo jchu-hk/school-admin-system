@@ -58,7 +58,9 @@ export class OtpGuard implements CanActivate {
     }
 
     // OTP verification required
-    const availableTypes = userOtpConfigs.filter(c => c.isEnabled).map(c => c.otpType);
+    const availableTypes = userOtpConfigs
+      .filter((c) => c.isEnabled)
+      .map((c) => c.otpType);
     throw new ForbiddenException({
       message: 'OTP verification is required for this operation',
       error: 'OTP_REQUIRED',

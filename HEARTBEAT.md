@@ -1,8 +1,48 @@
 # HEARTBEAT.md — 进度跟踪
 
-## ⚠️ PM主动触发机制
+## ⚠️ 重要：自动化机制现状（2026-06-13更新）
 
-**重要**: PM必须在指定时间**主动触发**报告生成，不等待外部触发（如心跳消息）。
+### 问题发现
+
+**Cron配置存在但脚本缺失**：
+```
+$ crontab -l
+0 7,9,11,13,15,17,19,21 * * * /bin/bash /workspace/projects/workspace/scripts/scheduled-progress-report.sh
+```
+
+**错误日志**：
+```
+/bin/bash: /workspace/projects/workspace/scripts/scheduled-progress-report.sh: No such file or directory
+```
+
+**根本原因**：
+- Cron配置了定时触发
+- 但引用的脚本从未被创建
+- 因此自动化从未生效
+
+### 解决方案（已实施）
+
+**方案A: Cron + 提醒文件**（已配置）
+- ✅ 创建了 `scripts/scheduled-progress-report.sh`
+- ✅ Cron每2小时运行脚本
+- ✅ 脚本创建提醒文件 `docs/pm/.report-reminder-HH`
+- ⚠️ **限制**: Cron无法直接触发OpenClaw Agent生成报告
+
+**方案B: PM主动检查**（主要机制）
+- ✅ PM收到心跳时运行 `scripts/check-report-due.sh`
+- ✅ 脚本检查是否到达报告时间
+- ✅ 如果是，提示PM立即生成报告
+
+**方案C: PM时间意识**（最终保障）
+- ⏰ PM必须在 10:00/14:00/18:00/22:00 **主动**检查时间
+- ⏰ 即使没有心跳提示，也要按时生成报告
+- ⏰ 这是最可靠的机制
+
+---
+
+## ⚠️ PM主动触发机制（强制执行）
+
+**重要**: PM必须在指定时间**主动触发**报告生成，不等待外部触发（如心跳消息或cron）。
 
 ### PM定时报告时间点
 - **10:00** - 上午进度报告
@@ -10,27 +50,38 @@
 - **18:00** - 晚间进度报告
 - **22:00** - 夜间进度报告
 
-### PM报告前检查清单（强制执行）
+### PM报告前检查清单（9项强制执行）
+
 每次生成报告前，PM必须执行：
+
 1. [ ] 检查当前时间，确认是否到达报告时间点
-2. [ ] 执行 `bash /workspace/projects/workspace/scripts/check-role-activity.sh`
-3. [ ] 查看各feature分支最后提交时间（git log）
-4. [ ] 检查Open Issues状态（gh issue list）
-5. [ ] 检查CI/CD Pipeline状态
-6. [ ] 检查最新发布时间和版本
-7. [ ] 查看角色报告目录 `/workspace/projects/workspace/docs/pm/role-reports/`
+2. [ ] 运行 `bash scripts/check-role-activity.sh` 检查角色停滞
+3. [ ] 运行 `bash scripts/check-report-due.sh` 检查是否需报告
+4. [ ] 查看各feature分支最后提交时间（git log）
+5. [ ] 检查Open Issues状态（gh issue list）
+6. [ ] 检查CI/CD Pipeline状态
+7. [ ] 检查最新发布时间和版本
 8. [ ] 生成详细报告并保存到 `docs/pm/REPORT-YYYYMMDD-HHMM.md`
 9. [ ] 通过message工具发送到WeChat
+
+### 延误处理规则
+
+**如果发现延误**：
+1. 立即补发报告，不找借口
+2. 在报告中说明延误原因
+3. 承诺下次准时
+4. 记录到 `docs/pm/PM-WORKLOG-YYYYMMDD.md`
 
 ---
 
 ## 定时自动进度报告任务
 
-### 报告内容
-1. 整体进度
-2. 详细模块最后状态
-3. AI团队每个角色手上的工作
-4. 项目所有详细与GitHub同步
+### 触发条件
+每天4个时间点检查团队各角色完成状态：
+- **10:00** - 上午进度报告
+- **14:00** - 下午进度报告  
+- **18:00** - 晚间进度报告
+- **22:00** - 夜间进度报告
 
 ### 检查范围
 
@@ -72,21 +123,18 @@ PM报告必须汇总以下内容：
 3. feature/phase-3-frontend-dev1 - DEV-FRONTEND前端
 4. feature/phase-4-deployment - DEVOPS部署
 
-### 报告格式
+---
+
+## 报告格式
 ```
 ## 📊 PM Team Progress Report [时间]
 
 ### 角色状态概览
-| 角色 | 最后报告 | 状态 | 进度 | 当前模块 |
-|------|----------|------|------|----------|
-| DEV1 | X小时前 | 🟢/🟡/🔴/⚫ | [百分比]% | [模块名] |
-| DEV2 | X小时前 | 🟢/🟡/🔴/⚫ | [百分比]% | [模块名] |
-| DEV3 | X小时前 | 🟢/🟡/🔴/⚫ | [百分比]% | [模块名] |
-| DEV-FRONTEND | X小时前 | 🟢/🟡/🔴/⚫ | [百分比]% | [模块名] |
-| QA1 | X小时前 | 🟢/🟡/🔴/⚫ | - | [模块名] |
-| QA2 | X小时前 | 🟢/🟡/🔴/⚫ | - | [模块名] |
-| CHECKER | X小时前 | 🟢/🟡/🔴/⚫ | - | - |
-| DEVOPS | X小时前 | 🟢/🟡/🔴/⚫ | - | - |
+| 角色 | 最后报告 | 状态 | 进度 |
+|------|----------|------|------|
+| DEV1 | X小时前 | 🟢/🟡/🔴/⚫ | 80% |
+| DEV2 | X小时前 | 🟢/🟡/🔴/⚫ | 75% |
+...
 
 ### 🟡🔴⚫ 停滞预警
 - 🟡 [角色] - X小时无报告 (超过阈值)
@@ -117,10 +165,26 @@ PM报告必须汇总以下内容：
 |------|------|------|------|
 ```
 
-### CHECKER审查触发条件
-每当DEV完成一个模块，立即触发CHECKER审查该模块质量，审查通过后才能进入下一模块。
+---
 
-### 执行策略
-- 使用session_status获取当前时间
-- 检查各feature分支的git log获取最新提交
-- 汇总后通过message工具发送到WeChat
+## 自动化脚本清单
+
+| 脚本 | 路径 | 用途 | 触发方式 |
+|------|------|------|----------|
+| check-role-activity.sh | scripts/ | 检查角色停滞 | PM手动运行 |
+| check-report-due.sh | scripts/ | 检查是否需报告 | PM手动运行 |
+| scheduled-progress-report.sh | scripts/ | Cron定时提醒 | Cron每2小时 |
+
+---
+
+## PM承诺
+
+1. **定时报告不再遗漏** - 10:00/14:00/18:00/22:00准时发送
+2. **主动检查时间** - 不依赖cron或心跳，主动看时间
+3. **延误立即补救** - 发现延误立即补发，不找借口
+4. **持续改进** - 记录每次延误原因，优化流程
+
+---
+
+*更新时间: 2026-06-13 14:25*
+*更新内容: 添加自动化机制现状说明，修正Cron脚本缺失问题*

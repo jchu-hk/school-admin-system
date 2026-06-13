@@ -129,3 +129,8 @@ export class User {
   @Column({ type: 'uuid', nullable: true })
   updatedBy: string;
 }
+
+// Re-export entities for convenience
+export { Student } from './student.entity';
+export { Parent } from './parent.entity';
+export { ClassTeacher } from './class-teacher.entity';

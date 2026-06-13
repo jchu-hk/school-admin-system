@@ -1,8 +1,4 @@
 packages:
   - 'apps/*'
   - 'packages/*'
-onlyBuiltDependencies:
-  - '@nestjs/core'
-  - '@nestjs/platform-express'
-  - 'reflect-metadata'
-  - 'rxjs'
+  - 'e2e-tests'

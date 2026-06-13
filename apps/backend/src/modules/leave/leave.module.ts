@@ -1,23 +1,19 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MulterModule } from '@nestjs/platform-express';
 import { LeaveController } from './leave.controller';
-import { LeaveAiVerificationController } from './leave-ai-verification.controller';
 import { LeaveService } from './leave.service';
-import { LeaveAiVerificationService } from './leave-ai-verification.service';
-import { Leave } from './leave.entity';
+import { LeaveApplication } from './leave.entity';
+import { AuditModule } from '../audit/audit.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Leave]),
-    MulterModule.register({
-      limits: {
-        fileSize: 10 * 1024 * 1024, // 10MB
-      },
-    }),
+    TypeOrmModule.forFeature([LeaveApplication]),
+    AuditModule,
+    NotificationModule,
   ],
-  controllers: [LeaveController, LeaveAiVerificationController],
-  providers: [LeaveService, LeaveAiVerificationService],
-  exports: [LeaveService, LeaveAiVerificationService],
+  controllers: [LeaveController],
+  providers: [LeaveService],
+  exports: [LeaveService],
 })
 export class LeaveModule {}

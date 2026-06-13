@@ -1,77 +1,115 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
+  PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToMany,
 } from 'typeorm';
-import { User } from '../user/user.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { Student, Parent, User } from '../user/user.entity';
 
-export enum InquiryStatus {
-  PENDING = 'pending',
-  PROCESSING = 'processing',
-  CLOSED = 'closed',
+export enum InquiryCategory {
+  BUS_SCHEDULE = 'bus_schedule', // 校车相关
+  TUITION_FEE = 'tuition_fee', // 学费相关
+  ACADEMIC = 'academic', // 成绩相关
+  LEAVE = 'leave', // 请假相关
+  LUNCH = 'lunch', // 午膳相关
+  GENERAL = 'general', // 一般行政
+  COMPLAINT = 'complaint', // 投诉
+  OTHER = 'other', // 其他
 }
 
-export enum InquiryType {
-  ACADEMIC = 'academic',
-  ATTENDANCE = 'attendance',
-  DISCIPLINE = 'discipline',
-  HEALTH = 'health',
-  FINANCE = 'finance',
-  OTHER = 'other',
+export enum InquiryChannel {
+  PHONE = 'phone', // 电话
+  EMAIL = 'email', // 邮件
+  WHATSAPP = 'whatsapp', // WhatsApp
+  IN_PERSON = 'in_person', // 亲自到访
+  APP = 'app', // APP/微信
 }
 
 export enum InquiryPriority {
-  LOW = 'low',
-  NORMAL = 'normal',
-  HIGH = 'high',
-  URGENT = 'urgent',
+  NORMAL = 'normal', // 普通（24小时回复）
+  URGENT = 'urgent', // 紧急（2小时回复）
 }
 
-@Entity('inquiries')
-export class Inquiry {
+export enum InquiryStatus {
+  PENDING = 'pending', // 待处理
+  PROCESSING = 'processing', // 处理中
+  REPLIED = 'replied', // 已回复
+  CLOSED = 'closed', // 已关闭
+}
+
+@Entity('parent_inquiries')
+export class ParentInquiry {
+  @ApiProperty({ description: '查询ID' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'parent_id' })
+  @ApiProperty({ description: '查询编号' })
+  @Column({ unique: true, length: 20 })
+  inquiryNo: string;
+
+  @ApiProperty({ description: '学校ID' })
+  @Column({ type: 'uuid' })
+  schoolId: string;
+
+  @ApiProperty({ description: '家长ID' })
+  @Column({ type: 'uuid' })
   parentId: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'parent_id' })
-  parent: User;
+  @ApiProperty({ description: '家长信息' })
+  @ManyToOne(() => Parent)
+  @JoinColumn({ name: 'parentId' })
+  parent: Parent;
 
-  @Column({ name: 'student_id', nullable: true })
+  @ApiProperty({ description: '关联学生ID' })
+  @Column({ type: 'uuid', nullable: true })
   studentId: string;
 
+  @ApiProperty({ description: '关联学生信息' })
+  @ManyToOne(() => Student, { nullable: true })
+  @JoinColumn({ name: 'studentId' })
+  student: Student;
+
+  @ApiProperty({ description: '查询类别', enum: InquiryCategory })
   @Column({
     type: 'enum',
-    enum: InquiryType,
-    name: 'inquiry_type',
+    enum: InquiryCategory,
+    default: InquiryCategory.GENERAL,
   })
-  inquiryType: InquiryType;
+  category: InquiryCategory;
 
+  @ApiProperty({ description: '查询主题' })
+  @Column({ length: 200, nullable: true })
+  subject: string;
+
+  @ApiProperty({ description: '查询内容' })
+  @Column({ type: 'text' })
+  content: string;
+
+  @ApiProperty({ description: '附件URL（图片/语音）', required: false })
+  @Column({ type: 'text', nullable: true })
+  attachmentUrl: string;
+
+  @ApiProperty({ description: '提交渠道', enum: InquiryChannel })
+  @Column({
+    type: 'enum',
+    enum: InquiryChannel,
+    default: InquiryChannel.APP,
+  })
+  channel: InquiryChannel;
+
+  @ApiProperty({ description: '优先级', enum: InquiryPriority })
   @Column({
     type: 'enum',
     enum: InquiryPriority,
     default: InquiryPriority.NORMAL,
-    name: 'priority',
   })
   priority: InquiryPriority;
 
-  @Column({ name: 'is_urgent', default: false })
-  isUrgent: boolean;
-
-  @Column({ type: 'varchar', length: 200 })
-  title: string;
-
-  @Column({ type: 'text' })
-  content: string;
-
+  @ApiProperty({ description: '处理状态', enum: InquiryStatus })
   @Column({
     type: 'enum',
     enum: InquiryStatus,
@@ -79,97 +117,76 @@ export class Inquiry {
   })
   status: InquiryStatus;
 
-  @Column({ name: 'assigned_to', nullable: true })
+  @ApiProperty({ description: '分配给谁处理' })
+  @Column({ type: 'uuid', nullable: true })
   assignedTo: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'assigned_to' })
-  assignee: User;
+  @ApiProperty({ description: '处理人信息' })
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'assignedTo' })
+  assignedOfficer: User;
 
-  @Column({ name: 'closed_at', type: 'timestamp', nullable: true })
-  closedAt: Date;
+  @ApiProperty({ description: 'AI分析结果-意图分类' })
+  @Column({ length: 50, nullable: true })
+  aiIntent: string;
 
-  @Column({ name: 'closed_by', nullable: true })
-  closedBy: string;
+  @ApiProperty({ description: 'AI分析结果-情感倾向' })
+  @Column({ length: 20, nullable: true })
+  aiSentiment: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'closed_by' })
-  closer: User;
+  @ApiProperty({ description: 'AI分析结果-置信度' })
+  @Column({ type: 'decimal', precision: 3, scale: 2, nullable: true })
+  aiConfidence: number;
 
-  @Column({ name: 'rating', type: 'int', nullable: true })
-  rating: number;
+  @ApiProperty({ description: 'AI建议回复' })
+  @Column({ type: 'text', nullable: true })
+  aiSuggestedResponse: string;
 
-  @Column({ name: 'rating_comment', type: 'text', nullable: true })
-  ratingComment: string;
+  @ApiProperty({ description: '是否可自动回复' })
+  @Column({ default: false })
+  autoResponseEligible: boolean;
 
-  /** AI识别的意图类型 */
-  @Column({
-    name: 'intent_type',
-    type: 'varchar',
-    length: 50,
-    nullable: true,
-  })
-  intentType: string;
+  @ApiProperty({ description: '是否升级处理' })
+  @Column({ default: false })
+  escalationRequired: boolean;
 
-  /** AI意图置信度 (0-1) */
-  @Column({
-    name: 'intent_confidence',
-    type: 'decimal',
-    precision: 3,
-    scale: 2,
-    nullable: true,
-  })
-  intentConfidence: number;
+  @ApiProperty({ description: '家长提交时间' })
+  @Column({ type: 'timestamp' })
+  parentSubmittedAt: Date;
 
-  /** 意图匹配关键词 */
-  @Column({
-    name: 'intent_keywords',
-    type: 'text',
-    nullable: true,
-  })
-  intentKeywords: string;
+  @ApiProperty({ description: '首次回复时间' })
+  @Column({ type: 'timestamp', nullable: true })
+  firstResponseAt: Date;
 
-  @OneToMany(() => InquiryReply, (reply) => reply.inquiry)
-  replies: InquiryReply[];
+  @ApiProperty({ description: '解决时间' })
+  @Column({ type: 'timestamp', nullable: true })
+  resolvedAt: Date;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @ApiProperty({ description: '满意度评分（1-5）' })
+  @Column({ type: 'int', nullable: true })
+  satisfactionRating: number;
+
+  @ApiProperty({ description: '满意度评价内容' })
+  @Column({ type: 'text', nullable: true })
+  satisfactionComment: string;
+
+  @ApiProperty({ description: '通话时长（分钟）' })
+  @Column({ type: 'int', nullable: true })
+  callDurationMinutes: number;
+
+  @ApiProperty({ description: '通话结果' })
+  @Column({ length: 30, nullable: true })
+  callResult: string;
+
+  @ApiProperty({ description: '创建时间' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @ApiProperty({ description: '更新时间' })
+  @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at' })
-  deletedAt: Date;
-}
-
-@Entity('inquiry_replies')
-export class InquiryReply {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ name: 'inquiry_id' })
-  inquiryId: string;
-
-  @ManyToOne(() => Inquiry, (inquiry) => inquiry.replies)
-  @JoinColumn({ name: 'inquiry_id' })
-  inquiry: Inquiry;
-
-  @Column({ name: 'replier_id' })
-  replierId: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'replier_id' })
-  replier: User;
-
-  @Column({ type: 'text' })
-  content: string;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at' })
-  deletedAt: Date;
+  @ApiProperty({ description: '创建人ID' })
+  @Column({ type: 'uuid', nullable: true })
+  createdBy: string;
 }

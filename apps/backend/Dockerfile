@@ -1,42 +1,67 @@
-FROM node:22-alpine AS builder
+# ============================================================
+# NestJS Backend Dockerfile
+# Multi-stage build for optimal image size
+# ============================================================
 
+# ---- Base Stage ----
+FROM node:20-alpine AS base
 WORKDIR /app
 
-# Copy root workspace files (for monorepo config and hoisted node_modules)
-COPY package.json package-lock.json pnpm-workspace.yaml ./
-COPY node_modules ./node_modules
+# Install dependencies for native modules
+RUN apk add --no-cache python3 make g++
 
-# Copy backend source and package files
-COPY apps/backend/src ./apps/backend/src
-COPY apps/backend/package.json ./apps/backend/package.json
-COPY apps/backend/tsconfig.json ./apps/backend/tsconfig.json
-COPY apps/backend/tsconfig.build.json ./apps/backend/tsconfig.build.json
-COPY apps/backend/nest-cli.json ./apps/backend/nest-cli.json
-COPY packages ./packages
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/*/package.json ./packages/
+COPY apps/backend/package.json ./apps/backend/
 
-# Install backend dependencies (devDependencies will be hoisted to root node_modules)
-WORKDIR /app/apps/backend
-RUN npm ci
+# ---- Dependencies Stage ----
+FROM base AS deps
+RUN corepack enable pnpm && pnpm install --frozen-lockfile --prod
 
-# Build backend using TypeScript compiler from root node_modules
-WORKDIR /app
-RUN node node_modules/typescript/bin/tsc -p apps/backend/tsconfig.build.json
-
-FROM node:22-alpine AS runner
-
+# ---- Build Stage ----
+FROM base AS builder
 WORKDIR /app
 
-ENV NODE_ENV=production
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
+RUN pnpm --filter backend build
+
+# ---- Production Stage ----
+FROM node:20-alpine AS production
+WORKDIR /app
+
+# Security: run as non-root user
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nestjs -u 1001
+    adduser -S nestjs -u 1001 -G nodejs
 
-COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
+# Install production dependencies only
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/*/package.json ./packages/
+COPY apps/backend/package.json ./apps/backend/
+
+RUN corepack enable pnpm && \
+    pnpm install --frozen-lockfile --prod --offline && \
+    cp -r node_modules /app/
+
+# Copy built application
+COPY --from=builder /app/apps/backend/dist ./dist
+COPY --from=builder /app/apps/backend/package.json ./package.json
+COPY --from=builder /app/packages ./packages
+
+# Copy migration files
+COPY packages/database/migrations ./migrations
+
+# Set ownership
+RUN chown -R nestjs:nodejs /app
 
 USER nestjs
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget -qO- http://localhost:3000/health || exit 1
+
 EXPOSE 3000
 
-CMD ["node", "apps/backend/dist/main.js"]
+CMD ["node", "dist/main.js"]

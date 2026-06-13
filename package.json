@@ -5,7 +5,8 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "e2e-tests"
   ],
   "scripts": {
     "build": "pnpm -r build",
@@ -18,7 +19,16 @@
     "infra:down": "cd infra && docker-compose down",
     "infra:logs": "cd infra && docker-compose logs -f",
     "migrate:dev": "pnpm --filter @school-admin/database migrate:dev",
-    "migrate:prod": "pnpm --filter @school-admin/database migrate:prod"
+    "migrate:prod": "pnpm --filter @school-admin/database migrate:prod",
+    "test:e2e": "pnpm --filter @school-admin/e2e-tests test",
+    "test:e2e:smoke": "pnpm --filter @school-admin/e2e-tests test:smoke",
+    "test:e2e:headed": "pnpm --filter @school-admin/e2e-tests test:headed",
+    "test:e2e:ui": "pnpm --filter @school-admin/e2e-tests test:ui",
+    "test:e2e:auth": "pnpm --filter @school-admin/e2e-tests test:auth",
+    "test:e2e:leave": "pnpm --filter @school-admin/e2e-tests test:leave",
+    "test:e2e:notification": "pnpm --filter @school-admin/e2e-tests test:notification",
+    "test:e2e:permission": "pnpm --filter @school-admin/e2e-tests test:permission",
+    "test:e2e:report": "pnpm --filter @school-admin/e2e-tests report"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

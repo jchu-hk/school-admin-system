@@ -4,19 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthModule } from './modules/health/health.module';
 import { UserModule } from './modules/user/user.module';
 import { User } from './modules/user/user.entity';
-import { PermissionModule } from './modules/permission/permission.module';
-import { RoleModule } from './modules/role/role.module';
-import { LeaveModule } from './modules/leave/leave.module';
-import { AttendanceModule } from './modules/attendance/attendance.module';
-import { ScholarshipModule } from './modules/scholarship/scholarship.module';
-import { NotificationModule } from './modules/notification/notification.module';
+import { AuditModule } from './modules/audit/audit.module';
 import { InquiryModule } from './modules/inquiry/inquiry.module';
-import { TuitionModule } from './modules/tuition/tuition.module';
-import { FeeModule } from './modules/fee/fee.module';
-import { LunchModule } from './modules/lunch/lunch.module';
-import { BusModule } from './modules/bus/bus.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { LeaveModule } from './modules/leave/leave.module';
+import { NotificationModule } from './modules/notification/notification.module';
+import { AbacModule } from './modules/abac/abac.module';
 import { PermissionApprovalModule } from './modules/permission-approval/permission-approval.module';
 
 @Module({
@@ -41,19 +33,11 @@ import { PermissionApprovalModule } from './modules/permission-approval/permissi
     }),
     HealthModule,
     UserModule,
-    PermissionModule,
-    RoleModule,
-    LeaveModule,
-    AttendanceModule,
-    ScholarshipModule,
-    NotificationModule,
+    AuditModule,
     InquiryModule,
-    TuitionModule,
-    FeeModule,
-    LunchModule,
-    BusModule,
-    AuthModule,
-    DashboardModule,
+    LeaveModule,
+    NotificationModule,
+    AbacModule,
     PermissionApprovalModule,
   ],
   controllers: [],

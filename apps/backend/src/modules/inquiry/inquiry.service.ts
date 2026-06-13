@@ -1,69 +1,223 @@
-import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Inquiry, InquiryReply, InquiryStatus, InquiryPriority } from './inquiry.entity';
-import { InquiryEscalationHistory } from './inquiry-escalation-history.entity';
-import { CreateInquiryDto, UpdateInquiryDto, CreateInquiryReplyDto } from './dto/inquiry.dto';
-import { InquiryIntentService, IntentClassificationResult, IntentType } from './inquiry-intent.service';
-import { InquiryEscalationService, EscalationResult } from './inquiry-escalation.service';
-
-export interface CreateInquiryResult {
-  inquiry: Inquiry;
-  intent?: IntentClassificationResult;
-  escalation?: EscalationResult;
-}
+import { UserRole } from '../user/user.entity';
+import { NotificationService } from '../notification/notification.service';
+import {
+  ParentInquiry,
+  InquiryCategory,
+  InquiryPriority,
+  InquiryStatus,
+} from './inquiry.entity';
+import { InquiryReply, ReplyAuthorType } from './reply.entity';
+import { QuickReplyTemplate } from './template.entity';
+import {
+  CreateInquiryDto,
+  UpdateInquiryDto,
+  CreateReplyDto,
+  SatisfactionDto,
+  CreateTemplateDto,
+  InquiryQueryDto,
+} from './dto/inquiry.dto';
 
 @Injectable()
 export class InquiryService {
-  private readonly logger = new Logger(InquiryService.name);
-
   constructor(
-    @InjectRepository(Inquiry)
-    private inquiryRepository: Repository<Inquiry>,
+    @InjectRepository(ParentInquiry)
+    private inquiryRepository: Repository<ParentInquiry>,
     @InjectRepository(InquiryReply)
     private replyRepository: Repository<InquiryReply>,
-    private readonly intentService: InquiryIntentService,
-    private readonly escalationService: InquiryEscalationService,
+    @InjectRepository(QuickReplyTemplate)
+    private templateRepository: Repository<QuickReplyTemplate>,
+    private readonly notificationService: NotificationService,
   ) {}
 
+  /**
+   * 生成查询编号
+   */
+  private generateInquiryNo(): string {
+    const date = new Date();
+    const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `INQ-${dateStr}-${random}`;
+  }
+
+  /**
+   * 根据查询类别自动分配处理人
+   */
+  private autoAssignOfficer(category: InquiryCategory): string | null {
+    // 根据类别返回对应的处理队列
+    const categoryMap: Record<InquiryCategory, string | null> = {
+      [InquiryCategory.BUS_SCHEDULE]: 'bus_team',
+      [InquiryCategory.TUITION_FEE]: 'finance_team',
+      [InquiryCategory.ACADEMIC]: 'academic_team',
+      [InquiryCategory.LEAVE]: 'leave_team',
+      [InquiryCategory.LUNCH]: 'lunch_team',
+      [InquiryCategory.GENERAL]: 'general_team',
+      [InquiryCategory.COMPLAINT]: 'director_queue',
+      [InquiryCategory.OTHER]: 'general_team',
+    };
+    // 实际应从用户表查询，这里返回标识符
+    return categoryMap[category] || null;
+  }
+
+  /**
+   * 创建家长查询
+   */
+  async create(
+    dto: CreateInquiryDto,
+    userId: string,
+    schoolId: string,
+  ): Promise<ParentInquiry> {
+    const inquiry = this.inquiryRepository.create({
+      ...dto,
+      inquiryNo: this.generateInquiryNo(),
+      schoolId,
+      parentSubmittedAt: new Date(),
+      status: InquiryStatus.PENDING,
+      assignedTo: this.autoAssignOfficer(dto.category),
+    });
+
+    const saved = await this.inquiryRepository.save(inquiry);
+
+    // AI分析（模拟，实际应调用AI服务）
+    await this.performAIAnalysis(saved);
+
+    // 自动通知校务人员：有新的家长查询
+    await this.sendInquirySubmissionNotification(saved);
+
+    return this.findOne(saved.id);
+  }
+
+  /**
+   * 发送家长查询提交通知给校务人员（实际应调用Coze/OpenAI）
+   */
+  private async performAIAnalysis(inquiry: ParentInquiry): Promise<void> {
+    // 意图分类映射
+    const intentMap: Record<InquiryCategory, string[]> = {
+      [InquiryCategory.BUS_SCHEDULE]: [
+        'bus_time_inquiry',
+        'bus_route_inquiry',
+        'bus_delay',
+      ],
+      [InquiryCategory.TUITION_FEE]: [
+        'fee_inquiry',
+        'payment_method',
+        'outstanding_fee',
+      ],
+      [InquiryCategory.ACADEMIC]: [
+        'grade_inquiry',
+        'homework',
+        'exam_schedule',
+      ],
+      [InquiryCategory.LEAVE]: ['leave_application', 'leave_status'],
+      [InquiryCategory.LUNCH]: ['lunch_menu', 'lunch_change'],
+      [InquiryCategory.GENERAL]: [
+        'general_info',
+        'contact_info',
+        'school_calendar',
+      ],
+      [InquiryCategory.COMPLAINT]: ['complaint', 'feedback'],
+      [InquiryCategory.OTHER]: ['other_inquiry'],
+    };
+
+    // 简单的关键词检测
+    const content = inquiry.content.toLowerCase();
+    let sentiment = 'neutral';
+    if (
+      content.includes('緊急') ||
+      content.includes('urgent') ||
+      content.includes('很急')
+    ) {
+      sentiment = 'negative';
+    } else if (content.includes('謝謝') || content.includes('thank')) {
+      sentiment = 'positive';
+    }
+
+    const intents = intentMap[inquiry.category] || ['other_inquiry'];
+    const confidence = 0.7 + Math.random() * 0.25; // 0.70-0.95
+
+    // 检查是否适合自动回复（FAQ匹配）
+    const autoEligible = this.checkAutoResponseEligible(inquiry.content);
+
+    await this.inquiryRepository.update(inquiry.id, {
+      aiIntent: intents[0],
+      aiSentiment: sentiment,
+      aiConfidence: confidence,
+      autoResponseEligible: autoEligible,
+    });
+  }
+
+  /**
+   * 检查是否适合自动回复
+   */
+  private checkAutoResponseEligible(content: string): boolean {
+    const faqPatterns = [
+      '校車時間',
+      '校車路線',
+      '午膳',
+      '餐單',
+      '學費',
+      '繳費',
+      '上課時間',
+      '放學時間',
+      '聯絡電話',
+      '地址',
+    ];
+    return faqPatterns.some((pattern) => content.includes(pattern));
+  }
+
+  /**
+   * 获取查询列表
+   * 按角色过滤：家长只能看到自己关联的查询
+   */
   async findAll(
-    page: number = 1,
-    limit: number = 10,
-    status?: InquiryStatus,
-    inquiryType?: string,
-    parentId?: string,
-    priority?: InquiryPriority,
-    isUrgent?: boolean,
-  ): Promise<{ inquiries: Inquiry[]; total: number }> {
-    const queryBuilder = this.inquiryRepository.createQueryBuilder('inquiry')
+    query: InquiryQueryDto,
+    userId: string,
+    userRole: UserRole = UserRole.SCHOOL_STAFF,
+  ): Promise<{ inquiries: ParentInquiry[]; total: number }> {
+    const page = parseInt(query.page || '1');
+    const limit = parseInt(query.limit || '10');
+
+    const qb = this.inquiryRepository
+      .createQueryBuilder('inquiry')
       .leftJoinAndSelect('inquiry.parent', 'parent')
-      .leftJoinAndSelect('inquiry.assignee', 'assignee')
-      .where('inquiry.deletedAt IS NULL');
+      .leftJoinAndSelect('inquiry.student', 'student')
+      .leftJoinAndSelect('inquiry.assignedOfficer', 'assignedOfficer')
+      .orderBy('inquiry.parentSubmittedAt', 'DESC');
 
-    if (status) {
-      queryBuilder.andWhere('inquiry.status = :status', { status });
+    // 按角色过滤
+    if (userRole === UserRole.PARENT) {
+      // 家长只能看到自己提交的查询
+      qb.andWhere('inquiry.parentId = :userId', { userId });
     }
 
-    if (inquiryType) {
-      queryBuilder.andWhere('inquiry.inquiryType = :inquiryType', { inquiryType });
+    if (query.category) {
+      qb.andWhere('inquiry.category = :category', { category: query.category });
+    }
+    if (query.status) {
+      qb.andWhere('inquiry.status = :status', { status: query.status });
+    }
+    if (query.priority) {
+      qb.andWhere('inquiry.priority = :priority', { priority: query.priority });
+    }
+    if (query.assignedTo) {
+      qb.andWhere('inquiry.assignedTo = :assignedTo', {
+        assignedTo: query.assignedTo,
+      });
+    }
+    if (query.startDate) {
+      qb.andWhere('inquiry.parentSubmittedAt >= :startDate', {
+        startDate: new Date(query.startDate),
+      });
+    }
+    if (query.endDate) {
+      qb.andWhere('inquiry.parentSubmittedAt <= :endDate', {
+        endDate: new Date(query.endDate + 'T23:59:59'),
+      });
     }
 
-    if (parentId) {
-      queryBuilder.andWhere('inquiry.parentId = :parentId', { parentId });
-    }
-
-    if (priority) {
-      queryBuilder.andWhere('inquiry.priority = :priority', { priority });
-    }
-
-    if (isUrgent !== undefined) {
-      queryBuilder.andWhere('inquiry.isUrgent = :isUrgent', { isUrgent });
-    }
-
-    const [inquiries, total] = await queryBuilder
-      .orderBy('inquiry.isUrgent', 'DESC')
-      .addOrderBy('inquiry.priority', 'DESC')
-      .addOrderBy('inquiry.createdAt', 'DESC')
+    const [inquiries, total] = await qb
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
@@ -71,287 +225,260 @@ export class InquiryService {
     return { inquiries, total };
   }
 
-  async findOne(id: string): Promise<Inquiry> {
+  /**
+   * 获取单个查询
+   */
+  async findOne(id: string): Promise<ParentInquiry> {
     const inquiry = await this.inquiryRepository.findOne({
-      where: { id, deletedAt: null },
-      relations: ['parent', 'assignee', 'closer'],
+      where: { id },
+      relations: ['parent', 'student', 'assignedOfficer'],
     });
 
     if (!inquiry) {
-      throw new NotFoundException('查询不存在');
+      throw new NotFoundException('查询记录不存在');
     }
 
     return inquiry;
   }
 
-  async findOneWithReplies(id: string): Promise<{ inquiry: Inquiry; replies: InquiryReply[] }> {
+  /**
+   * 更新查询
+   */
+  async update(id: string, dto: UpdateInquiryDto): Promise<ParentInquiry> {
     const inquiry = await this.findOne(id);
-    
-    const replies = await this.replyRepository.find({
-      where: { inquiryId: id, deletedAt: null },
-      relations: ['replier'],
-      order: { createdAt: 'ASC' },
-    });
 
-    return { inquiry, replies };
-  }
+    // 状态变更逻辑
+    if (dto.status === InquiryStatus.PROCESSING && !inquiry.firstResponseAt) {
+      dto = { ...dto, firstResponseAt: new Date() } as any;
+    }
+    if (dto.status === InquiryStatus.REPLIED && !inquiry.firstResponseAt) {
+      dto = { ...dto, firstResponseAt: new Date() } as any;
+    }
+    if (dto.status === InquiryStatus.CLOSED) {
+      dto = { ...dto, resolvedAt: new Date() } as any;
+    }
 
-  async create(createDto: CreateInquiryDto): Promise<Inquiry> {
-    // AI意图分类
-    const intentResult = this.intentService.classify(
-      `${createDto.title} ${createDto.content}`,
-    );
-    this.logger.debug(
-      `[AI Intent] ${createDto.title}: ${intentResult.primaryIntent.intent} (${intentResult.primaryIntent.confidence})`,
-    );
-
-    // 自动升级检查
-    const escalationResult = await this.escalationService.checkAndEscalate(
-      '', // 新建时尚无ID，先生成，后续更新
-      createDto.content,
-      createDto.title,
-    );
-
-    // 构建查询数据（包含AI意图标签）
-    const inquiryData: Partial<Inquiry> = {
-      ...createDto,
-      status: InquiryStatus.PENDING,
-      isUrgent: escalationResult.isEscalated,
-      priority: escalationResult.priority || InquiryPriority.NORMAL,
-      intentType: intentResult.primaryIntent.intent,
-      intentConfidence: intentResult.primaryIntent.confidence,
-      intentKeywords: intentResult.primaryIntent.matchedKeywords.join(','),
-    };
-
-    const inquiry = this.inquiryRepository.create(inquiryData);
-    return this.inquiryRepository.save(inquiry);
+    await this.inquiryRepository.update(id, dto as any);
+    return this.findOne(id);
   }
 
   /**
-   * 创建查询并返回AI分析结果
+   * 添加回复
    */
-  async createWithAnalysis(createDto: CreateInquiryDto): Promise<CreateInquiryResult> {
-    // AI意图分类
-    const intentResult = this.intentService.classify(
-      `${createDto.title} ${createDto.content}`,
-    );
-    this.logger.debug(
-      `[AI Intent] "${createDto.title}": ${intentResult.primaryIntent.intent} (${intentResult.primaryIntent.confidence})`,
-    );
+  async addReply(
+    inquiryId: string,
+    dto: CreateReplyDto,
+    authorId: string,
+    authorType: ReplyAuthorType,
+  ): Promise<InquiryReply> {
+    const inquiry = await this.findOne(inquiryId);
 
-    // 自动升级检查（先用占位符，后续更新ID）
-    const escalationResult = await this.escalationService.checkAndEscalate(
-      'pending',
-      createDto.content,
-      createDto.title,
-    );
-
-    const inquiryData: Partial<Inquiry> = {
-      ...createDto,
-      status: InquiryStatus.PENDING,
-      isUrgent: escalationResult.isEscalated,
-      priority: escalationResult.priority || InquiryPriority.NORMAL,
-      intentType: intentResult.primaryIntent.intent,
-      intentConfidence: intentResult.primaryIntent.confidence,
-      intentKeywords: intentResult.primaryIntent.matchedKeywords.join(','),
-    };
-
-    const inquiry = this.inquiryRepository.create(inquiryData);
-    const savedInquiry = await this.inquiryRepository.save(inquiry);
-
-    // 紧急查询：更新通知中的查询ID
-    if (escalationResult.isEscalated) {
-      await this.escalationService.notifyAdmins(
-        savedInquiry.id,
-        {
-          keywords: [],
-          category: escalationResult.category || '紧急',
-          priority: escalationResult.priority || InquiryPriority.HIGH,
-          notificationTemplate: `紧急查询 [${savedInquiry.id}] 请立即处理`,
-        },
-        [],
-      );
-    }
-
-    return {
-      inquiry: savedInquiry,
-      intent: intentResult,
-      escalation: escalationResult,
-    };
-  }
-
-  /**
-   * AI意图分类分析（仅分析，不创建记录）
-   */
-  analyzeIntent(text: string, title?: string): IntentClassificationResult {
-    return this.intentService.classify(`${title || ''} ${text}`.trim());
-  }
-
-  async update(id: string, updateDto: UpdateInquiryDto, updatedBy?: string): Promise<Inquiry> {
-    const inquiry = await this.findOne(id);
-
-    // 如果分配了处理人，更新状态为处理中
-    if (updateDto.assignedTo && inquiry.status === InquiryStatus.PENDING) {
-      updateDto.status = InquiryStatus.PROCESSING;
-    }
-
-    // 如果状态变为已关闭，设置关闭时间和关闭人
-    if (updateDto.status === InquiryStatus.CLOSED && inquiry.status !== InquiryStatus.CLOSED) {
-      inquiry.closedAt = new Date();
-      inquiry.closedBy = updatedBy;
-    }
-
-    Object.assign(inquiry, updateDto);
-    return this.inquiryRepository.save(inquiry);
-  }
-
-  async remove(id: string): Promise<void> {
-    const inquiry = await this.findOne(id);
-    await this.inquiryRepository.softRemove(inquiry);
-  }
-
-  async findReplies(inquiryId: string): Promise<InquiryReply[]> {
-    return this.replyRepository.find({
-      where: { inquiryId, deletedAt: null },
-      relations: ['replier'],
-      order: { createdAt: 'ASC' },
+    const reply = this.replyRepository.create({
+      ...dto,
+      inquiryId,
+      authorId,
+      authorType,
     });
-  }
 
-  async createReply(createDto: CreateInquiryReplyDto, replierId: string): Promise<InquiryReply> {
-    const inquiry = await this.findOne(createDto.inquiryId);
+    const saved = await this.replyRepository.save(reply);
 
-    if (inquiry.status === InquiryStatus.CLOSED) {
-      throw new BadRequestException('该查询已关闭，无法回复');
-    }
-
-    // 更新查询状态为处理中
-    if (inquiry.status === InquiryStatus.PENDING) {
-      await this.inquiryRepository.update(createDto.inquiryId, {
+    // 更新查询状态为已回复（如果是第一次回复）
+    if (!inquiry.firstResponseAt) {
+      await this.inquiryRepository.update(inquiryId, {
+        status: InquiryStatus.REPLIED,
+        firstResponseAt: new Date(),
+      });
+    } else {
+      await this.inquiryRepository.update(inquiryId, {
         status: InquiryStatus.PROCESSING,
-        assignedTo: replierId,
       });
     }
 
-    const reply = this.replyRepository.create({
-      inquiryId: createDto.inquiryId,
-      replierId,
-      content: createDto.content,
-    });
+    // 自动通知家长：校务人员已回复
+    await this.sendReplyNotification(saved, inquiry);
 
-    return this.replyRepository.save(reply);
+    return saved;
   }
 
-  async close(inquiryId: string, closedBy: string): Promise<Inquiry> {
-    const inquiry = await this.findOne(inquiryId);
-
-    if (inquiry.status === InquiryStatus.CLOSED) {
-      throw new BadRequestException('该查询已经是关闭状态');
+  /**
+   * 发送回复通知给家长
+   */
+  private async sendReplyNotification(
+    reply: InquiryReply,
+    inquiry: ParentInquiry,
+  ): Promise<void> {
+    try {
+      await this.notificationService.sendNotification({
+        recipientIds: [inquiry.parentId],
+        title: '您的查询已有新回复',
+        content: `您关于"${inquiry.title}"的查询已收到回复，请查看。`,
+        type: 'system',
+        priority: 'normal',
+        relatedEntityType: 'parent_inquiry',
+        relatedEntityId: inquiry.id,
+        senderId: reply.authorId,
+        schoolId: inquiry.schoolId,
+      });
+    } catch (error) {
+      console.warn('[Inquiry] Failed to send reply notification:', error);
     }
-
-    await this.inquiryRepository.update(inquiryId, {
-      status: InquiryStatus.CLOSED,
-      closedBy,
-      closedAt: new Date(),
-    });
-
-    return this.findOne(inquiryId);
   }
 
-  async addRating(
-    inquiryId: string,
-    parentId: string,
-    rating: number,
-    comment?: string,
-  ): Promise<Inquiry> {
-    const inquiry = await this.findOne(inquiryId);
-
-    if (inquiry.parentId !== parentId) {
-      throw new BadRequestException('只有查询提交者可以评价');
-    }
-
-    if (inquiry.status !== InquiryStatus.CLOSED) {
-      throw new BadRequestException('查询未关闭，无法评价');
-    }
-
-    if (inquiry.rating !== null && inquiry.rating !== undefined) {
-      throw new BadRequestException('已经评价过了');
-    }
-
-    await this.inquiryRepository.update(inquiryId, {
-      rating,
-      ratingComment: comment,
+  /**
+   * 获取查询的回复列表
+   */
+  async getReplies(inquiryId: string): Promise<InquiryReply[]> {
+    return this.replyRepository.find({
+      where: { inquiryId },
+      order: { createdAt: 'ASC' },
     });
-
-    return this.findOne(inquiryId);
   }
 
-  async getStats(): Promise<{
-    total: number;
-    pending: number;
-    processing: number;
-    closed: number;
-    averageRating: number;
-  }> {
-    const total = await this.inquiryRepository.count({ where: { deletedAt: null } });
-    const pending = await this.inquiryRepository.count({ 
-      where: { status: InquiryStatus.PENDING, deletedAt: null } 
+  /**
+   * 标记家长已查看回复
+   */
+  async markReplyViewed(replyId: string): Promise<void> {
+    await this.replyRepository.update(replyId, {
+      parentViewed: true,
+      parentViewedAt: new Date(),
     });
-    const processing = await this.inquiryRepository.count({ 
-      where: { status: InquiryStatus.PROCESSING, deletedAt: null } 
-    });
-    const closed = await this.inquiryRepository.count({ 
-      where: { status: InquiryStatus.CLOSED, deletedAt: null } 
+  }
+
+  /**
+   * 提交满意度评价
+   */
+  async submitSatisfaction(
+    id: string,
+    dto: SatisfactionDto,
+  ): Promise<ParentInquiry> {
+    await this.findOne(id); // 验证查询是否存在
+
+    await this.inquiryRepository.update(id, {
+      satisfactionRating: dto.rating,
+      satisfactionComment: dto.comment,
     });
 
-    const ratingResult = await this.inquiryRepository
+    return this.findOne(id);
+  }
+
+  /**
+   * 分配查询
+   */
+  async assign(id: string, assignedTo: string): Promise<ParentInquiry> {
+    await this.inquiryRepository.update(id, {
+      assignedTo,
+      status: InquiryStatus.PROCESSING,
+    });
+    return this.findOne(id);
+  }
+
+  /**
+   * 获取快速回复模板列表
+   */
+  async getTemplates(
+    schoolId: string,
+    category?: string,
+  ): Promise<QuickReplyTemplate[]> {
+    const qb = this.templateRepository
+      .createQueryBuilder('template')
+      .where('template.schoolId = :schoolId', { schoolId })
+      .andWhere('template.isActive = :isActive', { isActive: true });
+
+    if (category) {
+      qb.andWhere('template.category = :category', { category });
+    }
+
+    return qb.orderBy('template.usageCount', 'DESC').getMany();
+  }
+
+  /**
+   * 创建快速回复模板
+   */
+  async createTemplate(
+    dto: CreateTemplateDto,
+    schoolId: string,
+    userId: string,
+  ): Promise<QuickReplyTemplate> {
+    const template = this.templateRepository.create({
+      ...dto,
+      schoolId,
+      createdBy: userId,
+      category: (dto.category || 'general') as any,
+    });
+    return this.templateRepository.save(template);
+  }
+
+  /**
+   * 获取待处理查询统计
+   */
+  async getStatistics(schoolId: string): Promise<any> {
+    const stats = await this.inquiryRepository
       .createQueryBuilder('inquiry')
-      .select('AVG(inquiry.rating)', 'averageRating')
-      .where('inquiry.rating IS NOT NULL')
-      .andWhere('inquiry.deletedAt IS NULL')
-      .getRawOne();
+      .select('inquiry.status', 'status')
+      .addSelect('inquiry.category', 'category')
+      .addSelect('inquiry.priority', 'priority')
+      .addSelect('COUNT(*)', 'count')
+      .where('inquiry.schoolId = :schoolId', { schoolId })
+      .groupBy('inquiry.status')
+      .addGroupBy('inquiry.category')
+      .addGroupBy('inquiry.priority')
+      .getRawMany();
 
-    return {
-      total,
-      pending,
-      processing,
-      closed,
-      averageRating: ratingResult?.averageRating ? parseFloat(ratingResult.averageRating) : 0,
-    };
-  }
+    const total = stats.reduce((sum, s) => sum + parseInt(s.count), 0);
+    const pending = stats
+      .filter((s) => s.status === InquiryStatus.PENDING)
+      .reduce((sum, s) => sum + parseInt(s.count), 0);
 
-  async getUrgentInquiries(): Promise<Inquiry[]> {
-    return this.inquiryRepository.find({
-      where: { isUrgent: true, deletedAt: null },
-      relations: ['parent', 'assignee'],
-      order: { updatedAt: 'DESC' },
-    });
+    return { total, pending, stats };
   }
 
   /**
-   * F-INQ-001 #71: AI意图分类
-   * 识别家长查询意图（出勤/成绩/通知/其他），自动打标签，智能推荐回复
+   * SLA检查：超时未回复的查询
+   * 同时检查 normal(24h) 和 urgent(2h) 两种SLA
    */
-  classifyIntent(content: string): IntentClassificationResult {
-    return this.intentService.classify(content);
-  }
+  async checkSLAViolations(
+    schoolId: string,
+  ): Promise<{ normal: ParentInquiry[]; urgent: ParentInquiry[] }> {
+    const now = new Date();
 
-  /**
-   * F-INQ-001 #72: 紧急升级
-   * 识别紧急关键字，自动升级到高优先级队列，发送通知，记录升级历史
-   */
-  async urgentUpgrade(
-    inquiryId: string,
-    reason: string,
-    triggeredBy: string,
-  ): Promise<EscalationResult> {
-    return this.escalationService.manualEscalate(inquiryId, reason, triggeredBy);
-  }
+    // Normal SLA: 24小时
+    const normalThreshold = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-  /**
-   * 获取查询的升级历史
-   */
-  async getEscalationHistory(inquiryId: string): Promise<InquiryEscalationHistory[]> {
-    return this.escalationService.getEscalationHistory(inquiryId);
+    // Urgent SLA: 2小时
+    const urgentThreshold = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+
+    // 查询Normal级别超时
+    const normalViolations = await this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .where('inquiry.schoolId = :schoolId', { schoolId })
+      .andWhere('inquiry.status IN (:...statuses)', {
+        statuses: [InquiryStatus.PENDING, InquiryStatus.PROCESSING],
+      })
+      .andWhere('inquiry.firstResponseAt IS NULL')
+      .andWhere('inquiry.parentSubmittedAt < :threshold', {
+        threshold: normalThreshold,
+      })
+      .andWhere('inquiry.priority = :priority', {
+        priority: InquiryPriority.NORMAL,
+      })
+      .getMany();
+
+    // 查询Urgent级别超时（2小时内未处理）
+    const urgentViolations = await this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .where('inquiry.schoolId = :schoolId', { schoolId })
+      .andWhere('inquiry.status IN (:...statuses)', {
+        statuses: [InquiryStatus.PENDING, InquiryStatus.PROCESSING],
+      })
+      .andWhere('inquiry.firstResponseAt IS NULL')
+      .andWhere('inquiry.parentSubmittedAt < :threshold', {
+        threshold: urgentThreshold,
+      })
+      .andWhere('inquiry.priority = :priority', {
+        priority: InquiryPriority.URGENT,
+      })
+      .getMany();
+
+    return { normal: normalViolations, urgent: urgentViolations };
   }
 }

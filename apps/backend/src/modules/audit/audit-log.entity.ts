@@ -14,16 +14,25 @@ export enum AuditAction {
   USER_STATUS_CHANGE = 'user_status_change',
   USER_PASSWORD_RESET = 'user_password_reset',
   PERMISSION_CHANGE = 'permission_change',
-  OTP_GENERATED = 'otp_generated',
-  OTP_VERIFY_SUCCESS = 'otp_verify_success',
-  OTP_VERIFY_FAILED = 'otp_verify_failed',
-  OTP_BIND_INITIATED = 'otp_bind_initiated',
-  OTP_BIND_SUCCESS = 'otp_bind_success',
-  OTP_UNBIND_SUCCESS = 'otp_unbind_success',
-  PERMISSION_APPROVAL_REQUEST_CREATED = 'permission_approval_request_created',
-  PERMISSION_APPROVAL_REQUEST_APPROVED = 'permission_approval_request_approved',
-  PERMISSION_APPROVAL_REQUEST_REJECTED = 'permission_approval_request_rejected',
-  PERMISSION_APPROVAL_REQUEST_CANCELLED = 'permission_approval_request_cancelled',
+  // 家长查询模块
+  INQUIRY_CREATE = 'inquiry_create',
+  INQUIRY_UPDATE = 'inquiry_update',
+  INQUIRY_REPLY = 'inquiry_reply',
+  INQUIRY_ASSIGN = 'inquiry_assign',
+  INQUIRY_CLOSE = 'inquiry_close',
+  INQUIRY_SATISFACTION = 'inquiry_satisfaction',
+  INQUIRY_TEMPLATE_CREATE = 'inquiry_template_create',
+  // 请假申请模块
+  LEAVE_CREATE = 'leave_create',
+  LEAVE_UPDATE = 'leave_update',
+  LEAVE_APPROVE = 'leave_approve',
+  LEAVE_REJECT = 'leave_reject',
+  LEAVE_CANCEL = 'leave_cancel',
+  LEAVE_CHECKIN = 'leave_checkin',
+  // 多渠道通知模块
+  NOTIFICATION_SEND = 'notification_send',
+  NOTIFICATION_TEMPLATE_CREATE = 'notification_template_create',
+  NOTIFICATION_TEMPLATE_UPDATE = 'notification_template_update',
 }
 
 @Entity('audit_logs')
@@ -32,32 +41,13 @@ export class AuditLog {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ApiProperty({ description: '操作用户ID' })
-  @Column({ type: 'uuid', nullable: true })
-  userId: string;
-
   @ApiProperty({ description: '操作人ID' })
   @Column({ type: 'uuid', nullable: true })
   operatorId: string;
 
-  @ApiProperty({ description: '操作类型', enum: AuditAction })
-  @Column({
-    type: 'enum',
-    enum: AuditAction,
-  })
-  action: AuditAction;
-
-  @ApiProperty({ description: '资源类型' })
-  @Column({ length: 100, nullable: true })
-  resourceType: string;
-
-  @ApiProperty({ description: '资源ID' })
-  @Column({ type: 'uuid', nullable: true })
-  resourceId: string;
-
-  @ApiProperty({ description: '操作详情' })
-  @Column({ type: 'json', nullable: true })
-  details: any;
+  @ApiProperty({ description: '操作类型' })
+  @Column({ type: 'varchar', length: 50 })
+  action: string;
 
   @ApiProperty({ description: '操作内容描述' })
   @Column({ type: 'text', nullable: true })

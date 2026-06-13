@@ -1,111 +1,107 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
+  PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { User } from '../user/user.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { Student } from '../user/user.entity';
+import { Class } from '../user/class.entity';
 
 export enum LeaveType {
-  SICK_LEAVE = 'sick_leave',
-  PERSONAL_LEAVE = 'personal_leave',
-  MATERNITY_LEAVE = 'maternity_leave',
-  PATERNITY_LEAVE = 'paternity_leave',
-  MARRIAGE_LEAVE = 'marriage_leave',
-  BEREAVEMENT_LEAVE = 'bereavement_leave',
-  OTHER = 'other',
+  SICK = 'sick', // 病假
+  PERSONAL = 'personal', // 事假
+  COMPASSIONATE = 'compassionate', // 丧假
+  OTHER = 'other', // 其他
 }
 
 export enum LeaveStatus {
-  PENDING = 'pending',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-  CANCELLED = 'cancelled',
+  PENDING = 'pending', // 待审批
+  PENDING_DIRECTOR = 'pending_director', // 待校务主任审批（超过3天）
+  APPROVED = 'approved', // 已批准
+  REJECTED = 'rejected', // 已拒绝
+  CANCELLED = 'cancelled', // 已取消（家长取消）
+  CHECKED_IN = 'checked_in', // 已销假
 }
 
-// AI核验结果结构
-export interface AiVerifyResult {
-  verified: boolean;
-  risk: 'low' | 'medium' | 'high';
-  message: string;
-  recognizedType?: string;
-  anomalyFlags: string[];
-  requireMedicalCertificate: boolean;
-  verifiedAt: Date;
-  details?: {
-    historicalPattern?: {
-      totalLeavesLast30Days: number;
-      sickLeavesLast30Days: number;
-      avgDaysPerLeave: number;
-    };
-    recommendations: string[];
-  };
+export enum ApprovalLevel {
+  CLASS_TEACHER = 'class_teacher', // 班主任审批
+  SCHOOL_ADMIN = 'school_admin', // 校务处备案
+  SCHOOL_DIRECTOR = 'school_director', // 校务主任审批（>3天）
 }
 
-// 医生证明验证结果结构
-export interface CertificateVerifyResult {
-  valid: boolean;
-  status: 'verified' | 'invalid' | 'suspicious' | 'error';
-  message: string;
-  confidence: number;
-  riskFlags: string[];
-  details?: {
-    hospitalName?: string;
-    doctorName?: string;
-    diagnosisDate?: string;
-    patientName?: string;
-    suggestedRestDays?: number;
-    certificateType?: string;
-    certificateNumber?: string;
-    rawOcrText?: string;
-  };
-  verifiedAt: Date;
-}
-
-@Entity('leaves')
-export class Leave {
+@Entity('leave_applications')
+export class LeaveApplication {
+  @ApiProperty({ description: '请假申请ID' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'applicant_id' })
-  applicantId: string;
+  @ApiProperty({ description: '申请编号' })
+  @Column({ unique: true, length: 20 })
+  applicationNo: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'applicant_id' })
-  applicant: User;
+  @ApiProperty({ description: '学校ID' })
+  @Column({ type: 'uuid' })
+  schoolId: string;
 
+  @ApiProperty({ description: '学生ID' })
+  @Column({ type: 'uuid' })
+  studentId: string;
+
+  @ApiProperty({ description: '学生信息' })
+  @ManyToOne(() => Student)
+  @JoinColumn({ name: 'studentId' })
+  student: Student;
+
+  @ApiProperty({ description: '班级ID' })
+  @Column({ type: 'uuid' })
+  classId: string;
+
+  @ApiProperty({ description: '班级信息' })
+  @ManyToOne(() => Class)
+  @JoinColumn({ name: 'classId' })
+  class: Class;
+
+  @ApiProperty({ description: '请假类型', enum: LeaveType })
   @Column({
     type: 'enum',
     enum: LeaveType,
-    name: 'leave_type',
+    default: LeaveType.SICK,
   })
   leaveType: LeaveType;
 
-  @Column({ name: 'start_date', type: 'date' })
+  @ApiProperty({ description: '开始日期' })
+  @Column({ type: 'date' })
   startDate: Date;
 
-  @Column({ name: 'end_date', type: 'date' })
+  @ApiProperty({ description: '结束日期' })
+  @Column({ type: 'date' })
   endDate: Date;
 
-  @Column({ name: 'start_time', type: 'time', nullable: true })
-  startTime: string;
-
-  @Column({ name: 'end_time', type: 'time', nullable: true })
-  endTime: string;
-
-  @Column({ type: 'int', name: 'total_days' })
+  @ApiProperty({ description: '请假总天数' })
+  @Column({ type: 'decimal', precision: 4, scale: 1 })
   totalDays: number;
 
-  @Column({ type: 'int', name: 'total_hours', nullable: true })
-  totalHours: number;
-
-  @Column({ type: 'text' })
+  @ApiProperty({ description: '请假原因' })
+  @Column({ type: 'text', nullable: true })
   reason: string;
 
+  @ApiProperty({ description: '证明材料URL' })
+  @Column({ type: 'text', nullable: true })
+  documentUrl: string;
+
+  @ApiProperty({ description: 'OCR识别状态' })
+  @Column({ length: 30, nullable: true })
+  ocrStatus: string;
+
+  @ApiProperty({ description: '医疗证明是否必需' })
+  @Column({ default: false })
+  medicalCertRequired: boolean;
+
+  @ApiProperty({ description: '申请状态', enum: LeaveStatus })
   @Column({
     type: 'enum',
     enum: LeaveStatus,
@@ -113,69 +109,95 @@ export class Leave {
   })
   status: LeaveStatus;
 
-  @Column({ name: 'substitute_teacher_id', nullable: true })
-  substituteTeacherId: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'substitute_teacher_id' })
-  substituteTeacher: User;
-
-  @Column({ type: 'int', name: 'substitute_teacher_class_hours', nullable: true })
-  substituteTeacherClassHours: number;
-
-  @Column({ name: 'approver_id', nullable: true })
-  approverId: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'approver_id' })
-  approver: User;
-
-  @Column({ name: 'approved_at', type: 'timestamp', nullable: true })
-  approvedAt: Date;
-
-  @Column({ name: 'approval_comment', type: 'text', nullable: true })
-  approvalComment: string;
-
-  @Column({ name: 'attachment_url', nullable: true })
-  attachmentUrl: string;
-
-  // AI核验相关字段
+  @ApiProperty({ description: '当前审批级别', enum: ApprovalLevel })
   @Column({
-    name: 'ai_verify_result',
-    type: 'jsonb',
+    type: 'enum',
+    enum: ApprovalLevel,
     nullable: true,
   })
-  aiVerifyResult: AiVerifyResult;
+  currentApprovalLevel: ApprovalLevel;
 
-  @Column({
-    name: 'certificate_verify_result',
-    type: 'jsonb',
-    nullable: true,
-  })
-  certificateVerifyResult: CertificateVerifyResult;
+  @ApiProperty({ description: '家长提交时间' })
+  @Column({ type: 'timestamp', nullable: true })
+  parentSubmittedAt: Date;
 
-  @Column({ name: 'certificate_url', nullable: true })
-  certificateUrl: string;
+  @ApiProperty({ description: '班主任审批人' })
+  @Column({ type: 'uuid', nullable: true })
+  classTeacherApprovedBy: string;
 
-  @Column({
-    name: 'verified_at',
-    type: 'timestamp',
-    nullable: true,
-  })
-  verifiedAt: Date;
+  @ApiProperty({ description: '班主任审批时间' })
+  @Column({ type: 'timestamp', nullable: true })
+  classTeacherApprovedAt: Date;
 
-  @Column({ name: 'created_by' })
-  createdBy: string;
+  @ApiProperty({ description: '班主任审批意见' })
+  @Column({ type: 'text', nullable: true })
+  classTeacherComment: string;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @ApiProperty({ description: '校务主任审批人' })
+  @Column({ type: 'uuid', nullable: true })
+  directorApprovedBy: string;
+
+  @ApiProperty({ description: '校务主任审批时间' })
+  @Column({ type: 'timestamp', nullable: true })
+  directorApprovedAt: Date;
+
+  @ApiProperty({ description: '校务主任审批意见' })
+  @Column({ type: 'text', nullable: true })
+  directorComment: string;
+
+  @ApiProperty({ description: '校务处备案人' })
+  @Column({ type: 'uuid', nullable: true })
+  adminRecordedBy: string;
+
+  @ApiProperty({ description: '校务处备案时间' })
+  @Column({ type: 'timestamp', nullable: true })
+  adminRecordedAt: Date;
+
+  @ApiProperty({ description: 'AI核验标记' })
+  @Column({ default: false })
+  aiReviewFlagged: boolean;
+
+  @ApiProperty({ description: 'AI核验说明' })
+  @Column({ type: 'text', nullable: true })
+  aiReviewNote: string;
+
+  @ApiProperty({ description: '需跟进提醒日期' })
+  @Column({ type: 'date', nullable: true })
+  followUpDate: Date;
+
+  @ApiProperty({ description: '跟进内容摘要' })
+  @Column({ type: 'text', nullable: true })
+  followUpContent: string;
+
+  @ApiProperty({ description: '销假时间' })
+  @Column({ type: 'timestamp', nullable: true })
+  checkedInAt: Date;
+
+  @ApiProperty({ description: '销假操作人' })
+  @Column({ type: 'uuid', nullable: true })
+  checkedInBy: string;
+
+  @ApiProperty({ description: '通知已发送（家长）' })
+  @Column({ default: false })
+  parentNotified: boolean;
+
+  @ApiProperty({ description: '通知已发送（班主任）' })
+  @Column({ default: false })
+  classTeacherNotified: boolean;
+
+  @ApiProperty({ description: '通知已发送（校车管理员）' })
+  @Column({ default: false })
+  busAdminNotified: boolean;
+
+  @ApiProperty({ description: '创建时间' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column({ name: 'updated_by', nullable: true })
-  updatedBy: string;
-
-  @UpdateDateColumn({ name: 'updated_at' })
+  @ApiProperty({ description: '更新时间' })
+  @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at' })
-  deletedAt: Date;
+  @ApiProperty({ description: '创建人ID' })
+  @Column({ type: 'uuid', nullable: true })
+  createdBy: string;
 }
