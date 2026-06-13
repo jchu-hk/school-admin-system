@@ -7,6 +7,11 @@ import UserPage from './pages/UserPage'
 import LeavePage from './pages/LeavePage'
 import InquiryPage from './pages/InquiryPage'
 import NotificationPage from './pages/NotificationPage'
+import CourseManagementPage from './pages/CourseManagementPage'
+import SystemSettingsPage from './pages/SystemSettingsPage'
+import FinanceTuitionPage from './pages/FinanceTuitionPage'
+import FinanceFeePage from './pages/FinanceFeePage'
+import FinanceScholarshipPage from './pages/FinanceScholarshipPage'
 import Layout from './components/Layout'
 import ErrorBoundary from './components/ErrorBoundary'
 import { getToken } from './utils/tokenService'
@@ -46,6 +51,11 @@ export default function App() {
             <Route path="leaves" element={<LeavePage />} />
             <Route path="inquiries" element={<InquiryPage />} />
             <Route path="notifications" element={<NotificationPage />} />
+            <Route path="courses" element={<CourseManagementPage />} />
+            <Route path="settings" element={<SystemSettingsPage />} />
+            <Route path="finance/tuition" element={<FinanceTuitionPage />} />
+            <Route path="finance/fee" element={<FinanceFeePage />} />
+            <Route path="finance/scholarship" element={<FinanceScholarshipPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -22,6 +22,9 @@ export const zhCN = {
     notificationManagement: '通知管理',
     courseManagement: '课程管理',
     systemSettings: '系统设置',
+    financeTuition: '学费管理',
+    financeFee: '费用管理',
+    financeScholarship: '奖学金管理',
     logout: '退出登录',
   },
   // 仪表盘

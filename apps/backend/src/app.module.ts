@@ -10,6 +10,8 @@ import { LeaveModule } from './modules/leave/leave.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { AbacModule } from './modules/abac/abac.module';
 import { PermissionApprovalModule } from './modules/permission-approval/permission-approval.module';
+import { CourseModule } from './modules/course/course.module';
+import { SettingsModule } from './modules/settings/settings.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { PermissionApprovalModule } from './modules/permission-approval/permissi
     NotificationModule,
     AbacModule,
     PermissionApprovalModule,
+    CourseModule,
+    SettingsModule,
   ],
   controllers: [],
   providers: [],
