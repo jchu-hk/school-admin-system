@@ -1,10 +1,6 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, IsNull } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Attendance, AttendanceStatus } from './attendance.entity';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
@@ -125,7 +121,9 @@ export class AttendanceService {
     const queryBuilder = this.attendanceRepository
       .createQueryBuilder('attendance')
       .where('attendance.attendanceDate BETWEEN :startDate AND :endDate', {
-        startDate: startDate || new Date(new Date().setDate(1)).toISOString().split('T')[0],
+        startDate:
+          startDate ||
+          new Date(new Date().setDate(1)).toISOString().split('T')[0],
         endDate: endDate || new Date().toISOString().split('T')[0],
       });
 
@@ -135,20 +133,43 @@ export class AttendanceService {
 
     const records = await queryBuilder.getMany();
     const total = records.length;
-    const present = records.filter(r => r.status === AttendanceStatus.PRESENT).length;
-    const absent = records.filter(r => r.status === AttendanceStatus.ABSENT).length;
-    const late = records.filter(r => r.status === AttendanceStatus.LATE).length;
-    const leaveEarly = records.filter(r => r.status === AttendanceStatus.LEAVE_EARLY).length;
-    const sickLeave = records.filter(r => r.status === AttendanceStatus.SICK_LEAVE).length;
-    const personalLeave = records.filter(r => r.status === AttendanceStatus.PERSONAL_LEAVE).length;
-    const attendanceRate = total > 0 ? Math.round(((present + sickLeave + personalLeave) / total) * 10000) / 100 : 0;
+    const present = records.filter(
+      (r) => r.status === AttendanceStatus.PRESENT,
+    ).length;
+    const absent = records.filter(
+      (r) => r.status === AttendanceStatus.ABSENT,
+    ).length;
+    const late = records.filter(
+      (r) => r.status === AttendanceStatus.LATE,
+    ).length;
+    const leaveEarly = records.filter(
+      (r) => r.status === AttendanceStatus.LEAVE_EARLY,
+    ).length;
+    const sickLeave = records.filter(
+      (r) => r.status === AttendanceStatus.SICK_LEAVE,
+    ).length;
+    const personalLeave = records.filter(
+      (r) => r.status === AttendanceStatus.PERSONAL_LEAVE,
+    ).length;
+    const attendanceRate =
+      total > 0
+        ? Math.round(((present + sickLeave + personalLeave) / total) * 10000) /
+          100
+        : 0;
 
-    return { total, present, absent, late, leaveEarly, sickLeave, personalLeave, attendanceRate };
+    return {
+      total,
+      present,
+      absent,
+      late,
+      leaveEarly,
+      sickLeave,
+      personalLeave,
+      attendanceRate,
+    };
   }
 
-  async getUnreportedAbsences(
-    classId?: string,
-  ): Promise<Attendance[]> {
+  async getUnreportedAbsences(classId?: string): Promise<Attendance[]> {
     const queryBuilder = this.attendanceRepository
       .createQueryBuilder('attendance')
       .leftJoinAndSelect('attendance.student', 'student')

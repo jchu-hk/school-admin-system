@@ -14,21 +14,13 @@ import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
 import { User, UserRole, UserStatus } from '../user/user.entity';
 import { RoleService } from '../role/services/role.service';
-import { PermissionService } from '../permission/services/permission.service';
-import { OtpService } from '../otp/services/otp.service';
-import {
-  OtpConfig,
-  OtpSession,
-  OtpTrustedSession,
-  OtpType,
-} from '../otp/entities/otp.entity';
 import { ConfigService } from '@nestjs/config';
 import { AuditService } from '../audit/audit.service';
 
 describe('UserManagement → Permission System Integration', () => {
-  let userService: UserService;
-  let roleService: RoleService;
-  let userRepository: jest.Mocked<Repository<User>>;
+  let userService: UserService; // eslint-disable-line @typescript-eslint/no-unused-vars
+  let roleService: RoleService; // eslint-disable-line @typescript-eslint/no-unused-vars
+  let userRepository: jest.Mocked<Repository<User>>; // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const mockUserRepository = {
     create: jest.fn(),

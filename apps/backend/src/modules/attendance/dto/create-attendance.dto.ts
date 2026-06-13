@@ -5,8 +5,6 @@ import {
   IsOptional,
   IsString,
   IsUUID,
-  IsInt,
-  IsBoolean,
 } from 'class-validator';
 import { AttendanceStatus, AttendanceType } from '../attendance.entity';
 

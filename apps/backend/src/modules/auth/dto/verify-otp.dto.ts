@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsUUID, IsEnum } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { OtpType } from '../../otp/entities/otp.entity';
 
@@ -13,7 +13,11 @@ export class VerifyOtpDto {
   @IsNotEmpty({ message: 'OTP验证码不能为空' })
   code: string;
 
-  @ApiProperty({ description: 'OTP类型', enum: OtpType, example: OtpType.GOOGLE_AUTHENTICATOR })
+  @ApiProperty({
+    description: 'OTP类型',
+    enum: OtpType,
+    example: OtpType.GOOGLE_AUTHENTICATOR,
+  })
   @IsEnum(OtpType)
   @IsNotEmpty({ message: 'OTP类型不能为空' })
   otpType: OtpType;

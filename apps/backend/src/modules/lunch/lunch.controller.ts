@@ -11,10 +11,19 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { LunchService } from './lunch.service';
-import { LunchOrder, LunchOrderStatus } from './lunch.entity';
-import { CreateLunchOrderDto, UpdateLunchOrderDto, LunchOrderQueryDto } from './dto/lunch.dto';
+import { LunchOrder } from './lunch.entity';
+import {
+  CreateLunchOrderDto,
+  UpdateLunchOrderDto,
+  LunchOrderQueryDto,
+} from './dto/lunch.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -45,7 +54,9 @@ export class LunchController {
     UserRole.TEACHER,
     UserRole.PARENT,
   )
-  findAll(@Query() query: LunchOrderQueryDto): Promise<{ orders: LunchOrder[]; total: number }> {
+  findAll(
+    @Query() query: LunchOrderQueryDto,
+  ): Promise<{ orders: LunchOrder[]; total: number }> {
     return this.lunchService.findAll(query);
   }
 

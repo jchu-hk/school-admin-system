@@ -85,7 +85,9 @@ export class ScholarshipService {
 
   // ====== Application CRUD ======
 
-  async createApplication(dto: CreateApplicationDto): Promise<ScholarshipApplication> {
+  async createApplication(
+    dto: CreateApplicationDto,
+  ): Promise<ScholarshipApplication> {
     const scholarship = await this.findOneScholarship(dto.scholarshipId);
     if (scholarship.status !== ScholarshipStatus.ACTIVE) {
       throw new BadRequestException('该项目当前不可申请');
@@ -97,7 +99,11 @@ export class ScholarshipService {
   async findAllApplications(
     page: number = 1,
     limit: number = 10,
-    filters: { scholarshipId?: string; studentId?: string; status?: ApplicationStatus } = {},
+    filters: {
+      scholarshipId?: string;
+      studentId?: string;
+      status?: ApplicationStatus;
+    } = {},
   ): Promise<{ applications: ScholarshipApplication[]; total: number }> {
     const queryBuilder = this.applicationRepo
       .createQueryBuilder('app')
@@ -141,7 +147,10 @@ export class ScholarshipService {
     dto: ReviewApplicationDto,
   ): Promise<ScholarshipApplication> {
     const app = await this.findOneApplication(id);
-    if (app.status !== ApplicationStatus.SUBMITTED && app.status !== ApplicationStatus.UNDER_REVIEW) {
+    if (
+      app.status !== ApplicationStatus.SUBMITTED &&
+      app.status !== ApplicationStatus.UNDER_REVIEW
+    ) {
       throw new BadRequestException('只有提交或审核中的申请可以审批');
     }
     app.status = dto.status;
@@ -236,9 +245,7 @@ export class ScholarshipService {
 
   // ====== Stats ======
 
-  async getStats(
-    scholarshipId?: string,
-  ): Promise<{
+  async getStats(scholarshipId?: string): Promise<{
     totalApplications: number;
     approved: number;
     rejected: number;
@@ -250,15 +257,23 @@ export class ScholarshipService {
       .leftJoinAndSelect('app.scholarship', 'scholarship');
 
     if (scholarshipId) {
-      queryBuilder.andWhere('app.scholarshipId = :scholarshipId', { scholarshipId });
+      queryBuilder.andWhere('app.scholarshipId = :scholarshipId', {
+        scholarshipId,
+      });
     }
 
     const apps = await queryBuilder.getMany();
     const totalApplications = apps.length;
-    const approved = apps.filter(a => a.status === ApplicationStatus.APPROVED).length;
-    const rejected = apps.filter(a => a.status === ApplicationStatus.REJECTED).length;
+    const approved = apps.filter(
+      (a) => a.status === ApplicationStatus.APPROVED,
+    ).length;
+    const rejected = apps.filter(
+      (a) => a.status === ApplicationStatus.REJECTED,
+    ).length;
     const pending = apps.filter(
-      a => a.status === ApplicationStatus.SUBMITTED || a.status === ApplicationStatus.UNDER_REVIEW,
+      (a) =>
+        a.status === ApplicationStatus.SUBMITTED ||
+        a.status === ApplicationStatus.UNDER_REVIEW,
     ).length;
 
     const disbQueryBuilder = this.disbursementRepo

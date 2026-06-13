@@ -118,7 +118,12 @@ export class TuitionPayment {
   @Column({ name: 'paid_at', type: 'timestamp', nullable: true })
   paidAt: Date;
 
-  @Column({ name: 'transaction_no', type: 'varchar', length: 100, nullable: true })
+  @Column({
+    name: 'transaction_no',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
   transactionNo: string;
 
   @Column({ name: 'operator_id', nullable: true })

@@ -532,7 +532,7 @@ describe('AbacService', () => {
 
   describe('缓存行为', () => {
     it('相同请求第二次调用使用缓存（第二次调用返回相同结果）', async () => {
-      const request = {
+      const _request = {
         input: {
           role: 'SCHOOL_DIRECTOR',
           action: 'read',

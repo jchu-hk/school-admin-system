@@ -39,7 +39,7 @@ export class PermissionService {
     );
   }
 
-  async getUserPermissions(userId: string): Promise<Permission[]> {
+  async getUserPermissions(_userId: string): Promise<Permission[]> {
     return [];
   }
 }

@@ -27,7 +27,7 @@
  */
 
 import { Module, Global } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+
 import { AbacService } from './abac.service';
 import { AbacController } from './abac.controller';
 

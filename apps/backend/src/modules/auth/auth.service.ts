@@ -11,7 +11,11 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User, UserRole, UserStatus } from '../user/user.entity';
 import { UserService } from '../user/user.service';
-import { OtpSession, OtpSessionStatus, OtpType } from '../otp/entities/otp.entity';
+import {
+  OtpSession,
+  OtpSessionStatus,
+  OtpType,
+} from '../otp/entities/otp.entity';
 import { authenticator } from '@otplib/preset-default';
 
 export interface TokenPayload {
@@ -189,11 +193,15 @@ export class AuthService {
   /**
    * 刷新access token
    */
-  async refreshToken(refreshToken: string): Promise<{ access_token: string; message: string }> {
+  async refreshToken(
+    refreshToken: string,
+  ): Promise<{ access_token: string; message: string }> {
     try {
       // 验证refresh token
       const payload = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get('JWT_REFRESH_SECRET') || 'school-admin-refresh-secret',
+        secret:
+          this.configService.get('JWT_REFRESH_SECRET') ||
+          'school-admin-refresh-secret',
       });
 
       if (payload.type !== 'refresh') {
@@ -319,9 +327,14 @@ export class AuthService {
   /**
    * 生成访问令牌和刷新令牌
    */
-  private async generateTokens(user: User): Promise<{ accessToken: string; refreshToken: string }> {
-    const jwtSecret = this.configService.get('JWT_SECRET') || 'school-admin-secret';
-    const jwtRefreshSecret = this.configService.get('JWT_REFRESH_SECRET') || 'school-admin-refresh-secret';
+  private async generateTokens(
+    user: User,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const jwtSecret =
+      this.configService.get('JWT_SECRET') || 'school-admin-secret';
+    const jwtRefreshSecret =
+      this.configService.get('JWT_REFRESH_SECRET') ||
+      'school-admin-refresh-secret';
 
     // 生成access token（15分钟有效期）
     const accessToken = this.jwtService.sign(

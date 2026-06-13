@@ -4,7 +4,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThan, LessThan } from 'typeorm';
+import { Repository, MoreThan } from 'typeorm';
 import { authenticator } from '@otplib/preset-default';
 import * as qrcode from 'qrcode';
 import { v4 as uuidv4 } from 'uuid';

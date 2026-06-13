@@ -1,12 +1,17 @@
+import { Controller, Get, Query, UseGuards, HttpStatus } from '@nestjs/common';
 import {
-  Controller,
-  Get,
-  Query,
-  UseGuards,
-  HttpStatus,
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
-import { DashboardService, DashboardStats, AttendanceTrend, RecentActivity } from './dashboard.service';
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
+import {
+  DashboardService,
+  DashboardStats,
+  AttendanceTrend,
+  RecentActivity,
+} from './dashboard.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/roles.decorator';
 import { User } from '../user/user.entity';
@@ -117,7 +122,9 @@ export class DashboardController {
       ],
     },
   })
-  async getRecentActivities(@CurrentUser() user: User): Promise<RecentActivity[]> {
+  async getRecentActivities(
+    @CurrentUser() user: User,
+  ): Promise<RecentActivity[]> {
     return this.dashboardService.getRecentActivities(user);
   }
 }

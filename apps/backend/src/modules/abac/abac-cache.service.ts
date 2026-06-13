@@ -88,7 +88,7 @@ export class AbacCacheService<T = any> {
   /**
    * 获取缓存值
    */
-  async get(key: string): Promise<T | null> {
+  async get(_key: string): Promise<T | null> {
     // 先从内存缓存获取
     if (this.config.memoryEnabled) {
       const memoryResult = this.getFromMemory(key);
@@ -119,7 +119,7 @@ export class AbacCacheService<T = any> {
   /**
    * 设置缓存值
    */
-  async set(key: string, value: T): Promise<void> {
+  async set(_key: string, _value: T): Promise<void> {
     // 设置到内存缓存
     if (this.config.memoryEnabled) {
       this.setToMemory(key, value);
@@ -234,7 +234,7 @@ export class AbacCacheService<T = any> {
   /**
    * 从 Redis 获取（占位实现，后续可集成 Redis）
    */
-  private async getFromRedis(key: string): Promise<T | null> {
+  private async getFromRedis(_key: string): Promise<T | null> {
     // TODO: 集成 Redis
     // const redisKey = `${this.config.redisKeyPrefix}${key}`;
     // const value = await this.redisClient.get(redisKey);
@@ -245,7 +245,7 @@ export class AbacCacheService<T = any> {
   /**
    * 设置到 Redis（占位实现）
    */
-  private async setToRedis(key: string, value: T): Promise<void> {
+  private async setToRedis(_key: string, _value: T): Promise<void> {
     // TODO: 集成 Redis
     // const redisKey = `${this.config.redisKeyPrefix}${key}`;
     // await this.redisClient.setex(
@@ -258,7 +258,7 @@ export class AbacCacheService<T = any> {
   /**
    * 从 Redis 删除（占位实现）
    */
-  private async delFromRedis(key: string): Promise<void> {
+  private async delFromRedis(_key: string): Promise<void> {
     // TODO: 集成 Redis
     // const redisKey = `${this.config.redisKeyPrefix}${key}`;
     // await this.redisClient.del(redisKey);

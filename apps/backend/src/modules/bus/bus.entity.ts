@@ -27,7 +27,11 @@ export class BusRoute {
   @Column({ name: 'via_stops', type: 'text', nullable: true })
   viaStops: string; // JSON array of stop names
 
-  @Column({ name: 'estimated_duration', type: 'int', comment: '预计时长（分钟）' })
+  @Column({
+    name: 'estimated_duration',
+    type: 'int',
+    comment: '预计时长（分钟）',
+  })
   estimatedDuration: number;
 
   @Column({ name: 'max_capacity', type: 'int', default: 40 })
@@ -53,7 +57,7 @@ export class BusRoute {
 }
 
 export enum BusDirection {
-  MORNING = 'morning',   // 上学（家→学校）
+  MORNING = 'morning', // 上学（家→学校）
   AFTERNOON = 'afternoon', // 放学（学校→家）
 }
 
@@ -107,11 +111,11 @@ export class BusSchedule {
 }
 
 export enum BusRecordStatus {
-  SCHEDULED = 'scheduled',   // 已安排
-  BOARDED = 'boarded',        // 已上车
-  ABSENT = 'absent',          // 未上车（缺席）
-  COMPLETED = 'completed',    // 已完成
-  CANCELLED = 'cancelled',    // 已取消
+  SCHEDULED = 'scheduled', // 已安排
+  BOARDED = 'boarded', // 已上车
+  ABSENT = 'absent', // 未上车（缺席）
+  COMPLETED = 'completed', // 已完成
+  CANCELLED = 'cancelled', // 已取消
 }
 
 @Entity('bus_records')

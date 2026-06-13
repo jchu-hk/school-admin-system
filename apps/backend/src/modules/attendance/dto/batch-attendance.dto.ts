@@ -1,10 +1,4 @@
-import {
-  IsString,
-  IsOptional,
-  IsUUID,
-  IsEnum,
-  IsDateString,
-} from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsDateString } from 'class-validator';
 import { AttendanceStatus } from '../attendance.entity';
 
 export class BatchAttendanceDto {

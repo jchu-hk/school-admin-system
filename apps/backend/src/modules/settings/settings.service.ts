@@ -5,12 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between, FindOptionsWhere } from 'typeorm';
-import {
-  SystemConfig,
-  SystemLog,
-  SystemLogLevel,
-  SystemUser,
-} from './settings.entity';
+import { SystemConfig, SystemLog, SystemUser } from './settings.entity';
 import {
   CreateSystemConfigDto,
   UpdateSystemConfigDto,
@@ -194,7 +189,7 @@ export class SettingsService {
     }
 
     const user = this.userRepository.create(createDto as any);
-    return this.userRepository.save(user);
+    return this.userRepository.save(user) as Promise<SystemUser>;
   }
 
   async findAllUsers(query: SystemUserQueryDto): Promise<{

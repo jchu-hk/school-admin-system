@@ -27,8 +27,6 @@ import {
   PayFeeDto,
   CreateFeeReductionDto,
   ApproveFeeReductionDto,
-  FeeCollectionQueryDto,
-  FeeItemQueryDto,
 } from './dto/fee.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -47,11 +45,7 @@ export class FeeController {
   @Get('items')
   @ApiOperation({ summary: '获取费用项目列表' })
   @ApiResponse({ status: 200, description: '获取费用项目列表成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findAllItems(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -74,12 +68,12 @@ export class FeeController {
 
   @Get('items/:id')
   @ApiOperation({ summary: '获取费用项目详情' })
-  @ApiResponse({ status: 200, description: '获取费用项目详情成功', type: FeeItem })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 200,
+    description: '获取费用项目详情成功',
+    type: FeeItem,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findOneItem(@Param('id', ParseUUIDPipe) id: string) {
     return this.feeService.findItemById(id);
   }
@@ -87,11 +81,7 @@ export class FeeController {
   @Post('items')
   @ApiOperation({ summary: '创建费用项目' })
   @ApiResponse({ status: 201, description: '创建费用项目成功', type: FeeItem })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createItem(@Body() dto: CreateFeeItemDto) {
     return this.feeService.createItem(dto);
   }
@@ -99,11 +89,7 @@ export class FeeController {
   @Patch('items/:id')
   @ApiOperation({ summary: '更新费用项目' })
   @ApiResponse({ status: 200, description: '更新费用项目成功', type: FeeItem })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updateItem(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateFeeItemDto,
@@ -158,7 +144,11 @@ export class FeeController {
 
   @Get('collections/:id')
   @ApiOperation({ summary: '获取费用收取记录详情' })
-  @ApiResponse({ status: 200, description: '获取费用收取记录详情成功', type: FeeCollection })
+  @ApiResponse({
+    status: 200,
+    description: '获取费用收取记录详情成功',
+    type: FeeCollection,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -172,24 +162,24 @@ export class FeeController {
 
   @Post('collections')
   @ApiOperation({ summary: '创建费用收取记录' })
-  @ApiResponse({ status: 201, description: '创建费用收取记录成功', type: FeeCollection })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
-  createCollection(@Body() dto: CreateFeeCollectionDto, @Request() req) {
+  @ApiResponse({
+    status: 201,
+    description: '创建费用收取记录成功',
+    type: FeeCollection,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  createCollection(@Body() dto: CreateFeeCollectionDto, @Request() _req) {
     return this.feeService.createCollection(dto);
   }
 
   @Patch('collections/:id')
   @ApiOperation({ summary: '更新费用收取记录' })
-  @ApiResponse({ status: 200, description: '更新费用收取记录成功', type: FeeCollection })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 200,
+    description: '更新费用收取记录成功',
+    type: FeeCollection,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updateCollection(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateFeeCollectionDto,
@@ -200,12 +190,12 @@ export class FeeController {
 
   @Post('collections/:id/pay')
   @ApiOperation({ summary: '缴纳费用' })
-  @ApiResponse({ status: 200, description: '缴纳费用成功', type: FeeCollection })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 200,
+    description: '缴纳费用成功',
+    type: FeeCollection,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   payFee(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: PayFeeDto,
@@ -227,11 +217,7 @@ export class FeeController {
   @Get('reductions')
   @ApiOperation({ summary: '获取费用减免记录列表' })
   @ApiResponse({ status: 200, description: '获取费用减免记录列表成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findAllReductions(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -246,36 +232,36 @@ export class FeeController {
 
   @Get('reductions/:id')
   @ApiOperation({ summary: '获取费用减免记录详情' })
-  @ApiResponse({ status: 200, description: '获取费用减免记录详情成功', type: FeeReduction })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 200,
+    description: '获取费用减免记录详情成功',
+    type: FeeReduction,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findOneReduction(@Param('id', ParseUUIDPipe) id: string) {
     return this.feeService.findReductionById(id);
   }
 
   @Post('reductions')
   @ApiOperation({ summary: '创建费用减免记录' })
-  @ApiResponse({ status: 201, description: '创建费用减免记录成功', type: FeeReduction })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 201,
+    description: '创建费用减免记录成功',
+    type: FeeReduction,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createReduction(@Body() dto: CreateFeeReductionDto) {
     return this.feeService.createReduction(dto);
   }
 
   @Patch('reductions/:id/approve')
   @ApiOperation({ summary: '审核费用减免' })
-  @ApiResponse({ status: 200, description: '审核费用减免成功', type: FeeReduction })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 200,
+    description: '审核费用减免成功',
+    type: FeeReduction,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   approveReduction(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: ApproveFeeReductionDto,
@@ -297,11 +283,7 @@ export class FeeController {
   @Get('stats')
   @ApiOperation({ summary: '获取费用统计' })
   @ApiResponse({ status: 200, description: '获取费用统计成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   getStats(@Query('schoolId') schoolId?: string) {
     return this.feeService.getFeeStats(schoolId);
   }

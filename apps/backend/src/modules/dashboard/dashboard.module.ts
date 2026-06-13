@@ -6,9 +6,7 @@ import { User } from '../user/user.entity';
 import { Leave } from '../leave/leave.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User, Leave]),
-  ],
+  imports: [TypeOrmModule.forFeature([User, Leave])],
   controllers: [DashboardController],
   providers: [DashboardService],
   exports: [DashboardService],

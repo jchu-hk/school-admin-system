@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
@@ -68,12 +72,17 @@ export class TuitionService {
     return standard;
   }
 
-  async createStandard(dto: CreateTuitionStandardDto): Promise<TuitionStandard> {
+  async createStandard(
+    dto: CreateTuitionStandardDto,
+  ): Promise<TuitionStandard> {
     const standard = this.standardRepository.create(dto);
     return this.standardRepository.save(standard);
   }
 
-  async updateStandard(id: string, dto: UpdateTuitionStandardDto): Promise<TuitionStandard> {
+  async updateStandard(
+    id: string,
+    dto: UpdateTuitionStandardDto,
+  ): Promise<TuitionStandard> {
     const standard = await this.findStandardById(id);
     Object.assign(standard, dto);
     return this.standardRepository.save(standard);
@@ -111,7 +120,9 @@ export class TuitionService {
       queryBuilder.andWhere('payment.status = :status', { status });
     }
     if (schoolId) {
-      queryBuilder.andWhere('tuitionStandard.schoolId = :schoolId', { schoolId });
+      queryBuilder.andWhere('tuitionStandard.schoolId = :schoolId', {
+        schoolId,
+      });
     }
 
     const [payments, total] = await queryBuilder
@@ -147,7 +158,11 @@ export class TuitionService {
     return this.paymentRepository.save(payment);
   }
 
-  async updatePayment(id: string, dto: UpdateTuitionPaymentDto, operatorId: string): Promise<TuitionPayment> {
+  async updatePayment(
+    id: string,
+    dto: UpdateTuitionPaymentDto,
+    operatorId: string,
+  ): Promise<TuitionPayment> {
     const payment = await this.findPaymentById(id);
 
     if (dto.status && dto.status !== payment.status) {
@@ -166,7 +181,11 @@ export class TuitionService {
     return this.paymentRepository.save(payment);
   }
 
-  async payTuition(id: string, dto: PayTuitionDto, operatorId: string): Promise<TuitionPayment> {
+  async payTuition(
+    id: string,
+    dto: PayTuitionDto,
+    operatorId: string,
+  ): Promise<TuitionPayment> {
     const payment = await this.findPaymentById(id);
 
     if (payment.status === TuitionStatus.PAID) {
@@ -208,7 +227,11 @@ export class TuitionService {
 
   // ===== TuitionArrears =====
 
-  async findAllArrears(page: number = 1, limit: number = 10, studentId?: string) {
+  async findAllArrears(
+    page: number = 1,
+    limit: number = 10,
+    studentId?: string,
+  ) {
     const queryBuilder = this.arrearsRepository
       .createQueryBuilder('arrears')
       .leftJoinAndSelect('arrears.tuitionPayment', 'tuitionPayment')
@@ -249,13 +272,27 @@ export class TuitionService {
 
     const payments = await qb.getMany();
 
-    const totalAmount = payments.reduce((sum, p) => sum + Number(p.totalAmount), 0);
-    const paidAmount = payments.reduce((sum, p) => sum + Number(p.paidAmount), 0);
+    const totalAmount = payments.reduce(
+      (sum, p) => sum + Number(p.totalAmount),
+      0,
+    );
+    const paidAmount = payments.reduce(
+      (sum, p) => sum + Number(p.paidAmount),
+      0,
+    );
 
-    const paidCount = payments.filter((p) => p.status === TuitionStatus.PAID).length;
-    const pendingCount = payments.filter((p) => p.status === TuitionStatus.PENDING).length;
-    const partialCount = payments.filter((p) => p.status === TuitionStatus.PARTIAL).length;
-    const overdueCount = payments.filter((p) => p.status === TuitionStatus.OVERDUE).length;
+    const paidCount = payments.filter(
+      (p) => p.status === TuitionStatus.PAID,
+    ).length;
+    const pendingCount = payments.filter(
+      (p) => p.status === TuitionStatus.PENDING,
+    ).length;
+    const partialCount = payments.filter(
+      (p) => p.status === TuitionStatus.PARTIAL,
+    ).length;
+    const overdueCount = payments.filter(
+      (p) => p.status === TuitionStatus.OVERDUE,
+    ).length;
 
     return {
       totalStudents: payments.length,

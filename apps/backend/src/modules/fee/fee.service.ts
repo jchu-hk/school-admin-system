@@ -1,12 +1,11 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  FeeItem,
-  FeeCollection,
-  FeeReduction,
-  FeeStatus,
-} from './fee.entity';
+import { FeeItem, FeeCollection, FeeReduction, FeeStatus } from './fee.entity';
 import {
   CreateFeeItemDto,
   UpdateFeeItemDto,
@@ -167,7 +166,9 @@ export class FeeService {
     if (dto.status && dto.status !== collection.status) {
       if (dto.status === FeeStatus.PAID) {
         collection.paidAt = new Date();
-        dto.paidAmount = Number(collection.totalAmount) - Number(collection.reductionAmount || 0);
+        dto.paidAmount =
+          Number(collection.totalAmount) -
+          Number(collection.reductionAmount || 0);
       }
     }
 
@@ -192,7 +193,8 @@ export class FeeService {
 
     const reductionAmount = Number(collection.reductionAmount || 0);
     const newPaidAmount = Number(collection.paidAmount) + dto.amount;
-    const remainingAmount = Number(collection.totalAmount) - reductionAmount - newPaidAmount;
+    const remainingAmount =
+      Number(collection.totalAmount) - reductionAmount - newPaidAmount;
 
     if (newPaidAmount + reductionAmount > Number(collection.totalAmount)) {
       throw new BadRequestException('支付金额超出应缴金额');
@@ -222,7 +224,11 @@ export class FeeService {
 
   // ===== FeeReduction =====
 
-  async findAllReductions(page: number = 1, limit: number = 10, studentId?: string) {
+  async findAllReductions(
+    page: number = 1,
+    limit: number = 10,
+    studentId?: string,
+  ) {
     const queryBuilder = this.reductionRepository
       .createQueryBuilder('reduction')
       .leftJoinAndSelect('reduction.feeCollection', 'feeCollection')
@@ -253,7 +259,7 @@ export class FeeService {
   }
 
   async createReduction(dto: CreateFeeReductionDto): Promise<FeeReduction> {
-    const collection = await this.findCollectionById(dto.feeCollectionId);
+    const _collection = await this.findCollectionById(dto.feeCollectionId);
 
     const reduction = this.reductionRepository.create({
       ...dto,
@@ -285,10 +291,14 @@ export class FeeService {
 
     if (savedReduction.isApproved) {
       // 更新收费记录的减免金额
-      const collection = await this.findCollectionById(reduction.feeCollectionId);
+      const collection = await this.findCollectionById(
+        reduction.feeCollectionId,
+      );
       const existingReductions = await this.reductionRepository
         .createQueryBuilder('r')
-        .where('r.feeCollectionId = :feeCollectionId', { feeCollectionId: reduction.feeCollectionId })
+        .where('r.feeCollectionId = :feeCollectionId', {
+          feeCollectionId: reduction.feeCollectionId,
+        })
         .andWhere('r.isApproved = :isApproved', { isApproved: true })
         .getMany();
 
@@ -300,7 +310,10 @@ export class FeeService {
       collection.reductionAmount = totalReduction;
 
       // 如果减免后金额为0，自动标记为已缴
-      if (Number(collection.totalAmount) - totalReduction <= Number(collection.paidAmount)) {
+      if (
+        Number(collection.totalAmount) - totalReduction <=
+        Number(collection.paidAmount)
+      ) {
         collection.status = FeeStatus.PAID;
         collection.paidAt = new Date();
       }
@@ -339,14 +352,31 @@ export class FeeService {
 
     const collections = await qb.getMany();
 
-    const totalAmount = collections.reduce((sum, c) => sum + Number(c.totalAmount), 0);
-    const paidAmount = collections.reduce((sum, c) => sum + Number(c.paidAmount), 0);
-    const reductionAmount = collections.reduce((sum, c) => sum + Number(c.reductionAmount || 0), 0);
+    const totalAmount = collections.reduce(
+      (sum, c) => sum + Number(c.totalAmount),
+      0,
+    );
+    const paidAmount = collections.reduce(
+      (sum, c) => sum + Number(c.paidAmount),
+      0,
+    );
+    const reductionAmount = collections.reduce(
+      (sum, c) => sum + Number(c.reductionAmount || 0),
+      0,
+    );
 
-    const paidCount = collections.filter((c) => c.status === FeeStatus.PAID).length;
-    const pendingCount = collections.filter((c) => c.status === FeeStatus.PENDING).length;
-    const partialCount = collections.filter((c) => c.status === FeeStatus.PARTIAL).length;
-    const overdueCount = collections.filter((c) => c.status === FeeStatus.OVERDUE).length;
+    const paidCount = collections.filter(
+      (c) => c.status === FeeStatus.PAID,
+    ).length;
+    const pendingCount = collections.filter(
+      (c) => c.status === FeeStatus.PENDING,
+    ).length;
+    const partialCount = collections.filter(
+      (c) => c.status === FeeStatus.PARTIAL,
+    ).length;
+    const overdueCount = collections.filter(
+      (c) => c.status === FeeStatus.OVERDUE,
+    ).length;
 
     return {
       totalStudents: collections.length,

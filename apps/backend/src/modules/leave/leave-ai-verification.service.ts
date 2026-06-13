@@ -1,7 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
-import { Leave, LeaveType, LeaveStatus, AiVerifyResult, CertificateVerifyResult } from './leave.entity';
+import { Repository } from 'typeorm';
+import {
+  Leave,
+  LeaveType,
+  AiVerifyResult,
+  CertificateVerifyResult,
+} from './leave.entity';
 import { AiVerifyDto, AiVerifyResponseDto } from './dto/ai-verify.dto';
 import { CertificateVerifyResponseDto } from './dto/certificate-verify.dto';
 
@@ -29,12 +34,14 @@ export class LeaveAiVerificationService {
     const anomalyFlags: string[] = [];
     const recommendations: string[] = [];
     let requireMedicalCertificate = false;
-    let recognizedType = this.recognizeLeaveType(dto.type, dto.reason);
+    const recognizedType = this.recognizeLeaveType(dto.type, dto.reason);
 
     // 1. 分析请假类型与理由的匹配度
     const typeReasonMatch = this.analyzeTypeReasonMatch(dto.type, dto.reason);
     if (!typeReasonMatch.match) {
-      anomalyFlags.push(`请假类型与理由不匹配: 填写的是${this.getLeaveTypeName(dto.type)}但理由描述的是${typeReasonMatch.recognizedType}`);
+      anomalyFlags.push(
+        `请假类型与理由不匹配: 填写的是${this.getLeaveTypeName(dto.type)}但理由描述的是${typeReasonMatch.recognizedType}`,
+      );
       recommendations.push('建议确认请假类型是否正确');
     }
 
@@ -47,7 +54,7 @@ export class LeaveAiVerificationService {
     const historyAnalysis = dto.applicantId
       ? await this.analyzeHistoricalPattern(dto.applicantId, dto.type)
       : null;
-    
+
     if (historyAnalysis) {
       anomalyFlags.push(...historyAnalysis.flags);
       recommendations.push(...historyAnalysis.recommendations);
@@ -76,7 +83,11 @@ export class LeaveAiVerificationService {
 
     // 7. 生成核验结果
     const verified = risk !== 'high';
-    const message = this.generateVerificationMessage(risk, verified, anomalyFlags);
+    const message = this.generateVerificationMessage(
+      risk,
+      verified,
+      anomalyFlags,
+    );
 
     const result: AiVerifyResponseDto = {
       verified,
@@ -106,14 +117,16 @@ export class LeaveAiVerificationService {
     imageBuffer: Buffer,
     originalName: string,
   ): Promise<CertificateVerifyResponseDto> {
-    this.logger.log(`验证医生证明: ${originalName}, 大小: ${imageBuffer.length} bytes`);
+    this.logger.log(
+      `验证医生证明: ${originalName}, 大小: ${imageBuffer.length} bytes`,
+    );
 
     const riskFlags: string[] = [];
 
     try {
       // 1. OCR文字识别（模拟）
       const ocrResult = await this.performOcr(imageBuffer, originalName);
-      
+
       // 2. 解析证明内容
       const parsed = this.parseCertificateContent(ocrResult.text);
 
@@ -137,9 +150,10 @@ export class LeaveAiVerificationService {
         message = '无法识别证明内容，请确保图片清晰';
       } else if (!isValid) {
         status = riskFlags.length > 0 ? 'suspicious' : 'invalid';
-        message = riskFlags.length > 0
-          ? `证明内容存在疑问: ${riskFlags.join('; ')}`
-          : '证明内容验证未通过';
+        message =
+          riskFlags.length > 0
+            ? `证明内容存在疑问: ${riskFlags.join('; ')}`
+            : '证明内容验证未通过';
       } else {
         status = 'verified';
         message = '医生证明验证通过';
@@ -211,17 +225,27 @@ export class LeaveAiVerificationService {
    */
   private recognizeLeaveType(type: LeaveType, reason: string): string {
     const reasonLower = reason.toLowerCase();
-    
+
     if (type === LeaveType.SICK_LEAVE) {
-      const sickKeywords = ['病', '医院', '医生', '发烧', '感冒', '不舒服', 'sick', 'doctor', 'hospital'];
-      if (sickKeywords.some(k => reasonLower.includes(k))) {
+      const sickKeywords = [
+        '病',
+        '医院',
+        '医生',
+        '发烧',
+        '感冒',
+        '不舒服',
+        'sick',
+        'doctor',
+        'hospital',
+      ];
+      if (sickKeywords.some((k) => reasonLower.includes(k))) {
         return '病假';
       }
     }
 
     if (type === LeaveType.PERSONAL_LEAVE) {
       const personalKeywords = ['私事', '个人', 'personal', '家', 'home'];
-      if (personalKeywords.some(k => reasonLower.includes(k))) {
+      if (personalKeywords.some((k) => reasonLower.includes(k))) {
         return '事假';
       }
     }
@@ -239,12 +263,34 @@ export class LeaveAiVerificationService {
     const reasonLower = reason.toLowerCase();
 
     // 病假相关关键词
-    const sickKeywords = ['病', '发烧', '感冒', '医院', '医生', '不舒服', '肚子', '头疼', 'sick', 'fever', 'hospital', 'doctor'];
-    const hasSickIndicator = sickKeywords.some(k => reasonLower.includes(k));
+    const sickKeywords = [
+      '病',
+      '发烧',
+      '感冒',
+      '医院',
+      '医生',
+      '不舒服',
+      '肚子',
+      '头疼',
+      'sick',
+      'fever',
+      'hospital',
+      'doctor',
+    ];
+    const hasSickIndicator = sickKeywords.some((k) => reasonLower.includes(k));
 
     // 事假相关关键词
-    const personalKeywords = ['私事', '个人', '家', 'personal', 'home', 'family'];
-    const hasPersonalIndicator = personalKeywords.some(k => reasonLower.includes(k));
+    const personalKeywords = [
+      '私事',
+      '个人',
+      '家',
+      'personal',
+      'home',
+      'family',
+    ];
+    const hasPersonalIndicator = personalKeywords.some((k) =>
+      reasonLower.includes(k),
+    );
 
     if (type === LeaveType.SICK_LEAVE && hasSickIndicator) {
       return { match: true, recognizedType: '病假' };
@@ -252,10 +298,18 @@ export class LeaveAiVerificationService {
     if (type === LeaveType.PERSONAL_LEAVE && hasPersonalIndicator) {
       return { match: true, recognizedType: '事假' };
     }
-    if (type === LeaveType.SICK_LEAVE && hasPersonalIndicator && !hasSickIndicator) {
+    if (
+      type === LeaveType.SICK_LEAVE &&
+      hasPersonalIndicator &&
+      !hasSickIndicator
+    ) {
       return { match: false, recognizedType: '事假' };
     }
-    if (type === LeaveType.PERSONAL_LEAVE && hasSickIndicator && !hasPersonalIndicator) {
+    if (
+      type === LeaveType.PERSONAL_LEAVE &&
+      hasSickIndicator &&
+      !hasPersonalIndicator
+    ) {
       return { match: false, recognizedType: '病假' };
     }
 
@@ -297,8 +351,12 @@ export class LeaveAiVerificationService {
    */
   private async analyzeHistoricalPattern(
     applicantId: string,
-    currentType: LeaveType,
-  ): Promise<{ flags: string[]; recommendations: string[]; pattern: any } | null> {
+    _currentType: LeaveType,
+  ): Promise<{
+    flags: string[];
+    recommendations: string[];
+    pattern: any;
+  } | null> {
     try {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -312,11 +370,12 @@ export class LeaveAiVerificationService {
 
       const totalLeaves = recentLeaves.length;
       const sickLeaves = recentLeaves.filter(
-        l => l.leaveType === LeaveType.SICK_LEAVE,
+        (l) => l.leaveType === LeaveType.SICK_LEAVE,
       ).length;
-      const avgDaysPerLeave = totalLeaves > 0
-        ? recentLeaves.reduce((sum, l) => sum + l.totalDays, 0) / totalLeaves
-        : 0;
+      const avgDaysPerLeave =
+        totalLeaves > 0
+          ? recentLeaves.reduce((sum, l) => sum + l.totalDays, 0) / totalLeaves
+          : 0;
 
       const flags: string[] = [];
       const recommendations: string[] = [];
@@ -336,12 +395,14 @@ export class LeaveAiVerificationService {
       // 连续请假检测（检查是否有重叠或连续的请假）
       if (totalLeaves >= 2) {
         const sortedLeaves = recentLeaves.sort(
-          (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
+          (a, b) =>
+            new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
         );
         for (let i = 1; i < sortedLeaves.length; i++) {
           const prev = new Date(sortedLeaves[i - 1].endDate);
           const curr = new Date(sortedLeaves[i].startDate);
-          const diffDays = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
+          const diffDays =
+            (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
           if (diffDays <= 1) {
             flags.push('存在连续或紧密相连的请假记录');
             recommendations.push('请核实连续请假的原因');
@@ -382,7 +443,7 @@ export class LeaveAiVerificationService {
     if (endDate) {
       const end = new Date(endDate);
       const endDayOfWeek = end.getDay();
-      
+
       if (dayOfWeek === 5 && endDayOfWeek === 0) {
         flags.push('周五至周一请假（连休模式）');
         recommendations.push('请确认连休的必要性');
@@ -421,10 +482,10 @@ export class LeaveAiVerificationService {
     }
 
     // 特殊风险项
-    if (anomalyFlags.some(f => f.includes('不匹配'))) score += 1;
-    if (anomalyFlags.some(f => f.includes('频繁'))) score += 2;
-    if (anomalyFlags.some(f => f.includes('连续'))) score += 2;
-    if (anomalyFlags.some(f => f.includes('较长'))) score += 1;
+    if (anomalyFlags.some((f) => f.includes('不匹配'))) score += 1;
+    if (anomalyFlags.some((f) => f.includes('频繁'))) score += 2;
+    if (anomalyFlags.some((f) => f.includes('连续'))) score += 2;
+    if (anomalyFlags.some((f) => f.includes('较长'))) score += 1;
 
     // 病假且无证明
     if (type === LeaveType.SICK_LEAVE && days >= 2) {
@@ -506,13 +567,15 @@ export class LeaveAiVerificationService {
     ];
 
     // 简单模拟：基于文件名判断
-    const isMedicalCert = originalName.toLowerCase().includes('medical') ||
-                          originalName.toLowerCase().includes('sick') ||
-                          originalName.toLowerCase().includes('cert') ||
-                          originalName.toLowerCase().includes('doctor');
+    const isMedicalCert =
+      originalName.toLowerCase().includes('medical') ||
+      originalName.toLowerCase().includes('sick') ||
+      originalName.toLowerCase().includes('cert') ||
+      originalName.toLowerCase().includes('doctor');
 
     if (isMedicalCert) {
-      const result = simulatedTexts[Math.floor(Math.random() * simulatedTexts.length)];
+      const result =
+        simulatedTexts[Math.floor(Math.random() * simulatedTexts.length)];
       return { success: true, text: result.text };
     }
 
@@ -522,9 +585,7 @@ export class LeaveAiVerificationService {
   /**
    * 解析证明内容
    */
-  private parseCertificateContent(
-    text: string,
-  ): {
+  private parseCertificateContent(text: string): {
     hospitalName?: string;
     doctorName?: string;
     diagnosisDate?: string;
@@ -605,7 +666,11 @@ export class LeaveAiVerificationService {
     }
 
     // 提取证明类型
-    if (text.includes('醫生證明') || text.includes('医生证明') || text.includes('病假')) {
+    if (
+      text.includes('醫生證明') ||
+      text.includes('医生证明') ||
+      text.includes('病假')
+    ) {
       result.certificateType = 'medical_certificate';
     } else if (text.includes('醫囑') || text.includes('医嘱')) {
       result.certificateType = 'medical_advice';
@@ -638,8 +703,6 @@ export class LeaveAiVerificationService {
     const suspiciousFlags: string[] = [];
     let confidence = 0.8;
     let validityScore = 0;
-    const totalChecks = 5;
-
     // 检查必要字段
     if (!parsed.hospitalName) {
       suspiciousFlags.push('缺少医院名称');

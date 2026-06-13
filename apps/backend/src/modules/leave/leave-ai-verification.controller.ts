@@ -4,7 +4,6 @@ import {
   Get,
   Body,
   Param,
-  Query,
   UseGuards,
   UseInterceptors,
   UploadedFile,
@@ -12,12 +11,20 @@ import {
   Request,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as multer from 'multer';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiConsumes } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { LeaveAiVerificationService } from './leave-ai-verification.service';
 import { LeaveService } from './leave.service';
 import { AiVerifyDto, AiVerifyResponseDto } from './dto/ai-verify.dto';
-import { CertificateVerifyResponseDto, UploadCertificateDto } from './dto/certificate-verify.dto';
+import {
+  CertificateVerifyResponseDto,
+  UploadCertificateDto,
+} from './dto/certificate-verify.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -39,7 +46,11 @@ export class LeaveAiVerificationController {
    */
   @Post('ai-verify')
   @ApiOperation({ summary: 'AI核验请假申请' })
-  @ApiResponse({ status: 200, description: '核验成功', type: AiVerifyResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: '核验成功',
+    type: AiVerifyResponseDto,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -49,7 +60,7 @@ export class LeaveAiVerificationController {
   )
   async verifyLeave(
     @Body() dto: AiVerifyDto,
-    @Request() req,
+    @Request() _req,
   ): Promise<AiVerifyResponseDto> {
     // 如果提供了leaveId，获取请假记录信息补充核验数据
     if (dto.leaveId) {
@@ -83,10 +94,12 @@ export class LeaveAiVerificationController {
         anomalyFlags: result.details?.anomalyFlags || [],
         requireMedicalCertificate: result.requireMedicalCertificate,
         verifiedAt: result.verifiedAt,
-        details: result.details ? {
-          historicalPattern: result.details.historicalPattern,
-          recommendations: result.details.recommendations,
-        } : undefined,
+        details: result.details
+          ? {
+              historicalPattern: result.details.historicalPattern,
+              recommendations: result.details.recommendations,
+            }
+          : undefined,
       });
     }
 
@@ -100,7 +113,11 @@ export class LeaveAiVerificationController {
   @Post('verify-certificate')
   @ApiOperation({ summary: '上传并验证医生证明' })
   @ApiConsumes('multipart/form-data')
-  @ApiResponse({ status: 200, description: '验证成功', type: CertificateVerifyResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: '验证成功',
+    type: CertificateVerifyResponseDto,
+  })
   @Roles(
     UserRole.PARENT,
     UserRole.TEACHER,
@@ -111,7 +128,7 @@ export class LeaveAiVerificationController {
   async verifyCertificate(
     @UploadedFile() file: any,
     @Body() dto: UploadCertificateDto,
-    @Request() req,
+    @Request() _req,
   ): Promise<CertificateVerifyResponseDto> {
     if (!file) {
       return {
@@ -160,7 +177,7 @@ export class LeaveAiVerificationController {
     if (dto.leaveId && result.valid) {
       // 在实际项目中，这里应该上传文件到云存储并获取URL
       const certificateUrl = `/uploads/certificates/${dto.leaveId}/${file.originalname}`;
-      
+
       await this.aiVerificationService.saveCertificateResult(
         dto.leaveId,
         {
@@ -193,11 +210,9 @@ export class LeaveAiVerificationController {
     UserRole.TEACHER,
     UserRole.PARENT,
   )
-  async getVerificationResult(
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
+  async getVerificationResult(@Param('id', ParseUUIDPipe) id: string) {
     const leave = await this.leaveService.findOne(id);
-    
+
     return {
       leaveId: leave.id,
       aiVerifyResult: leave.aiVerifyResult,
@@ -219,11 +234,11 @@ export class LeaveAiVerificationController {
     @Body() dtos: AiVerifyDto[],
   ): Promise<{ results: AiVerifyResponseDto[]; summary: any }> {
     const results: AiVerifyResponseDto[] = [];
-    
+
     for (const dto of dtos) {
       const result = await this.aiVerificationService.verifyLeave(dto);
       results.push(result);
-      
+
       // 保存核验结果
       if (dto.leaveId) {
         await this.aiVerificationService.saveVerificationResult(dto.leaveId, {
@@ -241,14 +256,16 @@ export class LeaveAiVerificationController {
     // 汇总统计
     const summary = {
       total: results.length,
-      verified: results.filter(r => r.verified).length,
-      failed: results.filter(r => !r.verified).length,
+      verified: results.filter((r) => r.verified).length,
+      failed: results.filter((r) => !r.verified).length,
       riskDistribution: {
-        low: results.filter(r => r.risk === 'low').length,
-        medium: results.filter(r => r.risk === 'medium').length,
-        high: results.filter(r => r.risk === 'high').length,
+        low: results.filter((r) => r.risk === 'low').length,
+        medium: results.filter((r) => r.risk === 'medium').length,
+        high: results.filter((r) => r.risk === 'high').length,
       },
-      requireMedicalCertificate: results.filter(r => r.requireMedicalCertificate).length,
+      requireMedicalCertificate: results.filter(
+        (r) => r.requireMedicalCertificate,
+      ).length,
     };
 
     return { results, summary };

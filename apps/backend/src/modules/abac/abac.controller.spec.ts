@@ -9,7 +9,6 @@ import { AbacInput } from './interfaces/abac.interfaces';
 
 describe('AbacController', () => {
   let controller: AbacController;
-  let abacService: AbacService;
 
   const mockAbacService = {
     healthCheck: jest.fn(),
@@ -26,7 +25,6 @@ describe('AbacController', () => {
     }).compile();
 
     controller = module.get<AbacController>(AbacController);
-    abacService = module.get<AbacService>(AbacService);
   });
 
   afterEach(() => {

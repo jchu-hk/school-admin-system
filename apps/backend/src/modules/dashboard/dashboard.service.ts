@@ -83,7 +83,10 @@ export class DashboardService {
   /**
    * 获取最近N天的出勤趋势数据
    */
-  async getAttendanceTrend(days: number, user: User): Promise<AttendanceTrend[]> {
+  async getAttendanceTrend(
+    days: number,
+    user: User,
+  ): Promise<AttendanceTrend[]> {
     const trends: AttendanceTrend[] = [];
     const today = new Date();
 
@@ -155,13 +158,20 @@ export class DashboardService {
       },
     });
 
-    const approvedLeaves = monthlyLeaves.filter(l => l.status === LeaveStatus.APPROVED).length;
-    const pendingLeaves = monthlyLeaves.filter(l => l.status === LeaveStatus.PENDING).length;
-    const rejectedLeaves = monthlyLeaves.filter(l => l.status === LeaveStatus.REJECTED).length;
+    const approvedLeaves = monthlyLeaves.filter(
+      (l) => l.status === LeaveStatus.APPROVED,
+    ).length;
+    const pendingLeaves = monthlyLeaves.filter(
+      (l) => l.status === LeaveStatus.PENDING,
+    ).length;
+    const rejectedLeaves = monthlyLeaves.filter(
+      (l) => l.status === LeaveStatus.REJECTED,
+    ).length;
 
     // 计算今日出勤统计（模拟数据）
     const present = Math.max(0, totalUsers - todayLeaves);
-    const attendanceRate = totalUsers > 0 ? Math.round((present / totalUsers) * 100) : 0;
+    const attendanceRate =
+      totalUsers > 0 ? Math.round((present / totalUsers) * 100) : 0;
 
     return {
       todayAttendance: {
@@ -205,7 +215,10 @@ export class DashboardService {
       .createQueryBuilder('leave')
       .innerJoin(User, 'user', 'user.id = leave.applicantId')
       .where('user.className = :className', { className: user.className })
-      .andWhere('leave.startDate BETWEEN :today AND :tomorrow', { today, tomorrow })
+      .andWhere('leave.startDate BETWEEN :today AND :tomorrow', {
+        today,
+        tomorrow,
+      })
       .andWhere('leave.status = :status', { status: LeaveStatus.APPROVED })
       .getCount();
 
@@ -220,11 +233,16 @@ export class DashboardService {
       })
       .getMany();
 
-    const approvedLeaves = monthlyLeaves.filter(l => l.status === LeaveStatus.APPROVED).length;
-    const pendingLeaves = monthlyLeaves.filter(l => l.status === LeaveStatus.PENDING).length;
+    const approvedLeaves = monthlyLeaves.filter(
+      (l) => l.status === LeaveStatus.APPROVED,
+    ).length;
+    const pendingLeaves = monthlyLeaves.filter(
+      (l) => l.status === LeaveStatus.PENDING,
+    ).length;
 
     const present = Math.max(0, classStudents - todayLeaves);
-    const attendanceRate = classStudents > 0 ? Math.round((present / classStudents) * 100) : 0;
+    const attendanceRate =
+      classStudents > 0 ? Math.round((present / classStudents) * 100) : 0;
 
     return {
       todayAttendance: {
@@ -238,7 +256,8 @@ export class DashboardService {
         total: monthlyLeaves.length,
         approved: approvedLeaves,
         pending: pendingLeaves,
-        rejected: monthlyLeaves.filter(l => l.status === LeaveStatus.REJECTED).length,
+        rejected: monthlyLeaves.filter((l) => l.status === LeaveStatus.REJECTED)
+          .length,
       },
       pendingInquiries: pendingLeaves,
       todayNotifications: 0,
@@ -263,7 +282,7 @@ export class DashboardService {
     });
 
     const todayLeaves = studentLeaves.filter(
-      l => l.startDate >= today && l.startDate < tomorrow,
+      (l) => l.startDate >= today && l.startDate < tomorrow,
     ).length;
 
     return {
@@ -276,9 +295,12 @@ export class DashboardService {
       },
       monthlyLeave: {
         total: studentLeaves.length,
-        approved: studentLeaves.filter(l => l.status === LeaveStatus.APPROVED).length,
-        pending: studentLeaves.filter(l => l.status === LeaveStatus.PENDING).length,
-        rejected: studentLeaves.filter(l => l.status === LeaveStatus.REJECTED).length,
+        approved: studentLeaves.filter((l) => l.status === LeaveStatus.APPROVED)
+          .length,
+        pending: studentLeaves.filter((l) => l.status === LeaveStatus.PENDING)
+          .length,
+        rejected: studentLeaves.filter((l) => l.status === LeaveStatus.REJECTED)
+          .length,
       },
       pendingInquiries: 0,
       todayNotifications: 0,
@@ -303,7 +325,7 @@ export class DashboardService {
     });
 
     const todayLeaves = myLeaves.filter(
-      l => l.startDate >= today && l.startDate < tomorrow,
+      (l) => l.startDate >= today && l.startDate < tomorrow,
     ).length;
 
     return {
@@ -316,9 +338,12 @@ export class DashboardService {
       },
       monthlyLeave: {
         total: myLeaves.length,
-        approved: myLeaves.filter(l => l.status === LeaveStatus.APPROVED).length,
-        pending: myLeaves.filter(l => l.status === LeaveStatus.PENDING).length,
-        rejected: myLeaves.filter(l => l.status === LeaveStatus.REJECTED).length,
+        approved: myLeaves.filter((l) => l.status === LeaveStatus.APPROVED)
+          .length,
+        pending: myLeaves.filter((l) => l.status === LeaveStatus.PENDING)
+          .length,
+        rejected: myLeaves.filter((l) => l.status === LeaveStatus.REJECTED)
+          .length,
       },
       pendingInquiries: 0,
       todayNotifications: 0,
@@ -354,8 +379,13 @@ export class DashboardService {
   private async getDailyAttendanceStats(
     startDate: Date,
     endDate: Date,
-    user: User,
-  ): Promise<{ present: number; absent: number; leave: number; attendanceRate: number }> {
+    _user: User,
+  ): Promise<{
+    present: number;
+    absent: number;
+    leave: number;
+    attendanceRate: number;
+  }> {
     // 获取当日请假人数
     const leaveCount = await this.leaveRepository.count({
       where: {
@@ -370,7 +400,8 @@ export class DashboardService {
     });
 
     const present = Math.max(0, totalUsers - leaveCount);
-    const attendanceRate = totalUsers > 0 ? Math.round((present / totalUsers) * 100) : 0;
+    const attendanceRate =
+      totalUsers > 0 ? Math.round((present / totalUsers) * 100) : 0;
 
     return {
       present,
@@ -383,7 +414,10 @@ export class DashboardService {
   /**
    * 获取最近的请假活动
    */
-  private async getRecentLeaves(user: User, limit: number): Promise<RecentActivity[]> {
+  private async getRecentLeaves(
+    user: User,
+    limit: number,
+  ): Promise<RecentActivity[]> {
     const query = this.leaveRepository
       .createQueryBuilder('leave')
       .leftJoinAndSelect('leave.applicant', 'applicant')
@@ -392,32 +426,41 @@ export class DashboardService {
 
     // 根据角色过滤
     if (user.role === UserRole.TEACHER && user.className) {
-      query.where('applicant.className = :className', { className: user.className });
+      query.where('applicant.className = :className', {
+        className: user.className,
+      });
     } else if (user.role === UserRole.PARENT && user.relatedStudentId) {
-      query.where('leave.applicantId = :studentId', { studentId: user.relatedStudentId });
+      query.where('leave.applicantId = :studentId', {
+        studentId: user.relatedStudentId,
+      });
     } else if (user.role === UserRole.STUDENT) {
       query.where('leave.applicantId = :userId', { userId: user.id });
     }
 
     const leaves = await query.getMany();
 
-    return leaves.map(leave => ({
+    return leaves.map((leave) => ({
       id: leave.id,
       type: 'leave' as const,
       title: '请假申请',
       description: `${leave.applicant?.name || '用户'} 申请了 ${leave.leaveType}`,
       timestamp: leave.createdAt,
-      user: leave.applicant ? {
-        id: leave.applicant.id,
-        name: leave.applicant.name,
-      } : undefined,
+      user: leave.applicant
+        ? {
+            id: leave.applicant.id,
+            name: leave.applicant.name,
+          }
+        : undefined,
     }));
   }
 
   /**
    * 获取最近的用户活动
    */
-  private async getRecentUserActivities(user: User, limit: number): Promise<RecentActivity[]> {
+  private async getRecentUserActivities(
+    user: User,
+    limit: number,
+  ): Promise<RecentActivity[]> {
     const activities: RecentActivity[] = [];
 
     // 获取最近登录的用户
@@ -427,7 +470,7 @@ export class DashboardService {
       take: limit,
     });
 
-    recentUsers.forEach(u => {
+    recentUsers.forEach((u) => {
       if (u.lastLoginAt) {
         activities.push({
           id: `login-${u.id}`,

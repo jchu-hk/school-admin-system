@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PermissionApprovalController } from './permission-approval.controller';
+import { PermissionApprovalController } from './controllers/permission-approval.controller';
 import { PermissionApprovalService } from './services/permission-approval.service';
 import {
   PermissionApprovalRequest,

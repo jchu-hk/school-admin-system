@@ -11,7 +11,6 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { LeaveService } from '../leave/leave.service';
 import {
   LeaveApplication,
@@ -27,7 +26,7 @@ import {
 
 describe('Leave → Notification System Integration', () => {
   let leaveService: LeaveService;
-  let notificationService: jest.Mocked<NotificationService>;
+  let _notificationService: jest.Mocked<NotificationService>;
 
   const mockLeaveRepository = {
     create: jest.fn(),
@@ -71,7 +70,7 @@ describe('Leave → Notification System Integration', () => {
     }).compile();
 
     leaveService = module.get<LeaveService>(LeaveService);
-    notificationService = module.get(NotificationService);
+    _notificationService = module.get(NotificationService);
     return module;
   };
 

@@ -11,7 +11,7 @@ import {
 import { User } from '../user/user.entity';
 
 export enum LunchOrderStatus {
-  PENDING = 'pending',     // 待确认
+  PENDING = 'pending', // 待确认
   CONFIRMED = 'confirmed', // 已确认
   CANCELLED = 'cancelled', // 已取消
   COMPLETED = 'completed', // 已完成（已取餐）

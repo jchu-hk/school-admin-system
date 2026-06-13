@@ -6,7 +6,6 @@ import {
   IsInt,
   Min,
 } from 'class-validator';
-import { LeaveStatus } from '../leave.entity';
 
 export class ApproveLeaveDto {
   @IsBoolean()

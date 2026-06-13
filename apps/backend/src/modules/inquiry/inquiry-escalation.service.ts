@@ -2,7 +2,6 @@ import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { NotificationService } from '../notification/notification.service';
-import { NotificationType } from '../notification/notification.entity';
 import { Inquiry, InquiryPriority } from './inquiry.entity';
 import { InquiryEscalationHistory } from './inquiry-escalation-history.entity';
 import { User, UserRole, UserStatus } from '../user/user.entity';
@@ -38,8 +37,19 @@ export class InquiryEscalationService implements OnModuleInit {
   private readonly escalationConfigs: EscalationConfig[] = [
     {
       keywords: [
-        '安全', '危险', '受伤', '受伤了', '流血', '摔', '撞',
-        'safety', 'danger', 'injury', 'hurt', 'bleeding', 'accident',
+        '安全',
+        '危险',
+        '受伤',
+        '受伤了',
+        '流血',
+        '摔',
+        '撞',
+        'safety',
+        'danger',
+        'injury',
+        'hurt',
+        'bleeding',
+        'accident',
       ],
       category: '安全问题',
       priority: InquiryPriority.URGENT,
@@ -47,8 +57,16 @@ export class InquiryEscalationService implements OnModuleInit {
     },
     {
       keywords: [
-        '紧急', '立刻', '马上', '救命', '报警', '救护车',
-        'urgent', 'emergency', 'immediately', 'now',
+        '紧急',
+        '立刻',
+        '马上',
+        '救命',
+        '报警',
+        '救护车',
+        'urgent',
+        'emergency',
+        'immediately',
+        'now',
       ],
       category: '紧急事件',
       priority: InquiryPriority.URGENT,
@@ -56,8 +74,17 @@ export class InquiryEscalationService implements OnModuleInit {
     },
     {
       keywords: [
-        '投诉', '举报', '不满', '严重', '恶劣', '恶劣行为',
-        'complaint', 'report', 'serious', 'severe', 'abuse',
+        '投诉',
+        '举报',
+        '不满',
+        '严重',
+        '恶劣',
+        '恶劣行为',
+        'complaint',
+        'report',
+        'serious',
+        'severe',
+        'abuse',
       ],
       category: '投诉举报',
       priority: InquiryPriority.HIGH,
@@ -65,8 +92,15 @@ export class InquiryEscalationService implements OnModuleInit {
     },
     {
       keywords: [
-        '霸凌', '欺凌', '被打', '被欺负', '被骂',
-        'bullying', 'bullied', 'hit', 'harassment',
+        '霸凌',
+        '欺凌',
+        '被打',
+        '被欺负',
+        '被骂',
+        'bullying',
+        'bullied',
+        'hit',
+        'harassment',
       ],
       category: '霸凌事件',
       priority: InquiryPriority.HIGH,
@@ -74,8 +108,14 @@ export class InquiryEscalationService implements OnModuleInit {
     },
     {
       keywords: [
-        '虐待', '体罚', '性侵', '性骚扰',
-        'abuse', 'molestation', 'assault', 'punishment',
+        '虐待',
+        '体罚',
+        '性侵',
+        '性骚扰',
+        'abuse',
+        'molestation',
+        'assault',
+        'punishment',
       ],
       category: '虐待举报',
       priority: InquiryPriority.URGENT,
@@ -83,8 +123,13 @@ export class InquiryEscalationService implements OnModuleInit {
     },
     {
       keywords: [
-        '食物中毒', '食物安全', '吃坏', '拉肚子',
-        'food poisoning', 'food safety', 'illness',
+        '食物中毒',
+        '食物安全',
+        '吃坏',
+        '拉肚子',
+        'food poisoning',
+        'food safety',
+        'illness',
       ],
       category: '食品安全',
       priority: InquiryPriority.HIGH,
@@ -92,8 +137,14 @@ export class InquiryEscalationService implements OnModuleInit {
     },
     {
       keywords: [
-        '自杀', '自残', '抑郁', '心理问题',
-        'suicide', 'self-harm', 'depression', 'mental',
+        '自杀',
+        '自残',
+        '抑郁',
+        '心理问题',
+        'suicide',
+        'self-harm',
+        'depression',
+        'mental',
       ],
       category: '心理健康危机',
       priority: InquiryPriority.URGENT,
@@ -306,10 +357,14 @@ export class InquiryEscalationService implements OnModuleInit {
       });
 
       const saved = await this.escalationHistoryRepository.save(history);
-      this.logger.log(`[Escalation] Saved history record ${saved.id} for inquiry ${inquiryId}`);
+      this.logger.log(
+        `[Escalation] Saved history record ${saved.id} for inquiry ${inquiryId}`,
+      );
       return saved;
     } catch (error) {
-      this.logger.error(`[Escalation] Failed to save escalation history: ${error.message}`);
+      this.logger.error(
+        `[Escalation] Failed to save escalation history: ${error.message}`,
+      );
       return null;
     }
   }
@@ -367,7 +422,9 @@ export class InquiryEscalationService implements OnModuleInit {
       [],
     );
 
-    this.logger.log(`[Escalation] Manual escalation for inquiry ${inquiryId} by ${triggeredBy}: ${reason}`);
+    this.logger.log(
+      `[Escalation] Manual escalation for inquiry ${inquiryId} by ${triggeredBy}: ${reason}`,
+    );
 
     return {
       isEscalated: true,
@@ -382,7 +439,9 @@ export class InquiryEscalationService implements OnModuleInit {
   /**
    * 获取查询的升级历史记录
    */
-  async getEscalationHistory(inquiryId: string): Promise<InquiryEscalationHistory[]> {
+  async getEscalationHistory(
+    inquiryId: string,
+  ): Promise<InquiryEscalationHistory[]> {
     return this.escalationHistoryRepository.find({
       where: { inquiryId },
       order: { createdAt: 'DESC' },

@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsUUID,
   IsNotEmpty,
-  IsNumber,
   Min,
   IsBoolean,
   IsArray,

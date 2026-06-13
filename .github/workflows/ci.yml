@@ -36,7 +36,7 @@ jobs:
           node-version: '22'
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm test
+      - run: pnpm --filter @school-admin/backend test
 
   build:
     runs-on: ubuntu-latest
@@ -51,7 +51,7 @@ jobs:
           node-version: '22'
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm build
+      - run: pnpm --filter @school-admin/backend build
 
   deploy:
     runs-on: ubuntu-latest

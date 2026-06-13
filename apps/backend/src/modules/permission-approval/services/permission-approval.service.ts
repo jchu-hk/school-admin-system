@@ -19,10 +19,10 @@ import {
   CancelPermissionRequestDto,
 } from '../dto/permission-approval.dto';
 import { User } from '../../user/user.entity';
-import { AuditService } from '../../audit/services/audit.service';
-import { NotificationService } from '../../notification/services/notification.service';
-import { PermissionService } from '../../permission/services/permission.service';
-import { RoleService } from '../../role/services/role.service';
+import { AuditService } from '../../audit/audit.service';
+import { NotificationService } from '../../notification/notification.service';
+import { PermissionService } from '../../permission/permission.service';
+import { RoleService } from '../../role/role.service';
 
 @Injectable()
 export class PermissionApprovalService {
@@ -156,7 +156,7 @@ export class PermissionApprovalService {
     return query.getMany();
   }
 
-  async getMyPendingApprovals(user: User) {
+  async getMyPendingApprovals(_user: User) {
     // Get user roles
     const userRoleNames = user.roles.map((r) => r.name);
 
@@ -368,7 +368,7 @@ export class PermissionApprovalService {
 
   private async isUserApproverForRequest(
     request: PermissionApprovalRequest,
-    user: User,
+    _user: User,
   ): Promise<boolean> {
     const userRoleNames = user.roles.map((r) => r.name);
     return request.steps.some(

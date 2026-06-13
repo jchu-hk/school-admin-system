@@ -9,11 +9,15 @@ import {
   Query,
   ParseUUIDPipe,
   UseGuards,
-  Request,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { BusService } from './bus.service';
-import { BusRoute, BusSchedule, BusRecord, BusRecordStatus, BusDirection } from './bus.entity';
+import { BusRoute, BusSchedule, BusRecord } from './bus.entity';
 import {
   CreateBusRouteDto,
   UpdateBusRouteDto,
@@ -96,9 +100,15 @@ export class BusController {
 
   @Post('schedules')
   @ApiOperation({ summary: '创建校车时刻表' })
-  @ApiResponse({ status: 201, description: '时刻表创建成功', type: BusSchedule })
+  @ApiResponse({
+    status: 201,
+    description: '时刻表创建成功',
+    type: BusSchedule,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  createSchedule(@Body() createDto: CreateBusScheduleDto): Promise<BusSchedule> {
+  createSchedule(
+    @Body() createDto: CreateBusScheduleDto,
+  ): Promise<BusSchedule> {
     return this.busService.createSchedule(createDto);
   }
 
@@ -112,7 +122,9 @@ export class BusController {
     UserRole.TEACHER,
     UserRole.PARENT,
   )
-  findSchedulesByRoute(@Param('routeId', ParseUUIDPipe) routeId: string): Promise<BusSchedule[]> {
+  findSchedulesByRoute(
+    @Param('routeId', ParseUUIDPipe) routeId: string,
+  ): Promise<BusSchedule[]> {
     return this.busService.findSchedulesByRoute(routeId);
   }
 
@@ -155,7 +167,9 @@ export class BusController {
     UserRole.TEACHER,
     UserRole.PARENT,
   )
-  findAllRecords(@Query() query: BusRecordQueryDto): Promise<{ records: BusRecord[]; total: number }> {
+  findAllRecords(
+    @Query() query: BusRecordQueryDto,
+  ): Promise<{ records: BusRecord[]; total: number }> {
     return this.busService.findAllRecords(query);
   }
 

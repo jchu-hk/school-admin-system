@@ -28,10 +28,10 @@ import { AuditService } from '../audit/audit.service';
 
 describe('OTP Authentication → User Management Integration', () => {
   let otpService: OtpServiceClass;
-  let otpConfigRepository: jest.Mocked<Repository<OtpConfig>>;
-  let otpSessionRepository: jest.Mocked<Repository<OtpSession>>;
-  let otpTrustedSessionRepository: jest.Mocked<Repository<OtPTrustedSession>>;
-  let userRepository: jest.Mocked<Repository<User>>;
+  let otpConfigRepository: jest.Mocked<Repository<OtpConfig>>; // eslint-disable-line @typescript-eslint/no-unused-vars
+  let otpSessionRepository: jest.Mocked<Repository<OtpSession>>; // eslint-disable-line @typescript-eslint/no-unused-vars
+  let otpTrustedSessionRepository: jest.Mocked<Repository<OtpTrustedSession>>; // eslint-disable-line @typescript-eslint/no-unused-vars
+  let userRepository: jest.Mocked<Repository<User>>; // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const mockOtpConfigRepository = {
     findOne: jest.fn(),

@@ -1,11 +1,6 @@
-import {
-  IsString,
-  IsOptional,
-  IsEnum,
-  IsArray,
-  MaxLength,
-} from 'class-validator';
+import { IsString, IsOptional, IsEnum, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { SystemLogLevel } from '../settings.entity';
 
 // SystemConfig DTOs
 export class CreateSystemConfigDto {
@@ -51,9 +46,9 @@ export class UpdateSystemConfigDto {
 
 // SystemLog DTOs
 export class CreateSystemLogDto {
-  @ApiProperty({ description: '日志级别' })
-  @IsEnum(['info', 'warn', 'error'])
-  level: 'info' | 'warn' | 'error';
+  @ApiProperty({ description: '日志级别', enum: SystemLogLevel })
+  @IsEnum(SystemLogLevel)
+  level: SystemLogLevel;
 
   @ApiProperty({ description: '日志消息' })
   @IsString()
@@ -89,10 +84,10 @@ export class SystemLogQueryDto {
   @IsOptional()
   pageSize?: number = 20;
 
-  @ApiPropertyOptional({ description: '日志级别' })
+  @ApiPropertyOptional({ description: '日志级别', enum: SystemLogLevel })
   @IsOptional()
-  @IsEnum(['info', 'warn', 'error'])
-  level?: 'info' | 'warn' | 'error';
+  @IsEnum(SystemLogLevel)
+  level?: SystemLogLevel;
 
   @ApiPropertyOptional({ description: '模块' })
   @IsOptional()

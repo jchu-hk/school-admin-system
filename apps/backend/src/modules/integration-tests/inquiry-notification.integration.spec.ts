@@ -10,7 +10,6 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { InquiryService } from '../inquiry/inquiry.service';
 import { NotificationService } from '../notification/notification.service';
 import {
@@ -24,7 +23,7 @@ import { CreateInquiryDto, CreateReplyDto } from '../inquiry/dto/inquiry.dto';
 
 describe('Inquiry → Notification System Integration', () => {
   let inquiryService: InquiryService;
-  let notificationService: jest.Mocked<NotificationService>;
+  let _notificationService: jest.Mocked<NotificationService>;
 
   const mockInquiryRepository = {
     create: jest.fn(),
@@ -77,7 +76,7 @@ describe('Inquiry → Notification System Integration', () => {
     }).compile();
 
     inquiryService = module.get<InquiryService>(InquiryService);
-    notificationService = module.get(NotificationService);
+    _notificationService = module.get(NotificationService);
     return module;
   };
 
@@ -138,7 +137,7 @@ describe('Inquiry → Notification System Integration', () => {
 
       const createDto: CreateInquiryDto = {
         category: InquiryCategory.COMPLAINT,
-        priority: InquiryPriority.HIGH,
+        priority: InquiryPriority.URGENT,
         title: '投诉校车延误',
         content: '校车经常延误，影响孩子上学',
         contactMethod: 'app_push',
@@ -149,7 +148,7 @@ describe('Inquiry → Notification System Integration', () => {
         inquiryNo: 'INQ-20260607-UVWX',
         parentId: 'parent-002',
         category: InquiryCategory.COMPLAINT,
-        priority: InquiryPriority.HIGH,
+        priority: InquiryPriority.URGENT,
         title: '投诉校车延误',
         content: '校车经常延误，影响孩子上学',
         status: InquiryStatus.PENDING,
@@ -201,7 +200,7 @@ describe('Inquiry → Notification System Integration', () => {
         id: 'reply-001',
         inquiryId: 'inquiry-001',
         authorId: 'staff-001',
-        authorType: ReplyAuthorType.STAFF,
+        authorType: ReplyAuthorType.OFFICER,
         content: '校车每天早上7:30从总站发车，请注意准时到达站点。',
         isInternal: false,
         createdAt: new Date(),
@@ -216,7 +215,7 @@ describe('Inquiry → Notification System Integration', () => {
         'inquiry-001',
         replyDto,
         'staff-001',
-        ReplyAuthorType.STAFF,
+        ReplyAuthorType.OFFICER,
       );
 
       expect(result).toBeDefined();
@@ -257,7 +256,7 @@ describe('Inquiry → Notification System Integration', () => {
         id: 'reply-002',
         inquiryId: 'inquiry-003',
         authorId: 'staff-002',
-        authorType: ReplyAuthorType.STAFF,
+        authorType: ReplyAuthorType.OFFICER,
         content: '校车路线已更新，请查看最新路线图。',
         isInternal: false,
         createdAt: new Date(),
@@ -272,7 +271,7 @@ describe('Inquiry → Notification System Integration', () => {
         'inquiry-003',
         replyDto,
         'staff-002',
-        ReplyAuthorType.STAFF,
+        ReplyAuthorType.OFFICER,
       );
 
       expect(mockNotificationService.sendNotification).toHaveBeenCalledWith(

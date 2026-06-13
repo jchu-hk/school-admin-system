@@ -45,7 +45,10 @@ export class CertificateVerifyResponseDto {
   @ApiProperty({ description: '验证消息' })
   message: string;
 
-  @ApiPropertyOptional({ description: '提取的详细信息', type: CertificateDetailsDto })
+  @ApiPropertyOptional({
+    description: '提取的详细信息',
+    type: CertificateDetailsDto,
+  })
   details?: CertificateDetailsDto;
 
   @ApiProperty({ description: '置信度分数 0-1', example: 0.95 })

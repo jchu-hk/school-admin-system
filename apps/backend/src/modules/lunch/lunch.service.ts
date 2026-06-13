@@ -4,9 +4,13 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
+import { Repository } from 'typeorm';
 import { LunchOrder, LunchOrderStatus } from './lunch.entity';
-import { CreateLunchOrderDto, UpdateLunchOrderDto, LunchOrderQueryDto } from './dto/lunch.dto';
+import {
+  CreateLunchOrderDto,
+  UpdateLunchOrderDto,
+  LunchOrderQueryDto,
+} from './dto/lunch.dto';
 
 @Injectable()
 export class LunchService {
@@ -30,7 +34,9 @@ export class LunchService {
     return this.lunchOrderRepository.save(order);
   }
 
-  async findAll(query: LunchOrderQueryDto): Promise<{ orders: LunchOrder[]; total: number }> {
+  async findAll(
+    query: LunchOrderQueryDto,
+  ): Promise<{ orders: LunchOrder[]; total: number }> {
     const page = query.page || 1;
     const limit = query.limit || 10;
 
@@ -41,7 +47,9 @@ export class LunchService {
       .leftJoinAndSelect('order.confirmer', 'confirmer');
 
     if (query.studentId) {
-      queryBuilder.andWhere('order.studentId = :studentId', { studentId: query.studentId });
+      queryBuilder.andWhere('order.studentId = :studentId', {
+        studentId: query.studentId,
+      });
     }
 
     if (query.status) {
@@ -49,14 +57,20 @@ export class LunchService {
     }
 
     if (query.startDate) {
-      queryBuilder.andWhere('order.orderDate >= :startDate', { startDate: query.startDate });
+      queryBuilder.andWhere('order.orderDate >= :startDate', {
+        startDate: query.startDate,
+      });
     }
 
     if (query.endDate) {
-      queryBuilder.andWhere('order.orderDate <= :endDate', { endDate: query.endDate });
+      queryBuilder.andWhere('order.orderDate <= :endDate', {
+        endDate: query.endDate,
+      });
     }
 
-    queryBuilder.orderBy('order.orderDate', 'DESC').addOrderBy('order.createdAt', 'DESC');
+    queryBuilder
+      .orderBy('order.orderDate', 'DESC')
+      .addOrderBy('order.createdAt', 'DESC');
 
     const [orders, total] = await queryBuilder
       .skip((page - 1) * limit)
@@ -79,7 +93,11 @@ export class LunchService {
     return order;
   }
 
-  async update(id: string, updateDto: UpdateLunchOrderDto, updatedBy: string): Promise<LunchOrder> {
+  async update(
+    id: string,
+    updateDto: UpdateLunchOrderDto,
+    updatedBy: string,
+  ): Promise<LunchOrder> {
     const order = await this.findOne(id);
 
     Object.assign(order, updateDto);
@@ -141,7 +159,10 @@ export class LunchService {
   /**
    * 获取午膳订单统计
    */
-  async getStats(startDate?: string, endDate?: string): Promise<{
+  async getStats(
+    startDate?: string,
+    endDate?: string,
+  ): Promise<{
     totalOrders: number;
     totalAmount: number;
     byStatus: Record<string, number>;
@@ -159,7 +180,10 @@ export class LunchService {
     const orders = await queryBuilder.getMany();
 
     const totalOrders = orders.length;
-    const totalAmount = orders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
+    const totalAmount = orders.reduce(
+      (sum, o) => sum + Number(o.totalAmount),
+      0,
+    );
 
     const byStatus: Record<string, number> = {};
     orders.forEach((order) => {
@@ -181,7 +205,10 @@ export class LunchService {
   /**
    * 获取指定日期范围内的结算金额
    */
-  async getSettlement(startDate: string, endDate: string): Promise<{
+  async getSettlement(
+    startDate: string,
+    endDate: string,
+  ): Promise<{
     totalOrders: number;
     confirmedOrders: number;
     cancelledOrders: number;
@@ -195,12 +222,20 @@ export class LunchService {
     const orders = await queryBuilder.getMany();
 
     const totalOrders = orders.length;
-    const confirmedOrders = orders.filter((o) => o.status === LunchOrderStatus.CONFIRMED).length;
-    const cancelledOrders = orders.filter((o) => o.status === LunchOrderStatus.CANCELLED).length;
+    const confirmedOrders = orders.filter(
+      (o) => o.status === LunchOrderStatus.CONFIRMED,
+    ).length;
+    const cancelledOrders = orders.filter(
+      (o) => o.status === LunchOrderStatus.CANCELLED,
+    ).length;
 
     // 只结算已确认且未取消的订单
     const settlementAmount = orders
-      .filter((o) => o.status === LunchOrderStatus.CONFIRMED || o.status === LunchOrderStatus.COMPLETED)
+      .filter(
+        (o) =>
+          o.status === LunchOrderStatus.CONFIRMED ||
+          o.status === LunchOrderStatus.COMPLETED,
+      )
       .reduce((sum, o) => sum + Number(o.totalAmount), 0);
 
     return { totalOrders, confirmedOrders, cancelledOrders, settlementAmount };

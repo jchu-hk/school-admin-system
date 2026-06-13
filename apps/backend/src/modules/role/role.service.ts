@@ -39,19 +39,14 @@ export class RoleService {
   }
 
   async removeRoleFromUser(userId: string, roleId: string): Promise<void> {
-    console.log(
-      `[RoleService] Removing role ${roleId} from user ${userId}`,
-    );
+    console.log(`[RoleService] Removing role ${roleId} from user ${userId}`);
   }
 
-  async userHasRole(userId: string, roleName: string): Promise<boolean> {
+  async userHasRole(_userId: string, _roleName: string): Promise<boolean> {
     return false;
   }
 
-  async getUsersByRole(
-    roleName: string,
-    schoolId: string,
-  ): Promise<string[]> {
+  async getUsersByRole(roleName: string, schoolId: string): Promise<string[]> {
     console.log(
       `[RoleService] Getting users with role ${roleName} in school ${schoolId}`,
     );

@@ -98,7 +98,9 @@ export class AuthController {
     status: HttpStatus.UNAUTHORIZED,
     description: '刷新令牌无效或已过期',
   })
-  async refreshToken(@Body() dto: RefreshTokenDto): Promise<{ access_token: string; message: string }> {
+  async refreshToken(
+    @Body() dto: RefreshTokenDto,
+  ): Promise<{ access_token: string; message: string }> {
     return this.authService.refreshToken(dto.refreshToken);
   }
 }

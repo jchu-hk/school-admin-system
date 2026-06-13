@@ -32,15 +32,29 @@ export class AddInquiryIntentAndEscalationHistory20250612130000 implements Migra
     `);
 
     // 添加注释
-    await queryRunner.query(`COMMENT ON COLUMN "inquiries"."intent_type" IS 'AI识别的意图类型'`);
-    await queryRunner.query(`COMMENT ON COLUMN "inquiries"."intent_confidence" IS 'AI意图置信度 0-1'`);
-    await queryRunner.query(`COMMENT ON COLUMN "inquiries"."intent_keywords" IS '意图匹配关键词'`);
+    await queryRunner.query(
+      `COMMENT ON COLUMN "inquiries"."intent_type" IS 'AI识别的意图类型'`,
+    );
+    await queryRunner.query(
+      `COMMENT ON COLUMN "inquiries"."intent_confidence" IS 'AI意图置信度 0-1'`,
+    );
+    await queryRunner.query(
+      `COMMENT ON COLUMN "inquiries"."intent_keywords" IS '意图匹配关键词'`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "inquiries" DROP COLUMN IF EXISTS "intent_type"`);
-    await queryRunner.query(`ALTER TABLE "inquiries" DROP COLUMN IF EXISTS "intent_confidence"`);
-    await queryRunner.query(`ALTER TABLE "inquiries" DROP COLUMN IF EXISTS "intent_keywords"`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "inquiry_escalation_history"`);
+    await queryRunner.query(
+      `ALTER TABLE "inquiries" DROP COLUMN IF EXISTS "intent_type"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "inquiries" DROP COLUMN IF EXISTS "intent_confidence"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "inquiries" DROP COLUMN IF EXISTS "intent_keywords"`,
+    );
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "inquiry_escalation_history"`,
+    );
   }
 }

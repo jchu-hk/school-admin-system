@@ -1,4 +1,4 @@
-import { IsString, IsUUID, IsNotEmpty, IsOptional, IsNumber, Min } from 'class-validator';
+import { IsString, IsUUID, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateApplicationDto {
   @IsUUID()

@@ -10,7 +10,11 @@ import {
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Scholarship, ScholarshipApplication, ScholarshipDisbursement]),
+    TypeOrmModule.forFeature([
+      Scholarship,
+      ScholarshipApplication,
+      ScholarshipDisbursement,
+    ]),
   ],
   controllers: [ScholarshipController],
   providers: [ScholarshipService],

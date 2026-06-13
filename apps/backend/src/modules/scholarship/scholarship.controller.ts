@@ -11,7 +11,12 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { ScholarshipService } from './scholarship.service';
 import {
   Scholarship,
@@ -106,9 +111,7 @@ export class ScholarshipController {
   @ApiOperation({ summary: '删除奖学金项目' })
   @ApiResponse({ status: 204, description: '删除成功' })
   @Roles(UserRole.SYSTEM_ADMIN)
-  removeScholarship(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<void> {
+  removeScholarship(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.scholarshipService.removeScholarship(id);
   }
 
@@ -116,7 +119,11 @@ export class ScholarshipController {
 
   @Post('applications')
   @ApiOperation({ summary: '提交奖学金申请' })
-  @ApiResponse({ status: 201, description: '申请提交成功', type: ScholarshipApplication })
+  @ApiResponse({
+    status: 201,
+    description: '申请提交成功',
+    type: ScholarshipApplication,
+  })
   @Roles(UserRole.STUDENT, UserRole.PARENT, UserRole.TEACHER)
   createApplication(
     @Body() dto: CreateApplicationDto,
@@ -151,7 +158,11 @@ export class ScholarshipController {
 
   @Get('applications/:id')
   @ApiOperation({ summary: '获取申请详情' })
-  @ApiResponse({ status: 200, description: '获取成功', type: ScholarshipApplication })
+  @ApiResponse({
+    status: 200,
+    description: '获取成功',
+    type: ScholarshipApplication,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -166,7 +177,11 @@ export class ScholarshipController {
 
   @Put('applications/:id/review')
   @ApiOperation({ summary: '审核申请' })
-  @ApiResponse({ status: 200, description: '审核完成', type: ScholarshipApplication })
+  @ApiResponse({
+    status: 200,
+    description: '审核完成',
+    type: ScholarshipApplication,
+  })
   @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   reviewApplication(
     @Param('id', ParseUUIDPipe) id: string,
@@ -179,9 +194,7 @@ export class ScholarshipController {
   @ApiOperation({ summary: '删除申请' })
   @ApiResponse({ status: 204, description: '删除成功' })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
-  removeApplication(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<void> {
+  removeApplication(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.scholarshipService.removeApplication(id);
   }
 
@@ -189,10 +202,15 @@ export class ScholarshipController {
 
   @Post('disbursements')
   @ApiOperation({ summary: '创建发放记录' })
-  @ApiResponse({ status: 201, description: '创建成功', type: ScholarshipDisbursement })
+  @ApiResponse({
+    status: 201,
+    description: '创建成功',
+    type: ScholarshipDisbursement,
+  })
   @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createDisbursement(
-    @Body() body: {
+    @Body()
+    body: {
       applicationId: string;
       amount: number;
       bankAccount?: string;
@@ -230,7 +248,11 @@ export class ScholarshipController {
 
   @Put('disbursements/:id/success')
   @ApiOperation({ summary: '标记发放成功' })
-  @ApiResponse({ status: 200, description: '标记成功', type: ScholarshipDisbursement })
+  @ApiResponse({
+    status: 200,
+    description: '标记成功',
+    type: ScholarshipDisbursement,
+  })
   @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   markDisbursementSuccess(
     @Param('id', ParseUUIDPipe) id: string,
@@ -241,7 +263,11 @@ export class ScholarshipController {
 
   @Put('disbursements/:id/failed')
   @ApiOperation({ summary: '标记发放失败' })
-  @ApiResponse({ status: 200, description: '标记成功', type: ScholarshipDisbursement })
+  @ApiResponse({
+    status: 200,
+    description: '标记成功',
+    type: ScholarshipDisbursement,
+  })
   @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   markDisbursementFailed(
     @Param('id', ParseUUIDPipe) id: string,
@@ -255,14 +281,8 @@ export class ScholarshipController {
   @Get('stats/summary')
   @ApiOperation({ summary: '获取奖学金统计' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
-  getStats(
-    @Query('scholarshipId') scholarshipId?: string,
-  ) {
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  getStats(@Query('scholarshipId') scholarshipId?: string) {
     return this.scholarshipService.getStats(scholarshipId);
   }
 }

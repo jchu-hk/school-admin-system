@@ -47,65 +47,193 @@ export interface IntentClassificationResult {
 @Injectable()
 export class InquiryIntentService {
   // 意图关键词配置：(关键词列表, 基础置信度, 权重倍数)
-  private readonly intentKeywords: Record<IntentType, { keywords: string[]; weight: number }> = {
+  private readonly intentKeywords: Record<
+    IntentType,
+    { keywords: string[]; weight: number }
+  > = {
     [IntentType.ATTENDANCE]: {
       keywords: [
-        '出勤', '到校', '缺勤', '缺课', '旷课', '迟到', '早退',
-        '请假', '缺席', '上学', '放学', '考勤', '签到',
-        '没来', '没到', '什么时候到', '几点到', '几点放学',
-        'attending', 'attendance', 'absent', 'late', 'present',
+        '出勤',
+        '到校',
+        '缺勤',
+        '缺课',
+        '旷课',
+        '迟到',
+        '早退',
+        '请假',
+        '缺席',
+        '上学',
+        '放学',
+        '考勤',
+        '签到',
+        '没来',
+        '没到',
+        '什么时候到',
+        '几点到',
+        '几点放学',
+        'attending',
+        'attendance',
+        'absent',
+        'late',
+        'present',
       ],
       weight: 1.2,
     },
     [IntentType.TUITION]: {
       keywords: [
-        '学费', '缴费', '账单', '费用', '收费', '付款', '交费',
-        '退费', '退款', '奖学金', '资助', '减免费用', '优惠',
-        '收费', '价格', '多少钱', '如何支付', 'payment', 'fee',
-        'tuition', 'charge', 'invoice', 'refund', 'scholarship',
+        '学费',
+        '缴费',
+        '账单',
+        '费用',
+        '收费',
+        '付款',
+        '交费',
+        '退费',
+        '退款',
+        '奖学金',
+        '资助',
+        '减免费用',
+        '优惠',
+        '收费',
+        '价格',
+        '多少钱',
+        '如何支付',
+        'payment',
+        'fee',
+        'tuition',
+        'charge',
+        'invoice',
+        'refund',
+        'scholarship',
       ],
       weight: 1.2,
     },
     [IntentType.LEAVE]: {
       keywords: [
-        '请假', '病假', '事假', '离校', '休假', '休息',
-        '什么时候回来', '病了吗', '不舒服', 'leave', 'sick',
-        'absence', 'off', 'vacation', 'medical', 'doctor',
+        '请假',
+        '病假',
+        '事假',
+        '离校',
+        '休假',
+        '休息',
+        '什么时候回来',
+        '病了吗',
+        '不舒服',
+        'leave',
+        'sick',
+        'absence',
+        'off',
+        'vacation',
+        'medical',
+        'doctor',
       ],
       weight: 1.2,
     },
     [IntentType.DISCIPLINE]: {
       keywords: [
-        '纪律', '违规', '惩罚', '处分', '批评', '表扬', '奖励',
-        '打架', '骂人', '不听话', '调皮', '捣乱', '纪律问题',
-        'discipline', 'punishment', 'reward', 'behavior', 'conduct',
+        '纪律',
+        '违规',
+        '惩罚',
+        '处分',
+        '批评',
+        '表扬',
+        '奖励',
+        '打架',
+        '骂人',
+        '不听话',
+        '调皮',
+        '捣乱',
+        '纪律问题',
+        'discipline',
+        'punishment',
+        'reward',
+        'behavior',
+        'conduct',
       ],
       weight: 1.2,
     },
     [IntentType.HEALTH]: {
       keywords: [
-        '健康', '身体', '不舒服', '发烧', '生病', '医院', '医生',
-        '过敏', '食物', '午餐', '饮食', '肚子疼', '头疼',
-        '校医', '医务', '隔离', '疾病', 'health', 'sick', 'medical',
-        'allergy', 'pain', 'fever', 'hospital', 'clinic',
+        '健康',
+        '身体',
+        '不舒服',
+        '发烧',
+        '生病',
+        '医院',
+        '医生',
+        '过敏',
+        '食物',
+        '午餐',
+        '饮食',
+        '肚子疼',
+        '头疼',
+        '校医',
+        '医务',
+        '隔离',
+        '疾病',
+        'health',
+        'sick',
+        'medical',
+        'allergy',
+        'pain',
+        'fever',
+        'hospital',
+        'clinic',
       ],
       weight: 1.2,
     },
     [IntentType.ACADEMIC]: {
       keywords: [
-        '成绩', '分数', '考试', '作业', '学习', '课程', '老师',
-        '教学', '课本', '功课', '课堂', '测验', '报告', '评分',
-        'academic', 'grade', 'score', 'exam', 'homework', 'assignment',
-        'course', 'study', 'lesson', 'test',
+        '成绩',
+        '分数',
+        '考试',
+        '作业',
+        '学习',
+        '课程',
+        '老师',
+        '教学',
+        '课本',
+        '功课',
+        '课堂',
+        '测验',
+        '报告',
+        '评分',
+        'academic',
+        'grade',
+        'score',
+        'exam',
+        'homework',
+        'assignment',
+        'course',
+        'study',
+        'lesson',
+        'test',
       ],
       weight: 1.2,
     },
     [IntentType.SAFETY]: {
       keywords: [
-        '安全', '受伤', '霸凌', '欺凌', '危险', '事故', '紧急',
-        '投诉', '虐待', '安全问题', '受伤了', '被人打',
-        'safety', 'injury', 'bullying', 'danger', 'accident',
-        'emergency', 'complaint', 'abuse', 'hurt',
+        '安全',
+        '受伤',
+        '霸凌',
+        '欺凌',
+        '危险',
+        '事故',
+        '紧急',
+        '投诉',
+        '虐待',
+        '安全问题',
+        '受伤了',
+        '被人打',
+        'safety',
+        'injury',
+        'bullying',
+        'danger',
+        'accident',
+        'emergency',
+        'complaint',
+        'abuse',
+        'hurt',
       ],
       weight: 1.5, // 安全类意图权重更高
     },
@@ -203,7 +331,11 @@ export class InquiryIntentService {
           intent: intent as IntentType,
           confidence: Math.round(confidence * 100) / 100,
           matchedKeywords,
-          reasoning: this.buildReasoning(intent as IntentType, matchedKeywords, matchCount),
+          reasoning: this.buildReasoning(
+            intent as IntentType,
+            matchedKeywords,
+            matchCount,
+          ),
         });
       }
     }
@@ -235,7 +367,10 @@ export class InquiryIntentService {
     return mapping[intent] || 'other';
   }
 
-  private buildResult(allIntents: IntentMatch[], originalText: string): IntentClassificationResult {
+  private buildResult(
+    allIntents: IntentMatch[],
+    originalText: string,
+  ): IntentClassificationResult {
     // 按置信度降序排列
     allIntents.sort((a, b) => b.confidence - a.confidence);
 
@@ -264,11 +399,19 @@ export class InquiryIntentService {
   /**
    * 根据意图类型获取智能推荐回复
    */
-  private getSuggestions(primaryIntent: IntentType, allIntents: IntentMatch[]): string[] {
-    const baseSuggestions = this.replySuggestions[primaryIntent] || this.replySuggestions[IntentType.OTHER];
+  private getSuggestions(
+    primaryIntent: IntentType,
+    allIntents: IntentMatch[],
+  ): string[] {
+    const baseSuggestions =
+      this.replySuggestions[primaryIntent] ||
+      this.replySuggestions[IntentType.OTHER];
 
     // 如果安全意图且置信度高，增加紧急回复
-    if (primaryIntent === IntentType.SAFETY && allIntents[0]?.confidence >= 0.5) {
+    if (
+      primaryIntent === IntentType.SAFETY &&
+      allIntents[0]?.confidence >= 0.5
+    ) {
       return [
         '【紧急】我们非常重视安全问题。请立即说明具体情况，我们会立即介入处理。',
         '如情况紧急，请立即拨打学校安保电话或报警。',
@@ -279,7 +422,11 @@ export class InquiryIntentService {
     return baseSuggestions;
   }
 
-  private buildReasoning(intent: IntentType, keywords: string[], matchCount: number): string {
+  private buildReasoning(
+    intent: IntentType,
+    keywords: string[],
+    matchCount: number,
+  ): string {
     const intentNames: Record<IntentType, string> = {
       [IntentType.ATTENDANCE]: '出勤/考勤',
       [IntentType.TUITION]: '学费/费用',

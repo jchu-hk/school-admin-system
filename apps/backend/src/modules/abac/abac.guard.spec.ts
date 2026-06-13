@@ -5,14 +5,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AbacGuard, AbacResource, AbacAction, AbacSkip } from './abac.guard';
+import { AbacGuard } from './abac.guard';
 import { AbacService } from './abac.service';
 import { AbacInput } from './interfaces/abac.interfaces';
 
 describe('AbacGuard', () => {
   let guard: AbacGuard;
-  let reflector: Reflector;
-  let abacService: AbacService;
+  let _reflector: Reflector;
 
   // 模拟 AbacService
   const mockAbacService = {
@@ -29,8 +28,7 @@ describe('AbacGuard', () => {
     }).compile();
 
     guard = module.get<AbacGuard>(AbacGuard);
-    reflector = module.get<Reflector>(Reflector);
-    abacService = module.get<AbacService>(AbacService);
+    _reflector = module.get<Reflector>(Reflector);
   });
 
   afterEach(() => {

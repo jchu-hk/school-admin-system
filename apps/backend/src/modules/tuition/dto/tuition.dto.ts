@@ -1,4 +1,11 @@
-import { IsString, IsEnum, IsOptional, IsUUID, IsInt, IsNumber, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsOptional,
+  IsUUID,
+  IsNumber,
+  IsDateString,
+} from 'class-validator';
 import { TuitionStatus, PaymentMethod } from '../tuition.entity';
 
 export { TuitionStatus, PaymentMethod };

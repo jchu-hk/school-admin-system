@@ -144,7 +144,13 @@ export class ScholarshipApplication {
   @Column({ name: 'review_comment', type: 'text', nullable: true })
   reviewComment: string;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, name: 'approved_amount', nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    name: 'approved_amount',
+    nullable: true,
+  })
   approvedAmount: number;
 
   @Column({ name: 'created_by' })

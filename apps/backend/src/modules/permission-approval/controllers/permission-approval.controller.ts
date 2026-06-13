@@ -70,7 +70,10 @@ export class PermissionApprovalController {
 
   @Get(':id')
   @ApiOperation({ summary: '获取权限申请详情' })
-  async getRequestById(@Request() req: any, @Param('id', ParseUUIDPipe) id: string) {
+  async getRequestById(
+    @Request() req: any,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
     const user = req.user as any;
     return this.permissionApprovalService.getRequestById(id, user);
   }
@@ -112,7 +115,9 @@ export class PermissionApprovalController {
 
   @Post('expire-old')
   @Roles(UserRole.SYSTEM_ADMIN)
-  @ApiOperation({ summary: '过期处理：自动过期30天以上的待审批请求（管理员用）' })
+  @ApiOperation({
+    summary: '过期处理：自动过期30天以上的待审批请求（管理员用）',
+  })
   async expireOldRequests() {
     return this.permissionApprovalService.expireOldRequests();
   }

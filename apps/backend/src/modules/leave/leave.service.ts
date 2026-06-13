@@ -20,7 +20,10 @@ import {
   SetFollowUpDto,
 } from './dto/leave.dto';
 import { UserRole } from '../user/user.entity';
-import { NotificationService } from '../notification/notification.service';
+import {
+  NotificationService,
+  NotificationUrgency,
+} from '../notification/notification.service';
 
 @Injectable()
 export class LeaveService {
@@ -135,17 +138,19 @@ export class LeaveService {
       // 通知班主任
       // 在实际实现中，应通过 classId 查询该班级的班主任
       // 这里使用 classTeacherNotified 标记避免重复通知
-      await this.notificationService.sendNotification({
-        recipientIds: [], // TODO: 查询该班级的班主任 userId
-        title: '新请假申请待审批',
-        content: `学生 ${application.student?.name || application.studentId} 提交了请假申请（${application.totalDays}天），请及时审批。`,
-        type: 'system',
-        priority: 'normal',
-        relatedEntityType: 'leave_application',
-        relatedEntityId: application.id,
-        senderId: application.createdBy,
-        schoolId: application.schoolId,
-      });
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: [], // TODO: 查询该班级的班主任 userId
+          title: '新请假申请待审批',
+          content: `学生 ${application.student?.name || application.studentId} 提交了请假申请（${application.totalDays}天），请及时审批。`,
+          recipientType: 'staff',
+          urgency: NotificationUrgency.NORMAL,
+          relatedEntityType: 'leave_application',
+          relatedEntityId: application.id,
+        },
+        application.createdBy,
+        application.schoolId,
+      );
     } catch (error) {
       console.warn('[Leave] Failed to send submission notification:', error);
     }
@@ -661,17 +666,19 @@ export class LeaveService {
   ): Promise<void> {
     try {
       // TODO: 查询该学生的家长用户ID
-      await this.notificationService.sendNotification({
-        recipientIds: [], // 家长 userId
-        title: '请假申请已批准',
-        content: `您为学生 ${application.student?.name || application.studentId} 提交的请假申请已批准。`,
-        type: 'system',
-        priority: 'normal',
-        relatedEntityType: 'leave_application',
-        relatedEntityId: application.id,
-        senderId: application.createdBy,
-        schoolId: application.schoolId,
-      });
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: [], // 家长 userId
+          title: '请假申请已批准',
+          content: `您为学生 ${application.student?.name || application.studentId} 提交的请假申请已批准。`,
+          recipientType: 'parent',
+          urgency: NotificationUrgency.NORMAL,
+          relatedEntityType: 'leave_application',
+          relatedEntityId: application.id,
+        },
+        application.createdBy,
+        application.schoolId,
+      );
     } catch (error) {
       console.warn('[Leave] Failed to send approval notification:', error);
     }
@@ -685,17 +692,19 @@ export class LeaveService {
     reason: string,
   ): Promise<void> {
     try {
-      await this.notificationService.sendNotification({
-        recipientIds: [], // 家长 userId
-        title: '请假申请被拒绝',
-        content: `您为学生 ${application.student?.name || application.studentId} 提交的请假申请已被拒绝。原因：${reason}`,
-        type: 'system',
-        priority: 'normal',
-        relatedEntityType: 'leave_application',
-        relatedEntityId: application.id,
-        senderId: application.createdBy,
-        schoolId: application.schoolId,
-      });
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: [], // 家长 userId
+          title: '请假申请被拒绝',
+          content: `您为学生 ${application.student?.name || application.studentId} 提交的请假申请已被拒绝。原因：${reason}`,
+          recipientType: 'parent',
+          urgency: NotificationUrgency.NORMAL,
+          relatedEntityType: 'leave_application',
+          relatedEntityId: application.id,
+        },
+        application.createdBy,
+        application.schoolId,
+      );
     } catch (error) {
       console.warn('[Leave] Failed to send rejection notification:', error);
     }

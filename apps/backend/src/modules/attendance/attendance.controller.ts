@@ -11,7 +11,12 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { AttendanceService } from './attendance.service';
 import { Attendance, AttendanceStatus } from './attendance.entity';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
@@ -30,9 +35,16 @@ export class AttendanceController {
 
   @Post()
   @ApiOperation({ summary: '创建出勤记录' })
-  @ApiResponse({ status: 201, description: '出勤记录创建成功', type: Attendance })
+  @ApiResponse({
+    status: 201,
+    description: '出勤记录创建成功',
+    type: Attendance,
+  })
   @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
-  create(@Body() dto: CreateAttendanceDto, @Request() req): Promise<Attendance> {
+  create(
+    @Body() dto: CreateAttendanceDto,
+    @Request() req,
+  ): Promise<Attendance> {
     dto.createdBy = req.user.id;
     return this.attendanceService.create(dto);
   }
@@ -65,7 +77,11 @@ export class AttendanceController {
 
   @Get(':id')
   @ApiOperation({ summary: '获取出勤详情' })
-  @ApiResponse({ status: 200, description: '获取出勤详情成功', type: Attendance })
+  @ApiResponse({
+    status: 200,
+    description: '获取出勤详情成功',
+    type: Attendance,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -78,7 +94,11 @@ export class AttendanceController {
 
   @Put(':id')
   @ApiOperation({ summary: '更新出勤记录' })
-  @ApiResponse({ status: 200, description: '出勤记录更新成功', type: Attendance })
+  @ApiResponse({
+    status: 200,
+    description: '出勤记录更新成功',
+    type: Attendance,
+  })
   @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
   update(
     @Param('id', ParseUUIDPipe) id: string,

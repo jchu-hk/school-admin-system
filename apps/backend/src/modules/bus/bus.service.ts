@@ -10,7 +10,6 @@ import {
   BusSchedule,
   BusRecord,
   BusRecordStatus,
-  BusDirection,
 } from './bus.entity';
 import {
   CreateBusRouteDto,
@@ -56,7 +55,10 @@ export class BusService {
     return route;
   }
 
-  async updateRoute(id: string, updateDto: UpdateBusRouteDto): Promise<BusRoute> {
+  async updateRoute(
+    id: string,
+    updateDto: UpdateBusRouteDto,
+  ): Promise<BusRoute> {
     const route = await this.findRouteById(id);
     Object.assign(route, updateDto);
     return this.busRouteRepository.save(route);
@@ -74,7 +76,9 @@ export class BusService {
     const schedule = this.busScheduleRepository.create({
       ...createDto,
       effectiveFrom: new Date(createDto.effectiveFrom),
-      effectiveTo: createDto.effectiveTo ? new Date(createDto.effectiveTo) : null,
+      effectiveTo: createDto.effectiveTo
+        ? new Date(createDto.effectiveTo)
+        : null,
     });
     return this.busScheduleRepository.save(schedule);
   }
@@ -96,7 +100,10 @@ export class BusService {
     return schedule;
   }
 
-  async updateSchedule(id: string, updateDto: UpdateBusScheduleDto): Promise<BusSchedule> {
+  async updateSchedule(
+    id: string,
+    updateDto: UpdateBusScheduleDto,
+  ): Promise<BusSchedule> {
     const schedule = await this.findScheduleById(id);
     if (updateDto.effectiveFrom) {
       updateDto.effectiveFrom = new Date(updateDto.effectiveFrom) as any;
@@ -124,7 +131,9 @@ export class BusService {
     return this.busRecordRepository.save(record);
   }
 
-  async findAllRecords(query: BusRecordQueryDto): Promise<{ records: BusRecord[]; total: number }> {
+  async findAllRecords(
+    query: BusRecordQueryDto,
+  ): Promise<{ records: BusRecord[]; total: number }> {
     const page = query.page || 1;
     const limit = query.limit || 10;
 
@@ -135,22 +144,34 @@ export class BusService {
       .leftJoinAndSelect('record.route', 'route');
 
     if (query.studentId) {
-      queryBuilder.andWhere('record.studentId = :studentId', { studentId: query.studentId });
+      queryBuilder.andWhere('record.studentId = :studentId', {
+        studentId: query.studentId,
+      });
     }
     if (query.status) {
-      queryBuilder.andWhere('record.status = :status', { status: query.status });
+      queryBuilder.andWhere('record.status = :status', {
+        status: query.status,
+      });
     }
     if (query.direction) {
-      queryBuilder.andWhere('record.direction = :direction', { direction: query.direction });
+      queryBuilder.andWhere('record.direction = :direction', {
+        direction: query.direction,
+      });
     }
     if (query.startDate) {
-      queryBuilder.andWhere('record.rideDate >= :startDate', { startDate: query.startDate });
+      queryBuilder.andWhere('record.rideDate >= :startDate', {
+        startDate: query.startDate,
+      });
     }
     if (query.endDate) {
-      queryBuilder.andWhere('record.rideDate <= :endDate', { endDate: query.endDate });
+      queryBuilder.andWhere('record.rideDate <= :endDate', {
+        endDate: query.endDate,
+      });
     }
 
-    queryBuilder.orderBy('record.rideDate', 'DESC').addOrderBy('record.createdAt', 'DESC');
+    queryBuilder
+      .orderBy('record.rideDate', 'DESC')
+      .addOrderBy('record.createdAt', 'DESC');
 
     const [records, total] = await queryBuilder
       .skip((page - 1) * limit)
@@ -169,7 +190,10 @@ export class BusService {
     return record;
   }
 
-  async updateRecord(id: string, updateDto: UpdateBusRecordDto): Promise<BusRecord> {
+  async updateRecord(
+    id: string,
+    updateDto: UpdateBusRecordDto,
+  ): Promise<BusRecord> {
     const record = await this.findRecordById(id);
     Object.assign(record, updateDto);
     return this.busRecordRepository.save(record);
@@ -220,7 +244,10 @@ export class BusService {
 
   // ==================== Stats ====================
 
-  async getStats(startDate?: string, endDate?: string): Promise<{
+  async getStats(
+    startDate?: string,
+    endDate?: string,
+  ): Promise<{
     totalRecords: number;
     byStatus: Record<string, number>;
     byDirection: Record<string, number>;
@@ -247,11 +274,19 @@ export class BusService {
     });
 
     const boardedOrCompleted = records.filter(
-      (r) => r.status === BusRecordStatus.BOARDED || r.status === BusRecordStatus.COMPLETED,
+      (r) =>
+        r.status === BusRecordStatus.BOARDED ||
+        r.status === BusRecordStatus.COMPLETED,
     ).length;
-    const boardingRate = totalRecords > 0 ? (boardedOrCompleted / totalRecords) * 100 : 0;
+    const boardingRate =
+      totalRecords > 0 ? (boardedOrCompleted / totalRecords) * 100 : 0;
 
-    return { totalRecords, byStatus, byDirection, boardingRate: Math.round(boardingRate * 100) / 100 };
+    return {
+      totalRecords,
+      byStatus,
+      byDirection,
+      boardingRate: Math.round(boardingRate * 100) / 100,
+    };
   }
 
   async getStudentStats(
@@ -279,9 +314,13 @@ export class BusService {
 
     const totalRides = records.length;
     const boardedRides = records.filter(
-      (r) => r.status === BusRecordStatus.BOARDED || r.status === BusRecordStatus.COMPLETED,
+      (r) =>
+        r.status === BusRecordStatus.BOARDED ||
+        r.status === BusRecordStatus.COMPLETED,
     ).length;
-    const absentRides = records.filter((r) => r.status === BusRecordStatus.ABSENT).length;
+    const absentRides = records.filter(
+      (r) => r.status === BusRecordStatus.ABSENT,
+    ).length;
     const boardingRate = totalRides > 0 ? (boardedRides / totalRides) * 100 : 0;
 
     return {

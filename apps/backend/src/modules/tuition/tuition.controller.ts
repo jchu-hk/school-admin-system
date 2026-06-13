@@ -16,18 +16,19 @@ import {
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
-  ApiQuery,
 } from '@nestjs/swagger';
 import { TuitionService } from './tuition.service';
-import { TuitionStandard, TuitionPayment, TuitionArrears, TuitionStatus } from './tuition.entity';
+import {
+  TuitionStandard,
+  TuitionPayment,
+  TuitionStatus,
+} from './tuition.entity';
 import {
   CreateTuitionStandardDto,
   UpdateTuitionStandardDto,
   CreateTuitionPaymentDto,
   UpdateTuitionPaymentDto,
   PayTuitionDto,
-  TuitionPaymentQueryDto,
-  TuitionStandardQueryDto,
 } from './dto/tuition.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -46,11 +47,7 @@ export class TuitionController {
   @Get('standards')
   @ApiOperation({ summary: '获取学费标准列表' })
   @ApiResponse({ status: 200, description: '获取学费标准列表成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findAllStandards(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -69,36 +66,36 @@ export class TuitionController {
 
   @Get('standards/:id')
   @ApiOperation({ summary: '获取学费标准详情' })
-  @ApiResponse({ status: 200, description: '获取学费标准详情成功', type: TuitionStandard })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 200,
+    description: '获取学费标准详情成功',
+    type: TuitionStandard,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findOneStandard(@Param('id', ParseUUIDPipe) id: string) {
     return this.tuitionService.findStandardById(id);
   }
 
   @Post('standards')
   @ApiOperation({ summary: '创建学费标准' })
-  @ApiResponse({ status: 201, description: '创建学费标准成功', type: TuitionStandard })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 201,
+    description: '创建学费标准成功',
+    type: TuitionStandard,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createStandard(@Body() dto: CreateTuitionStandardDto) {
     return this.tuitionService.createStandard(dto);
   }
 
   @Patch('standards/:id')
   @ApiOperation({ summary: '更新学费标准' })
-  @ApiResponse({ status: 200, description: '更新学费标准成功', type: TuitionStandard })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 200,
+    description: '更新学费标准成功',
+    type: TuitionStandard,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updateStandard(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateTuitionStandardDto,
@@ -153,7 +150,11 @@ export class TuitionController {
 
   @Get('payments/:id')
   @ApiOperation({ summary: '获取缴费记录详情' })
-  @ApiResponse({ status: 200, description: '获取缴费记录详情成功', type: TuitionPayment })
+  @ApiResponse({
+    status: 200,
+    description: '获取缴费记录详情成功',
+    type: TuitionPayment,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -167,24 +168,24 @@ export class TuitionController {
 
   @Post('payments')
   @ApiOperation({ summary: '创建缴费记录' })
-  @ApiResponse({ status: 201, description: '创建缴费记录成功', type: TuitionPayment })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
-  createPayment(@Body() dto: CreateTuitionPaymentDto, @Request() req) {
+  @ApiResponse({
+    status: 201,
+    description: '创建缴费记录成功',
+    type: TuitionPayment,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  createPayment(@Body() dto: CreateTuitionPaymentDto, @Request() _req) {
     return this.tuitionService.createPayment(dto);
   }
 
   @Patch('payments/:id')
   @ApiOperation({ summary: '更新缴费记录' })
-  @ApiResponse({ status: 200, description: '更新缴费记录成功', type: TuitionPayment })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 200,
+    description: '更新缴费记录成功',
+    type: TuitionPayment,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updatePayment(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateTuitionPaymentDto,
@@ -196,11 +197,7 @@ export class TuitionController {
   @Post('payments/:id/pay')
   @ApiOperation({ summary: '缴费' })
   @ApiResponse({ status: 200, description: '缴费成功', type: TuitionPayment })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   payTuition(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: PayTuitionDto,
@@ -222,11 +219,7 @@ export class TuitionController {
   @Get('arrears')
   @ApiOperation({ summary: '获取欠费记录列表' })
   @ApiResponse({ status: 200, description: '获取欠费记录列表成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findAllArrears(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -244,11 +237,7 @@ export class TuitionController {
   @Get('stats')
   @ApiOperation({ summary: '获取学费统计' })
   @ApiResponse({ status: 200, description: '获取学费统计成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   getStats(@Query('schoolId') schoolId?: string) {
     return this.tuitionService.getTuitionStats(schoolId);
   }
