@@ -158,7 +158,7 @@ export class PermissionApprovalService {
 
   async getMyPendingApprovals(user: User) {
     // Get user roles
-    const userRoles = user.roles.map((r) => r.name);
+    const userRoleNames = user.roles.map((r) => r.name);
 
     const requests = await this.approvalRequestRepository
       .createQueryBuilder('request')
@@ -173,7 +173,7 @@ export class PermissionApprovalService {
       .andWhere('steps.status = :stepStatus', {
         stepStatus: ApprovalStepStatus.PENDING,
       })
-      .andWhere('steps.approverRole IN (:...roles)', { roles: userRoles })
+      .andWhere('steps.approverRole IN (:...roles)', { roles: userRoleNames })
       .getMany();
 
     return requests;
@@ -370,11 +370,11 @@ export class PermissionApprovalService {
     request: PermissionApprovalRequest,
     user: User,
   ): Promise<boolean> {
-    const userRoles = user.roles.map((r) => r.name);
+    const userRoleNames = user.roles.map((r) => r.name);
     return request.steps.some(
       (s) =>
         s.status === ApprovalStepStatus.PENDING &&
-        userRoles.includes(s.approverRole),
+        userRoleNames.includes(s.approverRole),
     );
   }
 
