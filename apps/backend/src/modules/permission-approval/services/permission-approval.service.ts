@@ -158,8 +158,8 @@ export class PermissionApprovalService {
   }
 
   async getMyPendingApprovals(_user: User) {
-    // Get user roles
-    const userRoleNames = _user.roles.map((r) => r.name);
+    // Get user roles - handle both cases where roles is a getter or undefined
+    const userRoleNames = _user.roles?.map((r) => r.name) || [_user.role];
 
     const requests = await this.approvalRequestRepository
       .createQueryBuilder('request')
@@ -224,22 +224,30 @@ export class PermissionApprovalService {
       await this.applyPermissionChange(request);
 
       // Notify requester
-      await this.notificationService.sendNotification({
-        recipientIds: [request.requesterId],
-        title: 'Permission request approved',
-        content: `Your permission change request for user ${request.targetUser.name} has been approved.`,
-        recipientType: 'system',
-        urgency: NotificationUrgency.HIGH,
-      }, undefined, undefined);
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: [request.requesterId],
+          title: 'Permission request approved',
+          content: `Your permission change request for user ${request.targetUser.name} has been approved.`,
+          recipientType: 'system',
+          urgency: NotificationUrgency.HIGH,
+        },
+        undefined,
+        undefined,
+      );
 
       // Notify target user
-      await this.notificationService.sendNotification({
-        recipientIds: [request.targetUserId],
-        title: 'Your permissions have been updated',
-        content: `Your permissions have been updated based on an approved request.`,
-        recipientType: 'system',
-        urgency: NotificationUrgency.HIGH,
-      }, undefined, undefined);
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: [request.targetUserId],
+          title: 'Your permissions have been updated',
+          content: `Your permissions have been updated based on an approved request.`,
+          recipientType: 'system',
+          urgency: NotificationUrgency.HIGH,
+        },
+        undefined,
+        undefined,
+      );
     } else {
       // Notify next approver
       await this.sendApprovalNotification(request);
@@ -302,13 +310,17 @@ export class PermissionApprovalService {
     await this.approvalRequestRepository.save(request);
 
     // Notify requester
-    await this.notificationService.sendNotification({
-      recipientIds: [request.requesterId],
-      title: 'Permission request rejected',
-      content: `Your permission change request for user ${request.targetUser.name} has been rejected. Reason: ${rejectDto.rejectionReason}`,
-      recipientType: 'system',
-      urgency: NotificationUrgency.HIGH,
-    }, undefined, undefined);
+    await this.notificationService.sendNotification(
+      {
+        recipientIds: [request.requesterId],
+        title: 'Permission request rejected',
+        content: `Your permission change request for user ${request.targetUser.name} has been rejected. Reason: ${rejectDto.rejectionReason}`,
+        recipientType: 'system',
+        urgency: NotificationUrgency.HIGH,
+      },
+      undefined,
+      undefined,
+    );
 
     // Log audit
     await this.auditService.log({
@@ -410,13 +422,20 @@ export class PermissionApprovalService {
       // Don't notify the requester if they happen to have the approver role
       if (approverId === request.requesterId) continue;
 
-      await this.notificationService.sendNotification({
-        recipientIds: [approverId],
-        title: 'New permission approval request',
-        content: `A new permission change request (Risk: ${request.riskLevel}) requires your approval.`,
-        recipientType: 'system',
-        urgency: request.riskLevel === 'high' ? NotificationUrgency.HIGH : NotificationUrgency.NORMAL,
-      }, undefined, undefined);
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: [approverId],
+          title: 'New permission approval request',
+          content: `A new permission change request (Risk: ${request.riskLevel}) requires your approval.`,
+          recipientType: 'system',
+          urgency:
+            request.riskLevel === 'high'
+              ? NotificationUrgency.HIGH
+              : NotificationUrgency.NORMAL,
+        },
+        undefined,
+        undefined,
+      );
     }
   }
 
@@ -467,13 +486,17 @@ export class PermissionApprovalService {
       await this.approvalRequestRepository.save(request);
 
       // Notify requester
-      await this.notificationService.sendNotification({
-        recipientIds: [request.requesterId],
-        title: 'Permission request expired',
-        content: `Your permission change request for user ${request.targetUser.name} has expired.`,
-        recipientType: 'system',
-        urgency: NotificationUrgency.NORMAL,
-      }, undefined, undefined);
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: [request.requesterId],
+          title: 'Permission request expired',
+          content: `Your permission change request for user ${request.targetUser.name} has expired.`,
+          recipientType: 'system',
+          urgency: NotificationUrgency.NORMAL,
+        },
+        undefined,
+        undefined,
+      );
     }
 
     return { expiredCount: requestsToExpire.length };
