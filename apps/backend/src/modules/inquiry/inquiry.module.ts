@@ -12,7 +12,12 @@ import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ParentInquiry, InquiryFaq, InquiryReply, QuickReplyTemplate]),
+    TypeOrmModule.forFeature([
+      ParentInquiry,
+      InquiryFaq,
+      InquiryReply,
+      QuickReplyTemplate,
+    ]),
     AuditModule,
     NotificationModule,
   ],

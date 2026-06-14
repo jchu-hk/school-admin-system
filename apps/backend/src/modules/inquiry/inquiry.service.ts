@@ -11,7 +11,7 @@ import {
 } from './inquiry.entity';
 import { InquiryReply, ReplyAuthorType } from './reply.entity';
 import { QuickReplyTemplate } from './template.entity';
-import { InquiryFaqService, FaqMatchResult } from './inquiry-faq.service';
+import { InquiryFaqService } from './inquiry-faq.service';
 import {
   CreateInquiryDto,
   UpdateInquiryDto,

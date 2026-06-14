@@ -4,25 +4,23 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
   Index,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 /** 提醒状态 */
 export enum ReminderStatus {
-  PENDING = 'pending',   // 待发送
-  SENT = 'sent',         // 已发送
+  PENDING = 'pending', // 待发送
+  SENT = 'sent', // 已发送
   CANCELLED = 'cancelled', // 已取消
 }
 
 /** 提醒类型 */
 export enum ReminderType {
-  LEAVE_APPROVAL = 'leave_approval',      // 请假审批通过提醒
-  LEAVE_START = 'leave_start',            // 请假开始提醒
-  LEAVE_END = 'leave_end',                // 请假结束提醒
-  LEAVE_CHECKIN = 'leave_checkin',         // 销假提醒
+  LEAVE_APPROVAL = 'leave_approval', // 请假审批通过提醒
+  LEAVE_START = 'leave_start', // 请假开始提醒
+  LEAVE_END = 'leave_end', // 请假结束提醒
+  LEAVE_CHECKIN = 'leave_checkin', // 销假提醒
 }
 
 @Entity('leave_reminders')

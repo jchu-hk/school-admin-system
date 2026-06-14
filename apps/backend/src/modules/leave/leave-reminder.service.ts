@@ -1,15 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThanOrEqual, In } from 'typeorm';
+import { Repository, LessThanOrEqual } from 'typeorm';
 import {
   LeaveReminder,
   ReminderStatus,
   ReminderType,
 } from './leave-reminder.entity';
-import {
-  LeaveApplication,
-  LeaveStatus,
-} from './leave.entity';
+import { LeaveApplication } from './leave.entity';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationUrgency } from '../notification/template.entity';
 
@@ -28,34 +25,34 @@ export class LeaveReminderService {
 
   /**
    * 请假审批通过后，创建提醒任务
-   * @param application 请假申请实体（已包含 relations）
+   * @param _application 请假申请实体（已包含 relations）
    * @param hoursBefore 提前多少小时提醒（默认24小时）
    */
   async createReminderOnApproval(
-    application: LeaveApplication,
+    _application: LeaveApplication,
     hoursBefore: number = DEFAULT_REMINDER_HOURS_BEFORE,
   ): Promise<LeaveReminder> {
     // 计算提醒时间：请假开始前 X 小时
-    const startTime = new Date(application.startDate).getTime();
+    const startTime = new Date(_application.startDate).getTime();
     const remindAt = new Date(startTime - hoursBefore * 60 * 60 * 1000);
 
     // 如果提醒时间已过，不创建（防止已过期的提醒）
     if (remindAt <= new Date()) {
       this.logger.warn(
-        `[LeaveReminder] 提醒时间已过，跳过创建: leaveId=${application.id}`,
+        `[LeaveReminder] 提醒时间已过，跳过创建: leaveId=${_application.id}`,
       );
       return null;
     }
 
-    // 获取家长用户ID（需要从 application.parentId 或通过 student.parentId 获取）
-    const recipientIds = await this.getParentRecipientIds(application);
+    // 获取家长用户ID（需要从 _application.parentId 或通过 student.parentId 获取）
+    const recipientIds = await this.getParentRecipientIds(_application);
 
     const reminder = this.reminderRepository.create({
-      leaveRequestId: application.id,
-      schoolId: application.schoolId,
+      leaveRequestId: _application.id,
+      schoolId: _application.schoolId,
       type: ReminderType.LEAVE_START,
-      title: `【请假提醒】${application.student?.name || '学生'}的请假即将开始`,
-      content: this.buildReminderContent(application),
+      title: `【请假提醒】${_application.student?.name || '学生'}的请假即将开始`,
+      content: this.buildReminderContent(_application),
       remindAt,
       status: ReminderStatus.PENDING,
       recipientIds: JSON.stringify(recipientIds),
@@ -63,7 +60,7 @@ export class LeaveReminderService {
 
     const saved = await this.reminderRepository.save(reminder);
     this.logger.log(
-      `[LeaveReminder] 创建请假开始提醒: leaveId=${application.id}, remindAt=${remindAt.toISOString()}`,
+      `[LeaveReminder] 创建请假开始提醒: leaveId=${_application.id}, remindAt=${remindAt.toISOString()}`,
     );
     return saved;
   }
@@ -71,18 +68,21 @@ export class LeaveReminderService {
   /**
    * 构建提醒内容
    */
-  private buildReminderContent(application: LeaveApplication): string {
-    const startDate = new Date(application.startDate).toLocaleDateString('zh-HK', {
+  private buildReminderContent(_application: LeaveApplication): string {
+    const startDate = new Date(_application.startDate).toLocaleDateString(
+      'zh-HK',
+      {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      },
+    );
+    const endDate = new Date(_application.endDate).toLocaleDateString('zh-HK', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     });
-    const endDate = new Date(application.endDate).toLocaleDateString('zh-HK', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-    const studentName = application.student?.name || application.studentId;
+    const studentName = _application.student?.name || application.studentId;
     const leaveTypeMap: Record<string, string> = {
       sick: '病假',
       personal: '事假',
@@ -90,13 +90,13 @@ export class LeaveReminderService {
       other: '其他',
     };
     const leaveTypeText =
-      leaveTypeMap[application.leaveType] || application.leaveType;
+      leaveTypeMap[_application.leaveType] || application.leaveType;
 
     return [
       `学生姓名：${studentName}`,
       `请假类型：${leaveTypeText}`,
-      `请假时间：${startDate} 至 ${endDate}（共${application.totalDays}天）`,
-      `请假原因：${application.reason || '未填写'}`,
+      `请假时间：${startDate} 至 ${endDate}（共${_application.totalDays}天）`,
+      `请假原因：${_application.reason || '未填写'}`,
       ``,
       `请提前做好准备，如有变化请及时联系学校。`,
     ].join('\n');
@@ -107,7 +107,7 @@ export class LeaveReminderService {
    * 实际应通过 student.parentId 查询，这里预留接口
    */
   private async getParentRecipientIds(
-    application: LeaveApplication,
+    _application: LeaveApplication,
   ): Promise<string[]> {
     // TODO: 实际应通过 studentId 查询该学生的家长 userId
     // 例如: SELECT user_id FROM student_parents WHERE student_id = ?
@@ -146,7 +146,7 @@ export class LeaveReminderService {
           content: reminder.content,
           recipientType: 'parent',
           urgency: NotificationUrgency.NORMAL,
-          relatedEntityType: 'leave_application',
+          relatedEntityType: 'leave__application',
           relatedEntityId: reminder.leaveRequestId,
         },
         undefined, // 发送者（系统通知）

@@ -9,9 +9,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { InquiryCategory } from './inquiry.entity';
 
 export enum FaqMatchType {
-  KEYWORD = 'keyword',     // 关键词匹配
-  CATEGORY = 'category',  // 类别匹配
-  INTENT = 'intent',       // 意图匹配
+  KEYWORD = 'keyword', // 关键词匹配
+  CATEGORY = 'category', // 类别匹配
+  INTENT = 'intent', // 意图匹配
 }
 
 @Entity('inquiry_faqs')
