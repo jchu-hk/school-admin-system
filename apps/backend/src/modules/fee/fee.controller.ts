@@ -12,7 +12,12 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { FeeService } from './fee.service';
 import { FeeType } from './fee-type.entity';
 import { FeeRecord } from './fee-record.entity';
@@ -49,18 +54,18 @@ export class FeeController {
   @Get('types')
   @ApiOperation({ summary: '获取费用类型列表' })
   @ApiResponse({ status: 200, description: '获取费用类型列表成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findAllFeeTypes(@Query() query: FeeTypeQueryDto) {
     return this.feeService.findAllFeeTypes(query);
   }
 
   @Get('types/:id')
   @ApiOperation({ summary: '获取费用类型详情' })
-  @ApiResponse({ status: 200, description: '获取费用类型详情成功', type: FeeType })
+  @ApiResponse({
+    status: 200,
+    description: '获取费用类型详情成功',
+    type: FeeType,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findOneFeeType(@Param('id', ParseUUIDPipe) id: string) {
     return this.feeService.findOneFeeType(id);
@@ -90,7 +95,11 @@ export class FeeController {
 
   @Post('records')
   @ApiOperation({ summary: '创建费用记录' })
-  @ApiResponse({ status: 201, description: '费用记录创建成功', type: FeeRecord })
+  @ApiResponse({
+    status: 201,
+    description: '费用记录创建成功',
+    type: FeeRecord,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createFeeRecord(@Body() createDto: CreateFeeRecordDto) {
     return this.feeService.createFeeRecord(createDto);
@@ -106,7 +115,11 @@ export class FeeController {
 
   @Get('records/:id')
   @ApiOperation({ summary: '获取费用记录详情' })
-  @ApiResponse({ status: 200, description: '获取费用记录详情成功', type: FeeRecord })
+  @ApiResponse({
+    status: 200,
+    description: '获取费用记录详情成功',
+    type: FeeRecord,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findOneFeeRecord(@Param('id', ParseUUIDPipe) id: string) {
     return this.feeService.findOneFeeRecord(id);
@@ -114,7 +127,11 @@ export class FeeController {
 
   @Put('records/:id')
   @ApiOperation({ summary: '更新费用记录' })
-  @ApiResponse({ status: 200, description: '费用记录更新成功', type: FeeRecord })
+  @ApiResponse({
+    status: 200,
+    description: '费用记录更新成功',
+    type: FeeRecord,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updateFeeRecord(
     @Param('id', ParseUUIDPipe) id: string,

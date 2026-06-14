@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Put,
-  Patch,
   Delete,
   Body,
   Param,
@@ -13,7 +12,12 @@ import {
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { TuitionService } from './tuition.service';
 import { TuitionStandard } from './tuition-standard.entity';
 import { TuitionPayment } from './tuition-payment.entity';
@@ -41,7 +45,11 @@ export class TuitionController {
 
   @Post('standards')
   @ApiOperation({ summary: '创建学费标准' })
-  @ApiResponse({ status: 201, description: '学费标准创建成功', type: TuitionStandard })
+  @ApiResponse({
+    status: 201,
+    description: '学费标准创建成功',
+    type: TuitionStandard,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createStandard(@Body() createDto: CreateTuitionStandardDto) {
     return this.tuitionService.createStandard(createDto);
@@ -50,18 +58,18 @@ export class TuitionController {
   @Get('standards')
   @ApiOperation({ summary: '获取学费标准列表' })
   @ApiResponse({ status: 200, description: '获取学费标准列表成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findAllStandards(@Query() query: TuitionStandardQueryDto) {
     return this.tuitionService.findAllStandards(query);
   }
 
   @Get('standards/:id')
   @ApiOperation({ summary: '获取学费标准详情' })
-  @ApiResponse({ status: 200, description: '获取学费标准详情成功', type: TuitionStandard })
+  @ApiResponse({
+    status: 200,
+    description: '获取学费标准详情成功',
+    type: TuitionStandard,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findOneStandard(@Param('id', ParseUUIDPipe) id: string) {
     return this.tuitionService.findOneStandard(id);
@@ -69,7 +77,11 @@ export class TuitionController {
 
   @Put('standards/:id')
   @ApiOperation({ summary: '更新学费标准' })
-  @ApiResponse({ status: 200, description: '学费标准更新成功', type: TuitionStandard })
+  @ApiResponse({
+    status: 200,
+    description: '学费标准更新成功',
+    type: TuitionStandard,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updateStandard(
     @Param('id', ParseUUIDPipe) id: string,
@@ -91,7 +103,11 @@ export class TuitionController {
 
   @Post('payments')
   @ApiOperation({ summary: '创建缴费记录' })
-  @ApiResponse({ status: 201, description: '缴费记录创建成功', type: TuitionPayment })
+  @ApiResponse({
+    status: 201,
+    description: '缴费记录创建成功',
+    type: TuitionPayment,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createPayment(@Body() createDto: CreateTuitionPaymentDto) {
     return this.tuitionService.createPayment(createDto);
@@ -107,7 +123,11 @@ export class TuitionController {
 
   @Get('payments/:id')
   @ApiOperation({ summary: '获取缴费记录详情' })
-  @ApiResponse({ status: 200, description: '获取缴费记录详情成功', type: TuitionPayment })
+  @ApiResponse({
+    status: 200,
+    description: '获取缴费记录详情成功',
+    type: TuitionPayment,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findOnePayment(@Param('id', ParseUUIDPipe) id: string) {
     return this.tuitionService.findOnePayment(id);
@@ -115,7 +135,11 @@ export class TuitionController {
 
   @Put('payments/:id')
   @ApiOperation({ summary: '更新缴费记录' })
-  @ApiResponse({ status: 200, description: '缴费记录更新成功', type: TuitionPayment })
+  @ApiResponse({
+    status: 200,
+    description: '缴费记录更新成功',
+    type: TuitionPayment,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updatePayment(
     @Param('id', ParseUUIDPipe) id: string,

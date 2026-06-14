@@ -40,9 +40,12 @@ export class FeeService {
     return this.feeTypeRepository.save(feeType);
   }
 
-  async findAllFeeTypes(
-    query: FeeTypeQueryDto,
-  ): Promise<{ data: FeeType[]; total: number; page: number; pageSize: number }> {
+  async findAllFeeTypes(query: FeeTypeQueryDto): Promise<{
+    data: FeeType[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
     const { page = 1, pageSize = 10, isActive, keyword } = query;
 
     const where: FindOptionsWhere<FeeType> = {};
@@ -102,15 +105,20 @@ export class FeeService {
     const record = this.feeRecordRepository.create({
       ...createDto,
       feeTypeName: createDto.feeTypeName || feeType.name,
-      paymentDate: createDto.paymentDate ? new Date(createDto.paymentDate) : null,
+      paymentDate: createDto.paymentDate
+        ? new Date(createDto.paymentDate)
+        : null,
     } as FeeRecord);
 
     return this.feeRecordRepository.save(record);
   }
 
-  async findAllFeeRecords(
-    query: FeeRecordQueryDto,
-  ): Promise<{ data: FeeRecord[]; total: number; page: number; pageSize: number }> {
+  async findAllFeeRecords(query: FeeRecordQueryDto): Promise<{
+    data: FeeRecord[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
     const { page = 1, pageSize = 10, grade, feeType, status, keyword } = query;
 
     const where: FindOptionsWhere<FeeRecord> = {};

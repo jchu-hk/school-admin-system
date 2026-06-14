@@ -4,7 +4,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindOptionsWhere, Not, IsNull } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 import { TuitionStandard } from './tuition-standard.entity';
 import { TuitionPayment } from './tuition-payment.entity';
 import {
@@ -48,10 +48,20 @@ export class TuitionService {
     return this.standardRepository.save(standard);
   }
 
-  async findAllStandards(
-    query: TuitionStandardQueryDto,
-  ): Promise<{ data: TuitionStandard[]; total: number; page: number; pageSize: number }> {
-    const { page = 1, pageSize = 10, schoolId, grade, academicYear, isActive } = query;
+  async findAllStandards(query: TuitionStandardQueryDto): Promise<{
+    data: TuitionStandard[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    const {
+      page = 1,
+      pageSize = 10,
+      schoolId,
+      grade,
+      academicYear,
+      isActive,
+    } = query;
 
     const where: FindOptionsWhere<TuitionStandard> = {};
 
@@ -106,10 +116,20 @@ export class TuitionService {
     return this.paymentRepository.save(payment);
   }
 
-  async findAllPayments(
-    query: TuitionPaymentQueryDto,
-  ): Promise<{ data: TuitionPayment[]; total: number; page: number; pageSize: number }> {
-    const { page = 1, pageSize = 10, grade, academicYear, status, keyword } = query;
+  async findAllPayments(query: TuitionPaymentQueryDto): Promise<{
+    data: TuitionPayment[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    const {
+      page = 1,
+      pageSize = 10,
+      grade,
+      academicYear,
+      status,
+      keyword,
+    } = query;
 
     const where: FindOptionsWhere<TuitionPayment> = {};
 

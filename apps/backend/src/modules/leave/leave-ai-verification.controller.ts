@@ -86,7 +86,10 @@ export class LeaveAiVerificationController {
 
     // 如果提供了leaveId，保存核验结果
     if (dto.leaveId) {
-      await this.aiVerificationService.saveVerificationResult(dto.leaveId, result);
+      await this.aiVerificationService.saveVerificationResult(
+        dto.leaveId,
+        result,
+      );
     }
 
     return result;
@@ -227,7 +230,10 @@ export class LeaveAiVerificationController {
 
       // 保存核验结果
       if (dto.leaveId) {
-        await this.aiVerificationService.saveVerificationResult(dto.leaveId, result);
+        await this.aiVerificationService.saveVerificationResult(
+          dto.leaveId,
+          result,
+        );
       }
     }
 

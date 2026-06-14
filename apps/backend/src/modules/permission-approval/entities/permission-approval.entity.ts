@@ -129,10 +129,7 @@ export class ApprovalStep {
   @Column({ name: 'step_order' })
   stepOrder: number;
 
-  @Column({
-    type: 'enum',
-    enum: ApprovalRole,
-  })
+  @Column({ name: 'approver_role' })
   approverRole: ApprovalRole;
 
   @Column({ name: 'approver_id', nullable: true })

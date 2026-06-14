@@ -192,7 +192,9 @@ export class LeaveAiVerificationService {
     leaveId: string,
     result: AiVerifyResponseDto,
   ): Promise<void> {
-    const verifyResultStr = result.verified ? 'VERIFIED' : 'MANUAL_REVIEW_REQUIRED';
+    const verifyResultStr = result.verified
+      ? 'VERIFIED'
+      : 'MANUAL_REVIEW_REQUIRED';
     await this.leaveRepository.update(leaveId, {
       aiVerifyResult: verifyResultStr,
       verifiedAt: new Date(),
@@ -294,11 +296,7 @@ export class LeaveAiVerificationService {
     if (type === LeaveType.PERSONAL && hasPersonalIndicator) {
       return { match: true, recognizedType: '事假' };
     }
-    if (
-      type === LeaveType.SICK &&
-      hasPersonalIndicator &&
-      !hasSickIndicator
-    ) {
+    if (type === LeaveType.SICK && hasPersonalIndicator && !hasSickIndicator) {
       return { match: false, recognizedType: '事假' };
     }
     if (

@@ -94,7 +94,7 @@ export class UserService {
     if (requester.role === UserRole.STUDENT) {
       return {
         ...user,
-          roles: user.roles,
+        roles: user.roles,
         hkId: user.hkId ? '****' : null,
         phone: user.phone ? '****' : null,
         whatsapp: user.whatsapp ? '****' : null,

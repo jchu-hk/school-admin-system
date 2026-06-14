@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RoleService, Role } from './services/role.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Role])],
+  imports: [forwardRef(() => TypeOrmModule.forFeature([Role]))],
   providers: [RoleService],
   exports: [RoleService],
 })

@@ -8,19 +8,26 @@ import {
 } from './entities/permission-approval.entity';
 import { AuditModule } from '../audit/audit.module';
 import { NotificationModule } from '../notification/notification.module';
-import { PermissionModule } from '../permission/permission.module';
-import { RoleModule } from '../role/role.module';
+import { PermissionService } from '../permission/permission.service';
+import { Permission } from '../permission/entities/permission.entity';
+import { RoleService } from '../role/role.service';
+import { Role } from '../role/entities/role.entity';
+import { User } from '../user/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PermissionApprovalRequest, ApprovalStep]),
     AuditModule,
     NotificationModule,
-    PermissionModule,
-    RoleModule,
+    TypeOrmModule.forFeature([
+      PermissionApprovalRequest,
+      ApprovalStep,
+      Permission,
+      Role,
+      User,
+    ]),
   ],
   controllers: [PermissionApprovalController],
-  providers: [PermissionApprovalService],
+  providers: [PermissionApprovalService, PermissionService, RoleService],
   exports: [PermissionApprovalService],
 })
 export class PermissionApprovalModule {}

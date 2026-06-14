@@ -147,9 +147,7 @@ describe('Inquiry → Notification System Integration', () => {
       const savedInquiry: ParentInquiry = {
         id: 'inquiry-002',
         inquiryNo: 'INQ-20260607-UVWX',
-        parentId: 'parent-002',
         category: InquiryCategory.COMPLAINT,
-        parentId: 'parent-002',
         priority: InquiryPriority.URGENT,
         subject: '投诉校车延误',
         content: '校车经常延误，影响孩子上学',

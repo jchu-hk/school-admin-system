@@ -2,7 +2,6 @@ import {
   IsString,
   IsOptional,
   IsNumber,
-  IsBoolean,
   IsEnum,
   IsDateString,
   Min,
@@ -66,7 +65,10 @@ export class CreateScholarshipDto {
   @Min(0)
   totalBudget?: number;
 
-  @ApiPropertyOptional({ description: '状态', enum: ['open', 'closed', 'pending', 'awarded'] })
+  @ApiPropertyOptional({
+    description: '状态',
+    enum: ['open', 'closed', 'pending', 'awarded'],
+  })
   @IsOptional()
   @IsEnum(['open', 'closed', 'pending', 'awarded'])
   status?: 'open' | 'closed' | 'pending' | 'awarded';
@@ -135,7 +137,10 @@ export class UpdateScholarshipDto {
   @Min(0)
   usedBudget?: number;
 
-  @ApiPropertyOptional({ description: '状态', enum: ['open', 'closed', 'pending', 'awarded'] })
+  @ApiPropertyOptional({
+    description: '状态',
+    enum: ['open', 'closed', 'pending', 'awarded'],
+  })
   @IsOptional()
   @IsEnum(['open', 'closed', 'pending', 'awarded'])
   status?: 'open' | 'closed' | 'pending' | 'awarded';

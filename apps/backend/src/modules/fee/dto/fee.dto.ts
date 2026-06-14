@@ -165,7 +165,10 @@ export class CreateFeeRecordDto {
   @IsDateString()
   paymentDate?: string;
 
-  @ApiPropertyOptional({ description: '缴费方式', enum: ['cash', 'bank_transfer', 'online', 'other'] })
+  @ApiPropertyOptional({
+    description: '缴费方式',
+    enum: ['cash', 'bank_transfer', 'online', 'other'],
+  })
   @IsOptional()
   @IsString()
   @MaxLength(50)
@@ -177,7 +180,10 @@ export class CreateFeeRecordDto {
   @MaxLength(50)
   receiptNumber?: string;
 
-  @ApiPropertyOptional({ description: '状态', enum: ['paid', 'pending', 'overdue'] })
+  @ApiPropertyOptional({
+    description: '状态',
+    enum: ['paid', 'pending', 'overdue'],
+  })
   @IsOptional()
   @IsEnum(['paid', 'pending', 'overdue'])
   status?: 'paid' | 'pending' | 'overdue';
@@ -231,7 +237,10 @@ export class UpdateFeeRecordDto {
   @MaxLength(50)
   receiptNumber?: string;
 
-  @ApiPropertyOptional({ description: '状态', enum: ['paid', 'pending', 'overdue'] })
+  @ApiPropertyOptional({
+    description: '状态',
+    enum: ['paid', 'pending', 'overdue'],
+  })
   @IsOptional()
   @IsEnum(['paid', 'pending', 'overdue'])
   status?: 'paid' | 'pending' | 'overdue';

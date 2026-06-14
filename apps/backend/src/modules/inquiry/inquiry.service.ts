@@ -97,12 +97,16 @@ export class InquiryService {
   ): Promise<void> {
     try {
       // 通知学校管理员/officer有新咨询
-      await this.notificationService.sendNotification({
-        recipientIds: [inquiry.assignedTo].filter(Boolean),
-        title: '📩 新家长查询通知',
-        content: `收到新的${inquiry.category}类查询，请及时处理。\n查询编号: ${inquiry.inquiryNo}`,
-        recipientType: 'system',
-      }, undefined, undefined);
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: [inquiry.assignedTo].filter(Boolean),
+          title: '📩 新家长查询通知',
+          content: `收到新的${inquiry.category}类查询，请及时处理。\n查询编号: ${inquiry.inquiryNo}`,
+          recipientType: 'system',
+        },
+        undefined,
+        undefined,
+      );
     } catch (error) {
       console.warn('[Inquiry] Failed to send submission notification:', error);
     }
@@ -324,12 +328,16 @@ export class InquiryService {
     inquiry: ParentInquiry,
   ): Promise<void> {
     try {
-      await this.notificationService.sendNotification({
-        recipientIds: [inquiry.parentId],
-        title: '您的查询已有新回复',
-        content: `您关于"${inquiry.subject || '查询'}"的查询已收到回复，请查看。`,
-        recipientType: 'system',
-      }, undefined, undefined);
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: [inquiry.parentId],
+          title: '您的查询已有新回复',
+          content: `您关于"${inquiry.subject || '查询'}"的查询已收到回复，请查看。`,
+          recipientType: 'system',
+        },
+        undefined,
+        undefined,
+      );
     } catch (error) {
       console.warn('[Inquiry] Failed to send reply notification:', error);
     }

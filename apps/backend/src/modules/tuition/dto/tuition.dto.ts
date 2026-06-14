@@ -179,7 +179,10 @@ export class CreateTuitionPaymentDto {
   @IsDateString()
   paymentDate?: string;
 
-  @ApiPropertyOptional({ description: '缴费方式', enum: ['cash', 'bank_transfer', 'online', 'other'] })
+  @ApiPropertyOptional({
+    description: '缴费方式',
+    enum: ['cash', 'bank_transfer', 'online', 'other'],
+  })
   @IsOptional()
   @IsString()
   @MaxLength(50)
@@ -228,7 +231,10 @@ export class UpdateTuitionPaymentDto {
   @MaxLength(50)
   paymentMethod?: string;
 
-  @ApiPropertyOptional({ description: '状态', enum: ['pending', 'paid', 'partial', 'overdue'] })
+  @ApiPropertyOptional({
+    description: '状态',
+    enum: ['pending', 'paid', 'partial', 'overdue'],
+  })
   @IsOptional()
   @IsEnum(['pending', 'paid', 'partial', 'overdue'])
   status?: 'pending' | 'paid' | 'partial' | 'overdue';

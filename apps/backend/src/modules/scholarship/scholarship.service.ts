@@ -47,9 +47,12 @@ export class ScholarshipService {
     return this.scholarshipRepository.save(scholarship);
   }
 
-  async findAll(
-    query: ScholarshipQueryDto,
-  ): Promise<{ data: Scholarship[]; total: number; page: number; pageSize: number }> {
+  async findAll(query: ScholarshipQueryDto): Promise<{
+    data: Scholarship[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
     const { page = 1, pageSize = 10, status, academicYear, keyword } = query;
 
     const where: FindOptionsWhere<Scholarship> = {};
@@ -83,7 +86,10 @@ export class ScholarshipService {
     return scholarship;
   }
 
-  async update(id: string, updateDto: UpdateScholarshipDto): Promise<Scholarship> {
+  async update(
+    id: string,
+    updateDto: UpdateScholarshipDto,
+  ): Promise<Scholarship> {
     const scholarship = await this.findOne(id);
 
     if (updateDto.code && updateDto.code !== scholarship.code) {
@@ -109,7 +115,10 @@ export class ScholarshipService {
 
   // ============ Scholarship Application Methods ============
 
-  async apply(scholarshipId: string, applyDto: ApplyScholarshipDto): Promise<ScholarshipApplication> {
+  async apply(
+    scholarshipId: string,
+    applyDto: ApplyScholarshipDto,
+  ): Promise<ScholarshipApplication> {
     const scholarship = await this.findOne(scholarshipId);
 
     if (scholarship.status !== 'open') {
@@ -139,9 +148,12 @@ export class ScholarshipService {
     return this.applicationRepository.save(application);
   }
 
-  async findAllApplications(
-    query: ScholarshipApplicationQueryDto,
-  ): Promise<{ data: ScholarshipApplication[]; total: number; page: number; pageSize: number }> {
+  async findAllApplications(query: ScholarshipApplicationQueryDto): Promise<{
+    data: ScholarshipApplication[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
     const { page = 1, pageSize = 10, status, scholarshipId, keyword } = query;
 
     const where: FindOptionsWhere<ScholarshipApplication> = {};
@@ -186,7 +198,10 @@ export class ScholarshipService {
   ): Promise<ScholarshipApplication> {
     const application = await this.findOneApplication(id);
 
-    if (application.status !== 'pending' && application.status !== 'reviewing') {
+    if (
+      application.status !== 'pending' &&
+      application.status !== 'reviewing'
+    ) {
       throw new BadRequestException('该申请已审核，无法重复审核');
     }
 
@@ -202,7 +217,8 @@ export class ScholarshipService {
 
       // Update scholarship used budget
       const scholarship = await this.findOne(application.scholarshipId);
-      scholarship.usedBudget = Number(scholarship.usedBudget) + Number(reviewDto.awardedAmount);
+      scholarship.usedBudget =
+        Number(scholarship.usedBudget) + Number(reviewDto.awardedAmount);
       await this.scholarshipRepository.save(scholarship);
     }
 
