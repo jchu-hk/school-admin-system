@@ -1,0 +1,250 @@
+name: QA and Checker Workflow
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, review_requested, closed]
+  issues:
+    types: [labeled]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  # ============================================
+  # 1. PR创建时 - 自动检查和通知
+  # ============================================
+  pr-opened:
+    if: github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检查PR描述
+        run: |
+          echo "新PR: #${{ github.event.number }}"
+          echo "分支: ${{ github.event.pull_request.head.ref }}"
+          echo "请DEV确保:"
+          echo "  1. 代码已自测"
+          echo "  2. 添加测试"
+          echo "  3. 更新文档"
+          echo ""
+          echo "@jchu-hk 请分配QA测试"
+
+  # ============================================
+  # 2. PR标记为ready_for_review - 触发QA
+  # ============================================
+  trigger-qa:
+    if: github.event.action == 'ready_for_review'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 添加ready-for-review标签
+        run: |
+          gh pr edit ${{ github.event.number }} --add-label ready-for-review
+
+      - name: 通知QA测试
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            
+            // 查找相关Issue
+            const prTitle = pr.title;
+            const prBody = pr.body || '';
+            
+            // 通知
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## 🔔 QA验收请求
+
+### PR信息
+- **#${pr.number}**: ${pr.title}
+- **分支**: ${pr.head.ref}
+- **状态**: 待QA测试
+
+### QA检查清单
+- [ ] 功能测试
+- [ ] 集成测试
+- [ ] 回归测试
+- [ ] 文档更新
+
+### @jchu-hk (QA)
+请开始验收测试，测试完成后添加 passed/failed 标签。
+
+---
+*自动消息*`
+            });
+
+  # ============================================
+  # 3. PR合并后 - 触发CHECKER最终确认
+  # ============================================
+  post-merge:
+    if: github.event.action == 'closed' && github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    steps:
+      - name: 更新Issue状态
+        run: |
+          echo "PR #${{ github.event.number }} 已合并"
+          
+          # 提取Issue编号
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          echo "检查相关Issue..."
+
+      - name: 添加done标签
+        run: |
+          # 找到关联的Issue并更新
+          gh issue list --repo ${{ github.repository }} --search "closed:no" --limit 20 --json number,title | \
+            jq -r '.[] | "- #\(.number): \(.title)"' || echo "无相关Issue"
+
+  # ============================================
+  # 4. CHECKER审查触发 (手动或标签变更)
+  # ============================================
+  trigger-checker:
+    if: contains(github.event.pull_request.labels.*.name, 'ready-for-review') || 
+        (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'ready-for-review'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: 通知CHECKER审查
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue || context.payload.pull_request;
+            const isPR = !!context.payload.pull_request;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## 🔍 CHECKER审查请求
+
+### ${isPR ? 'PR' : 'Issue'}信息
+- **#${issue.number}**: ${issue.title}
+- **状态**: 待CHECKER审批
+
+### CHECKER审查清单
+**代码审查:**
+- [ ] 代码规范符合
+- [ ] 无安全漏洞
+- [ ] 无明显性能问题
+- [ ] 测试覆盖充分
+
+**审批结果:**
+- [ ] APPROVED - 添加 approved 标签
+- [ ] REQUEST_CHANGES - 添加 changes-requested 标签
+
+---
+*自动消息*`
+            });
+
+  # ============================================
+  # 5. APPROVED标签添加 - 自动合并准备
+  # ============================================
+  auto-merge-ready:
+    if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'approved')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检查是否可合并
+        run: |
+          ISSUE_NUM=${{ github.event.issue.number }}
+          echo "Issue #$ISSUE_NUM 已APPROVED"
+          
+          # 查找关联的PR
+          echo "检查关联PR..."
+          
+      - name: 通知PM
+        run: |
+          echo "所有审批通过，请PM确认合并"
+
+  # ============================================
+  # 6. QA测试通过 - 触发CHECKER
+  # ============================================
+  qa-passed:
+    if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'passed')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 通知CHECKER审查
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## ✅ QA测试已通过
+
+### 测试结果
+- **Issue #${issue.number}**: ${issue.title}
+- **状态**: QA验收通过
+
+### CHECKER审批
+请进行代码审查，审查完成后:
+- APPROVED → 添加 approved 标签
+- REQUEST_CHANGES → 添加 changes-requested 标签并说明原因
+
+---
+*自动消息*`
+            });
+
+  # ============================================
+  # 7. REQUEST_CHANGES标签 - 返回DEV
+  # ============================================
+  changes-requested:
+    if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'changes-requested')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 通知DEV修改
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## 🔴 需要修改
+
+### Issue #${issue.number}: ${issue.title}
+
+### 需要修改内容
+请查看上方CHECKER的审查意见，完成修改后重新提交。
+
+### 下一步
+1. 修复问题
+2. 提交更新
+3. 重新添加 ready-for-review 标签
+
+---
+*自动消息*`
+            });
+
+  # ============================================
+  # 8. blocked标签 - 通知PM
+  # ============================================
+  blocked:
+    if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'blocked')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 通知PM阻塞
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## ⚠️ Issue被阻塞
+
+### Issue #${issue.number}: ${issue.title}
+### 阻塞原因
+请查看Issue描述中的阻塞原因。
+
+### @jchu-hk (PM)
+请协调解决阻塞问题。
+
+---
+*自动消息*`
+            });
