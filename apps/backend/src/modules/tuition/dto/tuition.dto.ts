@@ -1,169 +1,277 @@
 import {
   IsString,
-  IsEnum,
   IsOptional,
-  IsUUID,
   IsNumber,
+  IsEnum,
+  IsBoolean,
   IsDateString,
+  Min,
+  Max,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
-import { TuitionStatus, PaymentMethod } from '../tuition.entity';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
-export { TuitionStatus, PaymentMethod };
+// ============ Tuition Standard DTOs ============
 
 export class CreateTuitionStandardDto {
-  @IsString()
-  schoolId: string;
-
-  @IsString()
+  @ApiPropertyOptional({ description: '学校ID' })
   @IsOptional()
-  gradeId?: string;
-
   @IsString()
-  title: string;
+  schoolId?: string;
 
+  @ApiProperty({ description: '年级', example: '中四' })
+  @IsString()
+  @MinLength(1)
+  @MaxLength(50)
+  grade: string;
+
+  @ApiProperty({ description: '学年', example: '2025-2026' })
+  @IsString()
+  @MinLength(1)
+  @MaxLength(20)
+  academicYear: string;
+
+  @ApiProperty({ description: '学费金额', example: 50000 })
   @IsNumber()
+  @Min(0)
   amount: number;
 
-  @IsString()
-  period: string;
-
-  @IsString()
+  @ApiPropertyOptional({ description: '货币', default: 'HKD' })
   @IsOptional()
-  description?: string;
+  @IsString()
+  @MaxLength(10)
+  currency?: string;
 
+  @ApiPropertyOptional({ description: '缴费截止日期' })
+  @IsOptional()
   @IsDateString()
+  paymentDeadline?: string;
+
+  @ApiPropertyOptional({ description: '是否启用', default: true })
   @IsOptional()
-  dueDate?: string;
+  @IsBoolean()
+  isActive?: boolean;
 }
 
 export class UpdateTuitionStandardDto {
+  @ApiPropertyOptional({ description: '年级' })
+  @IsOptional()
   @IsString()
-  @IsOptional()
-  title?: string;
+  @MaxLength(50)
+  grade?: string;
 
-  @IsNumber()
+  @ApiPropertyOptional({ description: '学年' })
   @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  academicYear?: string;
+
+  @ApiPropertyOptional({ description: '学费金额' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
   amount?: number;
 
+  @ApiPropertyOptional({ description: '货币' })
+  @IsOptional()
   @IsString()
-  @IsOptional()
-  period?: string;
+  @MaxLength(10)
+  currency?: string;
 
-  @IsString()
+  @ApiPropertyOptional({ description: '缴费截止日期' })
   @IsOptional()
-  description?: string;
-
   @IsDateString()
-  @IsOptional()
-  dueDate?: string;
-
-  @IsOptional()
-  isActive?: boolean;
-}
-
-export class CreateTuitionPaymentDto {
-  @IsUUID()
-  tuitionStandardId: string;
-
-  @IsUUID()
-  studentId: string;
-
-  @IsUUID()
-  parentId: string;
-
-  @IsNumber()
-  totalAmount: number;
-
-  @IsDateString()
-  @IsOptional()
   paymentDeadline?: string;
 
-  @IsString()
+  @ApiPropertyOptional({ description: '是否启用' })
   @IsOptional()
-  remark?: string;
-}
-
-export class UpdateTuitionPaymentDto {
-  @IsEnum(TuitionStatus)
-  @IsOptional()
-  status?: TuitionStatus;
-
-  @IsNumber()
-  @IsOptional()
-  paidAmount?: number;
-
-  @IsEnum(PaymentMethod)
-  @IsOptional()
-  paymentMethod?: PaymentMethod;
-
-  @IsString()
-  @IsOptional()
-  transactionNo?: string;
-
-  @IsNumber()
-  @IsOptional()
-  discountAmount?: number;
-
-  @IsString()
-  @IsOptional()
-  remark?: string;
-}
-
-export class PayTuitionDto {
-  @IsNumber()
-  amount: number;
-
-  @IsEnum(PaymentMethod)
-  paymentMethod: PaymentMethod;
-
-  @IsString()
-  @IsOptional()
-  transactionNo?: string;
-
-  @IsString()
-  @IsOptional()
-  remark?: string;
-}
-
-export class TuitionPaymentQueryDto {
-  @IsOptional()
-  page?: number;
-
-  @IsOptional()
-  limit?: number;
-
-  @IsUUID()
-  @IsOptional()
-  studentId?: string;
-
-  @IsUUID()
-  @IsOptional()
-  parentId?: string;
-
-  @IsEnum(TuitionStatus)
-  @IsOptional()
-  status?: TuitionStatus;
-
-  @IsString()
-  @IsOptional()
-  schoolId?: string;
+  @IsBoolean()
+  isActive?: boolean;
 }
 
 export class TuitionStandardQueryDto {
+  @ApiPropertyOptional({ description: '页码', default: 1 })
   @IsOptional()
-  page?: number;
+  @Type(() => Number)
+  @IsNumber()
+  @Min(1)
+  page?: number = 1;
 
+  @ApiPropertyOptional({ description: '每页数量', default: 10 })
   @IsOptional()
-  limit?: number;
+  @Type(() => Number)
+  @IsNumber()
+  @Min(1)
+  @Max(100)
+  pageSize?: number = 10;
 
-  @IsUUID()
+  @ApiPropertyOptional({ description: '学校ID' })
   @IsOptional()
+  @IsString()
   schoolId?: string;
 
-  @IsUUID()
+  @ApiPropertyOptional({ description: '年级' })
   @IsOptional()
-  gradeId?: string;
+  @IsString()
+  grade?: string;
 
+  @ApiPropertyOptional({ description: '学年' })
   @IsOptional()
+  @IsString()
+  academicYear?: string;
+
+  @ApiPropertyOptional({ description: '是否启用' })
+  @IsOptional()
+  @IsBoolean()
   isActive?: boolean;
+}
+
+// ============ Tuition Payment DTOs ============
+
+export class CreateTuitionPaymentDto {
+  @ApiProperty({ description: '学费标准ID' })
+  @IsString()
+  standardId: string;
+
+  @ApiProperty({ description: '学生ID' })
+  @IsString()
+  studentId: string;
+
+  @ApiProperty({ description: '学生姓名', example: '张三' })
+  @IsString()
+  @MinLength(1)
+  @MaxLength(100)
+  studentName: string;
+
+  @ApiProperty({ description: '年级', example: '中四' })
+  @IsString()
+  @MinLength(1)
+  @MaxLength(50)
+  grade: string;
+
+  @ApiPropertyOptional({ description: '班级' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  className?: string;
+
+  @ApiProperty({ description: '学年', example: '2025-2026' })
+  @IsString()
+  @MinLength(1)
+  @MaxLength(20)
+  academicYear: string;
+
+  @ApiProperty({ description: '应缴金额', example: 50000 })
+  @IsNumber()
+  @Min(0)
+  amount: number;
+
+  @ApiPropertyOptional({ description: '实缴金额' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  paidAmount?: number;
+
+  @ApiPropertyOptional({ description: '缴费日期' })
+  @IsOptional()
+  @IsDateString()
+  paymentDate?: string;
+
+  @ApiPropertyOptional({ description: '缴费方式', enum: ['cash', 'bank_transfer', 'online', 'other'] })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  paymentMethod?: string;
+}
+
+export class UpdateTuitionPaymentDto {
+  @ApiPropertyOptional({ description: '学生姓名' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  studentName?: string;
+
+  @ApiPropertyOptional({ description: '年级' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  grade?: string;
+
+  @ApiPropertyOptional({ description: '班级' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  className?: string;
+
+  @ApiPropertyOptional({ description: '应缴金额' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  amount?: number;
+
+  @ApiPropertyOptional({ description: '实缴金额' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  paidAmount?: number;
+
+  @ApiPropertyOptional({ description: '缴费日期' })
+  @IsOptional()
+  @IsDateString()
+  paymentDate?: string;
+
+  @ApiPropertyOptional({ description: '缴费方式' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  paymentMethod?: string;
+
+  @ApiPropertyOptional({ description: '状态', enum: ['pending', 'paid', 'partial', 'overdue'] })
+  @IsOptional()
+  @IsEnum(['pending', 'paid', 'partial', 'overdue'])
+  status?: 'pending' | 'paid' | 'partial' | 'overdue';
+}
+
+export class TuitionPaymentQueryDto {
+  @ApiPropertyOptional({ description: '页码', default: 1 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(1)
+  page?: number = 1;
+
+  @ApiPropertyOptional({ description: '每页数量', default: 10 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(1)
+  @Max(100)
+  pageSize?: number = 10;
+
+  @ApiPropertyOptional({ description: '学校ID' })
+  @IsOptional()
+  @IsString()
+  schoolId?: string;
+
+  @ApiPropertyOptional({ description: '年级' })
+  @IsOptional()
+  @IsString()
+  grade?: string;
+
+  @ApiPropertyOptional({ description: '学年' })
+  @IsOptional()
+  @IsString()
+  academicYear?: string;
+
+  @ApiPropertyOptional({ description: '状态' })
+  @IsOptional()
+  @IsEnum(['pending', 'paid', 'partial', 'overdue'])
+  status?: 'pending' | 'paid' | 'partial' | 'overdue';
+
+  @ApiPropertyOptional({ description: '搜索关键词（学生姓名）' })
+  @IsOptional()
+  @IsString()
+  keyword?: string;
 }

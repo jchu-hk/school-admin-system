@@ -9,9 +9,15 @@ import { InquiryModule } from './modules/inquiry/inquiry.module';
 import { LeaveModule } from './modules/leave/leave.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { AbacModule } from './modules/abac/abac.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { PermissionModule } from './modules/permission/permission.module';
+import { RoleModule } from './modules/role/role.module';
 import { PermissionApprovalModule } from './modules/permission-approval/permission-approval.module';
 import { CourseModule } from './modules/course/course.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { TuitionModule } from './modules/tuition/tuition.module';
+import { FeeModule } from './modules/fee/fee.module';
+import { ScholarshipModule } from './modules/scholarship/scholarship.module';
 
 @Module({
   imports: [
@@ -28,7 +34,7 @@ import { SettingsModule } from './modules/settings/settings.module';
         password: configService.get('DB_PASSWORD') || 'postgres',
         database: configService.get('DB_NAME') || 'school_admin',
         entities: [User],
-        synchronize: configService.get('NODE_ENV') !== 'production',
+        synchronize: false,
         autoLoadEntities: true,
       }),
       inject: [ConfigService],
@@ -40,9 +46,15 @@ import { SettingsModule } from './modules/settings/settings.module';
     LeaveModule,
     NotificationModule,
     AbacModule,
+    AuthModule,
+    PermissionModule,
+    RoleModule,
     PermissionApprovalModule,
     CourseModule,
     SettingsModule,
+    TuitionModule,
+    FeeModule,
+    ScholarshipModule,
   ],
   controllers: [],
   providers: [],

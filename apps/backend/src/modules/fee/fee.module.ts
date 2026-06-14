@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FeeType } from './fee-type.entity';
+import { FeeRecord } from './fee-record.entity';
 import { FeeController } from './fee.controller';
 import { FeeService } from './fee.service';
-import { FeeItem, FeeCollection, FeeReduction } from './fee.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FeeItem, FeeCollection, FeeReduction])],
+  imports: [TypeOrmModule.forFeature([FeeType, FeeRecord])],
   controllers: [FeeController],
   providers: [FeeService],
   exports: [FeeService],

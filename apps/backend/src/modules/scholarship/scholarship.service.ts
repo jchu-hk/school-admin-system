@@ -1,291 +1,211 @@
 import {
   Injectable,
-  BadRequestException,
   NotFoundException,
+  ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like, FindOptionsWhere } from 'typeorm';
+import { Scholarship } from './scholarship.entity';
+import { ScholarshipApplication } from './scholarship-application.entity';
 import {
-  Scholarship,
-  ScholarshipApplication,
-  ScholarshipDisbursement,
-  ApplicationStatus,
-  DisbursementStatus,
-  ScholarshipStatus,
-} from './scholarship.entity';
-import { CreateScholarshipDto } from './dto/create-scholarship.dto';
-import { UpdateScholarshipDto } from './dto/update-scholarship.dto';
-import { CreateApplicationDto } from './dto/create-application.dto';
-import { ReviewApplicationDto } from './dto/review-application.dto';
+  CreateScholarshipDto,
+  UpdateScholarshipDto,
+  ScholarshipQueryDto,
+  ApplyScholarshipDto,
+  ReviewScholarshipApplicationDto,
+  ScholarshipApplicationQueryDto,
+} from './dto/scholarship.dto';
 
 @Injectable()
 export class ScholarshipService {
   constructor(
     @InjectRepository(Scholarship)
-    private scholarshipRepo: Repository<Scholarship>,
+    private readonly scholarshipRepository: Repository<Scholarship>,
     @InjectRepository(ScholarshipApplication)
-    private applicationRepo: Repository<ScholarshipApplication>,
-    @InjectRepository(ScholarshipDisbursement)
-    private disbursementRepo: Repository<ScholarshipDisbursement>,
+    private readonly applicationRepository: Repository<ScholarshipApplication>,
   ) {}
 
-  // ====== Scholarship CRUD ======
+  // ============ Scholarship Methods ============
 
-  async createScholarship(dto: CreateScholarshipDto): Promise<Scholarship> {
-    const scholarship = this.scholarshipRepo.create({
-      ...dto,
-      applicationStartDate: new Date(dto.applicationStartDate),
-      applicationEndDate: new Date(dto.applicationEndDate),
-      disbursementStartDate: dto.disbursementStartDate
-        ? new Date(dto.disbursementStartDate)
-        : null,
-      disbursementEndDate: dto.disbursementEndDate
-        ? new Date(dto.disbursementEndDate)
-        : null,
+  async create(createDto: CreateScholarshipDto): Promise<Scholarship> {
+    const existing = await this.scholarshipRepository.findOne({
+      where: { code: createDto.code },
     });
-    return this.scholarshipRepo.save(scholarship);
-  }
 
-  async findAllScholarships(
-    page: number = 1,
-    limit: number = 10,
-    status?: ScholarshipStatus,
-  ): Promise<{ scholarships: Scholarship[]; total: number }> {
-    const queryBuilder = this.scholarshipRepo.createQueryBuilder('s');
-    if (status) {
-      queryBuilder.where('s.status = :status', { status });
+    if (existing) {
+      throw new ConflictException(`奖学金代码 ${createDto.code} 已存在`);
     }
-    const [scholarships, total] = await queryBuilder
-      .skip((page - 1) * limit)
-      .take(limit)
-      .orderBy('s.createdAt', 'DESC')
-      .getManyAndCount();
-    return { scholarships, total };
+
+    const scholarship = this.scholarshipRepository.create({
+      ...createDto,
+      applicationDeadline: createDto.applicationDeadline
+        ? new Date(createDto.applicationDeadline)
+        : null,
+    } as Scholarship);
+
+    return this.scholarshipRepository.save(scholarship);
   }
 
-  async findOneScholarship(id: string): Promise<Scholarship> {
-    const scholarship = await this.scholarshipRepo.findOne({ where: { id } });
-    if (!scholarship) throw new NotFoundException('奖学金项目不存在');
+  async findAll(
+    query: ScholarshipQueryDto,
+  ): Promise<{ data: Scholarship[]; total: number; page: number; pageSize: number }> {
+    const { page = 1, pageSize = 10, status, academicYear, keyword } = query;
+
+    const where: FindOptionsWhere<Scholarship> = {};
+
+    if (status) where.status = status;
+    if (academicYear) where.academicYear = academicYear;
+    if (keyword) {
+      where.name = Like(`%${keyword}%`);
+    }
+
+    const [data, total] = await this.scholarshipRepository.findAndCount({
+      where,
+      order: { createdAt: 'DESC' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    return { data, total, page, pageSize };
+  }
+
+  async findOne(id: string): Promise<Scholarship> {
+    const scholarship = await this.scholarshipRepository.findOne({
+      where: { id },
+      relations: ['applications'],
+    });
+
+    if (!scholarship) {
+      throw new NotFoundException(`奖学金 ID ${id} 不存在`);
+    }
+
     return scholarship;
   }
 
-  async updateScholarship(
-    id: string,
-    dto: UpdateScholarshipDto,
-  ): Promise<Scholarship> {
-    const scholarship = await this.findOneScholarship(id);
-    Object.assign(scholarship, dto);
-    return this.scholarshipRepo.save(scholarship);
-  }
+  async update(id: string, updateDto: UpdateScholarshipDto): Promise<Scholarship> {
+    const scholarship = await this.findOne(id);
 
-  async removeScholarship(id: string): Promise<void> {
-    await this.findOneScholarship(id);
-    await this.scholarshipRepo.softDelete(id);
-  }
-
-  // ====== Application CRUD ======
-
-  async createApplication(
-    dto: CreateApplicationDto,
-  ): Promise<ScholarshipApplication> {
-    const scholarship = await this.findOneScholarship(dto.scholarshipId);
-    if (scholarship.status !== ScholarshipStatus.ACTIVE) {
-      throw new BadRequestException('该项目当前不可申请');
+    if (updateDto.code && updateDto.code !== scholarship.code) {
+      const existing = await this.scholarshipRepository.findOne({
+        where: { code: updateDto.code },
+      });
+      if (existing) {
+        throw new ConflictException(`奖学金代码 ${updateDto.code} 已存在`);
+      }
     }
-    const application = this.applicationRepo.create(dto);
-    return this.applicationRepo.save(application);
+
+    Object.assign(scholarship, updateDto);
+    if (updateDto.applicationDeadline) {
+      scholarship.applicationDeadline = new Date(updateDto.applicationDeadline);
+    }
+    return this.scholarshipRepository.save(scholarship);
+  }
+
+  async remove(id: string): Promise<void> {
+    const scholarship = await this.findOne(id);
+    await this.scholarshipRepository.remove(scholarship);
+  }
+
+  // ============ Scholarship Application Methods ============
+
+  async apply(scholarshipId: string, applyDto: ApplyScholarshipDto): Promise<ScholarshipApplication> {
+    const scholarship = await this.findOne(scholarshipId);
+
+    if (scholarship.status !== 'open') {
+      throw new BadRequestException('该奖学金当前不开放申请');
+    }
+
+    if (scholarship.applicationDeadline) {
+      const now = new Date();
+      if (now > new Date(scholarship.applicationDeadline)) {
+        throw new BadRequestException('该奖学金申请已截止');
+      }
+    }
+
+    const existing = await this.applicationRepository.findOne({
+      where: { scholarshipId, studentId: applyDto.studentId },
+    });
+
+    if (existing) {
+      throw new ConflictException('该学生已申请过此奖学金');
+    }
+
+    const application = this.applicationRepository.create({
+      scholarshipId,
+      ...applyDto,
+    } as ScholarshipApplication);
+
+    return this.applicationRepository.save(application);
   }
 
   async findAllApplications(
-    page: number = 1,
-    limit: number = 10,
-    filters: {
-      scholarshipId?: string;
-      studentId?: string;
-      status?: ApplicationStatus;
-    } = {},
-  ): Promise<{ applications: ScholarshipApplication[]; total: number }> {
-    const queryBuilder = this.applicationRepo
-      .createQueryBuilder('app')
-      .leftJoinAndSelect('app.scholarship', 'scholarship')
-      .leftJoinAndSelect('app.student', 'student')
-      .leftJoinAndSelect('app.reviewer', 'reviewer');
+    query: ScholarshipApplicationQueryDto,
+  ): Promise<{ data: ScholarshipApplication[]; total: number; page: number; pageSize: number }> {
+    const { page = 1, pageSize = 10, status, scholarshipId, keyword } = query;
 
-    if (filters.scholarshipId) {
-      queryBuilder.andWhere('app.scholarshipId = :scholarshipId', {
-        scholarshipId: filters.scholarshipId,
-      });
-    }
-    if (filters.studentId) {
-      queryBuilder.andWhere('app.studentId = :studentId', {
-        studentId: filters.studentId,
-      });
-    }
-    if (filters.status) {
-      queryBuilder.andWhere('app.status = :status', { status: filters.status });
+    const where: FindOptionsWhere<ScholarshipApplication> = {};
+
+    if (status) where.status = status;
+    if (scholarshipId) where.scholarshipId = scholarshipId;
+
+    const [data, total] = await this.applicationRepository.findAndCount({
+      where,
+      relations: ['scholarship'],
+      order: { appliedAt: 'DESC' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    let filtered = data;
+    if (keyword) {
+      filtered = data.filter((a) =>
+        a.studentName.toLowerCase().includes(keyword.toLowerCase()),
+      );
     }
 
-    const [applications, total] = await queryBuilder
-      .skip((page - 1) * limit)
-      .take(limit)
-      .orderBy('app.createdAt', 'DESC')
-      .getManyAndCount();
-    return { applications, total };
+    return { data: filtered, total, page, pageSize };
   }
 
   async findOneApplication(id: string): Promise<ScholarshipApplication> {
-    const app = await this.applicationRepo.findOne({
+    const application = await this.applicationRepository.findOne({
       where: { id },
-      relations: ['scholarship', 'student', 'reviewer'],
+      relations: ['scholarship'],
     });
-    if (!app) throw new NotFoundException('申请记录不存在');
-    return app;
+
+    if (!application) {
+      throw new NotFoundException(`申请记录 ID ${id} 不存在`);
+    }
+
+    return application;
   }
 
   async reviewApplication(
     id: string,
-    dto: ReviewApplicationDto,
+    reviewDto: ReviewScholarshipApplicationDto,
   ): Promise<ScholarshipApplication> {
-    const app = await this.findOneApplication(id);
-    if (
-      app.status !== ApplicationStatus.SUBMITTED &&
-      app.status !== ApplicationStatus.UNDER_REVIEW
-    ) {
-      throw new BadRequestException('只有提交或审核中的申请可以审批');
-    }
-    app.status = dto.status;
-    app.reviewerId = dto.reviewerId;
-    app.reviewedAt = new Date();
-    app.reviewComment = dto.reviewComment;
-    if (dto.approvedAmount !== undefined) {
-      app.approvedAmount = dto.approvedAmount;
-    }
-    return this.applicationRepo.save(app);
-  }
+    const application = await this.findOneApplication(id);
 
-  async removeApplication(id: string): Promise<void> {
-    await this.findOneApplication(id);
-    await this.applicationRepo.softDelete(id);
-  }
-
-  // ====== Disbursement ======
-
-  async createDisbursement(
-    applicationId: string,
-    amount: number,
-    processedBy: string,
-    bankAccount?: string,
-    bankName?: string,
-    recipientName?: string,
-  ): Promise<ScholarshipDisbursement> {
-    const app = await this.findOneApplication(applicationId);
-    if (app.status !== ApplicationStatus.APPROVED) {
-      throw new BadRequestException('只有已批准的申请才能发放');
-    }
-    const disbursement = this.disbursementRepo.create({
-      applicationId,
-      amount,
-      processedBy,
-      bankAccount,
-      bankName,
-      recipientName,
-      status: DisbursementStatus.PENDING,
-    });
-    return this.disbursementRepo.save(disbursement);
-  }
-
-  async findAllDisbursements(
-    page: number = 1,
-    limit: number = 10,
-    filters: { applicationId?: string; status?: DisbursementStatus } = {},
-  ): Promise<{ disbursements: ScholarshipDisbursement[]; total: number }> {
-    const queryBuilder = this.disbursementRepo
-      .createQueryBuilder('d')
-      .leftJoinAndSelect('d.application', 'application');
-
-    if (filters.applicationId) {
-      queryBuilder.andWhere('d.applicationId = :applicationId', {
-        applicationId: filters.applicationId,
-      });
-    }
-    if (filters.status) {
-      queryBuilder.andWhere('d.status = :status', { status: filters.status });
+    if (application.status !== 'pending' && application.status !== 'reviewing') {
+      throw new BadRequestException('该申请已审核，无法重复审核');
     }
 
-    const [disbursements, total] = await queryBuilder
-      .skip((page - 1) * limit)
-      .take(limit)
-      .orderBy('d.createdAt', 'DESC')
-      .getManyAndCount();
-    return { disbursements, total };
-  }
+    application.status = reviewDto.status;
+    application.reviewedAt = new Date();
 
-  async markDisbursementSuccess(
-    id: string,
-    transactionId: string,
-  ): Promise<ScholarshipDisbursement> {
-    const d = await this.disbursementRepo.findOne({ where: { id } });
-    if (!d) throw new NotFoundException('发放记录不存在');
-    d.status = DisbursementStatus.DISBURSED;
-    d.transactionId = transactionId;
-    d.disbursedAt = new Date();
-    return this.disbursementRepo.save(d);
-  }
-
-  async markDisbursementFailed(
-    id: string,
-    failureReason: string,
-  ): Promise<ScholarshipDisbursement> {
-    const d = await this.disbursementRepo.findOne({ where: { id } });
-    if (!d) throw new NotFoundException('发放记录不存在');
-    d.status = DisbursementStatus.FAILED;
-    d.failureReason = failureReason;
-    return this.disbursementRepo.save(d);
-  }
-
-  // ====== Stats ======
-
-  async getStats(scholarshipId?: string): Promise<{
-    totalApplications: number;
-    approved: number;
-    rejected: number;
-    pending: number;
-    totalDisbursed: number;
-  }> {
-    const queryBuilder = this.applicationRepo
-      .createQueryBuilder('app')
-      .leftJoinAndSelect('app.scholarship', 'scholarship');
-
-    if (scholarshipId) {
-      queryBuilder.andWhere('app.scholarshipId = :scholarshipId', {
-        scholarshipId,
-      });
+    if (reviewDto.reviewerComment) {
+      application.reviewerComment = reviewDto.reviewerComment;
     }
 
-    const apps = await queryBuilder.getMany();
-    const totalApplications = apps.length;
-    const approved = apps.filter(
-      (a) => a.status === ApplicationStatus.APPROVED,
-    ).length;
-    const rejected = apps.filter(
-      (a) => a.status === ApplicationStatus.REJECTED,
-    ).length;
-    const pending = apps.filter(
-      (a) =>
-        a.status === ApplicationStatus.SUBMITTED ||
-        a.status === ApplicationStatus.UNDER_REVIEW,
-    ).length;
+    if (reviewDto.awardedAmount) {
+      application.awardedAmount = reviewDto.awardedAmount;
 
-    const disbQueryBuilder = this.disbursementRepo
-      .createQueryBuilder('d')
-      .select('SUM(d.amount)', 'total');
-    if (scholarshipId) {
-      disbQueryBuilder
-        .leftJoin('d.application', 'app')
-        .andWhere('app.scholarshipId = :scholarshipId', { scholarshipId });
+      // Update scholarship used budget
+      const scholarship = await this.findOne(application.scholarshipId);
+      scholarship.usedBudget = Number(scholarship.usedBudget) + Number(reviewDto.awardedAmount);
+      await this.scholarshipRepository.save(scholarship);
     }
-    const totalDisbursed = (await disbQueryBuilder.getRawOne())?.total || 0;
 
-    return { totalApplications, approved, rejected, pending, totalDisbursed };
+    return this.applicationRepository.save(application);
   }
 }

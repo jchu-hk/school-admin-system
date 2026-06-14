@@ -2,31 +2,27 @@ import {
   Controller,
   Get,
   Post,
-  Patch,
+  Put,
   Delete,
   Body,
   Param,
   Query,
   ParseUUIDPipe,
-  Request,
+  HttpCode,
+  HttpStatus,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiBearerAuth,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { FeeService } from './fee.service';
-import { FeeItem, FeeCollection, FeeReduction, FeeStatus } from './fee.entity';
+import { FeeType } from './fee-type.entity';
+import { FeeRecord } from './fee-record.entity';
 import {
-  CreateFeeItemDto,
-  UpdateFeeItemDto,
-  CreateFeeCollectionDto,
-  UpdateFeeCollectionDto,
-  PayFeeDto,
-  CreateFeeReductionDto,
-  ApproveFeeReductionDto,
+  CreateFeeTypeDto,
+  UpdateFeeTypeDto,
+  FeeTypeQueryDto,
+  CreateFeeRecordDto,
+  UpdateFeeRecordDto,
+  FeeRecordQueryDto,
 } from './dto/fee.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -34,257 +30,105 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../user/user.entity';
 
 @ApiTags('费用管理')
-@Controller('fee')
+@Controller('fees')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class FeeController {
   constructor(private readonly feeService: FeeService) {}
 
-  // ===== FeeItem =====
+  // ============ Fee Types ============
 
-  @Get('items')
-  @ApiOperation({ summary: '获取费用项目列表' })
-  @ApiResponse({ status: 200, description: '获取费用项目列表成功' })
+  @Post('types')
+  @ApiOperation({ summary: '创建费用类型' })
+  @ApiResponse({ status: 201, description: '费用类型创建成功', type: FeeType })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  findAllItems(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-    @Query('schoolId') schoolId?: string,
-    @Query('gradeId') gradeId?: string,
-    @Query('schoolYear') schoolYear?: string,
-    @Query('semester') semester?: string,
-    @Query('isActive') isActive?: string,
-  ) {
-    return this.feeService.findAllItems(
-      page ? parseInt(page, 10) : 1,
-      limit ? parseInt(limit, 10) : 10,
-      schoolId,
-      gradeId,
-      schoolYear,
-      semester,
-      isActive !== undefined ? isActive === 'true' : undefined,
-    );
+  createFeeType(@Body() createDto: CreateFeeTypeDto) {
+    return this.feeService.createFeeType(createDto);
   }
 
-  @Get('items/:id')
-  @ApiOperation({ summary: '获取费用项目详情' })
-  @ApiResponse({
-    status: 200,
-    description: '获取费用项目详情成功',
-    type: FeeItem,
-  })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  findOneItem(@Param('id', ParseUUIDPipe) id: string) {
-    return this.feeService.findItemById(id);
-  }
-
-  @Post('items')
-  @ApiOperation({ summary: '创建费用项目' })
-  @ApiResponse({ status: 201, description: '创建费用项目成功', type: FeeItem })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  createItem(@Body() dto: CreateFeeItemDto) {
-    return this.feeService.createItem(dto);
-  }
-
-  @Patch('items/:id')
-  @ApiOperation({ summary: '更新费用项目' })
-  @ApiResponse({ status: 200, description: '更新费用项目成功', type: FeeItem })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  updateItem(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: UpdateFeeItemDto,
-  ) {
-    return this.feeService.updateItem(id, dto);
-  }
-
-  @Delete('items/:id')
-  @ApiOperation({ summary: '删除费用项目' })
-  @ApiResponse({ status: 200, description: '删除费用项目成功' })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
-  deleteItem(@Param('id', ParseUUIDPipe) id: string) {
-    return this.feeService.deleteItem(id);
-  }
-
-  // ===== FeeCollection =====
-
-  @Get('collections')
-  @ApiOperation({ summary: '获取费用收取记录列表' })
-  @ApiResponse({ status: 200, description: '获取费用收取记录列表成功' })
+  @Get('types')
+  @ApiOperation({ summary: '获取费用类型列表' })
+  @ApiResponse({ status: 200, description: '获取费用类型列表成功' })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
     UserRole.SCHOOL_STAFF,
-    UserRole.TEACHER,
-    UserRole.PARENT,
   )
-  findAllCollections(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-    @Query('studentId') studentId?: string,
-    @Query('parentId') parentId?: string,
-    @Query('status') status?: FeeStatus,
-    @Query('schoolId') schoolId?: string,
-    @Request() req?: any,
-  ) {
-    // 家长只能看到自己的记录
-    let filterParentId = parentId;
-    if (req?.user?.role === UserRole.PARENT) {
-      filterParentId = req.user.id;
-    }
-
-    return this.feeService.findAllCollections(
-      page ? parseInt(page, 10) : 1,
-      limit ? parseInt(limit, 10) : 10,
-      studentId,
-      filterParentId,
-      status,
-      schoolId,
-    );
+  findAllFeeTypes(@Query() query: FeeTypeQueryDto) {
+    return this.feeService.findAllFeeTypes(query);
   }
 
-  @Get('collections/:id')
-  @ApiOperation({ summary: '获取费用收取记录详情' })
-  @ApiResponse({
-    status: 200,
-    description: '获取费用收取记录详情成功',
-    type: FeeCollection,
-  })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-    UserRole.TEACHER,
-    UserRole.PARENT,
-  )
-  findOneCollection(@Param('id', ParseUUIDPipe) id: string) {
-    return this.feeService.findCollectionById(id);
-  }
-
-  @Post('collections')
-  @ApiOperation({ summary: '创建费用收取记录' })
-  @ApiResponse({
-    status: 201,
-    description: '创建费用收取记录成功',
-    type: FeeCollection,
-  })
+  @Get('types/:id')
+  @ApiOperation({ summary: '获取费用类型详情' })
+  @ApiResponse({ status: 200, description: '获取费用类型详情成功', type: FeeType })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  createCollection(@Body() dto: CreateFeeCollectionDto, @Request() _req) {
-    return this.feeService.createCollection(dto);
+  findOneFeeType(@Param('id', ParseUUIDPipe) id: string) {
+    return this.feeService.findOneFeeType(id);
   }
 
-  @Patch('collections/:id')
-  @ApiOperation({ summary: '更新费用收取记录' })
-  @ApiResponse({
-    status: 200,
-    description: '更新费用收取记录成功',
-    type: FeeCollection,
-  })
+  @Put('types/:id')
+  @ApiOperation({ summary: '更新费用类型' })
+  @ApiResponse({ status: 200, description: '费用类型更新成功', type: FeeType })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  updateCollection(
+  updateFeeType(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: UpdateFeeCollectionDto,
-    @Request() req,
+    @Body() updateDto: UpdateFeeTypeDto,
   ) {
-    return this.feeService.updateCollection(id, dto, req.user.id);
+    return this.feeService.updateFeeType(id, updateDto);
   }
 
-  @Post('collections/:id/pay')
-  @ApiOperation({ summary: '缴纳费用' })
-  @ApiResponse({
-    status: 200,
-    description: '缴纳费用成功',
-    type: FeeCollection,
-  })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  payFee(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: PayFeeDto,
-    @Request() req,
-  ) {
-    return this.feeService.payFee(id, dto, req.user.id);
-  }
-
-  @Delete('collections/:id')
-  @ApiOperation({ summary: '删除费用收取记录' })
-  @ApiResponse({ status: 200, description: '删除费用收取记录成功' })
+  @Delete('types/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: '删除费用类型' })
+  @ApiResponse({ status: 204, description: '费用类型删除成功' })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
-  deleteCollection(@Param('id', ParseUUIDPipe) id: string) {
-    return this.feeService.deleteCollection(id);
+  removeFeeType(@Param('id', ParseUUIDPipe) id: string) {
+    return this.feeService.removeFeeType(id);
   }
 
-  // ===== FeeReduction =====
+  // ============ Fee Records ============
 
-  @Get('reductions')
-  @ApiOperation({ summary: '获取费用减免记录列表' })
-  @ApiResponse({ status: 200, description: '获取费用减免记录列表成功' })
+  @Post('records')
+  @ApiOperation({ summary: '创建费用记录' })
+  @ApiResponse({ status: 201, description: '费用记录创建成功', type: FeeRecord })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  findAllReductions(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-    @Query('studentId') studentId?: string,
-  ) {
-    return this.feeService.findAllReductions(
-      page ? parseInt(page, 10) : 1,
-      limit ? parseInt(limit, 10) : 10,
-      studentId,
-    );
+  createFeeRecord(@Body() createDto: CreateFeeRecordDto) {
+    return this.feeService.createFeeRecord(createDto);
   }
 
-  @Get('reductions/:id')
-  @ApiOperation({ summary: '获取费用减免记录详情' })
-  @ApiResponse({
-    status: 200,
-    description: '获取费用减免记录详情成功',
-    type: FeeReduction,
-  })
+  @Get('records')
+  @ApiOperation({ summary: '获取费用记录列表' })
+  @ApiResponse({ status: 200, description: '获取费用记录列表成功' })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  findOneReduction(@Param('id', ParseUUIDPipe) id: string) {
-    return this.feeService.findReductionById(id);
+  findAllFeeRecords(@Query() query: FeeRecordQueryDto) {
+    return this.feeService.findAllFeeRecords(query);
   }
 
-  @Post('reductions')
-  @ApiOperation({ summary: '创建费用减免记录' })
-  @ApiResponse({
-    status: 201,
-    description: '创建费用减免记录成功',
-    type: FeeReduction,
-  })
+  @Get('records/:id')
+  @ApiOperation({ summary: '获取费用记录详情' })
+  @ApiResponse({ status: 200, description: '获取费用记录详情成功', type: FeeRecord })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  createReduction(@Body() dto: CreateFeeReductionDto) {
-    return this.feeService.createReduction(dto);
+  findOneFeeRecord(@Param('id', ParseUUIDPipe) id: string) {
+    return this.feeService.findOneFeeRecord(id);
   }
 
-  @Patch('reductions/:id/approve')
-  @ApiOperation({ summary: '审核费用减免' })
-  @ApiResponse({
-    status: 200,
-    description: '审核费用减免成功',
-    type: FeeReduction,
-  })
+  @Put('records/:id')
+  @ApiOperation({ summary: '更新费用记录' })
+  @ApiResponse({ status: 200, description: '费用记录更新成功', type: FeeRecord })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  approveReduction(
+  updateFeeRecord(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: ApproveFeeReductionDto,
-    @Request() req,
+    @Body() updateDto: UpdateFeeRecordDto,
   ) {
-    return this.feeService.approveReduction(id, dto, req.user.id);
+    return this.feeService.updateFeeRecord(id, updateDto);
   }
 
-  @Delete('reductions/:id')
-  @ApiOperation({ summary: '删除费用减免记录' })
-  @ApiResponse({ status: 200, description: '删除费用减免记录成功' })
+  @Delete('records/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: '删除费用记录' })
+  @ApiResponse({ status: 204, description: '费用记录删除成功' })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
-  deleteReduction(@Param('id', ParseUUIDPipe) id: string) {
-    return this.feeService.deleteReduction(id);
-  }
-
-  // ===== Stats =====
-
-  @Get('stats')
-  @ApiOperation({ summary: '获取费用统计' })
-  @ApiResponse({ status: 200, description: '获取费用统计成功' })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  getStats(@Query('schoolId') schoolId?: string) {
-    return this.feeService.getFeeStats(schoolId);
+  removeFeeRecord(@Param('id', ParseUUIDPipe) id: string) {
+    return this.feeService.removeFeeRecord(id);
   }
 }
