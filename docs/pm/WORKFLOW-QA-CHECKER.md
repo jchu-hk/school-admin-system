@@ -232,16 +232,38 @@ In Progress (DEV开始开发)
     ↓
 PR Created (提交PR)
     ↓
-Testing (QA测试)
+Ready for Review (DEV完成，标记ready-for-review)
     ↓
-Passed (测试通过)
+QA标签 (QA开始验收，添加qa标签)
     ↓
-Approved (CHECKER审批)
+Passed (测试通过，添加passed标签)
+    ↓
+Approved (CHECKER审批，添加approved标签)
     ↓
 Merged (PM合并)
     ↓
 Closed (完成)
 ```
+
+### 6.2 QA工作流程（最佳实践）
+
+```
+原Issue保持唯一真相
+    ↓
+添加qa标签 (QA开始验收)
+    ↓
+Issue评论记录QA进度
+    ↓
+添加passed/failed标签 (验收完成)
+    ↓
+只对发现的Bug创建新Issue
+```
+
+**原则**:
+- ❌ 不要为QA创建新Issue
+- ✅ 用qa标签表示"QA验收中"
+- ✅ 原Issue保留为唯一真相
+- ✅ 只为新发现的Bug创建Issue
 
 ### 6.2 阻塞处理
 
