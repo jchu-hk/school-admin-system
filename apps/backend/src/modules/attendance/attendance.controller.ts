@@ -75,6 +75,114 @@ export class AttendanceController {
     );
   }
 
+  @Get('stats/daily')
+  @ApiOperation({ summary: '每日出勤统计' })
+  @ApiResponse({ status: 200, description: '获取每日统计成功' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+  )
+  getDailyStats(
+    @Query('date') date: string,
+    @Query('classId') classId?: string,
+  ) {
+    const targetDate = date || new Date().toISOString().split('T')[0];
+    return this.attendanceService.getDailyStats(targetDate, classId);
+  }
+
+  @Get('stats/monthly')
+  @ApiOperation({ summary: '月度出勤统计' })
+  @ApiResponse({ status: 200, description: '获取月度统计成功' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+  )
+  getMonthlyStats(
+    @Query('year') year?: string,
+    @Query('month') month?: string,
+    @Query('classId') classId?: string,
+  ) {
+    const now = new Date();
+    const targetYear = year ? parseInt(year, 10) : now.getFullYear();
+    const targetMonth = month ? parseInt(month, 10) : now.getMonth() + 1;
+    return this.attendanceService.getMonthlyStats(targetYear, targetMonth, classId);
+  }
+
+  @Get('stats/summary')
+  @ApiOperation({ summary: '获取出勤统计' })
+  @ApiResponse({ status: 200, description: '获取统计成功' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+  )
+  getStats(
+    @Query('classId') classId?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.attendanceService.getStats(classId, startDate, endDate);
+  }
+
+  @Get('student/:studentId')
+  @ApiOperation({ summary: '获取学生出勤记录' })
+  @ApiResponse({ status: 200, description: '获取学生出勤记录成功' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+    UserRole.PARENT,
+    UserRole.STUDENT,
+  )
+  findByStudent(
+    @Param('studentId', ParseUUIDPipe) studentId: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.attendanceService.findByStudent(
+      studentId,
+      page ? parseInt(page, 10) : 1,
+      limit ? parseInt(limit, 10) : 10,
+      startDate,
+      endDate,
+    );
+  }
+
+  @Get('class/:classId/stats')
+  @ApiOperation({ summary: '获取班级出勤统计' })
+  @ApiResponse({ status: 200, description: '获取班级统计成功' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+  )
+  getClassStats(
+    @Param('classId') classId: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.attendanceService.getClassStats(classId, startDate, endDate);
+  }
+
+  @Get('reminders/unreported')
+  @ApiOperation({ summary: '获取未上报的缺勤记录' })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  getUnreportedAbsences(
+    @Query('classId') classId?: string,
+  ): Promise<Attendance[]> {
+    return this.attendanceService.getUnreportedAbsences(classId);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: '获取出勤详情' })
   @ApiResponse({
@@ -113,33 +221,6 @@ export class AttendanceController {
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.attendanceService.remove(id);
-  }
-
-  @Get('stats/summary')
-  @ApiOperation({ summary: '获取出勤统计' })
-  @ApiResponse({ status: 200, description: '获取统计成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-    UserRole.TEACHER,
-  )
-  getStats(
-    @Query('classId') classId?: string,
-    @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
-  ) {
-    return this.attendanceService.getStats(classId, startDate, endDate);
-  }
-
-  @Get('reminders/unreported')
-  @ApiOperation({ summary: '获取未上报的缺勤记录' })
-  @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
-  getUnreportedAbsences(
-    @Query('classId') classId?: string,
-  ): Promise<Attendance[]> {
-    return this.attendanceService.getUnreportedAbsences(classId);
   }
 
   @Post('check-in/:id')

@@ -203,4 +203,260 @@ export class AttendanceService {
     record.checkOutTime = checkOutTime;
     return this.attendanceRepository.save(record);
   }
+
+  // ---- 学生出勤记录 ----
+  async findByStudent(
+    studentId: string,
+    page: number = 1,
+    limit: number = 10,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<{ records: Attendance[]; total: number }> {
+    const queryBuilder = this.attendanceRepository
+      .createQueryBuilder('attendance')
+      .leftJoinAndSelect('attendance.student', 'student')
+      .leftJoinAndSelect('attendance.teacher', 'teacher')
+      .where('attendance.studentId = :studentId', { studentId });
+
+    if (startDate && endDate) {
+      queryBuilder.andWhere(
+        'attendance.attendanceDate BETWEEN :startDate AND :endDate',
+        { startDate, endDate },
+      );
+    }
+
+    const [records, total] = await queryBuilder
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy('attendance.attendanceDate', 'DESC')
+      .getManyAndCount();
+
+    return { records, total };
+  }
+
+  // ---- 班级出勤统计 ----
+  async getClassStats(
+    classId: string,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<{
+    classId: string;
+    totalRecords: number;
+    present: number;
+    absent: number;
+    late: number;
+    leaveEarly: number;
+    sickLeave: number;
+    personalLeave: number;
+    attendanceRate: number;
+  }> {
+    const queryBuilder = this.attendanceRepository
+      .createQueryBuilder('attendance')
+      .where('attendance.classId = :classId', { classId });
+
+    if (startDate && endDate) {
+      queryBuilder.andWhere(
+        'attendance.attendanceDate BETWEEN :startDate AND :endDate',
+        { startDate, endDate },
+      );
+    }
+
+    const records = await queryBuilder.getMany();
+    const totalRecords = records.length;
+    const present = records.filter(
+      (r) => r.status === AttendanceStatus.PRESENT,
+    ).length;
+    const absent = records.filter(
+      (r) => r.status === AttendanceStatus.ABSENT,
+    ).length;
+    const late = records.filter(
+      (r) => r.status === AttendanceStatus.LATE,
+    ).length;
+    const leaveEarly = records.filter(
+      (r) => r.status === AttendanceStatus.LEAVE_EARLY,
+    ).length;
+    const sickLeave = records.filter(
+      (r) => r.status === AttendanceStatus.SICK_LEAVE,
+    ).length;
+    const personalLeave = records.filter(
+      (r) => r.status === AttendanceStatus.PERSONAL_LEAVE,
+    ).length;
+    const attendanceRate =
+      totalRecords > 0
+        ? Math.round(
+            ((present + sickLeave + personalLeave) / totalRecords) * 10000,
+          ) / 100
+        : 0;
+
+    return {
+      classId,
+      totalRecords,
+      present,
+      absent,
+      late,
+      leaveEarly,
+      sickLeave,
+      personalLeave,
+      attendanceRate,
+    };
+  }
+
+  // ---- 每日统计 ----
+  async getDailyStats(
+    date: string,
+    classId?: string,
+  ): Promise<{
+    date: string;
+    total: number;
+    present: number;
+    absent: number;
+    late: number;
+    leaveEarly: number;
+    sickLeave: number;
+    personalLeave: number;
+  }> {
+    const queryBuilder = this.attendanceRepository
+      .createQueryBuilder('attendance')
+      .where('attendance.attendanceDate = :date', { date });
+
+    if (classId) {
+      queryBuilder.andWhere('attendance.classId = :classId', { classId });
+    }
+
+    const records = await queryBuilder.getMany();
+    const total = records.length;
+    const present = records.filter(
+      (r) => r.status === AttendanceStatus.PRESENT,
+    ).length;
+    const absent = records.filter(
+      (r) => r.status === AttendanceStatus.ABSENT,
+    ).length;
+    const late = records.filter(
+      (r) => r.status === AttendanceStatus.LATE,
+    ).length;
+    const leaveEarly = records.filter(
+      (r) => r.status === AttendanceStatus.LEAVE_EARLY,
+    ).length;
+    const sickLeave = records.filter(
+      (r) => r.status === AttendanceStatus.SICK_LEAVE,
+    ).length;
+    const personalLeave = records.filter(
+      (r) => r.status === AttendanceStatus.PERSONAL_LEAVE,
+    ).length;
+
+    return {
+      date,
+      total,
+      present,
+      absent,
+      late,
+      leaveEarly,
+      sickLeave,
+      personalLeave,
+    };
+  }
+
+  // ---- 月度统计 ----
+  async getMonthlyStats(
+    year: number,
+    month: number,
+    classId?: string,
+  ): Promise<{
+    year: number;
+    month: number;
+    total: number;
+    present: number;
+    absent: number;
+    late: number;
+    leaveEarly: number;
+    sickLeave: number;
+    personalLeave: number;
+    attendanceRate: number;
+    dailyStats: Array<{
+      date: string;
+      total: number;
+      present: number;
+      absent: number;
+    }>;
+  }> {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
+    const startDateStr = startDate.toISOString().split('T')[0];
+    const endDateStr = endDate.toISOString().split('T')[0];
+
+    const queryBuilder = this.attendanceRepository
+      .createQueryBuilder('attendance')
+      .where('attendance.attendanceDate BETWEEN :startDate AND :endDate', {
+        startDate: startDateStr,
+        endDate: endDateStr,
+      });
+
+    if (classId) {
+      queryBuilder.andWhere('attendance.classId = :classId', { classId });
+    }
+
+    const records = await queryBuilder.getMany();
+    const total = records.length;
+    const present = records.filter(
+      (r) => r.status === AttendanceStatus.PRESENT,
+    ).length;
+    const absent = records.filter(
+      (r) => r.status === AttendanceStatus.ABSENT,
+    ).length;
+    const late = records.filter(
+      (r) => r.status === AttendanceStatus.LATE,
+    ).length;
+    const leaveEarly = records.filter(
+      (r) => r.status === AttendanceStatus.LEAVE_EARLY,
+    ).length;
+    const sickLeave = records.filter(
+      (r) => r.status === AttendanceStatus.SICK_LEAVE,
+    ).length;
+    const personalLeave = records.filter(
+      (r) => r.status === AttendanceStatus.PERSONAL_LEAVE,
+    ).length;
+    const attendanceRate =
+      total > 0
+        ? Math.round(((present + sickLeave + personalLeave) / total) * 10000) /
+          100
+        : 0;
+
+    // 按日期分组统计
+    const dailyMap = new Map<
+      string,
+      { total: number; present: number; absent: number }
+    >();
+    for (const record of records) {
+      const dateStr = new Date(record.attendanceDate)
+        .toISOString()
+        .split('T')[0];
+      const stats = dailyMap.get(dateStr) || {
+        total: 0,
+        present: 0,
+        absent: 0,
+      };
+      stats.total++;
+      if (record.status === AttendanceStatus.PRESENT) stats.present++;
+      if (record.status === AttendanceStatus.ABSENT) stats.absent++;
+      dailyMap.set(dateStr, stats);
+    }
+
+    const dailyStats = Array.from(dailyMap.entries())
+      .map(([date, stats]) => ({ date, ...stats }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    return {
+      year,
+      month,
+      total,
+      present,
+      absent,
+      late,
+      leaveEarly,
+      sickLeave,
+      personalLeave,
+      attendanceRate,
+      dailyStats,
+    };
+  }
 }

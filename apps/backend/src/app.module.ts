@@ -18,6 +18,7 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { TuitionModule } from './modules/tuition/tuition.module';
 import { FeeModule } from './modules/fee/fee.module';
 import { ScholarshipModule } from './modules/scholarship/scholarship.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { ScholarshipModule } from './modules/scholarship/scholarship.module';
     TuitionModule,
     FeeModule,
     ScholarshipModule,
+    AttendanceModule,
   ],
   controllers: [],
   providers: [],
