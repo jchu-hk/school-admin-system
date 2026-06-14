@@ -12,22 +12,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build backend
+        run: pnpm --filter @school-admin/backend build
+
       - name: Deploy Backend to Railway
         run: |
           # Install Railway CLI
           npm install -g @railway/cli
 
-          # Deploy backend
-          railway login ${{ secrets.RAILWAY_TOKEN }}
+          # Deploy backend using token
+          export RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }}
           railway up --service backend
 
-      - name: Deploy Frontend to Vercel
+      - name: Get Railway URL
+        id: railway-url
         run: |
-          # Install Vercel CLI
-          npm install -g vercel
-
-          # Deploy frontend
-          vercel --token=${{ secrets.VERCEL_TOKEN }} --prod
+          export RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }}
+          URL=$(railway domain | head -1)
+          echo "url=$URL" >> $GITHUB_OUTPUT
 
       - name: Comment Test URL
         uses: actions/github-script@v6
@@ -36,11 +51,10 @@ jobs:
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number || 999,
+              issue_number: context.issue.number || 100,
               body: `## 🚀 测试环境已部署
 
-              **前端**: https://school-admin-test.vercel.app
-              **后端**: https://school-admin-test.up.railway.app
+              **后端**: ${{ steps.railway-url.outputs.url }}
 
               **可用功能**:
               - ✅ 学生出勤管理
@@ -48,8 +62,10 @@ jobs:
               - ✅ AI智能建议
               - ✅ 权限审批
 
+              **API文档**: ${{ steps.railway-url.outputs.url }}/api
+
               **测试账号**:
-              - 用户名: test@example.com
+              - 用户名: admin@example.com
               - 密码: Test@123
 
               ---
