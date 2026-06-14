@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserRole } from '../user/user.entity';
@@ -11,6 +11,7 @@ import {
 } from './inquiry.entity';
 import { InquiryReply, ReplyAuthorType } from './reply.entity';
 import { QuickReplyTemplate } from './template.entity';
+import { InquiryFaqService, FaqMatchResult } from './inquiry-faq.service';
 import {
   CreateInquiryDto,
   UpdateInquiryDto,
@@ -22,6 +23,8 @@ import {
 
 @Injectable()
 export class InquiryService {
+  private readonly logger = new Logger(InquiryService.name);
+
   constructor(
     @InjectRepository(ParentInquiry)
     private inquiryRepository: Repository<ParentInquiry>,
@@ -30,6 +33,7 @@ export class InquiryService {
     @InjectRepository(QuickReplyTemplate)
     private templateRepository: Repository<QuickReplyTemplate>,
     private readonly notificationService: NotificationService,
+    private readonly inquiryFaqService: InquiryFaqService,
   ) {}
 
   /**
@@ -83,10 +87,60 @@ export class InquiryService {
     // AI分析（模拟，实际应调用AI服务）
     await this.performAIAnalysis(saved);
 
+    // 【新增】FAQ自动回复匹配
+    const autoReply = await this.performAutoReply(saved);
+
     // 自动通知校务人员：有新的家长查询
     await this.sendInquirySubmissionNotification(saved);
 
-    return this.findOne(saved.id);
+    const result = await this.findOne(saved.id);
+    // 附加自动回复建议
+    (result as any).autoReplySuggestion = autoReply;
+    return result;
+  }
+
+  /**
+   * FAQ自动回复匹配（新增）
+   * 根据查询内容匹配FAQ，返回自动回复建议
+   */
+  private async performAutoReply(
+    inquiry: ParentInquiry,
+  ): Promise<{ suggestedReply: string; faqId: string; score: number } | null> {
+    try {
+      const matchResult = await this.inquiryFaqService.matchFaq(
+        inquiry.content,
+        inquiry.category,
+        inquiry.schoolId,
+      );
+
+      if (!matchResult) {
+        return null;
+      }
+
+      // 记录匹配到的FAQ
+      await this.inquiryRepository.update(inquiry.id, {
+        aiSuggestedResponse: matchResult.faq.answer,
+        autoResponseEligible: !matchResult.isHumanRequired,
+      });
+
+      // 增加FAQ使用次数
+      await this.inquiryFaqService.incrementUsageCount(matchResult.faq.id);
+
+      // 构建自动回复
+      const suggestedReply = this.inquiryFaqService.buildAutoReply(
+        matchResult,
+        inquiry.content,
+      );
+
+      return {
+        suggestedReply,
+        faqId: matchResult.faq.id,
+        score: matchResult.score,
+      };
+    } catch (error) {
+      this.logger.warn(`[Inquiry] FAQ auto-reply failed: ${error.message}`);
+      return null;
+    }
   }
 
   /**

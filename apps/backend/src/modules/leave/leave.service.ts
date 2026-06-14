@@ -22,6 +22,7 @@ import {
 import { UserRole } from '../user/user.entity';
 import { NotificationService } from '../notification/notification.service';
 import { NotificationUrgency } from '../notification/template.entity';
+import { LeaveReminderService } from './leave-reminder.service';
 
 @Injectable()
 export class LeaveService {
@@ -29,6 +30,7 @@ export class LeaveService {
     @InjectRepository(LeaveApplication)
     private leaveRepository: Repository<LeaveApplication>,
     private readonly notificationService: NotificationService,
+    private readonly leaveReminderService: LeaveReminderService,
   ) {}
 
   /**
@@ -452,6 +454,11 @@ export class LeaveService {
     // 自动通知家长：请假审批通过
     await this.sendLeaveApprovalNotification(updated);
 
+    // 【新增】如果已最终批准（无需校务主任），创建请假开始提醒
+    if (newStatus === LeaveStatus.APPROVED) {
+      await this.leaveReminderService.createReminderOnApproval(updated);
+    }
+
     return updated;
   }
 
@@ -494,6 +501,9 @@ export class LeaveService {
     // 自动通知家长：请假审批通过（校务主任审批）
     await this.sendLeaveApprovalNotification(updated);
 
+    // 【新增】审批通过后自动创建请假开始提醒
+    await this.leaveReminderService.createReminderOnApproval(updated);
+
     return updated;
   }
 
@@ -525,6 +535,9 @@ export class LeaveService {
     // 自动通知家长：请假被拒绝
     await this.sendLeaveRejectionNotification(updated, dto.reason);
 
+    // 【新增】拒绝后取消所有待发送的提醒
+    await this.leaveReminderService.cancelReminders(id, '请假已拒绝');
+
     return updated;
   }
 
@@ -544,6 +557,9 @@ export class LeaveService {
     await this.leaveRepository.update(id, {
       status: LeaveStatus.CANCELLED,
     });
+
+    // 【新增】取消后取消所有待发送的提醒
+    await this.leaveReminderService.cancelReminders(id, '家长已取消请假');
 
     return this.findOne(id);
   }
