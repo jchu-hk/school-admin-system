@@ -1,0 +1,243 @@
+name: Agent Communication
+
+on:
+  issues:
+    types: [labeled, unlabeled, closed]
+  pull_request:
+    types: [opened, ready_for_review, closed, review_requested]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  # ============================================
+  # 角色间自动通知
+  # ============================================
+
+  # PM → DEV: 任务分配通知
+  notify-dev:
+    if: github.event_name == 'issues' && 
+        (contains(github.event.label.name, 'backend') || contains(github.event.label.name, 'frontend'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: 通知DEV开发
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const label = context.payload.label.name;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## 📋 DEV任务分配
+
+### Issue #${issue.number}: ${issue.title}
+
+### 任务类型
+${label.includes('backend') ? '🔧 后端开发' : '🎨 前端开发'}
+
+### DEV请执行
+1. 开发功能
+2. 提交PR
+3. 完成后添加 \`ready-for-review\` 标签
+4. 评论通知PM分配QA验收
+
+---
+*自动消息 - PM分配*`
+            });
+
+  # DEV完成 → PM → QA: 验收通知
+  notify-qa:
+    if: github.event_name == 'issues' && contains(github.event.label.name, 'ready-for-review')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 通知QA验收
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## 🔔 QA验收请求
+
+### Issue #${issue.number}: ${issue.title}
+
+### QA请执行
+1. 功能测试
+2. 集成测试
+3. 测试通过 → 添加 \`passed\` 标签
+4. 测试失败 → 添加 \`failed\` 标签 + 列出Bug
+
+### 测试清单
+- [ ] 功能符合需求
+- [ ] 接口正常
+- [ ] 错误处理
+- [ ] 边界条件
+
+---
+*自动消息 - DEV完成通知*`
+            });
+
+  # QA通过 → CHECKER: 审查通知
+  notify-checker:
+    if: github.event_name == 'issues' && contains(github.event.label.name, 'passed')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 通知CHECKER审查
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## 🔍 CHECKER审查请求
+
+### Issue #${issue.number}: ${issue.title}
+### 状态: QA测试通过 ✅
+
+### CHECKER请执行
+1. 代码质量审查
+2. 安全审查
+3. 规范检查
+4. 通过 → 添加 \`approved\` 标签
+5. 需修改 → 添加 \`changes-requested\` 标签
+
+### 审查项
+- [ ] 代码规范
+- [ ] 安全漏洞
+- [ ] 性能问题
+- [ ] 测试覆盖
+
+---
+*自动消息 - QA通过通知*`
+            });
+
+  # CHECKER通过 → PM: 合并通知
+  notify-pm-merge:
+    if: github.event_name == 'issues' && contains(github.event.label.name, 'approved')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 通知PM合并
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## ✅ 所有审批通过
+
+### Issue #${issue.number}: ${issue.title}
+
+### 审批状态
+- ✅ DEV开发完成
+- ✅ QA测试通过
+- ✅ CHECKER审查通过
+
+### PM请执行
+1. 合并PR
+2. 关闭Issue
+3. 更新里程碑
+
+---
+*自动消息 - CHECKER批准*`
+            });
+
+  # 需修改 → DEV: 返回通知
+  notify-dev-fix:
+    if: github.event_name == 'issues' && contains(github.event.label.name, 'changes-requested')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 通知DEV修改
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## 🔴 需要修改
+
+### Issue #${issue.number}: ${issue.title}
+
+### DEV请执行
+1. 查看上方审查意见
+2. 修改问题
+3. 重新提交
+4. 添加 \`ready-for-review\` 标签
+
+---
+*自动消息 - 需修改通知*`
+            });
+
+  # 阻塞 → PM: 协调通知
+  notify-pm-blocked:
+    if: github.event_name == 'issues' && contains(github.event.label.name, 'blocked')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 通知PM协调
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## ⚠️ 任务阻塞 - PM请协调
+
+### Issue #${issue.number}: ${issue.title}
+
+### PM请执行
+1. 查看阻塞原因
+2. 协调资源
+3. 解决问题
+4. 移除 \`blocked\` 标签
+
+---
+*自动消息 - 阻塞通知*`
+            });
+
+  # Issue关闭 → 总结
+  issue-closed:
+    if: github.event_name == 'issues' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 任务完成总结
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `## ✅ 任务完成
+
+### Issue #${issue.number}: ${issue.title}
+
+### 流程记录
+- DEV开发 ✅
+- QA验收 ✅
+- CHECKER审查 ✅
+- PM合并 ✅
+
+### 感谢所有参与者！
+
+---
+*自动消息 - 任务完成*`
+            });
