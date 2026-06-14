@@ -1,0 +1,41 @@
+name: Issue Status Automation
+
+on:
+  issues:
+    types: [labeled, unlabeled, closed]
+
+jobs:
+  manage-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove in-progress on close
+        if: github.event.action == 'closed'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            
+            // 移除进行中标签
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                name: 'in-progress'
+              });
+              console.log('已移除in-progress标签');
+            } catch (error) {
+              // 标签可能不存在，忽略错误
+            }
+
+      - name: Add done label on completion
+        if: github.event.action == 'closed'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['done']
+            });

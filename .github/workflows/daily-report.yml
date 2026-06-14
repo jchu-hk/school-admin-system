@@ -1,0 +1,44 @@
+name: Daily Standup Report
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 每天02:00 UTC (10:00 GMT+8)
+  workflow_dispatch:  # 手动触发
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate Daily Report
+        run: |
+          # 使用gh cli生成报告
+          REPORT="# 📊 每日报告 $(date +%Y-%m-%d)
+
+## 📈 统计
+"
+          REPORT+="Open Issues: $(gh issue list --repo ${{ github.repository }} --state open --limit 100 | wc -l)
+"
+          REPORT+="P0 Issues: $(gh issue list --repo ${{ github.repository }} --label p0 --limit 100 | wc -l)
+"
+          REPORT+="In Progress: $(gh issue list --repo ${{ github.repository }} --label in-progress --limit 100 | wc -l)
+
+## 🚧 P0 Issues
+$(gh issue list --repo ${{ github.repository }} --label p0 --limit 5 --json title,number | jq -r '- "· \(.number): \(.title)"') || echo '无P0'
+
+---
+生成时间: $(date -Iseconds)
+"
+
+          echo "$REPORT"
+
+      - name: Commit Report
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          echo "$REPORT" > docs/pm/DAILY-REPORT-$(date +%Y-%m-%d).md
+          git add docs/pm/
+          git diff --quiet && git diff --staged --quiet || git commit -m "docs: 自动生成每日报告"
+          git push

@@ -1,0 +1,29 @@
+name: Sync Issues to Project
+
+on:
+  workflow_dispatch:  # 手动触发
+  schedule:
+    - cron: '0 */4 * * *'  # 每4小时同步一次
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync Open Issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "将Open Issues添加到Project Board"
+          
+          # 列出所有Open Issues
+          gh issue list --repo ${{ github.repository }} --state open --limit 50
+          
+          # 添加backlog标签到未完成的Issues
+          gh issue list --repo ${{ github.repository }} --state open --limit 100 --json number | jq -r '.[].number' | while read num; do
+            gh issue edit "$num" --repo ${{ github.repository }} --add-label backlog 2>/dev/null || true
+          done
+          
+          echo "已同步Open Issues到Project Board"
