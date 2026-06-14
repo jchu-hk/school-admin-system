@@ -32,6 +32,7 @@ export interface LoginResult {
   sessionId?: string;
   requiresOtp?: boolean;
   otpType?: OtpType;
+  otpCode?: string; // 开发环境下返回用于测试
   user?: {
     id: string;
     username: string;
@@ -288,6 +289,8 @@ export class AuthService {
     );
 
     // TODO: 发送OTP码到用户邮箱或手机
+    // 在开发/测试环境返回OTP码方便调试
+    const isDev = this.configService.get('NODE_ENV') !== 'production';
     console.log(`[AuthService] OTP for ${user.username}: ${otpCode}`);
 
     return {
@@ -295,6 +298,8 @@ export class AuthService {
       sessionId: session.id,
       requiresOtp: true,
       otpType: OtpType.EMAIL,
+      // 开发环境下返回OTP码用于测试
+      otpCode: isDev ? otpCode : undefined,
       message: '请查收OTP验证码',
     };
   }
