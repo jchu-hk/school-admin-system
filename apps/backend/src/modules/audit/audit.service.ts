@@ -47,7 +47,6 @@ export class AuditService {
     }
 
     const log = this.auditLogRepository.create({
-      userId: opts.userId,
       operatorId: opts.userId,
       action: opts.action as AuditAction,
       resourceType: opts.resourceType,
@@ -58,6 +57,6 @@ export class AuditService {
       requestParams: opts.requestParams,
       responseStatus: opts.responseStatus,
     });
-    return this.auditLogRepository.save(log);
+    return this.auditLogRepository.save(log) as any;
   }
 }

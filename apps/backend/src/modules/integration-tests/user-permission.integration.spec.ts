@@ -68,7 +68,7 @@ describe('UserManagement → Permission System Integration', () => {
   describe('场景1: 用户创建后自动分配默认角色', () => {
     it('应该为新创建的用户分配默认 STUDENT 角色', async () => {
       // Arrange
-      const newUser: Partial<User> = {
+      const newUser = {
         id: 'user-123',
         username: 'student001',
         name: 'Test Student',
@@ -77,8 +77,8 @@ describe('UserManagement → Permission System Integration', () => {
         schoolId: 'school-001',
       };
 
-      mockUserRepository.create.mockReturnValue(newUser as User);
-      mockUserRepository.save.mockResolvedValue(newUser as User);
+      mockUserRepository.create.mockReturnValue(newUser as any);
+      mockUserRepository.save.mockResolvedValue(newUser as any);
 
       // Act
       // UserService.create would call roleService.assignDefaultRole internally
@@ -96,7 +96,7 @@ describe('UserManagement → Permission System Integration', () => {
     });
 
     it('应该为新创建的家长用户分配 PARENT 角色', async () => {
-      const parentUser: Partial<User> = {
+      const parentUser = {
         id: 'parent-456',
         username: 'parent001',
         name: 'Test Parent',
@@ -105,8 +105,8 @@ describe('UserManagement → Permission System Integration', () => {
         schoolId: 'school-001',
       };
 
-      mockUserRepository.create.mockReturnValue(parentUser as User);
-      mockUserRepository.save.mockResolvedValue(parentUser as User);
+      mockUserRepository.create.mockReturnValue(parentUser as any);
+      mockUserRepository.save.mockResolvedValue(parentUser as any);
 
       const savedUser = await mockUserRepository.save(parentUser);
 
@@ -114,7 +114,7 @@ describe('UserManagement → Permission System Integration', () => {
     });
 
     it('应该为新创建的教师用户分配 TEACHER 角色', async () => {
-      const teacherUser: Partial<User> = {
+      const teacherUser = {
         id: 'teacher-789',
         username: 'teacher001',
         name: 'Test Teacher',
@@ -123,8 +123,8 @@ describe('UserManagement → Permission System Integration', () => {
         schoolId: 'school-001',
       };
 
-      mockUserRepository.create.mockReturnValue(teacherUser as User);
-      mockUserRepository.save.mockResolvedValue(teacherUser as User);
+      mockUserRepository.create.mockReturnValue(teacherUser as any);
+      mockUserRepository.save.mockResolvedValue(teacherUser as any);
 
       const savedUser = await mockUserRepository.save(teacherUser);
 
@@ -135,7 +135,7 @@ describe('UserManagement → Permission System Integration', () => {
   describe('场景2: 角色变更后权限立即生效', () => {
     it('应该能够将用户角色从 STUDENT 变更为 TEACHER', async () => {
       // Arrange
-      const existingUser: User = {
+      const existingUser = {
         id: 'user-123',
         username: 'student001',
         name: 'Test User',
@@ -146,7 +146,7 @@ describe('UserManagement → Permission System Integration', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         className: '1A',
-      } as User;
+      } as any;
 
       mockUserRepository.findOne.mockResolvedValue(existingUser);
       mockUserRepository.update.mockResolvedValue({ affected: 1 } as any);
@@ -166,7 +166,7 @@ describe('UserManagement → Permission System Integration', () => {
     });
 
     it('角色变更后应记录审计日志', async () => {
-      const existingUser: User = {
+      const existingUser = {
         id: 'user-123',
         username: 'student001',
         name: 'Test User',
@@ -176,7 +176,7 @@ describe('UserManagement → Permission System Integration', () => {
         schoolId: 'school-001',
         createdAt: new Date(),
         updatedAt: new Date(),
-      } as User;
+      } as any;
 
       mockAuditService.log({
         userId: 'admin-001',

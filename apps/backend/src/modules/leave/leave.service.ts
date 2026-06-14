@@ -20,10 +20,8 @@ import {
   SetFollowUpDto,
 } from './dto/leave.dto';
 import { UserRole } from '../user/user.entity';
-import {
-  NotificationService,
-  NotificationUrgency,
-} from '../notification/notification.service';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationUrgency } from '../notification/template.entity';
 
 @Injectable()
 export class LeaveService {

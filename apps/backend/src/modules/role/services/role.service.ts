@@ -1,11 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 export interface Role {
   id: string;
   name: string;
-  description?: string;
   isSystem: boolean;
   validUntil?: Date;
 }
@@ -58,7 +57,7 @@ export class RoleService {
   ): Promise<void> {
     // Stub: In production, this would create user_role_assignment records
     console.log(
-      `[RoleService] Assigning role ${roleId} to user ${userId}${
+      `[RoleService] Assigning role ${roleId} to user ${_userId}${
         validUntil ? ` until ${validUntil.toISOString()}` : ''
       }`,
     );
@@ -69,7 +68,7 @@ export class RoleService {
    */
   async removeRoleFromUser(_userId: string, roleId: string): Promise<void> {
     // Stub: In production, this would delete user_role_assignment records
-    console.log(`[RoleService] Removing role ${roleId} from user ${userId}`);
+    console.log(`[RoleService] Removing role ${roleId} from user ${_userId}`);
   }
 
   /**
@@ -87,7 +86,7 @@ export class RoleService {
     // Stub: In production, this would query user_role_assignments + users
     // For now, return empty array - real implementation would join tables
     console.log(
-      `[RoleService] Getting users with role ${roleName} in school ${schoolId}`,
+      `[RoleService] Getting users with role ${_roleName} in school ${schoolId}`,
     );
     return [];
   }

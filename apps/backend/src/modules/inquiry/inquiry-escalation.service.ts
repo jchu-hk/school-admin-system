@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { NotificationService } from '../notification/notification.service';
-import { Inquiry, InquiryPriority } from './inquiry.entity';
+import { ParentInquiry, InquiryPriority } from './inquiry.entity';
 import { InquiryEscalationHistory } from './inquiry-escalation-history.entity';
 import { User, UserRole, UserStatus } from '../user/user.entity';
 
@@ -87,7 +87,7 @@ export class InquiryEscalationService implements OnModuleInit {
         'abuse',
       ],
       category: '投诉举报',
-      priority: InquiryPriority.HIGH,
+      priority: InquiryPriority.URGENT,
       notificationTemplate: '收到投诉举报，请及时跟进',
     },
     {
@@ -103,7 +103,7 @@ export class InquiryEscalationService implements OnModuleInit {
         'harassment',
       ],
       category: '霸凌事件',
-      priority: InquiryPriority.HIGH,
+      priority: InquiryPriority.URGENT,
       notificationTemplate: '涉及霸凌，请立即调查处理',
     },
     {
@@ -132,7 +132,7 @@ export class InquiryEscalationService implements OnModuleInit {
         'illness',
       ],
       category: '食品安全',
-      priority: InquiryPriority.HIGH,
+      priority: InquiryPriority.URGENT,
       notificationTemplate: '食品安全问题，请立即关注',
     },
     {
@@ -153,8 +153,8 @@ export class InquiryEscalationService implements OnModuleInit {
   ];
 
   constructor(
-    @InjectRepository(Inquiry)
-    private inquiryRepository: Repository<Inquiry>,
+    @InjectRepository(ParentInquiry)
+    private inquiryRepository: Repository<ParentInquiry>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
     @InjectRepository(InquiryEscalationHistory)
@@ -231,7 +231,6 @@ export class InquiryEscalationService implements OnModuleInit {
     config: EscalationConfig,
   ): Promise<void> {
     await this.inquiryRepository.update(inquiryId, {
-      isUrgent: true,
       priority: config.priority,
     });
 
@@ -269,11 +268,15 @@ export class InquiryEscalationService implements OnModuleInit {
 
     try {
       // 批量发送通知
-      await this.notificationService.sendBulkNotification(
-        adminIds,
-        notificationTitle,
-        notificationContent,
-        undefined, // 系统发送
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: adminIds,
+          title: notificationTitle,
+          content: notificationContent,
+          recipientType: 'system',
+        },
+        undefined,
+        undefined,
       );
 
       this.logger.log(
@@ -311,9 +314,9 @@ export class InquiryEscalationService implements OnModuleInit {
   /**
    * 获取所有紧急查询
    */
-  async getUrgentInquiries(): Promise<Inquiry[]> {
+  async getUrgentInquiries(): Promise<ParentInquiry[]> {
     return this.inquiryRepository.find({
-      where: { isUrgent: true },
+      where: { priority: InquiryPriority.URGENT as any },
       order: { updatedAt: 'DESC' },
     });
   }
@@ -326,8 +329,8 @@ export class InquiryEscalationService implements OnModuleInit {
     byCategory: Record<string, number>;
   }> {
     const urgentInquiries = await this.inquiryRepository.find({
-      where: { isUrgent: true },
-      select: ['id', 'priority', 'inquiryType', 'createdAt'],
+      where: { priority: InquiryPriority.URGENT as any },
+      select: ['id', 'priority', 'createdAt'],
     });
 
     return {
@@ -392,8 +395,7 @@ export class InquiryEscalationService implements OnModuleInit {
 
     // 升级为高优先级
     await this.inquiryRepository.update(inquiryId, {
-      isUrgent: true,
-      priority: InquiryPriority.HIGH,
+      priority: InquiryPriority.URGENT,
     });
 
     // 记录手动升级历史
@@ -402,7 +404,7 @@ export class InquiryEscalationService implements OnModuleInit {
       escalationReason: reason,
       escalationCategory: '手动升级',
       originalPriority,
-      newPriority: InquiryPriority.HIGH,
+      newPriority: InquiryPriority.URGENT,
       triggeredKeywords: null,
       notifiedUsers: null,
       isManual: true,
@@ -416,7 +418,7 @@ export class InquiryEscalationService implements OnModuleInit {
       {
         keywords: [],
         category: '手动升级',
-        priority: InquiryPriority.HIGH,
+        priority: InquiryPriority.URGENT,
         notificationTemplate: `管理员已将查询 [${inquiryId}] 标记为紧急：${reason}`,
       },
       [],
@@ -430,7 +432,7 @@ export class InquiryEscalationService implements OnModuleInit {
       isEscalated: true,
       reason: `手动升级：${reason}`,
       category: '手动升级',
-      priority: InquiryPriority.HIGH,
+      priority: InquiryPriority.URGENT,
       notifiedAdmins,
       escalationHistoryId: savedHistory.id,
     };

@@ -7,7 +7,7 @@ import {
   IsDateString,
   MaxLength,
 } from 'class-validator';
-import { LeaveType, LeaveStatus } from '../leave.entity';
+import { LeaveType, LeaveStatus, LeaveApplication } from '../leave.entity';
 
 export class CreateLeaveDto {
   @ApiProperty({ description: '学生ID' })

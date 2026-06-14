@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { User, UserRole, UserStatus } from '../user/user.entity';
-import { Leave, LeaveStatus } from '../leave/leave.entity';
+import { LeaveApplication, LeaveStatus } from '../leave/leave.entity';
 
 export interface DashboardStats {
   todayAttendance: {
@@ -47,8 +47,8 @@ export class DashboardService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Leave)
-    private readonly leaveRepository: Repository<Leave>,
+    @InjectRepository(LeaveApplication)
+    private readonly leaveRepository: Repository<LeaveApplication>,
   ) {}
 
   /**
@@ -213,7 +213,7 @@ export class DashboardService {
     // 获取本班今日请假
     const todayLeaves = await this.leaveRepository
       .createQueryBuilder('leave')
-      .innerJoin(User, 'user', 'user.id = leave.applicantId')
+      .innerJoin(User, 'user', 'user.id = leave.studentId')
       .where('user.className = :className', { className: user.className })
       .andWhere('leave.startDate BETWEEN :today AND :tomorrow', {
         today,
@@ -225,7 +225,7 @@ export class DashboardService {
     // 获取本月请假统计
     const monthlyLeaves = await this.leaveRepository
       .createQueryBuilder('leave')
-      .innerJoin(User, 'user', 'user.id = leave.applicantId')
+      .innerJoin(User, 'user', 'user.id = leave.studentId')
       .where('user.className = :className', { className: user.className })
       .andWhere('leave.startDate BETWEEN :firstDay AND :tomorrow', {
         firstDay: firstDayOfMonth,
@@ -276,7 +276,7 @@ export class DashboardService {
     // 获取关联学生的请假统计
     const studentLeaves = await this.leaveRepository.find({
       where: {
-        applicantId: user.relatedStudentId,
+        studentId: user.relatedStudentId,
         startDate: Between(firstDayOfMonth, tomorrow),
       },
     });
@@ -319,7 +319,7 @@ export class DashboardService {
     // 获取自己的请假统计
     const myLeaves = await this.leaveRepository.find({
       where: {
-        applicantId: user.id,
+        studentId: user.id,
         startDate: Between(firstDayOfMonth, tomorrow),
       },
     });
@@ -420,21 +420,21 @@ export class DashboardService {
   ): Promise<RecentActivity[]> {
     const query = this.leaveRepository
       .createQueryBuilder('leave')
-      .leftJoinAndSelect('leave.applicant', 'applicant')
+      .leftJoinAndSelect('leave.student', 'applicant')
       .orderBy('leave.createdAt', 'DESC')
       .take(limit);
 
     // 根据角色过滤
     if (user.role === UserRole.TEACHER && user.className) {
-      query.where('applicant.className = :className', {
+      query.where('leave.student.className = :className', {
         className: user.className,
       });
     } else if (user.role === UserRole.PARENT && user.relatedStudentId) {
-      query.where('leave.applicantId = :studentId', {
+      query.where('leave.studentId = :studentId', {
         studentId: user.relatedStudentId,
       });
     } else if (user.role === UserRole.STUDENT) {
-      query.where('leave.applicantId = :userId', { userId: user.id });
+      query.where('leave.studentId = :userId', { userId: user.id });
     }
 
     const leaves = await query.getMany();
@@ -443,12 +443,12 @@ export class DashboardService {
       id: leave.id,
       type: 'leave' as const,
       title: '请假申请',
-      description: `${leave.applicant?.name || '用户'} 申请了 ${leave.leaveType}`,
+      description: `${leave.student?.name || '用户'} 申请了 ${leave.leaveType}`,
       timestamp: leave.createdAt,
-      user: leave.applicant
+      user: leave.student
         ? {
-            id: leave.applicant.id,
-            name: leave.applicant.name,
+            id: leave.student.id,
+            name: leave.student.name,
           }
         : undefined,
     }));

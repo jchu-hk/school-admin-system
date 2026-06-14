@@ -8,7 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Student } from '../user/user.entity';
+import { User } from '../user/user.entity';
 import { Class } from '../user/class.entity';
 
 export enum LeaveType {
@@ -52,9 +52,9 @@ export class LeaveApplication {
   studentId: string;
 
   @ApiProperty({ description: '学生信息' })
-  @ManyToOne(() => Student)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'studentId' })
-  student: Student;
+  student: User;
 
   @ApiProperty({ description: '班级ID' })
   @Column({ type: 'uuid' })
@@ -160,6 +160,22 @@ export class LeaveApplication {
   @ApiProperty({ description: 'AI核验说明' })
   @Column({ type: 'text', nullable: true })
   aiReviewNote: string;
+
+  @ApiProperty({ description: 'AI核验结果' })
+  @Column({ length: 30, nullable: true })
+  aiVerifyResult: string;
+
+  @ApiProperty({ description: '证明文件核验结果' })
+  @Column({ length: 30, nullable: true })
+  certificateVerifyResult: string;
+
+  @ApiProperty({ description: '证明文件URL' })
+  @Column({ type: 'text', nullable: true })
+  certificateUrl: string;
+
+  @ApiProperty({ description: 'AI核验完成时间' })
+  @Column({ type: 'timestamp', nullable: true })
+  verifiedAt: Date;
 
   @ApiProperty({ description: '需跟进提醒日期' })
   @Column({ type: 'date', nullable: true })

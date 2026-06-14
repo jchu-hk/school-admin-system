@@ -92,6 +92,22 @@ export class InquiryService {
   /**
    * 发送家长查询提交通知给校务人员（实际应调用Coze/OpenAI）
    */
+  private async sendInquirySubmissionNotification(
+    inquiry: ParentInquiry,
+  ): Promise<void> {
+    try {
+      // 通知学校管理员/officer有新咨询
+      await this.notificationService.sendNotification({
+        recipientIds: [inquiry.assignedTo].filter(Boolean),
+        title: '📩 新家长查询通知',
+        content: `收到新的${inquiry.category}类查询，请及时处理。\n查询编号: ${inquiry.inquiryNo}`,
+        recipientType: 'system',
+      }, undefined, undefined);
+    } catch (error) {
+      console.warn('[Inquiry] Failed to send submission notification:', error);
+    }
+  }
+
   private async performAIAnalysis(inquiry: ParentInquiry): Promise<void> {
     // 意图分类映射
     const intentMap: Record<InquiryCategory, string[]> = {
@@ -311,14 +327,9 @@ export class InquiryService {
       await this.notificationService.sendNotification({
         recipientIds: [inquiry.parentId],
         title: '您的查询已有新回复',
-        content: `您关于"${inquiry.title}"的查询已收到回复，请查看。`,
-        type: 'system',
-        priority: 'normal',
-        relatedEntityType: 'parent_inquiry',
-        relatedEntityId: inquiry.id,
-        senderId: reply.authorId,
-        schoolId: inquiry.schoolId,
-      });
+        content: `您关于"${inquiry.subject || '查询'}"的查询已收到回复，请查看。`,
+        recipientType: 'system',
+      }, undefined, undefined);
     } catch (error) {
       console.warn('[Inquiry] Failed to send reply notification:', error);
     }

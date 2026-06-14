@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DashboardController } from './dashboard.controller';
 import { DashboardService } from './dashboard.service';
 import { User } from '../user/user.entity';
-import { Leave } from '../leave/leave.entity';
+import { LeaveApplication } from '../leave/leave.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Leave])],
+  imports: [TypeOrmModule.forFeature([User, LeaveApplication])],
   controllers: [DashboardController],
   providers: [DashboardService],
   exports: [DashboardService],

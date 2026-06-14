@@ -68,7 +68,7 @@ export class LeaveAiVerificationController {
         const leave = await this.leaveService.findOne(dto.leaveId);
         // 补充申请人ID（如果未提供）
         if (!dto.applicantId) {
-          dto.applicantId = leave.applicantId;
+          dto.applicantId = leave.studentId;
         }
         // 补充日期（如果未提供）
         if (!dto.startDate) {
@@ -86,21 +86,7 @@ export class LeaveAiVerificationController {
 
     // 如果提供了leaveId，保存核验结果
     if (dto.leaveId) {
-      await this.aiVerificationService.saveVerificationResult(dto.leaveId, {
-        verified: result.verified,
-        risk: result.risk,
-        message: result.message,
-        recognizedType: result.recognizedType,
-        anomalyFlags: result.details?.anomalyFlags || [],
-        requireMedicalCertificate: result.requireMedicalCertificate,
-        verifiedAt: result.verifiedAt,
-        details: result.details
-          ? {
-              historicalPattern: result.details.historicalPattern,
-              recommendations: result.details.recommendations,
-            }
-          : undefined,
-      });
+      await this.aiVerificationService.saveVerificationResult(dto.leaveId, result);
     }
 
     return result;
@@ -241,15 +227,7 @@ export class LeaveAiVerificationController {
 
       // 保存核验结果
       if (dto.leaveId) {
-        await this.aiVerificationService.saveVerificationResult(dto.leaveId, {
-          verified: result.verified,
-          risk: result.risk,
-          message: result.message,
-          recognizedType: result.recognizedType,
-          anomalyFlags: result.details?.anomalyFlags || [],
-          requireMedicalCertificate: result.requireMedicalCertificate,
-          verifiedAt: result.verifiedAt,
-        });
+        await this.aiVerificationService.saveVerificationResult(dto.leaveId, result);
       }
     }
 

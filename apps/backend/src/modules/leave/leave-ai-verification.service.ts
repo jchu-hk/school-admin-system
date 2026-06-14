@@ -1,12 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import {
-  Leave,
-  LeaveType,
-  AiVerifyResult,
-  CertificateVerifyResult,
-} from './leave.entity';
+import { Repository, MoreThanOrEqual } from 'typeorm';
+import { LeaveApplication, LeaveType } from './leave.entity';
 import { AiVerifyDto, AiVerifyResponseDto } from './dto/ai-verify.dto';
 import { CertificateVerifyResponseDto } from './dto/certificate-verify.dto';
 
@@ -19,8 +14,8 @@ export class LeaveAiVerificationService {
   private readonly logger = new Logger(LeaveAiVerificationService.name);
 
   constructor(
-    @InjectRepository(Leave)
-    private leaveRepository: Repository<Leave>,
+    @InjectRepository(LeaveApplication)
+    private leaveRepository: Repository<LeaveApplication>,
   ) {}
 
   /**
@@ -61,7 +56,7 @@ export class LeaveAiVerificationService {
     }
 
     // 4. 病假自动要求医生证明
-    if (dto.type === LeaveType.SICK_LEAVE && dto.days >= 1) {
+    if (dto.type === LeaveType.SICK && dto.days >= 1) {
       requireMedicalCertificate = true;
       recommendations.push('病假1天及以上建议上传医生证明');
     }
@@ -195,10 +190,11 @@ export class LeaveAiVerificationService {
    */
   async saveVerificationResult(
     leaveId: string,
-    result: AiVerifyResult,
+    result: AiVerifyResponseDto,
   ): Promise<void> {
+    const verifyResultStr = result.verified ? 'VERIFIED' : 'MANUAL_REVIEW_REQUIRED';
     await this.leaveRepository.update(leaveId, {
-      aiVerifyResult: result,
+      aiVerifyResult: verifyResultStr,
       verifiedAt: new Date(),
     });
   }
@@ -208,11 +204,11 @@ export class LeaveAiVerificationService {
    */
   async saveCertificateResult(
     leaveId: string,
-    result: CertificateVerifyResult,
+    result: CertificateVerifyResponseDto,
     certificateUrl: string,
   ): Promise<void> {
     await this.leaveRepository.update(leaveId, {
-      certificateVerifyResult: result,
+      certificateVerifyResult: result.status,
       certificateUrl,
       verifiedAt: new Date(),
     });
@@ -226,7 +222,7 @@ export class LeaveAiVerificationService {
   private recognizeLeaveType(type: LeaveType, reason: string): string {
     const reasonLower = reason.toLowerCase();
 
-    if (type === LeaveType.SICK_LEAVE) {
+    if (type === LeaveType.SICK) {
       const sickKeywords = [
         '病',
         '医院',
@@ -243,7 +239,7 @@ export class LeaveAiVerificationService {
       }
     }
 
-    if (type === LeaveType.PERSONAL_LEAVE) {
+    if (type === LeaveType.PERSONAL) {
       const personalKeywords = ['私事', '个人', 'personal', '家', 'home'];
       if (personalKeywords.some((k) => reasonLower.includes(k))) {
         return '事假';
@@ -292,21 +288,21 @@ export class LeaveAiVerificationService {
       reasonLower.includes(k),
     );
 
-    if (type === LeaveType.SICK_LEAVE && hasSickIndicator) {
+    if (type === LeaveType.SICK && hasSickIndicator) {
       return { match: true, recognizedType: '病假' };
     }
-    if (type === LeaveType.PERSONAL_LEAVE && hasPersonalIndicator) {
+    if (type === LeaveType.PERSONAL && hasPersonalIndicator) {
       return { match: true, recognizedType: '事假' };
     }
     if (
-      type === LeaveType.SICK_LEAVE &&
+      type === LeaveType.SICK &&
       hasPersonalIndicator &&
       !hasSickIndicator
     ) {
       return { match: false, recognizedType: '事假' };
     }
     if (
-      type === LeaveType.PERSONAL_LEAVE &&
+      type === LeaveType.PERSONAL &&
       hasSickIndicator &&
       !hasPersonalIndicator
     ) {
@@ -338,7 +334,7 @@ export class LeaveAiVerificationService {
     }
 
     // 特定类型的天数限制
-    if (type === LeaveType.SICK_LEAVE && days > 14) {
+    if (type === LeaveType.SICK && days > 14) {
       flags.push(`病假超过14天(${days}天)，建议核实`);
       recommendations.push('长期病假建议提供完整医疗证明');
     }
@@ -350,7 +346,7 @@ export class LeaveAiVerificationService {
    * 分析历史请假模式
    */
   private async analyzeHistoricalPattern(
-    applicantId: string,
+    studentId: string,
     _currentType: LeaveType,
   ): Promise<{
     flags: string[];
@@ -363,14 +359,14 @@ export class LeaveAiVerificationService {
 
       const recentLeaves = await this.leaveRepository.find({
         where: {
-          applicantId,
+          studentId,
           createdAt: MoreThanOrEqual(thirtyDaysAgo),
         },
       });
 
       const totalLeaves = recentLeaves.length;
       const sickLeaves = recentLeaves.filter(
-        (l) => l.leaveType === LeaveType.SICK_LEAVE,
+        (l) => l.leaveType === LeaveType.SICK,
       ).length;
       const avgDaysPerLeave =
         totalLeaves > 0
@@ -488,7 +484,7 @@ export class LeaveAiVerificationService {
     if (anomalyFlags.some((f) => f.includes('较长'))) score += 1;
 
     // 病假且无证明
-    if (type === LeaveType.SICK_LEAVE && days >= 2) {
+    if (type === LeaveType.SICK && days >= 2) {
       score += 1;
     }
 
@@ -767,12 +763,9 @@ export class LeaveAiVerificationService {
    */
   private getLeaveTypeName(type: LeaveType): string {
     const names: Record<LeaveType, string> = {
-      [LeaveType.SICK_LEAVE]: '病假',
-      [LeaveType.PERSONAL_LEAVE]: '事假',
-      [LeaveType.MATERNITY_LEAVE]: '产假',
-      [LeaveType.PATERNITY_LEAVE]: '陪产假',
-      [LeaveType.MARRIAGE_LEAVE]: '婚假',
-      [LeaveType.BEREAVEMENT_LEAVE]: '丧假',
+      [LeaveType.SICK]: '病假',
+      [LeaveType.PERSONAL]: '事假',
+      [LeaveType.COMPASSIONATE]: '丧假',
       [LeaveType.OTHER]: '其他',
     };
     return names[type] || '未知';

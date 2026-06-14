@@ -36,6 +36,7 @@ export class UserService {
         // 本班学生，掩码敏感字段
         return {
           ...user,
+          roles: user.roles,
           hkId: user.hkId
             ? user.hkId.replace(/(.{2}).*(.{2})/, '$1****$2')
             : null,
@@ -50,6 +51,7 @@ export class UserService {
         // 非本班学生，所有敏感字段掩码
         return {
           ...user,
+          roles: user.roles,
           hkId: user.hkId ? '****' : null,
           phone: user.phone ? '****' : null,
           whatsapp: user.whatsapp ? '****' : null,
@@ -64,6 +66,7 @@ export class UserService {
         // 自己关联的学生，掩码敏感字段
         return {
           ...user,
+          roles: user.roles,
           hkId: user.hkId
             ? user.hkId.replace(/(.{2}).*(.{2})/, '$1****$2')
             : null,
@@ -78,6 +81,7 @@ export class UserService {
         // 其他用户，所有敏感字段掩码
         return {
           ...user,
+          roles: user.roles,
           hkId: user.hkId ? '****' : null,
           phone: user.phone ? '****' : null,
           whatsapp: user.whatsapp ? '****' : null,
@@ -90,6 +94,7 @@ export class UserService {
     if (requester.role === UserRole.STUDENT) {
       return {
         ...user,
+          roles: user.roles,
         hkId: user.hkId ? '****' : null,
         phone: user.phone ? '****' : null,
         whatsapp: user.whatsapp ? '****' : null,

@@ -11,10 +11,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { AbacModule } from '../abac.module';
-import { AbacService } from '../abac.service';
-import { AbacCacheService } from '../abac-cache.service';
-import { AbacInput, AbacDecisionResult } from '../interfaces/abac.interfaces';
+import { AbacModule } from '../src/modules/abac/abac.module';
+import { AbacService } from '../src/modules/abac/abac.service';
+import { AbacCacheService } from '../src/modules/abac/abac-cache.service';
+import { AbacInput, AbacDecisionResult } from '../src/modules/abac/interfaces/abac.interfaces';
 
 describe('ABAC 集成测试', () => {
   let app: INestApplication;

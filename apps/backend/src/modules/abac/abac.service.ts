@@ -479,4 +479,19 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
     }
     return { status: 'healthy', opaEnabled: false };
   }
+
+  // Stub methods for test compatibility
+  getCacheMetrics() {
+    return {
+      hits: 0,
+      misses: 0,
+      sets: 0,
+      hitRate: 0,
+      currentSize: 0,
+    };
+  }
+
+  resetCacheMetrics() {
+    // noop
+  }
 }

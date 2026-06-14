@@ -77,6 +77,11 @@ export class User {
   })
   role: UserRole;
 
+  /** 兼容roles数组访问方式 */
+  get roles(): Array<{ name: string }> {
+    return [{ name: this.role }];
+  }
+
   @ApiProperty({ description: '用户状态', enum: UserStatus })
   @Column({
     type: 'enum',

@@ -88,7 +88,7 @@ export class AbacCacheService<T = any> {
   /**
    * 获取缓存值
    */
-  async get(_key: string): Promise<T | null> {
+  async get(key: string): Promise<T | null> {
     // 先从内存缓存获取
     if (this.config.memoryEnabled) {
       const memoryResult = this.getFromMemory(key);
@@ -119,7 +119,7 @@ export class AbacCacheService<T = any> {
   /**
    * 设置缓存值
    */
-  async set(_key: string, _value: T): Promise<void> {
+  async set(key: string, value: T): Promise<void> {
     // 设置到内存缓存
     if (this.config.memoryEnabled) {
       this.setToMemory(key, value);

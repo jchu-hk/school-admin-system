@@ -189,7 +189,7 @@ export class SettingsService {
     }
 
     const user = this.userRepository.create(createDto as any);
-    return this.userRepository.save(user) as Promise<SystemUser>;
+    return this.userRepository.save(user) as any;
   }
 
   async findAllUsers(query: SystemUserQueryDto): Promise<{

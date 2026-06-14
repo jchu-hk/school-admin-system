@@ -77,7 +77,7 @@ describe('OTP Authentication → User Management Integration', () => {
     lastLoginAt: null,
     createdAt: new Date(),
     updatedAt: new Date(),
-  } as User;
+  } as any;
 
   beforeEach(async () => {
     jest.clearAllMocks();

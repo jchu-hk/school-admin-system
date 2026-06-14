@@ -19,6 +19,7 @@ import {
   InquiryStatus,
 } from '../inquiry/inquiry.entity';
 import { InquiryReply, ReplyAuthorType } from '../inquiry/reply.entity';
+import { QuickReplyTemplate } from '../inquiry/template.entity';
 import { CreateInquiryDto, CreateReplyDto } from '../inquiry/dto/inquiry.dto';
 
 describe('Inquiry → Notification System Integration', () => {
@@ -65,7 +66,7 @@ describe('Inquiry → Notification System Integration', () => {
           useValue: mockReplyRepository,
         },
         {
-          provide: getRepositoryToken('QuickReplyTemplate'),
+          provide: getRepositoryToken(QuickReplyTemplate),
           useValue: mockTemplateRepository,
         },
         {
@@ -86,10 +87,10 @@ describe('Inquiry → Notification System Integration', () => {
 
       const createDto: CreateInquiryDto = {
         category: InquiryCategory.GENERAL,
+        parentId: 'parent-001',
         priority: InquiryPriority.NORMAL,
-        title: '询问校车时间表',
+        subject: '询问校车时间表',
         content: '请问校车周一到周五的发车时间是？',
-        contactMethod: 'app_push',
       };
 
       const savedInquiry: ParentInquiry = {
@@ -98,14 +99,14 @@ describe('Inquiry → Notification System Integration', () => {
         parentId: 'parent-001',
         category: InquiryCategory.GENERAL,
         priority: InquiryPriority.NORMAL,
-        title: '询问校车时间表',
+        subject: '询问校车时间表',
         content: '请问校车周一到周五的发车时间是？',
         status: InquiryStatus.PENDING,
         schoolId: 'school-001',
         parentSubmittedAt: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
-      } as ParentInquiry;
+      } as any;
 
       mockInquiryRepository.create.mockReturnValue(savedInquiry);
       mockInquiryRepository.save.mockResolvedValue(savedInquiry);
@@ -137,10 +138,10 @@ describe('Inquiry → Notification System Integration', () => {
 
       const createDto: CreateInquiryDto = {
         category: InquiryCategory.COMPLAINT,
+        parentId: 'parent-002',
         priority: InquiryPriority.URGENT,
-        title: '投诉校车延误',
+        subject: '投诉校车延误',
         content: '校车经常延误，影响孩子上学',
-        contactMethod: 'app_push',
       };
 
       const savedInquiry: ParentInquiry = {
@@ -148,15 +149,16 @@ describe('Inquiry → Notification System Integration', () => {
         inquiryNo: 'INQ-20260607-UVWX',
         parentId: 'parent-002',
         category: InquiryCategory.COMPLAINT,
+        parentId: 'parent-002',
         priority: InquiryPriority.URGENT,
-        title: '投诉校车延误',
+        subject: '投诉校车延误',
         content: '校车经常延误，影响孩子上学',
         status: InquiryStatus.PENDING,
         schoolId: 'school-001',
         parentSubmittedAt: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
-      } as ParentInquiry;
+      } as any;
 
       mockInquiryRepository.create.mockReturnValue(savedInquiry);
       mockInquiryRepository.save.mockResolvedValue(savedInquiry);
@@ -182,18 +184,16 @@ describe('Inquiry → Notification System Integration', () => {
       const existingInquiry: ParentInquiry = {
         id: 'inquiry-001',
         inquiryNo: 'INQ-20260607-QRST',
-        parentId: 'parent-001',
         category: InquiryCategory.GENERAL,
-        title: '询问校车时间表',
+        subject: '询问校车时间表',
         status: InquiryStatus.PENDING,
         schoolId: 'school-001',
         createdAt: new Date(),
         updatedAt: new Date(),
-      } as ParentInquiry;
+      } as any;
 
       const replyDto: CreateReplyDto = {
         content: '校车每天早上7:30从总站发车，请注意准时到达站点。',
-        isInternal: false,
       };
 
       const savedReply: InquiryReply = {
@@ -202,10 +202,9 @@ describe('Inquiry → Notification System Integration', () => {
         authorId: 'staff-001',
         authorType: ReplyAuthorType.OFFICER,
         content: '校车每天早上7:30从总站发车，请注意准时到达站点。',
-        isInternal: false,
         createdAt: new Date(),
         updatedAt: new Date(),
-      } as InquiryReply;
+      } as any;
 
       mockInquiryRepository.findOne.mockResolvedValue(existingInquiry);
       mockReplyRepository.create.mockReturnValue(savedReply);
@@ -240,16 +239,15 @@ describe('Inquiry → Notification System Integration', () => {
         inquiryNo: 'INQ-20260607-ABCD',
         parentId: 'parent-003',
         category: InquiryCategory.BUS_SCHEDULE,
-        title: '校车路线咨询',
+        subject: '校车路线咨询',
         status: InquiryStatus.PENDING,
         schoolId: 'school-001',
         createdAt: new Date(),
         updatedAt: new Date(),
-      } as ParentInquiry;
+      } as any;
 
       const replyDto: CreateReplyDto = {
         content: '校车路线已更新，请查看最新路线图。',
-        isInternal: false,
       };
 
       const savedReply: InquiryReply = {
@@ -258,10 +256,9 @@ describe('Inquiry → Notification System Integration', () => {
         authorId: 'staff-002',
         authorType: ReplyAuthorType.OFFICER,
         content: '校车路线已更新，请查看最新路线图。',
-        isInternal: false,
         createdAt: new Date(),
         updatedAt: new Date(),
-      } as InquiryReply;
+      } as any;
 
       mockInquiryRepository.findOne.mockResolvedValue(existingInquiry);
       mockReplyRepository.create.mockReturnValue(savedReply);

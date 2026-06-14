@@ -21,6 +21,7 @@ import {
 import { User } from '../../user/user.entity';
 import { AuditService } from '../../audit/audit.service';
 import { NotificationService } from '../../notification/notification.service';
+import { NotificationUrgency } from '../../notification/template.entity';
 import { PermissionService } from '../../permission/permission.service';
 import { RoleService } from '../../role/role.service';
 
@@ -158,7 +159,7 @@ export class PermissionApprovalService {
 
   async getMyPendingApprovals(_user: User) {
     // Get user roles
-    const userRoleNames = user.roles.map((r) => r.name);
+    const userRoleNames = _user.roles.map((r) => r.name);
 
     const requests = await this.approvalRequestRepository
       .createQueryBuilder('request')
@@ -224,21 +225,21 @@ export class PermissionApprovalService {
 
       // Notify requester
       await this.notificationService.sendNotification({
-        userId: request.requesterId,
+        recipientIds: [request.requesterId],
         title: 'Permission request approved',
         content: `Your permission change request for user ${request.targetUser.name} has been approved.`,
-        type: 'system',
-        priority: 'high',
-      });
+        recipientType: 'system',
+        urgency: NotificationUrgency.HIGH,
+      }, undefined, undefined);
 
       // Notify target user
       await this.notificationService.sendNotification({
-        userId: request.targetUserId,
+        recipientIds: [request.targetUserId],
         title: 'Your permissions have been updated',
         content: `Your permissions have been updated based on an approved request.`,
-        type: 'system',
-        priority: 'high',
-      });
+        recipientType: 'system',
+        urgency: NotificationUrgency.HIGH,
+      }, undefined, undefined);
     } else {
       // Notify next approver
       await this.sendApprovalNotification(request);
@@ -302,12 +303,12 @@ export class PermissionApprovalService {
 
     // Notify requester
     await this.notificationService.sendNotification({
-      userId: request.requesterId,
+      recipientIds: [request.requesterId],
       title: 'Permission request rejected',
       content: `Your permission change request for user ${request.targetUser.name} has been rejected. Reason: ${rejectDto.rejectionReason}`,
-      type: 'system',
-      priority: 'high',
-    });
+      recipientType: 'system',
+      urgency: NotificationUrgency.HIGH,
+    }, undefined, undefined);
 
     // Log audit
     await this.auditService.log({
@@ -370,7 +371,7 @@ export class PermissionApprovalService {
     request: PermissionApprovalRequest,
     _user: User,
   ): Promise<boolean> {
-    const userRoleNames = user.roles.map((r) => r.name);
+    const userRoleNames = _user.roles.map((r) => r.name);
     return request.steps.some(
       (s) =>
         s.status === ApprovalStepStatus.PENDING &&
@@ -410,17 +411,12 @@ export class PermissionApprovalService {
       if (approverId === request.requesterId) continue;
 
       await this.notificationService.sendNotification({
-        userId: approverId,
+        recipientIds: [approverId],
         title: 'New permission approval request',
         content: `A new permission change request (Risk: ${request.riskLevel}) requires your approval.`,
-        type: 'system',
-        priority: request.riskLevel === 'high' ? 'high' : 'normal',
-        metadata: {
-          requestId: request.id,
-          targetUserId: request.targetUserId,
-          changeType: request.changeType,
-        },
-      });
+        recipientType: 'system',
+        urgency: request.riskLevel === 'high' ? NotificationUrgency.HIGH : NotificationUrgency.NORMAL,
+      }, undefined, undefined);
     }
   }
 
@@ -472,12 +468,12 @@ export class PermissionApprovalService {
 
       // Notify requester
       await this.notificationService.sendNotification({
-        userId: request.requesterId,
+        recipientIds: [request.requesterId],
         title: 'Permission request expired',
         content: `Your permission change request for user ${request.targetUser.name} has expired.`,
-        type: 'system',
-        priority: 'medium',
-      });
+        recipientType: 'system',
+        urgency: NotificationUrgency.NORMAL,
+      }, undefined, undefined);
     }
 
     return { expiredCount: requestsToExpire.length };

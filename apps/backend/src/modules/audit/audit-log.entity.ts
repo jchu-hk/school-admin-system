@@ -33,6 +33,13 @@ export enum AuditAction {
   NOTIFICATION_SEND = 'notification_send',
   NOTIFICATION_TEMPLATE_CREATE = 'notification_template_create',
   NOTIFICATION_TEMPLATE_UPDATE = 'notification_template_update',
+  // OTP模块
+  OTP_GENERATED = 'otp_generated',
+  OTP_VERIFY_SUCCESS = 'otp_verify_success',
+  OTP_VERIFY_FAILED = 'otp_verify_failed',
+  OTP_BIND_INITIATED = 'otp_bind_initiated',
+  OTP_BIND_SUCCESS = 'otp_bind_success',
+  OTP_UNBIND_SUCCESS = 'otp_unbind_success',
 }
 
 @Entity('audit_logs')
@@ -64,6 +71,18 @@ export class AuditLog {
   @ApiProperty({ description: '响应状态' })
   @Column({ type: 'int', nullable: true })
   responseStatus: number;
+
+  @ApiProperty({ description: '资源类型' })
+  @Column({ length: 50, nullable: true })
+  resourceType: string;
+
+  @ApiProperty({ description: '资源ID' })
+  @Column({ type: 'uuid', nullable: true })
+  resourceId: string;
+
+  @ApiProperty({ description: '详情' })
+  @Column({ type: 'json', nullable: true })
+  details: any;
 
   @ApiProperty({ description: '操作时间' })
   @CreateDateColumn()

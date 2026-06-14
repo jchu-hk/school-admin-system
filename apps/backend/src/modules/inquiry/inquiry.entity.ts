@@ -8,7 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Student, Parent, User } from '../user/user.entity';
+import { User } from '../user/user.entity';
 
 export enum InquiryCategory {
   BUS_SCHEDULE = 'bus_schedule', // 校车相关
@@ -60,18 +60,18 @@ export class ParentInquiry {
   parentId: string;
 
   @ApiProperty({ description: '家长信息' })
-  @ManyToOne(() => Parent)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'parentId' })
-  parent: Parent;
+  parent: User;
 
   @ApiProperty({ description: '关联学生ID' })
   @Column({ type: 'uuid', nullable: true })
   studentId: string;
 
   @ApiProperty({ description: '关联学生信息' })
-  @ManyToOne(() => Student, { nullable: true })
+  @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'studentId' })
-  student: Student;
+  student: User;
 
   @ApiProperty({ description: '查询类别', enum: InquiryCategory })
   @Column({

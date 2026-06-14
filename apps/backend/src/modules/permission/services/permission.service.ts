@@ -12,7 +12,7 @@ export interface Permission {
 @Injectable()
 export class PermissionService {
   constructor(
-    @InjectRepository(Permission)
+    @InjectRepository('Permission' as any)
     private readonly permissionRepository: Repository<Permission>,
   ) {}
 
@@ -34,7 +34,7 @@ export class PermissionService {
     // Stub: In production, this would create user_permission records
     // This is a placeholder for the permission-approval module integration
     console.log(
-      `[PermissionService] Assigning permissions ${permissionIds} to user ${userId}`,
+      `[PermissionService] Assigning permissions ${permissionIds} to user ${_userId}`,
     );
   }
 
@@ -44,7 +44,7 @@ export class PermissionService {
   ): Promise<void> {
     // Stub: In production, this would remove user_permission records
     console.log(
-      `[PermissionService] Removing permissions ${permissionIds} from user ${userId}`,
+      `[PermissionService] Removing permissions ${permissionIds} from user ${_userId}`,
     );
   }
 
