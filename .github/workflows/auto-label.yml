@@ -1,0 +1,107 @@
+name: Auto Label and Assign
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  auto-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto Label Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const body = issue.body.toLowerCase();
+
+            const labels = [];
+
+            // 自动添加标签
+            if (title.includes('[p0]') || title.includes('bug')) {
+              labels.push('p0', 'bug');
+            } else if (title.includes('[p1]')) {
+              labels.push('p1');
+            } else if (title.includes('[p2]')) {
+              labels.push('p2');
+            } else if (title.includes('[p3]')) {
+              labels.push('p3');
+            }
+
+            if (title.includes('[feature]')) {
+              labels.push('enhancement');
+            } else if (title.includes('[task]')) {
+              labels.push('task');
+            } else if (title.includes('[bug]')) {
+              labels.push('bug');
+            }
+
+            // 模块标签
+            if (title.includes('daily') || title.includes('att')) {
+              labels.push('mod-daily');
+            } else if (title.includes('fin') || title.includes('fee') || title.includes('tuition')) {
+              labels.push('mod-fin');
+            } else if (title.includes('user') || title.includes('permission')) {
+              labels.push('mod-user');
+            } else if (title.includes('ai') || title.includes('nlp')) {
+              labels.push('mod-ai');
+            } else if (title.includes('ops') || title.includes('backup')) {
+              labels.push('mod-ops');
+            }
+
+            // 添加标签
+            if (labels.length > 0) {
+              await github.rest.issues.setLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: labels
+              });
+
+              console.log(`添加标签: ${labels.join(', ')}`);
+            }
+
+            // 添加到backlog
+            labels.push('backlog');
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['backlog']
+            });
+
+  auto-assign:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'opened'
+    steps:
+      - name: Auto Assign based on Labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const labels = issue.labels.map(l => l.name);
+
+            let assignee = null;
+
+            // 根据标签分配
+            if (labels.includes('mod-ops') || labels.includes('ops')) {
+              assignee = 'jchu-hk'; // OPS角色
+            } else if (labels.includes('backend')) {
+              assignee = 'jchu-hk'; // DEV
+            } else if (labels.includes('frontend')) {
+              assignee = 'jchu-hk'; // UI
+            } else if (labels.includes('qa')) {
+              assignee = 'jchu-hk'; // QA
+            }
+
+            if (assignee) {
+              await github.rest.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                assignees: [assignee]
+              });
+
+              console.log(`分配给: ${assignee}`);
+            }
