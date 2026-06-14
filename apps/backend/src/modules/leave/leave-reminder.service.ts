@@ -82,7 +82,7 @@ export class LeaveReminderService {
       month: 'long',
       day: 'numeric',
     });
-    const studentName = _application.student?.name || application.studentId;
+    const studentName = _application.student?.name || _application.studentId;
     const leaveTypeMap: Record<string, string> = {
       sick: '病假',
       personal: '事假',
@@ -90,7 +90,7 @@ export class LeaveReminderService {
       other: '其他',
     };
     const leaveTypeText =
-      leaveTypeMap[_application.leaveType] || application.leaveType;
+      leaveTypeMap[_application.leaveType] || _application.leaveType;
 
     return [
       `学生姓名：${studentName}`,
@@ -146,7 +146,7 @@ export class LeaveReminderService {
           content: reminder.content,
           recipientType: 'parent',
           urgency: NotificationUrgency.NORMAL,
-          relatedEntityType: 'leave__application',
+          relatedEntityType: 'leave_application',
           relatedEntityId: reminder.leaveRequestId,
         },
         undefined, // 发送者（系统通知）
