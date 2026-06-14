@@ -1,0 +1,84 @@
+# 默认Issue标签
+# https://docs.github.com/cn/issues/using-workframes-with-issues/managing-labels
+
+## 类型
+- name: bug
+  color: d73a4a
+  description: Something isn't working
+- name: enhancement
+  color: a2eeef
+  description: New feature or request
+- name: task
+  color: 3CB371
+  description: General task
+- name: documentation
+  color: 0075ca
+  description: Improvements to documentation
+
+## 优先级
+- name: p0
+  color: b60205
+  description: P0 - Critical, 4小时内处理
+- name: p1
+  color: d93f0b
+  description: P1 - High priority, 1天内处理
+- name: p2
+  color: eed869
+  description: P2 - Medium priority, 3天内处理
+- name: p3
+  color: 87d1d8
+  description: P3 - Low priority, 按迭代
+
+## 模块
+- name: mod-daily
+  color: 0052cc
+  description: Module: 日常事务
+- name: mod-cycl
+  color: 0052cc
+  description: Module: 周期性事务
+- name: mod-fin
+  color: 0052cc
+  description: Module: 财务
+- name: mod-user
+  color: 0052cc
+  description: Module: 用户权限
+- name: mod-ai
+  color: 0052cc
+  description: Module: AI功能
+- name: mod-int
+  color: 0052cc
+  description: Module: 集成
+- name: mod-ops
+  color: 0052cc
+  description: Module: 运维
+
+## 角色
+- name: pm
+  color: 5319e7
+  description: PM角色任务
+- name: req
+  color: 5319e7
+  description: 需求分析
+- name: arch
+  color: 5319e7
+  description: 架构设计
+- name: ops
+  color: 5319e7
+  description: 运维生产维护
+
+## 状态
+- name: in-progress
+  color: 1d76db
+  description: 进行中
+- name: blocked
+  color: cc0000
+  description: 阻塞
+- name: needs-review
+  color: fef2c6
+  description: 需要审查
+- name: testing
+  color: f4d35e
+  description: 测试中
+- name: done
+  color: 008000
+  description: 已完成
