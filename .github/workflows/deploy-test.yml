@@ -1,0 +1,57 @@
+name: Deploy Test Environment
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Deploy Backend to Railway
+        run: |
+          # Install Railway CLI
+          npm install -g @railway/cli
+
+          # Deploy backend
+          railway login ${{ secrets.RAILWAY_TOKEN }}
+          railway up --service backend
+
+      - name: Deploy Frontend to Vercel
+        run: |
+          # Install Vercel CLI
+          npm install -g vercel
+
+          # Deploy frontend
+          vercel --token=${{ secrets.VERCEL_TOKEN }} --prod
+
+      - name: Comment Test URL
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number || 999,
+              body: `## 🚀 测试环境已部署
+
+              **前端**: https://school-admin-test.vercel.app
+              **后端**: https://school-admin-test.up.railway.app
+
+              **可用功能**:
+              - ✅ 学生出勤管理
+              - ✅ 财政模块
+              - ✅ AI智能建议
+              - ✅ 权限审批
+
+              **测试账号**:
+              - 用户名: test@example.com
+              - 密码: Test@123
+
+              ---
+              *自动部署时间: ${new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})}*`
+            })
