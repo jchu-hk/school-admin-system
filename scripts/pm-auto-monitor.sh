@@ -1,5 +1,5 @@
 #!/bin/bash
-# PM全自动监控脚本 v3
+# PM全自动监控脚本 v4
 # 每15分钟运行，从GitHub实时获取数据
 # 输出: docs/status/README.md (最新) + docs/status/YYYY-MM-DD.md (历史)
 
@@ -15,6 +15,13 @@ TIME_SHORT=$(date '+%H:%M')
 
 mkdir -p "$STATUS_DIR"
 
+# ===== 检测本地Agent状态 =====
+ACTIVE_AGENTS=$(subagents list 2>/dev/null | jq -r '.active | .[] | "\(.label): \(.status)"' 2>/dev/null)
+AGENT_RUNNING="无"
+if [ -n "$ACTIVE_AGENTS" ]; then
+    AGENT_RUNNING=$(echo "$ACTIVE_AGENTS" | grep "running" | awk -F: '{print $1}' | head -1)
+fi
+
 # ===== 从GitHub实时获取数据 =====
 
 # 1. CI状态
@@ -29,6 +36,11 @@ PENDING_REVIEW_PRS=$(gh pr list --state open --limit 10 --json number,title 2>/d
 # 3. Issue看板
 IN_PROGRESS=$(gh issue list --state open --label "in-progress" --json number,title --limit 10 2>/dev/null | jq -r '.[] | "• #\(.number) \(.title)"' 2>/dev/null)
 [ -z "$IN_PROGRESS" ] && IN_PROGRESS="无"
+
+# 本地有agent运行，覆盖GitHub数据
+if [ "$AGENT_RUNNING" != "无" ]; then
+    IN_PROGRESS="• $AGENT_RUNNING (本地运行中)"
+fi
 
 READY_FOR_REVIEW=$(gh issue list --state open --label "ready-for-review" --json number,title --limit 10 2>/dev/null | jq -r '.[] | "• #\(.number) \(.title)"' 2>/dev/null)
 [ -z "$READY_FOR_REVIEW" ] && READY_FOR_REVIEW="无"
@@ -63,7 +75,18 @@ DEVOPS_TASKS=$(gh issue list --state open --label "ops,devops" --json number,tit
 [ -z "$DEVOPS_TASKS" ] && DEVOPS_TASKS="无"
 
 # ===== 构建状态内容 =====
-STATUS_BODY="## 📊 PM状态报告
+cat > "$STATUS_DIR/README.md" << 'HEADER'
+# PM状态报告
+
+> ⚠️ 此文件由PM自动更新，每次更新覆盖此文件
+> 历史报告请查看下方目录或Git历史
+
+---
+
+HEADER
+
+cat >> "$STATUS_DIR/README.md" << EOF
+## 📊 PM状态报告
 
 **最后更新**: $CURRENT_TIME
 **分支**: $CURRENT_BRANCH
@@ -150,67 +173,25 @@ $RECENT_COMMITS
 
 ---
 
-*自动监控 · 每15分钟更新 · 数据来源: GitHub*"
-
-# ===== 写入文件（版本控制，永远最新在顶部）=====
-
-# 1. 更新README.md（最新状态，永远在顶部）
-cat > "$STATUS_DIR/README.md" << 'HEADER'
-# PM状态报告
-
-> ⚠️ 此文件由PM自动更新，每次更新覆盖此文件
-> 历史报告请查看下方目录或Git历史
-
----
-
-HEADER
-
-echo "$STATUS_BODY" >> "$STATUS_DIR/README.md"
-
-cat >> "$STATUS_DIR/README.md" << 'FOOTER'
+*自动监控 · 每15分钟更新 · 数据来源: GitHub + 本地Agent检测*
 
 ---
 
 ## 📁 历史报告
 
 查看Git历史获取完整版本记录:
-\`\`\`bash
 git log --follow docs/status/README.md
-\`\`\`
 
 或访问: https://github.com/jchu-hk/school-admin-system/commits/main/docs/status/
-FOOTER
-
-# 2. 更新今日报告（追加）
-TODAY_FILE="$STATUS_DIR/$TODAY.md"
-if [ -f "$TODAY_FILE" ]; then
-    # 今日文件已存在，追加新条目
-    echo "" >> "$TODAY_FILE"
-    echo "---" >> "$TODAY_FILE"
-    echo "### $TIME_SHORT" >> "$TODAY_FILE"
-    echo "$STATUS_BODY" >> "$TODAY_FILE"
-else
-    # 创建今日新文件
-    cat > "$TODAY_FILE" << EOF
-# PM状态报告 - $TODAY
-
-## 今日时间线
-
-### $TIME_SHORT
-
-$STATUS_BODY
-
----
 EOF
-fi
 
-# ===== Git提交（可选，自动提交更新）=====
-cd "$WORKSPACE"
+# ===== Git提交 =====
 git add docs/status/
 git commit -m "📊 PM状态更新 $CURRENT_TIME" --allow-empty 2>/dev/null
+git push 2>/dev/null
 
 # ===== 更新Issue（仅通知，不累积）=====
-gh issue comment $STATUS_ISSUE --body "$STATUS_BODY" 2>/dev/null
+gh issue comment $STATUS_ISSUE --body "$(cat "$STATUS_DIR/README.md")" 2>/dev/null
 
 # 删除旧comments，只保留最新一条
 gh api repos/jchu-hk/school-admin-system/issues/$STATUS_ISSUE/comments --jq '.[:-1] | .[].id' 2>/dev/null | while read id; do
