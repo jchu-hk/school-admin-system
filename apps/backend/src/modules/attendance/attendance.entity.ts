@@ -7,6 +7,7 @@ import {
   DeleteDateColumn,
   ManyToOne,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 
@@ -26,7 +27,25 @@ export enum AttendanceType {
   MANUAL = 'manual',
 }
 
+/** 数据来源（按 F-ATT-001 spec）*/
+export enum SyncSource {
+  ECLASS = 'eClass',
+  MANUAL = 'manual',
+  BIOMETRIC = 'biometric',
+}
+
+/** 同步状态（按 F-ATT-001 spec: 独立显示各数据源状态）*/
+export enum SyncStatus {
+  SUCCESS = 'success',
+  FAILED = 'failed',
+  PARTIAL = 'partial',
+  PENDING = 'pending',
+  OFFLINE = 'offline',
+}
+
 @Entity('attendances')
+@Index(['classId', 'attendanceDate'])
+@Index(['studentId', 'attendanceDate'])
 export class Attendance {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -92,6 +111,42 @@ export class Attendance {
   @Column({ name: 'reminder_sent_at', type: 'timestamp', nullable: true })
   reminderSentAt: Date;
 
+  /** 数据来源（eClass / manual / biometric）*/
+  @Column({
+    type: 'enum',
+    enum: SyncSource,
+    name: 'sync_source',
+    default: SyncSource.MANUAL,
+  })
+  syncSource: SyncSource;
+
+  /** 同步状态（success / failed / partial / pending / offline）*/
+  @Column({
+    type: 'enum',
+    enum: SyncStatus,
+    name: 'sync_status',
+    default: SyncStatus.SUCCESS,
+    nullable: true,
+  })
+  syncStatus: SyncStatus;
+
+  /** 设备名称（如"人脸识别闸机-RFID-003"）*/
+  @Column({ name: 'device_id', type: 'varchar', length: 100, nullable: true })
+  deviceId: string;
+
+  /** 设备名称（友好显示名）*/
+  @Column({ name: 'device_name', type: 'varchar', length: 200, nullable: true })
+  deviceName: string;
+
+  /** 批量操作批次ID（用于批量撤销）*/
+  @Column({ name: 'batch_id', type: 'uuid', nullable: true })
+  batchId: string;
+
+  /** 可撤销截止时间（批量录入后15分钟内）*/
+  @Column({ name: 'can_revoke_until', type: 'timestamp', nullable: true })
+  canRevokeUntil: Date;
+
+  /** 录入人ID（用于判断撤销权限）*/
   @Column({ name: 'created_by' })
   createdBy: string;
 

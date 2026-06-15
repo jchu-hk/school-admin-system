@@ -10,6 +10,8 @@ import {
   ParseUUIDPipe,
   UseGuards,
   Request,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,6 +23,12 @@ import { AttendanceService } from './attendance.service';
 import { Attendance, AttendanceStatus } from './attendance.entity';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
+import {
+  BatchCreateAttendanceDto,
+  ConfirmPreviewDto,
+  BatchRevokeDto,
+  WebhookPayloadDto,
+} from './dto/batch-attendance.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -32,6 +40,8 @@ import { UserRole } from '../user/user.entity';
 @ApiBearerAuth()
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
+
+  // ==================== 基础 CRUD ====================
 
   @Post()
   @ApiOperation({ summary: '创建出勤记录' })
@@ -109,7 +119,11 @@ export class AttendanceController {
     const now = new Date();
     const targetYear = year ? parseInt(year, 10) : now.getFullYear();
     const targetMonth = month ? parseInt(month, 10) : now.getMonth() + 1;
-    return this.attendanceService.getMonthlyStats(targetYear, targetMonth, classId);
+    return this.attendanceService.getMonthlyStats(
+      targetYear,
+      targetMonth,
+      classId,
+    );
   }
 
   @Get('stats/summary')
@@ -156,6 +170,22 @@ export class AttendanceController {
     );
   }
 
+  @Get('class/:classId/date/:date')
+  @ApiOperation({ summary: '按班级和日期获取出勤记录（对接 eClass API）' })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+  )
+  getByClassAndDate(
+    @Param('classId') classId: string,
+    @Param('date') date: string,
+  ) {
+    return this.attendanceService.findByClassAndDate(classId, date);
+  }
+
   @Get('class/:classId/stats')
   @ApiOperation({ summary: '获取班级出勤统计' })
   @ApiResponse({ status: 200, description: '获取班级统计成功' })
@@ -171,6 +201,19 @@ export class AttendanceController {
     @Query('endDate') endDate?: string,
   ) {
     return this.attendanceService.getClassStats(classId, startDate, endDate);
+  }
+
+  @Get('affected-studients')
+  @ApiOperation({ summary: '获取受影响学生列表（数据源同步失败时）' })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+  )
+  getAffectedStudents(@Query('date') date?: string) {
+    return this.attendanceService.getAffectedStudents(date);
   }
 
   @Get('reminders/unreported')
@@ -223,25 +266,48 @@ export class AttendanceController {
     return this.attendanceService.remove(id);
   }
 
-  @Post('check-in/:id')
-  @ApiOperation({ summary: '签到' })
-  @ApiResponse({ status: 200, description: '签到成功', type: Attendance })
-  @Roles(UserRole.TEACHER, UserRole.STUDENT, UserRole.PARENT)
-  checkIn(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body('checkInTime') checkInTime: string,
-  ): Promise<Attendance> {
-    return this.attendanceService.checkIn(id, checkInTime);
+  // ==================== 批量操作（F-ATT-001 批量录入 + 确认预览 + 批量撤销）====================
+
+  @Post('batch/preview')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '批量录入确认预览（不保存）' })
+  @ApiResponse({ status: 200, description: '返回预览摘要' })
+  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  confirmPreview(@Body() dto: ConfirmPreviewDto) {
+    return this.attendanceService.confirmPreview(dto);
   }
 
-  @Post('check-out/:id')
-  @ApiOperation({ summary: '签退' })
-  @ApiResponse({ status: 200, description: '签退成功', type: Attendance })
-  @Roles(UserRole.TEACHER, UserRole.STUDENT, UserRole.PARENT)
-  checkOut(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body('checkOutTime') checkOutTime: string,
-  ): Promise<Attendance> {
-    return this.attendanceService.checkOut(id, checkOutTime);
+  @Post('batch')
+  @ApiOperation({ summary: '批量创建出勤记录（确认预览后提交）' })
+  @ApiResponse({ status: 201, description: '批量创建成功' })
+  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  batchCreate(@Body() dto: BatchCreateAttendanceDto, @Request() req) {
+    return this.attendanceService.batchCreate(dto, req.user.id);
+  }
+
+  @Delete('batch/:batchId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '批量撤销（仅15分钟内有效）' })
+  @ApiResponse({ status: 200, description: '批量撤销成功' })
+  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  batchRevoke(
+    @Param('batchId') batchId: string,
+    @Request() req,
+  ) {
+    return this.attendanceService.batchRevoke(batchId, req.user.id, req.user.role);
+  }
+
+  // ==================== Webhook（生物识别设备）====================
+
+  @Post('webhook')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '生物识别设备 Webhook 推送（门禁/刷脸）' })
+  @ApiResponse({ status: 200, description: '处理成功' })
+  // Webhook 不走 JWT 鉴权，使用 HMAC 验签
+  handleWebhook(
+    @Body() payload: WebhookPayloadDto,
+    @Query('deviceId') deviceId?: string,
+  ) {
+    return this.attendanceService.handleWebhook(payload, deviceId);
   }
 }

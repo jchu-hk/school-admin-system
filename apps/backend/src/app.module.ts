@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthModule } from './modules/health/health.module';
+import { BackupModule } from './modules/backup/backup.module';
 import { UserModule } from './modules/user/user.module';
 import { User } from './modules/user/user.entity';
 import { AuditModule } from './modules/audit/audit.module';
@@ -41,6 +42,7 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
       inject: [ConfigService],
     }),
     HealthModule,
+    BackupModule,
     UserModule,
     AuditModule,
     InquiryModule,

@@ -37,7 +37,9 @@ export class BackupService {
       retentionDays: 30,
       scheduleTime: '02:00',
       notificationEmail: this.configService.get('BACKUP_NOTIFICATION_EMAIL'),
-      notificationWebhook: this.configService.get('BACKUP_NOTIFICATION_WEBHOOK'),
+      notificationWebhook: this.configService.get(
+        'BACKUP_NOTIFICATION_WEBHOOK',
+      ),
     };
   }
 
@@ -193,9 +195,7 @@ export class BackupService {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
 
-    this.logger.log(
-      `开始清理 ${retentionDays} 天前的备份记录和文件`,
-    );
+    this.logger.log(`开始清理 ${retentionDays} 天前的备份记录和文件`);
 
     // 查找需要删除的记录
     const oldRecords = await this.backupRepository.find({
@@ -363,7 +363,10 @@ export class BackupService {
 
       return { valid: true, message: '备份文件完整性验证通过' };
     } catch (error) {
-      return { valid: false, message: `文件不存在或无法访问: ${error.message}` };
+      return {
+        valid: false,
+        message: `文件不存在或无法访问: ${error.message}`,
+      };
     }
   }
 

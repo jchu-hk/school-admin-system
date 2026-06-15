@@ -1,9 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Attendance, AttendanceStatus } from './attendance.entity';
+import { Repository, MoreThan, LessThanOrEqual, In, Between } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  Attendance,
+  AttendanceStatus,
+  SyncSource,
+  SyncStatus,
+} from './attendance.entity';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
+import {
+  BatchCreateAttendanceDto,
+  BatchRecordDto,
+  ConfirmPreviewDto,
+  WebhookPayloadDto,
+  WebhookRecordDto,
+} from './dto/batch-attendance.dto';
 
 @Injectable()
 export class AttendanceService {
@@ -12,12 +25,16 @@ export class AttendanceService {
     private attendanceRepository: Repository<Attendance>,
   ) {}
 
+  // ==================== 基础 CRUD ====================
+
   async create(createDto: CreateAttendanceDto): Promise<Attendance> {
     const attendance = this.attendanceRepository.create({
       ...createDto,
       attendanceDate: createDto.attendanceDate
         ? new Date(createDto.attendanceDate)
         : new Date(),
+      syncSource: SyncSource.MANUAL,
+      syncStatus: SyncStatus.SUCCESS,
     });
     return this.attendanceRepository.save(attendance);
   }
@@ -102,7 +119,245 @@ export class AttendanceService {
     await this.attendanceRepository.softDelete(id);
   }
 
-  // ---- 统计 ----
+  // ==================== 批量操作（按 F-ATT-001 spec）====================
+
+  /** 批量创建出勤记录（F-ATT-001 批量录入 + 确认预览）*/
+  async batchCreate(
+    dto: BatchCreateAttendanceDto,
+    createdBy: string,
+  ): Promise<{ batchId: string; records: Attendance[]; count: number }> {
+    const batchId = uuidv4();
+    const canRevokeUntil = new Date(Date.now() + 15 * 60 * 1000); // 15分钟
+
+    const attendanceRecords: Partial<Attendance>[] = dto.records.map((r) => ({
+      studentId: r.studentId,
+      classId: dto.classId,
+      attendanceDate: new Date(dto.attendanceDate),
+      status: r.status,
+      checkInTime: r.checkInTime,
+      checkOutTime: r.checkOutTime,
+      attendanceType: r.attendanceType,
+      remark: r.remark,
+      syncSource: dto.syncSource || SyncSource.MANUAL,
+      syncStatus: SyncStatus.SUCCESS,
+      deviceId: dto.deviceId,
+      deviceName: dto.deviceName,
+      batchId,
+      canRevokeUntil,
+      createdBy,
+    }));
+
+    const records = await this.attendanceRepository.save(attendanceRecords as Attendance[]);
+    return { batchId, records, count: records.length };
+  }
+
+  /** 确认预览（不保存，返回摘要统计）*/
+  async confirmPreview(
+    dto: ConfirmPreviewDto,
+  ): Promise<{
+    attendanceDate: string;
+    classId: string;
+    studentCount: number;
+    statusSummary: Record<string, number>;
+    records: Array<{ studentId: string; studentName: string; status: AttendanceStatus }>;
+  }> {
+    const statusSummary: Record<string, number> = {};
+    for (const r of dto.records) {
+      const key = r.status;
+      statusSummary[key] = (statusSummary[key] || 0) + 1;
+    }
+
+    return {
+      attendanceDate: dto.attendanceDate,
+      classId: dto.classId || '',
+      studentCount: dto.records.length,
+      statusSummary,
+      records: dto.records.map((r) => ({
+        studentId: r.studentId || '',
+        studentName: r.studentName || '',
+        status: r.status,
+      })),
+    };
+  }
+
+  /** 批量撤销（仅 15 分钟内可操作）*/
+  async batchRevoke(
+    batchId: string,
+    userId: string,
+    userRole: string,
+  ): Promise<{ deletedCount: number }> {
+    const records = await this.attendanceRepository.find({
+      where: { batchId },
+      select: ['id', 'batchId', 'canRevokeUntil', 'createdBy'],
+    });
+
+    if (records.length === 0) {
+      throw new NotFoundException(`批次 ${batchId} 无可撤销记录`);
+    }
+
+    const firstRecord = records[0];
+
+    // 检查撤销权限：录入人或校务主任
+    const canRevokeRoles = ['school_director', 'system_admin'];
+    const isCreator = firstRecord.createdBy === userId;
+    const isDirector = canRevokeRoles.includes(userRole);
+
+    if (!isCreator && !isDirector) {
+      throw new ForbiddenException('无批量撤销权限，仅录入人或校务主任可操作');
+    }
+
+    // 检查是否在15分钟撤销窗口内
+    const now = new Date();
+    if (!firstRecord.canRevokeUntil || now > firstRecord.canRevokeUntil) {
+      throw new BadRequestException(
+        '已超过15分钟撤销时限，请逐条删除或联系校务主任',
+      );
+    }
+
+    const result = await this.attendanceRepository
+      .createQueryBuilder()
+      .softDelete()
+      .where('batch_id = :batchId', { batchId })
+      .execute();
+
+    return { deletedCount: result.affected || records.length };
+  }
+
+  // ==================== 按班级/日期查询（F-ATT-001 Step 1.1）====================
+
+  /** 按班级和日期获取出勤记录（对接 eClass API）*/
+  async findByClassAndDate(
+    classId: string,
+    date: string,
+  ): Promise<{
+    classId: string;
+    date: string;
+    records: Attendance[];
+    summary: {
+      total: number;
+      present: number;
+      absent: number;
+      late: number;
+    };
+  }> {
+    const records = await this.attendanceRepository.find({
+      where: { classId, attendanceDate: new Date(date) },
+      relations: ['student', 'teacher'],
+      order: { checkInTime: 'ASC' },
+    });
+
+    const total = records.length;
+    const present = records.filter((r) => r.status === AttendanceStatus.PRESENT).length;
+    const absent = records.filter((r) => r.status === AttendanceStatus.ABSENT).length;
+    const late = records.filter((r) => r.status === AttendanceStatus.LATE).length;
+
+    return {
+      classId,
+      date,
+      records,
+      summary: { total, present, absent, late },
+    };
+  }
+
+  // ==================== Webhook 生物识别设备数据接收 ====================
+
+  /** 处理生物识别设备 Webhook 推送（F-ATT-001 Step 1.3）*/
+  async handleWebhook(
+    payload: WebhookPayloadDto,
+    deviceId?: string,
+  ): Promise<{
+    received: number;
+    processed: number;
+    failed: number;
+    results: Array<{ studentId: string; success: boolean; error?: string }>;
+  }> {
+    const results: Array<{ studentId: string; success: boolean; error?: string }> = [];
+    let processed = 0;
+    let failed = 0;
+
+    for (const record of payload.records) {
+      try {
+        const existing = await this.attendanceRepository.findOne({
+          where: {
+            studentId: record.studentId,
+            attendanceDate: new Date(record.timestamp.split('T')[0]),
+          },
+        });
+
+        if (existing) {
+          // 更新现有记录
+          existing.checkInTime = record.timestamp.split('T')[1]?.substring(0, 8);
+          existing.syncSource = payload.source === 'face' ? SyncSource.BIOMETRIC : SyncSource.BIOMETRIC;
+          existing.syncStatus = SyncStatus.SUCCESS;
+          existing.deviceId = record.deviceId || deviceId;
+          existing.deviceName = record.deviceName;
+          existing.remark = record.eventType;
+          await this.attendanceRepository.save(existing);
+        } else {
+          // 新建记录
+          await this.attendanceRepository.save({
+            studentId: record.studentId,
+            attendanceDate: new Date(record.timestamp.split('T')[0]),
+            checkInTime: record.timestamp.split('T')[1]?.substring(0, 8),
+            status: record.status || AttendanceStatus.PRESENT,
+            syncSource: SyncSource.BIOMETRIC,
+            syncStatus: SyncStatus.SUCCESS,
+            deviceId: record.deviceId || deviceId,
+            deviceName: record.deviceName,
+            attendanceType: record.eventType === 'check_out' ? 'check_out' : 'check_in',
+            createdBy: 'system',
+          } as Attendance);
+        }
+        results.push({ studentId: record.studentId, success: true });
+        processed++;
+      } catch (err) {
+        results.push({ studentId: record.studentId, success: false, error: String(err) });
+        failed++;
+      }
+    }
+
+    return { received: payload.records.length, processed, failed, results };
+  }
+
+  // ==================== 受影响学生列表（F-ATT-001 数据源独立状态）====================
+
+  /** 获取受影响学生列表（数据源同步失败时）*/
+  async getAffectedStudents(date?: string): Promise<{
+    date: string;
+    total: number;
+    students: Array<{
+      studentId: string;
+      studentName: string;
+      classId: string;
+      affectedSources: string[];
+      suggestedAction: 'confirm_present' | 'mark_pending' | 'none';
+      lastKnownStatus: string;
+    }>;
+  }> {
+    const targetDate = date || new Date().toISOString().split('T')[0];
+
+    // 查找同步失败或离线的记录
+    const failedRecords = await this.attendanceRepository.find({
+      where: {
+        attendanceDate: new Date(targetDate),
+        syncStatus: In([SyncStatus.FAILED, SyncStatus.PARTIAL, SyncStatus.OFFLINE]),
+      },
+      relations: ['student'],
+    });
+
+    const students = failedRecords.map((r) => ({
+      studentId: r.studentId,
+      studentName: (r.student as any)?.name || r.studentId,
+      classId: r.classId,
+      affectedSources: [r.deviceName || r.deviceId || r.syncSource],
+      suggestedAction: 'confirm_present' as const,
+      lastKnownStatus: r.syncStatus,
+    }));
+
+    return { date: targetDate, total: students.length, students };
+  }
+
+  // ==================== 统计 ====================
 
   async getStats(
     classId?: string,
@@ -163,6 +418,7 @@ export class AttendanceService {
       absent,
       late,
       leaveEarly,
+      leaveEarly,
       sickLeave,
       personalLeave,
       attendanceRate,
@@ -204,7 +460,6 @@ export class AttendanceService {
     return this.attendanceRepository.save(record);
   }
 
-  // ---- 学生出勤记录 ----
   async findByStudent(
     studentId: string,
     page: number = 1,
@@ -234,7 +489,6 @@ export class AttendanceService {
     return { records, total };
   }
 
-  // ---- 班级出勤统计 ----
   async getClassStats(
     classId: string,
     startDate?: string,
@@ -301,7 +555,6 @@ export class AttendanceService {
     };
   }
 
-  // ---- 每日统计 ----
   async getDailyStats(
     date: string,
     classId?: string,
@@ -356,7 +609,6 @@ export class AttendanceService {
     };
   }
 
-  // ---- 月度统计 ----
   async getMonthlyStats(
     year: number,
     month: number,
