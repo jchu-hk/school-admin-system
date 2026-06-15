@@ -20,6 +20,7 @@ import { TuitionModule } from './modules/tuition/tuition.module';
 import { FeeModule } from './modules/fee/fee.module';
 import { ScholarshipModule } from './modules/scholarship/scholarship.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
+import { AiModule } from './modules/ai/ai.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { AttendanceModule } from './modules/attendance/attendance.module';
     FeeModule,
     ScholarshipModule,
     AttendanceModule,
+    AiModule,
   ],
   controllers: [],
   providers: [],
