@@ -231,6 +231,7 @@ export class AiSuggestionService {
 
     const classLeaveRecords = await this.leaveRepository.find({
       where: {
+        classId,
         createdAt: Between(thirtyDaysAgo, today),
       },
     });
@@ -439,6 +440,7 @@ export class AiSuggestionService {
 
     const messages: string[] = [];
     let analyzedClasses = 0;
+    let totalAnalyzedStudents = 0;
     let newSuggestionsCount = 0;
 
     const classRecords = await this.attendanceRepository
@@ -448,6 +450,13 @@ export class AiSuggestionService {
 
     for (const record of classRecords) {
       if (classId && record.classId !== classId) continue;
+
+      const classStudentIds = await this.attendanceRepository
+        .createQueryBuilder('a')
+        .select('DISTINCT a.student_id', 'studentId')
+        .where('a.class_id = :classId', { classId: record.classId })
+        .getRawMany();
+      totalAnalyzedStudents += classStudentIds.length;
 
       const classAnalysis = await this.getClassAnalysis(record.classId);
       analyzedClasses++;
@@ -466,7 +475,7 @@ export class AiSuggestionService {
     );
 
     return {
-      analyzedStudents: 0,
+      analyzedStudents: totalAnalyzedStudents,
       analyzedClasses,
       newSuggestions: newSuggestionsCount,
       messages,
