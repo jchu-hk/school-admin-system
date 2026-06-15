@@ -16,7 +16,6 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiQuery,
-  ApiEnumValues,
 } from '@nestjs/swagger';
 import { BackupService } from './backup.service';
 import {
@@ -87,7 +86,11 @@ export class BackupController {
    */
   @Get('stats/summary')
   @ApiOperation({ summary: '获取备份统计信息' })
-  @ApiResponse({ status: 200, description: '备份统计', type: BackupStatisticsDto })
+  @ApiResponse({
+    status: 200,
+    description: '备份统计',
+    type: BackupStatisticsDto,
+  })
   async getStatistics(): Promise<BackupStatisticsDto> {
     return this.backupService.getStatistics();
   }

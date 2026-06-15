@@ -26,7 +26,6 @@ import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import {
   BatchCreateAttendanceDto,
   ConfirmPreviewDto,
-  BatchRevokeDto,
   WebhookPayloadDto,
 } from './dto/batch-attendance.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -290,11 +289,12 @@ export class AttendanceController {
   @ApiOperation({ summary: '批量撤销（仅15分钟内有效）' })
   @ApiResponse({ status: 200, description: '批量撤销成功' })
   @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
-  batchRevoke(
-    @Param('batchId') batchId: string,
-    @Request() req,
-  ) {
-    return this.attendanceService.batchRevoke(batchId, req.user.id, req.user.role);
+  batchRevoke(@Param('batchId') batchId: string, @Request() req) {
+    return this.attendanceService.batchRevoke(
+      batchId,
+      req.user.id,
+      req.user.role,
+    );
   }
 
   // ==================== Webhook（生物识别设备）====================

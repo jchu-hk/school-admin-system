@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThan, LessThanOrEqual, In, Between } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import {
   Attendance,
@@ -12,10 +17,8 @@ import { CreateAttendanceDto } from './dto/create-attendance.dto';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import {
   BatchCreateAttendanceDto,
-  BatchRecordDto,
   ConfirmPreviewDto,
   WebhookPayloadDto,
-  WebhookRecordDto,
 } from './dto/batch-attendance.dto';
 
 @Injectable()
@@ -147,19 +150,23 @@ export class AttendanceService {
       createdBy,
     }));
 
-    const records = await this.attendanceRepository.save(attendanceRecords as Attendance[]);
+    const records = await this.attendanceRepository.save(
+      attendanceRecords as Attendance[],
+    );
     return { batchId, records, count: records.length };
   }
 
   /** 确认预览（不保存，返回摘要统计）*/
-  async confirmPreview(
-    dto: ConfirmPreviewDto,
-  ): Promise<{
+  async confirmPreview(dto: ConfirmPreviewDto): Promise<{
     attendanceDate: string;
     classId: string;
     studentCount: number;
     statusSummary: Record<string, number>;
-    records: Array<{ studentId: string; studentName: string; status: AttendanceStatus }>;
+    records: Array<{
+      studentId: string;
+      studentName: string;
+      status: AttendanceStatus;
+    }>;
   }> {
     const statusSummary: Record<string, number> = {};
     for (const r of dto.records) {
@@ -247,9 +254,15 @@ export class AttendanceService {
     });
 
     const total = records.length;
-    const present = records.filter((r) => r.status === AttendanceStatus.PRESENT).length;
-    const absent = records.filter((r) => r.status === AttendanceStatus.ABSENT).length;
-    const late = records.filter((r) => r.status === AttendanceStatus.LATE).length;
+    const present = records.filter(
+      (r) => r.status === AttendanceStatus.PRESENT,
+    ).length;
+    const absent = records.filter(
+      (r) => r.status === AttendanceStatus.ABSENT,
+    ).length;
+    const late = records.filter(
+      (r) => r.status === AttendanceStatus.LATE,
+    ).length;
 
     return {
       classId,
@@ -271,7 +284,11 @@ export class AttendanceService {
     failed: number;
     results: Array<{ studentId: string; success: boolean; error?: string }>;
   }> {
-    const results: Array<{ studentId: string; success: boolean; error?: string }> = [];
+    const results: Array<{
+      studentId: string;
+      success: boolean;
+      error?: string;
+    }> = [];
     let processed = 0;
     let failed = 0;
 
@@ -286,8 +303,13 @@ export class AttendanceService {
 
         if (existing) {
           // 更新现有记录
-          existing.checkInTime = record.timestamp.split('T')[1]?.substring(0, 8);
-          existing.syncSource = payload.source === 'face' ? SyncSource.BIOMETRIC : SyncSource.BIOMETRIC;
+          existing.checkInTime = record.timestamp
+            .split('T')[1]
+            ?.substring(0, 8);
+          existing.syncSource =
+            payload.source === 'face'
+              ? SyncSource.BIOMETRIC
+              : SyncSource.BIOMETRIC;
           existing.syncStatus = SyncStatus.SUCCESS;
           existing.deviceId = record.deviceId || deviceId;
           existing.deviceName = record.deviceName;
@@ -304,14 +326,19 @@ export class AttendanceService {
             syncStatus: SyncStatus.SUCCESS,
             deviceId: record.deviceId || deviceId,
             deviceName: record.deviceName,
-            attendanceType: record.eventType === 'check_out' ? 'check_out' : 'check_in',
+            attendanceType:
+              record.eventType === 'check_out' ? 'check_out' : 'check_in',
             createdBy: 'system',
           } as Attendance);
         }
         results.push({ studentId: record.studentId, success: true });
         processed++;
       } catch (err) {
-        results.push({ studentId: record.studentId, success: false, error: String(err) });
+        results.push({
+          studentId: record.studentId,
+          success: false,
+          error: String(err),
+        });
         failed++;
       }
     }
@@ -340,7 +367,11 @@ export class AttendanceService {
     const failedRecords = await this.attendanceRepository.find({
       where: {
         attendanceDate: new Date(targetDate),
-        syncStatus: In([SyncStatus.FAILED, SyncStatus.PARTIAL, SyncStatus.OFFLINE]),
+        syncStatus: In([
+          SyncStatus.FAILED,
+          SyncStatus.PARTIAL,
+          SyncStatus.OFFLINE,
+        ]),
       },
       relations: ['student'],
     });

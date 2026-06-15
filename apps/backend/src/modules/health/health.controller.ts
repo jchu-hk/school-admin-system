@@ -1,10 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiExcludeEndpoint,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { HealthService, HealthCheckResponse } from './health.service';
 
 @ApiTags('Health')
@@ -28,7 +23,9 @@ export class HealthController {
    * GET /health/detailed
    */
   @Get('detailed')
-  @ApiOperation({ summary: 'Get detailed health status including database checks' })
+  @ApiOperation({
+    summary: 'Get detailed health status including database checks',
+  })
   @ApiResponse({
     status: 200,
     description: 'Detailed health status',
@@ -43,7 +40,9 @@ export class HealthController {
    * GET /health/database
    */
   @Get('database')
-  @ApiOperation({ summary: 'Get database health status (WAL, connection pool)' })
+  @ApiOperation({
+    summary: 'Get database health status (WAL, connection pool)',
+  })
   @ApiResponse({
     status: 200,
     description: 'Database health check result',
@@ -51,15 +50,29 @@ export class HealthController {
   })
   async getDatabaseHealth(): Promise<{
     connection: { status: string; message: string; responseTimeMs?: number };
-    walBacklog: { status: string; message: string; walSizeMb?: number; thresholdMb: number };
-    connectionPool: { status: string; used: number; max: number; available: number };
+    walBacklog: {
+      status: string;
+      message: string;
+      walSizeMb?: number;
+      thresholdMb: number;
+    };
+    connectionPool: {
+      status: string;
+      used: number;
+      max: number;
+      available: number;
+    };
     version: string;
   }> {
     const response = await this.healthService.getFullHealthStatus();
-    const dbCheck = response.checks.find((c) => c.name === 'database_connection');
+    const dbCheck = response.checks.find(
+      (c) => c.name === 'database_connection',
+    );
     const walCheck = response.checks.find((c) => c.name === 'wal_backlog');
     const poolCheck = response.checks.find((c) => c.name === 'connection_pool');
-    const versionCheck = response.checks.find((c) => c.name === 'database_version');
+    const versionCheck = response.checks.find(
+      (c) => c.name === 'database_version',
+    );
 
     return {
       connection: {

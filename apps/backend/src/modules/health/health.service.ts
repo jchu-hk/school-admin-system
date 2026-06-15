@@ -2,10 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { promisify } from 'util';
-import { exec as execRaw } from 'child_process';
-
-const execAsync = promisify(execRaw);
 
 export enum HealthStatus {
   HEALTHY = 'healthy',
@@ -286,11 +282,11 @@ export class HealthService {
         WHERE state IS NOT NULL
       `);
 
-      const currentConnections = parseInt(result[0]?.current_connections || '0', 10);
-      const maxConnections = parseInt(
-        result[0]?.max_connections || '100',
+      const currentConnections = parseInt(
+        result[0]?.current_connections || '0',
         10,
       );
+      const maxConnections = parseInt(result[0]?.max_connections || '100', 10);
       const available = maxConnections - currentConnections;
       const usageRatio = currentConnections / maxConnections;
 

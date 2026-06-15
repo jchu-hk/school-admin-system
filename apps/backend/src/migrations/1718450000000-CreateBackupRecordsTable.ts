@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table, TableIndex, TableEnum } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
 
 /**
  * 创建备份记录表 (backup_records)
@@ -176,9 +176,15 @@ export class CreateBackupRecordsTable1718450000000 implements MigrationInterface
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropIndex('backup_records', 'IDX_backup_records_created_at');
+    await queryRunner.dropIndex(
+      'backup_records',
+      'IDX_backup_records_created_at',
+    );
     await queryRunner.dropIndex('backup_records', 'IDX_backup_records_status');
-    await queryRunner.dropIndex('backup_records', 'IDX_backup_records_backup_no');
+    await queryRunner.dropIndex(
+      'backup_records',
+      'IDX_backup_records_backup_no',
+    );
     await queryRunner.dropTable('backup_records');
     await queryRunner.query('DROP TYPE IF EXISTS "backup_type_enum"');
     await queryRunner.query('DROP TYPE IF EXISTS "backup_status_enum"');

@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { BackupService } from './backup.service';
-import { BackupType } from './backup.entity';
 
 /**
  * 定时备份任务调度器

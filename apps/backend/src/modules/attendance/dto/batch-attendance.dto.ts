@@ -7,12 +7,15 @@ import {
   ValidateNested,
   IsNotEmpty,
   IsUUID,
-  IsIn,
   Max,
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { AttendanceStatus, AttendanceType, SyncSource } from '../attendance.entity';
+import {
+  AttendanceStatus,
+  AttendanceType,
+  SyncSource,
+} from '../attendance.entity';
 
 /** 批量录入单条记录 */
 export class BatchRecordDto {
