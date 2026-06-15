@@ -449,7 +449,6 @@ export class AttendanceService {
       absent,
       late,
       leaveEarly,
-      leaveEarly,
       sickLeave,
       personalLeave,
       attendanceRate,
