@@ -41,9 +41,7 @@ export class AiSuggestionService {
     userRole: string,
     classId?: string,
   ): Promise<DashboardAiSummary> {
-    this.logger.log(
-      `生成仪表板AI摘要: role=${userRole}, classId=${classId}`,
-    );
+    this.logger.log(`生成仪表板AI摘要: role=${userRole}, classId=${classId}`);
 
     const today = new Date();
     const sevenDaysAgo = new Date(today);
@@ -93,16 +91,14 @@ export class AiSuggestionService {
       highPriorityCount,
       urgentSuggestions,
       attendanceRiskSummary: {
-        criticalStudents: riskStudents.filter((s) => s.riskScore >= 80)
-          .length,
+        criticalStudents: riskStudents.filter((s) => s.riskScore >= 80).length,
         highRiskStudents: riskStudents.filter(
           (s) => s.riskScore >= 60 && s.riskScore < 80,
         ).length,
         mediumRiskStudents: riskStudents.filter(
           (s) => s.riskScore >= 30 && s.riskScore < 60,
         ).length,
-        improvingStudents: riskStudents.filter((s) => s.riskScore < 30)
-          .length,
+        improvingStudents: riskStudents.filter((s) => s.riskScore < 30).length,
       },
       summaryMessage,
       recommendedActions,
@@ -113,9 +109,7 @@ export class AiSuggestionService {
    * 获取学生分析报告
    * 分析单个学生的出勤、请假数据，生成智能建议
    */
-  async getStudentAnalysis(
-    studentId: string,
-  ): Promise<StudentAnalysisReport> {
+  async getStudentAnalysis(studentId: string): Promise<StudentAnalysisReport> {
     this.logger.log(`分析学生: ${studentId}`);
 
     const today = new Date();
@@ -132,7 +126,7 @@ export class AiSuggestionService {
       order: { attendanceDate: 'DESC' },
     });
 
-    const leaveRecords = await this.leaveRepository.find({
+    const _leaveRecords = await this.leaveRepository.find({
       where: {
         studentId,
         createdAt: Between(thirtyDaysAgo, today),
@@ -153,8 +147,7 @@ export class AiSuggestionService {
       (r) => r.status === AttendanceStatus.SICK_LEAVE,
     ).length;
 
-    const attendanceRate =
-      totalDays > 0 ? (presentDays / totalDays) * 100 : 0;
+    const attendanceRate = totalDays > 0 ? (presentDays / totalDays) * 100 : 0;
 
     const consecutiveAbsentDays =
       this.detectConsecutiveAbsences(attendanceRecords);
@@ -249,9 +242,7 @@ export class AiSuggestionService {
     const classAttendanceRate =
       totalRecords > 0 ? (presentRecords / totalRecords) * 100 : 0;
 
-    const studentIds = [
-      ...new Set(classRecords.map((r) => r.studentId)),
-    ];
+    const studentIds = [...new Set(classRecords.map((r) => r.studentId))];
     const atRiskStudents: string[] = [];
 
     for (const sid of studentIds.slice(0, 20)) {
@@ -271,8 +262,7 @@ export class AiSuggestionService {
 
     let overallRiskLevel: 'low' | 'medium' | 'high' | 'critical';
     const riskRatio = atRiskStudents.length / Math.max(studentIds.length, 1);
-    if (riskRatio >= 0.3 || classAttendanceRate < 90)
-      overallRiskLevel = 'high';
+    if (riskRatio >= 0.3 || classAttendanceRate < 90) overallRiskLevel = 'high';
     else if (riskRatio >= 0.15 || classAttendanceRate < 95)
       overallRiskLevel = 'medium';
     else overallRiskLevel = 'low';
@@ -310,9 +300,7 @@ export class AiSuggestionService {
   /**
    * 智能建议列表（带过滤）
    */
-  async getSuggestions(
-    filters: GetSuggestionsDto,
-  ): Promise<{
+  async getSuggestions(filters: GetSuggestionsDto): Promise<{
     suggestions: AiSuggestion[];
     total: number;
     page: number;
@@ -366,9 +354,7 @@ export class AiSuggestionService {
   /**
    * 获取建议统计
    */
-  async getSuggestionStats(
-    classId?: string,
-  ): Promise<SuggestionStatsResponse> {
+  async getSuggestionStats(classId?: string): Promise<SuggestionStatsResponse> {
     let suggestions = [...this.suggestionsStore];
 
     if (classId) {
@@ -443,9 +429,7 @@ export class AiSuggestionService {
    * 手动触发 AI 分析
    * F-AI-001: 执行全量学生出勤分析并生成建议
    */
-  async triggerAnalysis(
-    classId?: string,
-  ): Promise<{
+  async triggerAnalysis(classId?: string): Promise<{
     analyzedStudents: number;
     analyzedClasses: number;
     newSuggestions: number;
@@ -548,9 +532,7 @@ export class AiSuggestionService {
     return maxConsecutive;
   }
 
-  private detectAttendancePattern(
-    records: Attendance[],
-  ): string | undefined {
+  private detectAttendancePattern(records: Attendance[]): string | undefined {
     if (records.length < 7) return undefined;
 
     const mondayRecords = records.filter((r) => {
@@ -1052,9 +1034,7 @@ export class AiSuggestionService {
         (s) => s.riskScore >= 80,
       ).length;
       if (criticalStudents > 0) {
-        actions.push(
-          `优先跟进 ${criticalStudents} 名高风险(分数≥80)学生`,
-        );
+        actions.push(`优先跟进 ${criticalStudents} 名高风险(分数≥80)学生`);
       }
     }
 

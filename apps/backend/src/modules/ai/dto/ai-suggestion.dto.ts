@@ -1,11 +1,4 @@
-import {
-  IsOptional,
-  IsString,
-  IsEnum,
-  IsDateString,
-  IsArray,
-  IsObject,
-} from 'class-validator';
+import { IsOptional, IsString, IsEnum, IsDateString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 /** AI 智能建议类型枚举 */
