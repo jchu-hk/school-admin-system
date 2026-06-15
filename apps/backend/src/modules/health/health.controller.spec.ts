@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
+import { DataSource } from 'typeorm';
 import { HealthController } from './health.controller';
 import { HealthService } from './health.service';
 
@@ -6,10 +8,23 @@ describe('HealthController', () => {
   let controller: HealthController;
   let service: HealthService;
 
+  const mockDataSource = {
+    query: jest.fn().mockResolvedValue([{ now: new Date() }]),
+    isInitialized: true,
+  };
+
+  const mockConfigService = {
+    get: jest.fn().mockReturnValue('test'),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [HealthController],
-      providers: [HealthService],
+      providers: [
+        HealthService,
+        { provide: DataSource, useValue: mockDataSource },
+        { provide: ConfigService, useValue: mockConfigService },
+      ],
     }).compile();
 
     controller = module.get<HealthController>(HealthController);
