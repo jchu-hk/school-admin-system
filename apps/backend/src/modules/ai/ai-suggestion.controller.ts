@@ -30,7 +30,10 @@ export class AiSuggestionController {
    * GET /api/v1/ai/suggestions/dashboard-summary
    */
   @Get('dashboard-summary')
-  async getDashboardSummary(@Req() req: any, @Query('classId') classId?: string) {
+  async getDashboardSummary(
+    @Req() req: any,
+    @Query('classId') classId?: string,
+  ) {
     const userRole = req.user?.role || 'officer';
     return this.aiSuggestionService.getDashboardSummary(userRole, classId);
   }
