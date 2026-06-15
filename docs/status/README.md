@@ -7,8 +7,8 @@
 
 ## 📊 PM状态报告
 
-**最后更新**: 2026-06-15 14:10
-**分支**: feature/dev-fai001-ai-suggestion
+**最后更新**: 2026-06-15 14:15
+**分支**: main
 
 ---
 
@@ -75,11 +75,11 @@
 
 ### 📈 Git提交
 
+• 56b3a17 Merge branch 'feature/dev-fai001-ai-suggestion'
+• 5866730 fix(ai): add classId filter to leaveRepository.find and return actual analyzedStudents count
+• 4ed6aa0 Merge: 解决README.md冲突，使用最新状态
+• a3cf783 📊 PM状态更新 2026-06-15 14:10
 • 5361372 fix(ai): 修复ESLint lint错误
-• 9c4e50f feat(ai): 实现F-AI-001 AI智能建议功能
-• 05f7650 fix: 移除attendance.service.ts中重复的leaveEarly属性
-• df0d15d fix: 修复health模块测试配置
-• 58d8161 fix: 移除未使用的import解决lint错误
 
 ---
 
@@ -96,7 +96,7 @@
 
 ### 🎯 版本
 
-**当前**: v0.2.1-34-g5361372
+**当前**: v0.2.1-41-g56b3a17
 
 ---
 
@@ -107,8 +107,8 @@
 ## 📁 历史报告
 
 查看Git历史获取完整版本记录:
-```bash
+\`\`\`bash
 git log --follow docs/status/README.md
-```
+\`\`\`
 
 或访问: https://github.com/jchu-hk/school-admin-system/commits/main/docs/status/
