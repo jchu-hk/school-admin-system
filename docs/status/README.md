@@ -7,7 +7,7 @@
 
 ## 📊 PM状态报告
 
-**最后更新**: 2026-06-15 14:15
+**最后更新**: 2026-06-15 14:30
 **分支**: main
 
 ---
@@ -75,11 +75,11 @@
 
 ### 📈 Git提交
 
+• c46775b 📊 PM状态更新 2026-06-15 14:15
 • 56b3a17 Merge branch 'feature/dev-fai001-ai-suggestion'
 • 5866730 fix(ai): add classId filter to leaveRepository.find and return actual analyzedStudents count
 • 4ed6aa0 Merge: 解决README.md冲突，使用最新状态
 • a3cf783 📊 PM状态更新 2026-06-15 14:10
-• 5361372 fix(ai): 修复ESLint lint错误
 
 ---
 
@@ -96,7 +96,7 @@
 
 ### 🎯 版本
 
-**当前**: v0.2.1-41-g56b3a17
+**当前**: v0.2.1-42-gc46775b
 
 ---
 
