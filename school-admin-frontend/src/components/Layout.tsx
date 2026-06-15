@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, BookOpen, Settings, LogOut, GraduationCap, Calendar, MessageCircle, Bell, UserCog, DollarSign, ChevronDown } from 'lucide-react'
+import { LayoutDashboard, Users, BookOpen, Settings, LogOut, GraduationCap, Calendar, MessageCircle, Bell, UserCog, DollarSign, ChevronDown, ClipboardCheck } from 'lucide-react'
 import LanguageSelector from './LanguageSelector'
 import { useI18n } from '../i18n'
 import { getToken, removeToken } from '../utils/tokenService'
@@ -21,6 +21,7 @@ export default function Layout() {
   const navItems = [
     { label: t.nav.dashboard, icon: LayoutDashboard, path: '/dashboard' },
     { label: t.nav.studentManagement, icon: Users, path: '/students' },
+    { label: t.nav.attendance, icon: ClipboardCheck, path: '/attendance' },
     { label: t.nav.userManagement, icon: UserCog, path: '/users' },
     { label: t.nav.leaveManagement, icon: Calendar, path: '/leaves' },
     { label: t.nav.parentInquiry, icon: MessageCircle, path: '/inquiries' },

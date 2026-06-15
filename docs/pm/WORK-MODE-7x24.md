@@ -20,8 +20,26 @@
 - ✅ 持续工作直到完成
 
 ### 3. 当前已删除的定时任务
-- � ~~0 7,9,11,13,15,17,19,21 * * * scheduled-progress-report.sh~~
-- ✅ 已删除（2026-06-15）
+- ~~0 7,9,11,13,15,17,19,21 * * * scheduled-progress-report.sh~~ 已删除
+
+### 4. Agent Spawn规则（防浪费）
+- ❌ **禁止**未检查Git历史就spawn agent
+- ❌ **禁止**重复spawn已完成的工作
+- ✅ **必须**先检查: `git log | grep 关键字`
+- ✅ **必须**先检查: `gh pr list --state open`
+- ✅ **必须**合并同类任务为1个agent
+- ✅ **必须**已审查PR立即合并
+
+### 5. Spawn前必查清单
+```
+Spawn Agent前:
+1. git log --oneline | grep "任务关键字"  # 检查是否已完成
+2. gh pr list --state open               # 检查待审PR
+3. gh issue list --state open            # 检查活跃Issue
+4. 确认未完成 → 才spawn
+5. 多个同类 → 合并为1个agent
+6. PR已审查 → 立即merge再继续
+```
 
 ---
 

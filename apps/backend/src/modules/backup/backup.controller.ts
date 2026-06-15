@@ -16,6 +16,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiQuery,
+  ApiEnumValues,
 } from '@nestjs/swagger';
 import { BackupService } from './backup.service';
 import {
@@ -24,10 +25,11 @@ import {
   BackupSettingsDto,
   BackupStatisticsDto,
 } from './backup.dto';
-import { BackupRecord } from './backup.entity';
+import { BackupRecord, BackupStatus, BackupType } from './backup.entity';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { UserRole } from '../user/user.entity';
 
 @ApiTags('备份管理')
 @Controller('backups')
@@ -44,7 +46,7 @@ export class BackupController {
   @ApiOperation({ summary: '手动触发数据库备份' })
   @ApiResponse({ status: 201, description: '备份已触发', type: BackupRecord })
   @UseGuards(RolesGuard)
-  @Roles('SYSTEM_ADMIN', 'OPS')
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   async triggerBackup(
     @Body() dto: TriggerBackupDto,
     @Request() req,
@@ -60,8 +62,8 @@ export class BackupController {
   @ApiResponse({ status: 200, description: '备份记录列表' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'status', required: false, enum: String })
-  @ApiQuery({ name: 'type', required: false, enum: String })
+  @ApiQuery({ name: 'status', required: false, enum: BackupStatus })
+  @ApiQuery({ name: 'type', required: false, enum: BackupType })
   @ApiQuery({ name: 'startDate', required: false, type: String })
   @ApiQuery({ name: 'endDate', required: false, type: String })
   async getBackupList(
@@ -121,7 +123,7 @@ export class BackupController {
   @ApiOperation({ summary: '更新备份设置' })
   @ApiResponse({ status: 200, description: '更新后的备份设置' })
   @UseGuards(RolesGuard)
-  @Roles('SYSTEM_ADMIN')
+  @Roles(UserRole.SYSTEM_ADMIN)
   async updateSettings(
     @Body() dto: BackupSettingsDto,
   ): Promise<BackupSettingsDto> {
