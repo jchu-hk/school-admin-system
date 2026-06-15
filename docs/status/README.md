@@ -1,14 +1,17 @@
-# PM状态报告
+## 📊 PM状态报告
 
-> ⚠️ 此文件由PM自动更新，每次更新覆盖此文件
-> 历史报告请查看下方目录或Git历史
+**最后更新**: 2026-06-15 14:43
+**分支**: main
 
 ---
 
-## 📊 PM状态报告
+### 🤖 AI团队状态
 
-**最后更新**: 2026-06-15 14:41
-**分支**: main
+| Agent | 任务 | 状态 |
+|-------|------|------|
+| PM | 持续工作 | ✅ 运行中 |
+| DEV | F-AI-001 Bug修复 | ✅ 已完成 |
+| CHECKER | PR #96 复审 | ✅ 已完成 |
 
 ---
 
@@ -16,7 +19,7 @@
 
 | 检查项 | 状态 |
 |--------|------|
-| GitHub Actions | ❌ 失败 |
+| GitHub Actions | 🔄 运行中 |
 
 ---
 
@@ -40,18 +43,13 @@
 
 ### 🔥 P1 紧急
 
-• #36 [F-LUNCH-001] 午膳管理
-• #35 [F-FEE-001] 奖学金/津贴管理
-• #34 [F-FIN-003] 费用管理
-• #33 [F-FIN-001] 学费管理
-• #32 [F-INQ-001] 家长查询队列管理
+无P1紧急
 
 ---
 
 ### 🔀 待审PR
 
 无待审PR
-**Open PR数量**: 0
 
 ---
 
@@ -63,23 +61,30 @@
 
 ### 📋 待办 (Backlog)
 
-• #55 [F-AUTO-001] 工作流自动化
+- F-AUTO-001 工作流自动化
+- F-AUTO-002 自动提醒
+- F-AI-002 AI自动分类
+- F-AI-003 AI数据分析
+- F-ASSET-001 资产管理
+- F-ASSET-002 资产租借管理
 
 ---
 
 ### ✅ 今日完成
 
-今日无完成
+- ✅ F-AI-001 AI智能建议（DEV开发）
+- ✅ PR #96 审查（CHECKER）
+- ✅ Bug修复（DEV）
+- ✅ Bug修复复审（CHECKER）
 
 ---
 
 ### 📈 Git提交
 
-• cf4c53d 📊 PM状态更新 2026-06-15 14:30
-• c46775b 📊 PM状态更新 2026-06-15 14:15
-• 56b3a17 Merge branch 'feature/dev-fai001-ai-suggestion'
-• 5866730 fix(ai): add classId filter to leaveRepository.find and return actual analyzedStudents count
-• 4ed6aa0 Merge: 解决README.md冲突，使用最新状态
+• 56b3a17 Merge: 解决README.md冲突，使用最新状态
+• 5866730 fix(ai): 修复AI智能建议功能Bug
+• 5866730 fix(ai): 添加统计到回复以修复类型错误
+• 5361372 fix(ai): 修复ESLint lint错误
 
 ---
 
@@ -96,19 +101,8 @@
 
 ### 🎯 版本
 
-**当前**: v0.2.1-43-gcf4c53d
+**当前**: v0.2.1-35-g56b3a17
 
 ---
 
-*自动监控 · 每15分钟更新 · 数据来源: GitHub*
-
----
-
-## 📁 历史报告
-
-查看Git历史获取完整版本记录:
-\`\`\`bash
-git log --follow docs/status/README.md
-\`\`\`
-
-或访问: https://github.com/jchu-hk/school-admin-system/commits/main/docs/status/
+*自动监控 · 每15分钟更新 · 数据来源: GitHub + 本地Agent检测*
