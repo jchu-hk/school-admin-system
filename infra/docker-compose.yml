@@ -26,7 +26,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       # Initialize database with migrations on first start
-      - ./packages/database/migrations:/docker-entrypoint-initdb.d:ro
+      - ../packages/database/migrations:/docker-entrypoint-initdb.d:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-school_admin} -d ${DB_NAME:-school_admin}"]
