@@ -226,7 +226,7 @@ services:
       - "${OPA_PORT:-8181}:8181"
     command: run --server --log-level info --set=decision_logs.console=true
     volumes:
-      - ./infra/opa/policies:/policies:ro
+      - ./opa/policies:/policies:ro
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8181/health"]
@@ -245,7 +245,7 @@ services:
     ports:
       - "${PROMETHEUS_PORT:-9091}:9090"
     volumes:
-      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -273,7 +273,7 @@ services:
       GF_SERVER_ROOT_URL: "${GRAFANA_ROOT_URL:-}"
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
     depends_on:
       - prometheus
     restart: unless-stopped
