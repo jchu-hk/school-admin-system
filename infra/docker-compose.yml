@@ -72,8 +72,8 @@ services:
   # ------------------------------------------------------------
   backend:
     build:
-      context: ./apps/backend
-      dockerfile: Dockerfile
+      context: ../apps/backend
+      dockerfile: ../apps/backend/Dockerfile
       args:
         NODE_ENV: ${NODE_ENV:-development}
         NPM_REGISTRY: ${NPM_REGISTRY:-}
@@ -115,8 +115,8 @@ services:
       - "${BACKEND_PORT:-3000}:3000"
     volumes:
       # Mount source code in development for hot reload
-      - ./apps/backend/src:/app/src:ro
-      - ./packages:/app/packages:ro
+      - ../apps/backend/src:/app/src:ro
+      - ../packages:/app/packages:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -150,8 +150,8 @@ services:
   # ------------------------------------------------------------
   frontend:
     build:
-      context: ./school-admin-frontend
-      dockerfile: Dockerfile
+      context: ../apps/frontend
+      dockerfile: ../apps/frontend/Dockerfile
       args:
         REACT_APP_API_URL: ${FRONTEND_API_URL:-http://localhost:3000/api}
         REACT_APP_ENV: ${NODE_ENV:-development}
