@@ -1,6 +1,10 @@
 # ============================================================
 # NestJS Backend Dockerfile
 # Multi-stage build for optimal image size
+#
+# Build context: project root (where package.json lives)
+# Run from project root: docker build -f apps/backend/Dockerfile -t school-admin-backend .
+# Or via docker-compose: docker compose -f infra/docker-compose.yml build backend
 # ============================================================
 
 # ---- Base Stage ----
@@ -10,7 +14,7 @@ WORKDIR /app
 # Install dependencies for native modules
 RUN apk add --no-cache python3 make g++
 
-# Copy package files
+# Copy workspace files (from project root build context)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/*/package.json ./packages/
 COPY apps/backend/package.json ./apps/backend/

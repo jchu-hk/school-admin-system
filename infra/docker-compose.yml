@@ -72,8 +72,8 @@ services:
   # ------------------------------------------------------------
   backend:
     build:
-      context: ../apps/backend
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: apps/backend/Dockerfile
       args:
         NODE_ENV: ${NODE_ENV:-development}
         NPM_REGISTRY: ${NPM_REGISTRY:-}
@@ -150,8 +150,8 @@ services:
   # ------------------------------------------------------------
   frontend:
     build:
-      context: ../apps/frontend
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: apps/frontend/Dockerfile
       args:
         REACT_APP_API_URL: ${FRONTEND_API_URL:-http://localhost:3000/api}
         REACT_APP_ENV: ${NODE_ENV:-development}
