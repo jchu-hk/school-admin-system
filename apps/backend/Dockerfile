@@ -50,9 +50,6 @@ COPY --from=builder /app/apps/backend/dist ./dist
 COPY --from=builder /app/apps/backend/package.json ./package.json
 COPY --from=builder /app/packages ./packages
 
-# Copy migration files
-COPY packages/database/migrations ./migrations
-
 # Set ownership
 RUN chown -R nestjs:nodejs /app
 
