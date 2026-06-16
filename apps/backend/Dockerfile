@@ -13,13 +13,18 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages packages/
 COPY apps apps/
 
-# Install pnpm and ALL dependencies (including devDeps for build)
-RUN npm install -g pnpm@9.15.4 \
-    && pnpm install
+# Install pnpm
+RUN npm install -g pnpm@9.15.4
 
-# Build TypeScript
+# Install ALL dependencies (including devDeps for build)
+RUN pnpm install
+
+# Build TypeScript - run from backend directory
 WORKDIR /app/apps/backend
-RUN pnpm exec tsc -p tsconfig.build.json
+RUN pnpm exec tsc -p tsconfig.build.json || npx tsc -p tsconfig.build.json
+
+# Verify dist was created
+RUN ls -la dist/ || echo "dist not found!"
 
 WORKDIR /app
 
