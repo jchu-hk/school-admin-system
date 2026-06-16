@@ -1,68 +1,29 @@
 # ============================================================
-# NestJS Backend Dockerfile
-# Multi-stage build for optimal image size
-#
-# Build context: project root (where package.json lives)
-# Run from project root: docker build -f apps/backend/Dockerfile -t school-admin-backend .
-# Or via docker-compose: docker compose -f infra/docker-compose.yml build backend
+# NestJS Backend Dockerfile - Simplified
+# ============================================================
+# Build: docker build -f apps/backend/Dockerfile -t school-admin-backend .
 # ============================================================
 
-# ---- Base Stage ----
-FROM node:22-alpine AS base
+FROM node:22-bookworm
+
 WORKDIR /app
 
-# Install dependencies for native modules
-RUN apk add --no-cache python3 make g++
-
-# Copy workspace files (from project root build context)
+# Copy package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/*/package.json ./packages/
-COPY apps/backend/package.json ./apps/backend/
+COPY packages packages/
+COPY apps apps/
 
-# ---- Dependencies Stage ----
-FROM base AS deps
-RUN npm install -g pnpm@9.15.4 && pnpm install --frozen-lockfile --prod
+# Install pnpm and dependencies (--prod = no devDeps)
+RUN npm install -g pnpm@9.15.4 \
+    && pnpm install --frozen-lockfile --prod
 
-# ---- Build Stage ----
-FROM base AS builder
-WORKDIR /app
+# Build
+RUN pnpm --filter @school-admin/backend build
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-RUN pnpm --filter backend build
-
-# ---- Production Stage ----
-FROM node:22-alpine AS production
-WORKDIR /app
-
-# Security: run as non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nestjs -u 1001 -G nodejs
-
-# Install production dependencies only
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/*/package.json ./packages/
-COPY apps/backend/package.json ./apps/backend/
-
-RUN npm install -g pnpm@9.15.4 && \
-    pnpm install --frozen-lockfile --prod && \
-    cp -r node_modules /app/
-
-# Copy built application
-COPY --from=builder /app/apps/backend/dist ./dist
-COPY --from=builder /app/apps/backend/package.json ./package.json
-COPY --from=builder /app/packages ./packages
-
-# Set ownership
-RUN chown -R nestjs:nodejs /app
-
+# Create non-root user
+RUN useradd -m -s /bin/bash nestjs && chown -R nestjs:nestjs /app
 USER nestjs
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD wget -qO- http://localhost:3000/health || exit 1
 
 EXPOSE 3000
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "apps/backend/dist/main.js"]
