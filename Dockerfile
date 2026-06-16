@@ -1,30 +1,32 @@
-# Use Node.js 20 Alpine
-FROM node:20-alpine
+# syntax=docker/dockerfile:1
+# Use Node.js 22 Bookworm (full build toolchain)
+FROM node:22-bookworm
 
-# Set working directory
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm@8
+# Copy workspace files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps apps/
+COPY packages packages/
 
-# Copy package files
-COPY package.json pnpm-lock.yaml* ./
-COPY apps/backend/package.json ./apps/backend/
+# Install pnpm and all dependencies (including dev for build)
+RUN npm install -g pnpm@9.15.4 \
+    && pnpm install --frozen-lockfile
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+# Build backend using tsc (avoid nest CLI dependency)
+WORKDIR /app/apps/backend
+RUN pnpm exec tsc -p tsconfig.build.json
 
-# Copy source code
-COPY . .
+WORKDIR /app
 
-# Build backend
-RUN pnpm --filter @school-admin/backend build
+# Switch to production dependencies only (remove dev)
+RUN pnpm prune --prod
 
-# Set production environment
+# Create non-root user
+RUN useradd -m -s /bin/bash nestjs && chown -R nestjs:nestjs /app
+USER nestjs
+
 ENV NODE_ENV=production
-
-# Expose port
 EXPOSE 3000
 
-# Start backend
 CMD ["node", "apps/backend/dist/main.js"]
