@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 import { HealthModule } from './modules/health/health.module';
 import { BackupModule } from './modules/backup/backup.module';
 import { UserModule } from './modules/user/user.module';
@@ -42,6 +43,7 @@ import { AiModule } from './modules/ai/ai.module';
       }),
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot({ cronJobs: true, intervals: true, timeouts: true }),
     HealthModule,
     BackupModule,
     UserModule,
