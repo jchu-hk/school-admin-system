@@ -15,7 +15,7 @@ npm install -g vercel
 vercel login
 
 # 3. 部署
-cd apps/frontend
+cd school-admin-frontend
 vercel --prod
 ```
 

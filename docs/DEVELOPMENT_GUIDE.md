@@ -52,7 +52,7 @@ API文档地址：http://localhost:3000/api-docs
 
 ### 2.6 启动前端服务
 ```bash
-cd apps/frontend
+cd school-admin-frontend
 pnpm dev
 ```
 前端服务启动在 http://localhost:5173
