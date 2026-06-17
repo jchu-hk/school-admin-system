@@ -1,6 +1,6 @@
 # HEARTBEAT.md — 进度跟踪
 
-**更新**: 2026-06-15 11:10
+**更新**: 2026-06-18 05:50
 
 ## ⚠️ 工作模式: 7x24 持续工作
 
@@ -8,47 +8,52 @@
 
 ---
 
-## 当前状态 (2026-06-15 11:10)
+## 当前状态 (2026-06-18 05:50)
 
 | 项目 | 状态 | 备注 |
 |------|------|------|
-| CI/CD | 🔄 修复中 | pnpm版本冲突已修复，等待CI通过 |
-| v0.2.1 | ✅ 已发布 | 2026-06-14 |
-| PR #91 | ✅ 已合并 | |
-| PR #92 | ✅ 已合并 | |
-| F-ATT-001 | ✅ 已完成 | commit bcd99d5 |
-| 备份脚本 | ✅ 已完成 | commit bcd99d5 |
-| 状态透明机制 | ✅ 已建立 | Issue #93 |
+| CI/CD | ✅ 通过 | |
+| v0.2.1 | ✅ 已发布 | |
+| Frontend Docker | ✅ 已修复 | commit ac14d94 |
+| 项目全景报告 | ✅ 已创建 | docs/PROJECT-OVERVIEW.md |
+| 部署验收流程 | ✅ 已建立 | docs/qa/DEPLOYMENT-CHECKLIST.md |
+| PM流程规范 | ✅ 已建立 | docs/pm/PROCESS-STANDARD.md |
 
-## ⚠️ 检讨记录 (11:10)
+## 🔴 缺陷检讨 (05:50)
 
-**问题**: Agent浪费，无效spawn
-**原因**: 未检查Git历史就spawn agent
-**解决**: 建立Spawn前必查清单
+**问题**: Frontend Docker配置错误，暴露placeholder页面
+**根因**: DEVOPS部署后无CHECKER验收
+**整改**: 建立强制验收流程
 
-### Spawn前必查清单
+### 新增流程规范
+
+**部署验收流程** (docs/pm/PROCESS-STANDARD.md):
 ```
-1. git log --oneline | grep "关键字"
-2. gh pr list --state open
-3. gh issue list --state open
-4. 确认未完成 → 才spawn
-5. 多个同类 → 1个agent
-6. PR已审查 → 立即merge
+DEVOPS部署 → CHECKER验收 → PM确认
 ```
+
+**CHECKER必须验证**:
+- [ ] 构建成功
+- [ ] 容器健康
+- [ ] 功能可用
+- [ ] **代码完整性** (非placeholder)
+- [ ] 集成测试通过
 
 ## 活跃Agent
 
-| Agent | 状态 |
-|-------|------|
-| 无 | 待分配 |
+| Agent | 状态 | 任务 |
+|-------|------|------|
+| 无 | - | - |
 
-## 待处理
+## 待处理 (根据PROCESS-STANDARD)
 
-| 项目 | 状态 |
-|------|------|
-| 待开发任务 | 无实际阻塞 |
-| PR | 已全部合并 |
+| 项目 | 优先级 | 说明 |
+|------|--------|------|
+| DEVOPS部署验收 | P0 | 所有部署必须CHECKER验收 |
+| 更新Issue模板 | P1 | 添加验收步骤 |
+| CI/CD自动验收 | P2 | 添加部署验收测试 |
 
 ---
 
 *7x24模式: 无需定时报告，任务驱动*
+*流程规范: docs/pm/PROCESS-STANDARD.md*
