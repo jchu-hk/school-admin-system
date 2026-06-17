@@ -149,12 +149,31 @@
 
 ---
 
+## AI任务特殊处理
+
+### 判断标准
+符合以下任一则为AI任务:
+1. 涉及AI模型推理
+2. 涉及非结构化数据处理
+3. 输出具有概率性
+
+### AI任务CHECKER验收追加项
+- [ ] AI功能用途说明清晰
+- [ ] AI局限性已说明
+- [ ] 人工复核点已设置
+- [ ] 异常处理路径已定义
+
+---
+
 ## 🔗 相关文档
 
 - `docs/qa/DEPLOYMENT-CHECKLIST.md` - 部署验收清单
 - `docs/pm/WORK-MODE-7x24.md` - 7x24工作模式
+- `docs/pm/AI-TASK-GUIDE.md` - AI任务分类指南
+- `docs/pm/AGENT-KPI.md` - Agent KPI定义
+- `docs/pm/CONFLICT-RESOLUTION.md` - 冲突解决机制
 - `AGENTS.md` - Agent管理规则
 
 ---
 
-*PM Agent - 流程规范 v1.0*
+*PM Agent - 流程规范 v1.1 (新增AI任务特殊处理)*

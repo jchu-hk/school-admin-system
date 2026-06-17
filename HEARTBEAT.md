@@ -1,6 +1,6 @@
 # HEARTBEAT.md — 进度跟踪
 
-**更新**: 2026-06-18 05:50
+**更新**: 2026-06-18 06:11
 
 ## ⚠️ 工作模式: 7x24 持续工作
 
@@ -18,6 +18,10 @@
 | 项目全景报告 | ✅ 已创建 | docs/PROJECT-OVERVIEW.md |
 | 部署验收流程 | ✅ 已建立 | docs/qa/DEPLOYMENT-CHECKLIST.md |
 | PM流程规范 | ✅ 已建立 | docs/pm/PROCESS-STANDARD.md |
+| AI任务分类指南 | ✅ 已创建 | docs/pm/AI-TASK-GUIDE.md |
+| Agent KPI定义 | ✅ 已创建 | docs/pm/AGENT-KPI.md |
+| 冲突解决机制 | ✅ 已创建 | docs/pm/CONFLICT-RESOLUTION.md |
+| 决策日志 | ✅ 已创建 | docs/process/DECISION-LOG.md |
 
 ## 🔴 缺陷检讨 (05:50)
 
