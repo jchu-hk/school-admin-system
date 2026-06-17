@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # Use Node.js 22 Bookworm (full build toolchain)
-FROM node:22-bookworm
+FROM docker.m.daocloud.io/library/node:22-bookworm
 
 WORKDIR /app
 

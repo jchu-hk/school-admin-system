@@ -4,7 +4,7 @@
 # =============================================================================
 
 # Stage 1: Build
-FROM node:22-alpine AS builder
+FROM docker.m.daocloud.io/library/node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ ENV VITE_API_URL=$VITE_API_URL
 RUN yarn build
 
 # Stage 2: Serve with nginx
-FROM nginx:alpine
+FROM docker.m.daocloud.io/library/nginx:alpine
 
 # Remove default nginx content
 RUN rm -rf /usr/share/nginx/html/*

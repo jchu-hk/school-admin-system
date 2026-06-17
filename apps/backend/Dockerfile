@@ -4,7 +4,7 @@
 # Build: docker build -f apps/backend -t school-admin-backend .
 # ============================================================
 
-FROM node:22-bookworm
+FROM docker.m.daocloud.io/library/node:22-bookworm
 
 WORKDIR /app
 
