@@ -70,7 +70,7 @@ export class InstallmentController {
     UserRole.STUDENT,
   )
   getStudentInstallmentPlans(
-    @Param('studentId') studentId: string,
+    @Param('studentId', ParseUUIDPipe) studentId: string,
     @Query() query: InstallmentPlanQueryDto,
   ) {
     return this.installmentService.getStudentInstallmentPlans(studentId, query);
