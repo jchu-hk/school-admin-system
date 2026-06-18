@@ -7,8 +7,10 @@ import {
   Index,
   ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { TuitionStandard } from './tuition-standard.entity';
+import { InstallmentPlan } from './installment-plan.entity';
 
 @Entity('tuition_payments')
 @Index(['studentId', 'academicYear'])
@@ -26,6 +28,9 @@ export class TuitionPayment {
 
   @Column()
   studentId: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  parentId: string;
 
   @Column({ length: 100 })
   studentName: string;
@@ -57,6 +62,22 @@ export class TuitionPayment {
     default: 'pending',
   })
   status: 'pending' | 'paid' | 'partial' | 'overdue';
+
+  // ============ Installment Fields (Issue #98) ============
+  @Column({
+    name: 'sub_status',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
+  subStatus: string;
+
+  @Column({ name: 'installment_plan_id', type: 'uuid', nullable: true })
+  installmentPlanId: string;
+
+  @OneToOne(() => InstallmentPlan, (plan) => plan.tuitionPayment)
+  @JoinColumn({ name: 'installment_plan_id' })
+  installmentPlan: InstallmentPlan;
 
   @CreateDateColumn()
   createdAt: Date;

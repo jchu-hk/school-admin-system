@@ -10,6 +10,7 @@ import NotificationPage from './pages/NotificationPage'
 import CourseManagementPage from './pages/CourseManagementPage'
 import SystemSettingsPage from './pages/SystemSettingsPage'
 import FinanceTuitionPage from './pages/FinanceTuitionPage'
+import FinanceInstallmentPage from './pages/FinanceInstallmentPage'
 import FinanceFeePage from './pages/FinanceFeePage'
 import FinanceScholarshipPage from './pages/FinanceScholarshipPage'
 import AttendancePage from './pages/AttendancePage'
@@ -56,6 +57,7 @@ export default function App() {
             <Route path="courses" element={<CourseManagementPage />} />
             <Route path="settings" element={<SystemSettingsPage />} />
             <Route path="finance/tuition" element={<FinanceTuitionPage />} />
+            <Route path="finance/installment" element={<FinanceInstallmentPage />} />
             <Route path="finance/fee" element={<FinanceFeePage />} />
             <Route path="finance/scholarship" element={<FinanceScholarshipPage />} />
             <Route path="attendance" element={<AttendancePage />} />

@@ -33,6 +33,7 @@ export default function Layout() {
     { label: t.nav.financeTuition, path: '/finance/tuition' },
     { label: t.nav.financeFee, path: '/finance/fee' },
     { label: t.nav.financeScholarship, path: '/finance/scholarship' },
+    { label: '分期付款', path: '/finance/installment' },
   ]
 
   return (
