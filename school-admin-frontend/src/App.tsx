@@ -13,6 +13,7 @@ import FinanceTuitionPage from './pages/FinanceTuitionPage'
 import FinanceFeePage from './pages/FinanceFeePage'
 import FinanceScholarshipPage from './pages/FinanceScholarshipPage'
 import AttendancePage from './pages/AttendancePage'
+import AttendanceMobilePage from './pages/AttendanceMobilePage'
 import Layout from './components/Layout'
 import ErrorBoundary from './components/ErrorBoundary'
 import { getToken } from './utils/tokenService'
@@ -58,6 +59,7 @@ export default function App() {
             <Route path="finance/fee" element={<FinanceFeePage />} />
             <Route path="finance/scholarship" element={<FinanceScholarshipPage />} />
             <Route path="attendance" element={<AttendancePage />} />
+            <Route path="attendance/mobile" element={<AttendanceMobilePage />} />
           </Route>
         </Routes>
       </BrowserRouter>

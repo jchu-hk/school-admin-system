@@ -3,8 +3,11 @@ import {
   Search, Plus, Eye, X, ChevronLeft, ChevronRight,
   Calendar, Clock, AlertCircle, CheckCircle, XCircle,
   RefreshCw, Trash2, Users, TrendingUp, Wifi, WifiOff,
-  Check, Ban, ArrowLeft, Bell, Info
+  Check, Ban, ArrowLeft, Bell, Info, Smartphone
 } from 'lucide-react';
+import {
+  useNavigate,
+} from 'react-router-dom';
 import {
   AttendanceStatus,
   AttendanceRecord,
@@ -100,6 +103,8 @@ const MOCK_STUDENTS: Record<string, Array<{ id: string; name: string }>> = {
 
 // ============ Component ============
 export default function AttendancePage() {
+  const navigate = useNavigate();
+
   // Tab state
   const [activeTab, setActiveTab] = useState<'overview' | 'manual' | 'anomaly'>('overview');
 
@@ -322,6 +327,23 @@ export default function AttendancePage() {
 
   const renderOverviewTab = () => (
     <div className="space-y-5">
+      {/* Mobile Scan Entry */}
+      <button
+        onClick={() => navigate('/attendance/mobile')}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl p-4 flex items-center justify-between shadow-sm transition active:bg-blue-700"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <Smartphone size={20} className="text-white" />
+          </div>
+          <div className="text-left">
+            <div className="text-sm font-bold">移动端扫码签到</div>
+            <div className="text-xs text-blue-200 mt-0.5">打开摄像头扫描学生证二维码</div>
+          </div>
+        </div>
+        <div className="text-white/60">→</div>
+      </button>
+
       {/* Filters */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
         <div className="flex flex-wrap gap-4 items-end">
