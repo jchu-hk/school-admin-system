@@ -201,18 +201,46 @@ export default function AttendanceMobilePage() {
 
   const today = new Date().toISOString().split('T')[0];
 
-  // Online/Offline detection
+  // ===== Stable helper: dynamic device ID =====
+  const getDeviceId = () => {
+    let id = localStorage.getItem('attendance_device_id');
+    if (!id) {
+      id = `mobile-${crypto.randomUUID?.() || Date.now()}`;
+      localStorage.setItem('attendance_device_id', id);
+    }
+    return id;
+  };
+
+  // ===== Offline queue sync =====
+  const syncOfflineQueue = useCallback(async () => {
+    const queue = [...offlineQueue];
+    if (queue.length === 0) return;
+    setOfflineQueue([]);
+    for (const item of queue) {
+      try {
+        await apiClient.post('/attendance/mobile/scan', item);
+      } catch {
+        setOfflineQueue(prev => [...prev, item]);
+      }
+    }
+  }, [offlineQueue]);
+
+  // Online/Offline detection — stable deps, no loop
+  const handleOnline = useCallback(() => {
+    setIsOnline(true);
+    setTimeout(syncOfflineQueue, 0);
+  }, [syncOfflineQueue]);
+
+  const handleOffline = useCallback(() => setIsOnline(false), []);
+
   useEffect(() => {
-    const handleOnline = () => { setIsOnline(true); syncOfflineQueue(); };
-    const handleOffline = () => setIsOnline(false);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offlineQueue]);
+  }, [handleOnline, handleOffline]);
 
   // Load classes
   const loadClasses = useCallback(async () => {
@@ -309,12 +337,12 @@ export default function AttendanceMobilePage() {
       return;
     }
 
-    setStudents(prev => prev.map(s => s.studentId === studentId ? { ...s, checkedIn: true, status: 'present', checkInTime: currentTime.substring(0, 5) } : s));
+    setStudents(prev => prev.map(s => s.studentId === studentId ? { ...s, checkedIn: true, status: 'present', checkInTime: currentTime.substring(0, 8) } : s));
     setScanSuccess({ studentName });
     playSuccess();
     vibrate(100);
 
-    const payload = { qrcode: decodedText, classId: selectedClass.classId, attendanceDate: today, status: 'present', checkInTime: currentTime.substring(0, 8), deviceId: 'mobile-teacher-h5' };
+    const payload = { qrcode: decodedText, classId: selectedClass.classId, attendanceDate: today, status: 'present', checkInTime: currentTime.substring(0, 8), deviceId: getDeviceId() };
     if (isOnline) {
       try { await apiClient.post('/attendance/mobile/scan', payload); }
       catch { setOfflineQueue(prev => [...prev, payload]); }
@@ -323,20 +351,10 @@ export default function AttendanceMobilePage() {
     }
   }, [selectedClass, students, today, isOnline]);
 
-  const syncOfflineQueue = async () => {
-    const queue = [...offlineQueue];
-    if (queue.length === 0) return;
-    setOfflineQueue([]);
-    for (const item of queue) {
-      try { await apiClient.post('/attendance/mobile/scan', item); }
-      catch { setOfflineQueue(prev => [...prev, item]); }
-    }
-  };
-
   // Manual actions
   const handleManualCheckIn = (studentId: string, status: CheckInStatus) => {
     const currentTime = new Date().toLocaleTimeString('zh-TW', { hour12: false });
-    setStudents(prev => prev.map(s => s.studentId === studentId ? { ...s, checkedIn: true, status, checkInTime: currentTime.substring(0, 5) } : s));
+    setStudents(prev => prev.map(s => s.studentId === studentId ? { ...s, checkedIn: true, status, checkInTime: currentTime.substring(0, 8) } : s));
     playSuccess();
   };
 
@@ -550,6 +568,7 @@ export default function AttendanceMobilePage() {
               placeholder="搜索学生姓名..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
+              maxLength={50}
               className="flex-1 bg-transparent px-2 py-2 text-sm text-gray-800 outline-none placeholder:text-gray-400"
             />
             {searchQuery && (
