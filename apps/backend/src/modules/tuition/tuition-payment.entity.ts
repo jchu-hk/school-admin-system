@@ -19,11 +19,11 @@ export class TuitionPayment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ name: 'tuition_standard_id' })
   standardId: string;
 
   @ManyToOne(() => TuitionStandard, (standard) => standard.payments)
-  @JoinColumn({ name: 'standardId' })
+  @JoinColumn({ name: 'tuition_standard_id' })
   standard: TuitionStandard;
 
   @Column()
