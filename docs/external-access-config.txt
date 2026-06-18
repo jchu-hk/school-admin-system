@@ -1,0 +1,19 @@
+# 外部协作者访问配置
+# 生成日期: 2026-06-17
+
+## 公网访问信息
+前端URL: https://generation-boundaries-ordered-initiatives.trycloudflare.com
+后端API: https://templates-headphones-lives-curious.trycloudflare.com
+
+## 访问限制
+# 如需添加IP白名单，在nginx配置中添加:
+# allow 192.168.1.0/24;  # 允许的IP段
+# deny all;              # 拒绝其他所有IP
+
+## 测试账号
+# 如需创建测试账号，请联系管理员
+
+## 注意事项
+# 1. 此URL为临时访问地址
+# 2. 请勿在URL中传递敏感信息
+# 3. 测试完成后请及时通知管理员

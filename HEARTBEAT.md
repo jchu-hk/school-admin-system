@@ -1,40 +1,30 @@
 # HEARTBEAT.md — 进度跟踪
 
-**更新**: 2026-06-18 08:10
+**更新**: 2026-06-18 10:22
 
-## ⚠️ 项目管理方式变更
+## ⚠️ 项目管理方式
 
 **原则**: GitHub驱动，不依赖Agent记忆
-
 - 所有任务 → GitHub Issue
-- 所有状态 → GitHub查询
-- 需要时才翻查 → gh issue list
+- 状态查询 → `gh issue list`
 
 ---
 
-## 当前状态 (2026-06-18 08:10)
+## 当前状态 (2026-06-18 10:22)
 
 | 项目 | 状态 | GitHub Issue |
 |------|------|-------------|
 | CI/CD | ✅ 通过 | - |
 | v0.2.1 | ✅ 已发布 | - |
-| 出勤扫码功能 | 📋 待开发 | #99 |
-| 学费分期付款 | 📋 待开发 | #98 |
-| 家长密码设置 | 📋 待开发 | #100 |
-| 学生资助资格 | 📋 待开发 | #101 |
 
 ---
 
 ## 📊 P0/P1 任务统计
 
-**P0 (必须完成)**: 4个
-**P1 (应该完成)**: 7个
-
-**查看详情**:
-```bash
-gh issue list --label p0
-gh issue list --label p1
-```
+| 优先级 | 数量 | 查看 |
+|--------|------|------|
+| P0 | 4个 | `gh issue list --label p0` |
+| P1 | 7个 | `gh issue list --label p1` |
 
 ---
 
@@ -46,13 +36,7 @@ gh issue list --label p1
 1. #99 出勤学生证二维码扫码签到 (P0)
 2. #98 学费分期付款管理功能 (P0)
 
----
-
-## 活跃Agent
-
-| Agent | 状态 | Issue |
-|-------|------|-------|
-| 无 | - | - |
+**就绪度评估**: `docs/pm/P0-READY-ASSESSMENT.md`
 
 ---
 
@@ -70,5 +54,5 @@ gh issue list --label p1
 
 ---
 
-*项目管理唯一来源: docs/pm/PROJECT-STATUS.md*
-*查询方式: gh issue list*
+*项目管理: docs/pm/PROJECT-STATUS.md*
+*查询: gh issue list*

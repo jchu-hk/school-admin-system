@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import * as QRCode from 'qrcode';
 import {
   Attendance,
   AttendanceStatus,
@@ -19,13 +20,23 @@ import {
   BatchCreateAttendanceDto,
   ConfirmPreviewDto,
   WebhookPayloadDto,
+  GenerateQrCodeDto,
+  BatchGenerateQrCodeDto,
+  MobileScanDto,
+  MobileBatchSubmitDto,
 } from './dto/batch-attendance.dto';
+import { User, UserRole } from '../user/user.entity';
+import { Class } from '../user/class.entity';
 
 @Injectable()
 export class AttendanceService {
   constructor(
     @InjectRepository(Attendance)
     private attendanceRepository: Repository<Attendance>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    @InjectRepository(Class)
+    private classRepository: Repository<Class>,
   ) {}
 
   // ==================== 基础 CRUD ====================
@@ -253,22 +264,30 @@ export class AttendanceService {
       order: { checkInTime: 'ASC' },
     });
 
-    const total = records.length;
-    const present = records.filter(
-      (r) => r.status === AttendanceStatus.PRESENT,
-    ).length;
-    const absent = records.filter(
-      (r) => r.status === AttendanceStatus.ABSENT,
-    ).length;
-    const late = records.filter(
-      (r) => r.status === AttendanceStatus.LATE,
-    ).length;
+    // 使用SQL聚合获取统计信息
+    const statsQuery = this.attendanceRepository
+      .createQueryBuilder('attendance')
+      .select([
+        'COUNT(*) as total',
+        `COUNT(CASE WHEN attendance.status = 'present' THEN 1 END) as present`,
+        `COUNT(CASE WHEN attendance.status = 'absent' THEN 1 END) as absent`,
+        `COUNT(CASE WHEN attendance.status = 'late' THEN 1 END) as late`,
+      ])
+      .where('attendance.class_id = :classId', { classId })
+      .andWhere('attendance.attendance_date = :date', { date });
+
+    const statsResult = await statsQuery.getRawOne();
 
     return {
       classId,
       date,
       records,
-      summary: { total, present, absent, late },
+      summary: {
+        total: parseInt(statsResult.total, 10) || 0,
+        present: parseInt(statsResult.present, 10) || 0,
+        absent: parseInt(statsResult.absent, 10) || 0,
+        late: parseInt(statsResult.late, 10) || 0,
+      },
     };
   }
 
@@ -406,7 +425,16 @@ export class AttendanceService {
   }> {
     const queryBuilder = this.attendanceRepository
       .createQueryBuilder('attendance')
-      .where('attendance.attendanceDate BETWEEN :startDate AND :endDate', {
+      .select([
+        'COUNT(*) as total',
+        `COUNT(CASE WHEN attendance.status = 'present' THEN 1 END) as present`,
+        `COUNT(CASE WHEN attendance.status = 'absent' THEN 1 END) as absent`,
+        `COUNT(CASE WHEN attendance.status = 'late' THEN 1 END) as late`,
+        `COUNT(CASE WHEN attendance.status = 'leave_early' THEN 1 END) as "leaveEarly"`,
+        `COUNT(CASE WHEN attendance.status = 'sick_leave' THEN 1 END) as "sickLeave"`,
+        `COUNT(CASE WHEN attendance.status = 'personal_leave' THEN 1 END) as "personalLeave"`,
+      ])
+      .where('attendance.attendance_date BETWEEN :startDate AND :endDate', {
         startDate:
           startDate ||
           new Date(new Date().setDate(1)).toISOString().split('T')[0],
@@ -414,29 +442,18 @@ export class AttendanceService {
       });
 
     if (classId) {
-      queryBuilder.andWhere('attendance.classId = :classId', { classId });
+      queryBuilder.andWhere('attendance.class_id = :classId', { classId });
     }
 
-    const records = await queryBuilder.getMany();
-    const total = records.length;
-    const present = records.filter(
-      (r) => r.status === AttendanceStatus.PRESENT,
-    ).length;
-    const absent = records.filter(
-      (r) => r.status === AttendanceStatus.ABSENT,
-    ).length;
-    const late = records.filter(
-      (r) => r.status === AttendanceStatus.LATE,
-    ).length;
-    const leaveEarly = records.filter(
-      (r) => r.status === AttendanceStatus.LEAVE_EARLY,
-    ).length;
-    const sickLeave = records.filter(
-      (r) => r.status === AttendanceStatus.SICK_LEAVE,
-    ).length;
-    const personalLeave = records.filter(
-      (r) => r.status === AttendanceStatus.PERSONAL_LEAVE,
-    ).length;
+    const result = await queryBuilder.getRawOne();
+
+    const total = parseInt(result.total, 10) || 0;
+    const present = parseInt(result.present, 10) || 0;
+    const absent = parseInt(result.absent, 10) || 0;
+    const late = parseInt(result.late, 10) || 0;
+    const leaveEarly = parseInt(result.leaveEarly, 10) || 0;
+    const sickLeave = parseInt(result.sickLeave, 10) || 0;
+    const personalLeave = parseInt(result.personalLeave, 10) || 0;
     const attendanceRate =
       total > 0
         ? Math.round(((present + sickLeave + personalLeave) / total) * 10000) /
@@ -536,35 +553,33 @@ export class AttendanceService {
   }> {
     const queryBuilder = this.attendanceRepository
       .createQueryBuilder('attendance')
-      .where('attendance.classId = :classId', { classId });
+      .select([
+        'COUNT(*) as "totalRecords"',
+        `COUNT(CASE WHEN attendance.status = 'present' THEN 1 END) as present`,
+        `COUNT(CASE WHEN attendance.status = 'absent' THEN 1 END) as absent`,
+        `COUNT(CASE WHEN attendance.status = 'late' THEN 1 END) as late`,
+        `COUNT(CASE WHEN attendance.status = 'leave_early' THEN 1 END) as "leaveEarly"`,
+        `COUNT(CASE WHEN attendance.status = 'sick_leave' THEN 1 END) as "sickLeave"`,
+        `COUNT(CASE WHEN attendance.status = 'personal_leave' THEN 1 END) as "personalLeave"`,
+      ])
+      .where('attendance.class_id = :classId', { classId });
 
     if (startDate && endDate) {
       queryBuilder.andWhere(
-        'attendance.attendanceDate BETWEEN :startDate AND :endDate',
+        'attendance.attendance_date BETWEEN :startDate AND :endDate',
         { startDate, endDate },
       );
     }
 
-    const records = await queryBuilder.getMany();
-    const totalRecords = records.length;
-    const present = records.filter(
-      (r) => r.status === AttendanceStatus.PRESENT,
-    ).length;
-    const absent = records.filter(
-      (r) => r.status === AttendanceStatus.ABSENT,
-    ).length;
-    const late = records.filter(
-      (r) => r.status === AttendanceStatus.LATE,
-    ).length;
-    const leaveEarly = records.filter(
-      (r) => r.status === AttendanceStatus.LEAVE_EARLY,
-    ).length;
-    const sickLeave = records.filter(
-      (r) => r.status === AttendanceStatus.SICK_LEAVE,
-    ).length;
-    const personalLeave = records.filter(
-      (r) => r.status === AttendanceStatus.PERSONAL_LEAVE,
-    ).length;
+    const result = await queryBuilder.getRawOne();
+
+    const totalRecords = parseInt(result.totalRecords, 10) || 0;
+    const present = parseInt(result.present, 10) || 0;
+    const absent = parseInt(result.absent, 10) || 0;
+    const late = parseInt(result.late, 10) || 0;
+    const leaveEarly = parseInt(result.leaveEarly, 10) || 0;
+    const sickLeave = parseInt(result.sickLeave, 10) || 0;
+    const personalLeave = parseInt(result.personalLeave, 10) || 0;
     const attendanceRate =
       totalRecords > 0
         ? Math.round(
@@ -600,42 +615,32 @@ export class AttendanceService {
   }> {
     const queryBuilder = this.attendanceRepository
       .createQueryBuilder('attendance')
-      .where('attendance.attendanceDate = :date', { date });
+      .select([
+        'COUNT(*) as total',
+        `COUNT(CASE WHEN attendance.status = 'present' THEN 1 END) as present`,
+        `COUNT(CASE WHEN attendance.status = 'absent' THEN 1 END) as absent`,
+        `COUNT(CASE WHEN attendance.status = 'late' THEN 1 END) as late`,
+        `COUNT(CASE WHEN attendance.status = 'leave_early' THEN 1 END) as "leaveEarly"`,
+        `COUNT(CASE WHEN attendance.status = 'sick_leave' THEN 1 END) as "sickLeave"`,
+        `COUNT(CASE WHEN attendance.status = 'personal_leave' THEN 1 END) as "personalLeave"`,
+      ])
+      .where('attendance.attendance_date = :date', { date });
 
     if (classId) {
-      queryBuilder.andWhere('attendance.classId = :classId', { classId });
+      queryBuilder.andWhere('attendance.class_id = :classId', { classId });
     }
 
-    const records = await queryBuilder.getMany();
-    const total = records.length;
-    const present = records.filter(
-      (r) => r.status === AttendanceStatus.PRESENT,
-    ).length;
-    const absent = records.filter(
-      (r) => r.status === AttendanceStatus.ABSENT,
-    ).length;
-    const late = records.filter(
-      (r) => r.status === AttendanceStatus.LATE,
-    ).length;
-    const leaveEarly = records.filter(
-      (r) => r.status === AttendanceStatus.LEAVE_EARLY,
-    ).length;
-    const sickLeave = records.filter(
-      (r) => r.status === AttendanceStatus.SICK_LEAVE,
-    ).length;
-    const personalLeave = records.filter(
-      (r) => r.status === AttendanceStatus.PERSONAL_LEAVE,
-    ).length;
+    const result = await queryBuilder.getRawOne();
 
     return {
       date,
-      total,
-      present,
-      absent,
-      late,
-      leaveEarly,
-      sickLeave,
-      personalLeave,
+      total: parseInt(result.total, 10) || 0,
+      present: parseInt(result.present, 10) || 0,
+      absent: parseInt(result.absent, 10) || 0,
+      late: parseInt(result.late, 10) || 0,
+      leaveEarly: parseInt(result.leaveEarly, 10) || 0,
+      sickLeave: parseInt(result.sickLeave, 10) || 0,
+      personalLeave: parseInt(result.personalLeave, 10) || 0,
     };
   }
 
@@ -666,66 +671,68 @@ export class AttendanceService {
     const startDateStr = startDate.toISOString().split('T')[0];
     const endDateStr = endDate.toISOString().split('T')[0];
 
-    const queryBuilder = this.attendanceRepository
+    // 使用SQL聚合获取总体统计
+    const summaryQuery = this.attendanceRepository
       .createQueryBuilder('attendance')
-      .where('attendance.attendanceDate BETWEEN :startDate AND :endDate', {
+      .select([
+        'COUNT(*) as total',
+        `COUNT(CASE WHEN attendance.status = 'present' THEN 1 END) as present`,
+        `COUNT(CASE WHEN attendance.status = 'absent' THEN 1 END) as absent`,
+        `COUNT(CASE WHEN attendance.status = 'late' THEN 1 END) as late`,
+        `COUNT(CASE WHEN attendance.status = 'leave_early' THEN 1 END) as "leaveEarly"`,
+        `COUNT(CASE WHEN attendance.status = 'sick_leave' THEN 1 END) as "sickLeave"`,
+        `COUNT(CASE WHEN attendance.status = 'personal_leave' THEN 1 END) as "personalLeave"`,
+      ])
+      .where('attendance.attendance_date BETWEEN :startDate AND :endDate', {
         startDate: startDateStr,
         endDate: endDateStr,
       });
 
+    // 使用SQL GROUP BY获取每日统计
+    const dailyQuery = this.attendanceRepository
+      .createQueryBuilder('attendance')
+      .select([
+        'attendance.attendance_date as date',
+        'COUNT(*) as total',
+        `COUNT(CASE WHEN attendance.status = 'present' THEN 1 END) as present`,
+        `COUNT(CASE WHEN attendance.status = 'absent' THEN 1 END) as absent`,
+      ])
+      .where('attendance.attendance_date BETWEEN :startDate AND :endDate', {
+        startDate: startDateStr,
+        endDate: endDateStr,
+      })
+      .groupBy('attendance.attendance_date')
+      .orderBy('attendance.attendance_date', 'ASC');
+
     if (classId) {
-      queryBuilder.andWhere('attendance.classId = :classId', { classId });
+      summaryQuery.andWhere('attendance.class_id = :classId', { classId });
+      dailyQuery.andWhere('attendance.class_id = :classId', { classId });
     }
 
-    const records = await queryBuilder.getMany();
-    const total = records.length;
-    const present = records.filter(
-      (r) => r.status === AttendanceStatus.PRESENT,
-    ).length;
-    const absent = records.filter(
-      (r) => r.status === AttendanceStatus.ABSENT,
-    ).length;
-    const late = records.filter(
-      (r) => r.status === AttendanceStatus.LATE,
-    ).length;
-    const leaveEarly = records.filter(
-      (r) => r.status === AttendanceStatus.LEAVE_EARLY,
-    ).length;
-    const sickLeave = records.filter(
-      (r) => r.status === AttendanceStatus.SICK_LEAVE,
-    ).length;
-    const personalLeave = records.filter(
-      (r) => r.status === AttendanceStatus.PERSONAL_LEAVE,
-    ).length;
+    const [summaryResult, dailyResult] = await Promise.all([
+      summaryQuery.getRawOne(),
+      dailyQuery.getRawMany(),
+    ]);
+
+    const total = parseInt(summaryResult.total, 10) || 0;
+    const present = parseInt(summaryResult.present, 10) || 0;
+    const absent = parseInt(summaryResult.absent, 10) || 0;
+    const late = parseInt(summaryResult.late, 10) || 0;
+    const leaveEarly = parseInt(summaryResult.leaveEarly, 10) || 0;
+    const sickLeave = parseInt(summaryResult.sickLeave, 10) || 0;
+    const personalLeave = parseInt(summaryResult.personalLeave, 10) || 0;
     const attendanceRate =
       total > 0
         ? Math.round(((present + sickLeave + personalLeave) / total) * 10000) /
           100
         : 0;
 
-    // 按日期分组统计
-    const dailyMap = new Map<
-      string,
-      { total: number; present: number; absent: number }
-    >();
-    for (const record of records) {
-      const dateStr = new Date(record.attendanceDate)
-        .toISOString()
-        .split('T')[0];
-      const stats = dailyMap.get(dateStr) || {
-        total: 0,
-        present: 0,
-        absent: 0,
-      };
-      stats.total++;
-      if (record.status === AttendanceStatus.PRESENT) stats.present++;
-      if (record.status === AttendanceStatus.ABSENT) stats.absent++;
-      dailyMap.set(dateStr, stats);
-    }
-
-    const dailyStats = Array.from(dailyMap.entries())
-      .map(([date, stats]) => ({ date, ...stats }))
-      .sort((a, b) => a.date.localeCompare(b.date));
+    const dailyStats = dailyResult.map((row) => ({
+      date: row.date,
+      total: parseInt(row.total, 10) || 0,
+      present: parseInt(row.present, 10) || 0,
+      absent: parseInt(row.absent, 10) || 0,
+    }));
 
     return {
       year,
@@ -739,6 +746,330 @@ export class AttendanceService {
       personalLeave,
       attendanceRate,
       dailyStats,
+    };
+  }
+
+  // ==================== 二维码生成（学生证扫码签到）====================
+
+  /**
+   * 生成单个学生二维码
+   * 二维码格式: STUDENT:{studentId}:{name}
+   */
+  async generateQrCode(dto: GenerateQrCodeDto): Promise<{
+    studentId: string;
+    studentName: string;
+    qrcode: string;
+    url: string;
+  }> {
+    // 查找学生信息
+    const student = await this.userRepository.findOne({
+      where: { id: dto.studentId, role: UserRole.STUDENT },
+    });
+
+    if (!student) {
+      throw new NotFoundException('学生不存在');
+    }
+
+    const studentName = dto.studentName || student.name;
+    // 二维码内容格式: STUDENT:{studentId}:{name}
+    const qrcodeContent = `STUDENT:${dto.studentId}:${studentName}`;
+
+    // 生成二维码 Data URL
+    const url = await QRCode.toDataURL(qrcodeContent, {
+      width: 256,
+      margin: 2,
+      color: {
+        dark: '#000000',
+        light: '#FFFFFF',
+      },
+    });
+
+    return {
+      studentId: dto.studentId,
+      studentName,
+      qrcode: qrcodeContent,
+      url,
+    };
+  }
+
+  /**
+   * 批量生成班级学生二维码
+   */
+  async batchGenerateQrCode(dto: BatchGenerateQrCodeDto): Promise<{
+    classId: string;
+    qrcodes: Array<{
+      studentId: string;
+      studentName: string;
+      qrcode: string;
+      url: string;
+    }>;
+  }> {
+    // 查找班级信息
+    const classEntity = await this.classRepository.findOne({
+      where: { id: dto.classId },
+    });
+
+    if (!classEntity) {
+      throw new NotFoundException('班级不存在');
+    }
+
+    // 查找该班级的所有学生
+    // 学生通过 className 字段关联班级
+    const students = await this.userRepository.find({
+      where: { className: classEntity.name, role: UserRole.STUDENT },
+    });
+
+    if (students.length === 0) {
+      throw new NotFoundException('该班级没有学生');
+    }
+
+    // 批量生成二维码
+    const qrcodes = await Promise.all(
+      students.map(async (student) => {
+        const qrcodeContent = `STUDENT:${student.id}:${student.name}`;
+        const url = await QRCode.toDataURL(qrcodeContent, {
+          width: 256,
+          margin: 2,
+          color: {
+            dark: '#000000',
+            light: '#FFFFFF',
+          },
+        });
+
+        return {
+          studentId: student.id,
+          studentName: student.name,
+          qrcode: qrcodeContent,
+          url,
+        };
+      }),
+    );
+
+    return {
+      classId: dto.classId,
+      qrcodes,
+    };
+  }
+
+  // ==================== 移动端扫码API ====================
+
+  /**
+   * 解析二维码格式: STUDENT:{studentId}:{name}
+   */
+  private parseStudentQrCode(qrcode: string): { studentId: string; name: string } | null {
+    const match = qrcode.match(/^STUDENT:([^:]+):(.+)$/);
+    if (!match) {
+      return null;
+    }
+    return {
+      studentId: match[1],
+      name: match[2],
+    };
+  }
+
+  /**
+   * 移动端扫码识别学生
+   */
+  async mobileScan(
+    dto: MobileScanDto,
+    teacherId: string,
+  ): Promise<{
+    student: {
+      id: string;
+      name: string;
+      className?: string;
+    };
+    status: 'scanned' | 'already_recorded';
+    existingRecord?: {
+      id: string;
+      status: AttendanceStatus;
+      checkInTime?: string;
+    };
+  }> {
+    // 解析二维码
+    const parsed = this.parseStudentQrCode(dto.qrcode);
+    if (!parsed) {
+      throw new BadRequestException('无效的二维码格式');
+    }
+
+    const { studentId, name } = parsed;
+
+    // 查找学生
+    const student = await this.userRepository.findOne({
+      where: { id: studentId, role: UserRole.STUDENT },
+    });
+
+    if (!student) {
+      throw new NotFoundException('学生不存在');
+    }
+
+    // 检查当天是否已有出勤记录
+    const attendanceDate = dto.attendanceDate || new Date().toISOString().split('T')[0];
+    const existingRecord = await this.attendanceRepository.findOne({
+      where: {
+        studentId,
+        attendanceDate: new Date(attendanceDate),
+      },
+    });
+
+    if (existingRecord) {
+      return {
+        student: {
+          id: student.id,
+          name: student.name,
+          className: student.className,
+        },
+        status: 'already_recorded',
+        existingRecord: {
+          id: existingRecord.id,
+          status: existingRecord.status,
+          checkInTime: existingRecord.checkInTime,
+        },
+      };
+    }
+
+    return {
+      student: {
+        id: student.id,
+        name: student.name,
+        className: student.className,
+      },
+      status: 'scanned',
+    };
+  }
+
+  /**
+   * 获取教师负责的班级列表
+   * 使用聚合查询替代循环查询，解决N+1问题
+   */
+  async getTeacherClasses(teacherId: string): Promise<{
+    classes: Array<{
+      id: string;
+      name: string;
+      grade: string;
+      studentCount: number;
+    }>;
+  }> {
+    // 查找教师信息
+    const teacher = await this.userRepository.findOne({
+      where: { id: teacherId },
+    });
+
+    if (!teacher) {
+      throw new NotFoundException('教师不存在');
+    }
+
+    // 校务主任和系统管理员可以查看所有班级
+    const isAdmin = teacher.role === UserRole.SCHOOL_DIRECTOR || teacher.role === UserRole.SYSTEM_ADMIN;
+
+    // 使用聚合查询一次性获取班级和学生数量
+    const queryBuilder = this.classRepository
+      .createQueryBuilder('class')
+      .leftJoin('user', 'student', 'student.class_name = class.name AND student.role = :studentRole', {
+        studentRole: UserRole.STUDENT,
+      })
+      .select([
+        'class.id as id',
+        'class.name as name',
+        'class.grade as grade',
+        'COUNT(student.id) as "studentCount"',
+      ])
+      .where('class.is_active = :isActive', { isActive: true })
+      .groupBy('class.id')
+      .orderBy('class.grade', 'ASC')
+      .addOrderBy('class.name', 'ASC');
+
+    if (!isAdmin) {
+      queryBuilder.andWhere('class.homeroom_teacher_id = :teacherId', { teacherId });
+    }
+
+    const classes = await queryBuilder.getRawMany();
+
+    return {
+      classes: classes.map((cls) => ({
+        id: cls.id,
+        name: cls.name,
+        grade: cls.grade,
+        studentCount: parseInt(cls.studentCount, 10) || 0,
+      })),
+    };
+  }
+
+  /**
+   * 获取班级学生列表
+   */
+  async getClassStudents(classId: string): Promise<{
+    classId: string;
+    className: string;
+    students: Array<{
+      id: string;
+      name: string;
+      hkId?: string;
+    }>;
+  }> {
+    // 查找班级
+    const classEntity = await this.classRepository.findOne({
+      where: { id: classId },
+    });
+
+    if (!classEntity) {
+      throw new NotFoundException('班级不存在');
+    }
+
+    // 查找该班级的所有学生
+    const students = await this.userRepository.find({
+      where: { className: classEntity.name, role: UserRole.STUDENT },
+      order: { name: 'ASC' },
+    });
+
+    return {
+      classId,
+      className: classEntity.name,
+      students: students.map((s) => ({
+        id: s.id,
+        name: s.name,
+        hkId: s.hkId || undefined,
+      })),
+    };
+  }
+
+  /**
+   * 移动端批量提交出勤记录
+   */
+  async mobileBatchSubmit(
+    dto: MobileBatchSubmitDto,
+    teacherId: string,
+  ): Promise<{
+    batchId: string;
+    count: number;
+    records: Attendance[];
+  }> {
+    const batchId = uuidv4();
+    const canRevokeUntil = new Date(Date.now() + 15 * 60 * 1000); // 15分钟
+
+    const attendanceRecords: Partial<Attendance>[] = dto.records.map((r) => ({
+      studentId: r.studentId,
+      classId: dto.classId,
+      attendanceDate: new Date(dto.attendanceDate),
+      status: r.status,
+      checkInTime: r.checkInTime || new Date().toTimeString().split(' ')[0].substring(0, 8),
+      syncSource: SyncSource.MANUAL,
+      syncStatus: SyncStatus.SUCCESS,
+      batchId,
+      canRevokeUntil,
+      createdBy: teacherId,
+      teacherId,
+      remark: r.remark || '移动端扫码签到',
+    }));
+
+    const records = await this.attendanceRepository.save(
+      attendanceRecords as Attendance[],
+    );
+
+    return {
+      batchId,
+      count: records.length,
+      records,
     };
   }
 }

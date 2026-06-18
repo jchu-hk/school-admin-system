@@ -149,3 +149,83 @@ export class WebhookPayloadDto {
   @Type(() => WebhookRecordDto)
   records: WebhookRecordDto[];
 }
+
+// ==================== 二维码生成 DTO ====================
+
+/** 生成单个学生二维码 */
+export class GenerateQrCodeDto {
+  @IsString()
+  @IsNotEmpty()
+  studentId: string;
+
+  @IsString()
+  @IsOptional()
+  classId?: string;
+
+  @IsString()
+  @IsOptional()
+  studentName?: string;
+}
+
+/** 批量生成班级二维码 */
+export class BatchGenerateQrCodeDto {
+  @IsString()
+  @IsNotEmpty()
+  classId: string;
+}
+
+// ==================== 移动端扫码 DTO ====================
+
+/** 移动端扫码请求 */
+export class MobileScanDto {
+  @IsString()
+  @IsNotEmpty()
+  qrcode: string;
+
+  @IsString()
+  @IsOptional()
+  classId?: string;
+
+  @IsDateString()
+  @IsOptional()
+  attendanceDate?: string;
+}
+
+/** 移动端扫码记录 */
+export class MobileScanRecordDto {
+  @IsString()
+  @IsNotEmpty()
+  studentId: string;
+
+  @IsString()
+  @IsOptional()
+  studentName?: string;
+
+  @IsEnum(AttendanceStatus)
+  @IsNotEmpty()
+  status: AttendanceStatus;
+
+  @IsString()
+  @IsOptional()
+  checkInTime?: string;
+
+  @IsString()
+  @IsOptional()
+  remark?: string;
+}
+
+/** 移动端批量提交 */
+export class MobileBatchSubmitDto {
+  @IsString()
+  @IsNotEmpty()
+  classId: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  attendanceDate: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => MobileScanRecordDto)
+  records: MobileScanRecordDto[];
+}
