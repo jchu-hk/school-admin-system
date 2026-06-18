@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, BookOpen, Settings, LogOut, GraduationCap, Calendar, MessageCircle, Bell, UserCog, DollarSign, ChevronDown, ClipboardCheck } from 'lucide-react'
+import { LayoutDashboard, Users, BookOpen, Settings, LogOut, GraduationCap, Calendar, MessageCircle, Bell, UserCog, DollarSign, ChevronDown, ClipboardCheck, Link2 } from 'lucide-react'
 import LanguageSelector from './LanguageSelector'
 import { useI18n } from '../i18n'
 import { getToken, removeToken } from '../utils/tokenService'
@@ -27,6 +27,7 @@ export default function Layout() {
     { label: t.nav.parentInquiry, icon: MessageCircle, path: '/inquiries' },
     { label: t.nav.notificationManagement, icon: Bell, path: '/notifications' },
     { label: t.nav.courseManagement, icon: BookOpen, path: '/courses' },
+    { label: '关联子女账号', icon: Link2, path: '/link-student' },
   ]
 
   const financeItems = [

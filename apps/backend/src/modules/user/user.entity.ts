@@ -133,6 +133,24 @@ export class User {
   @ApiProperty({ description: '更新人ID' })
   @Column({ type: 'uuid', nullable: true })
   updatedBy: string;
+
+  /** ====== 家长密码安全相关字段 ====== */
+
+  @ApiProperty({ description: '连续登录失败次数' })
+  @Column({ name: 'failed_attempts', default: 0 })
+  failedAttempts: number;
+
+  @ApiProperty({ description: '账户锁定截止时间' })
+  @Column({ name: 'lockout_until', type: 'timestamp', nullable: true })
+  lockoutUntil: Date;
+
+  @ApiProperty({ description: '最近密码历史（bcrypt hash数组）' })
+  @Column({ name: 'password_history', type: 'text', array: true, nullable: true })
+  passwordHistory: string[];
+
+  @ApiProperty({ description: '是否必须修改密码' })
+  @Column({ name: 'must_change_password', default: false })
+  mustChangePassword: boolean;
 }
 
 // Re-export entities for convenience

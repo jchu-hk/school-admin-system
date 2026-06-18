@@ -27,6 +27,12 @@ interface LoginResponse {
   otpType?: string
   access_token?: string
   message?: string
+  user?: {
+    id: string
+    username: string
+    name: string
+    role: string
+  }
 }
 
 export default function Login() {
@@ -37,25 +43,46 @@ export default function Login() {
   const [step, setStep] = useState<'login' | 'otp'>('login')
   const [loginData, setLoginData] = useState<LoginResponse | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  
+
   const {
     register,
     handleSubmit,
     formState: { errors: loginErrors },
   } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) })
-  
+
   const {
     register: registerOtp,
     handleSubmit: handleSubmitOtp,
     formState: { errors: otpErrors },
   } = useForm<OtpForm>({ resolver: zodResolver(otpSchema) })
 
+  /**
+   * After successful login, check if user must set password
+   */
+  const handlePostLogin = (token: string) => {
+    setToken(token)
+    // Check password status
+    apiClient
+      .get('/api/auth/password-status')
+      .then((res) => {
+        if (res.data.success && res.data.data.mustSetPassword === true) {
+          navigate('/set-password')
+        } else {
+          navigate('/dashboard')
+        }
+      })
+      .catch(() => {
+        // On error, navigate to dashboard anyway
+        navigate('/dashboard')
+      })
+  }
+
   const onLoginSubmit = async (data: LoginForm) => {
     try {
       setError('')
       setIsSubmitting(true)
       const res = await apiClient.post<LoginResponse>('/api/auth/login', data)
-      
+
       // 如果需要OTP验证
       if (res.data.requiresOtp) {
         setLoginData(res.data)
@@ -63,15 +90,14 @@ export default function Login() {
         setIsSubmitting(false)
         return
       }
-      
+
       // 直接返回access_token的情况
       const token = res.data?.access_token
       if (token && typeof token === 'string' && token !== 'undefined' && token !== 'null') {
-        setToken(token)
-        navigate('/dashboard')
+        handlePostLogin(token)
         return
       }
-      
+
       setError('登录响应格式错误')
       setIsSubmitting(false)
     } catch (err: any) {
@@ -84,17 +110,16 @@ export default function Login() {
     try {
       setError('')
       setIsSubmitting(true)
-      
+
       const res = await apiClient.post<{ access_token: string }>('/api/auth/verify-otp', {
         tempToken: loginData?.temp_token,
         code: data.otpCode,
         otpType: loginData?.otpType || 'email',
       })
-      
+
       const token = res.data?.access_token
       if (token && typeof token === 'string' && token !== 'undefined' && token !== 'null') {
-        setToken(token)
-        navigate('/dashboard')
+        handlePostLogin(token)
       } else {
         setError('验证失败，未获取到访问令牌')
         setIsSubmitting(false)
@@ -125,7 +150,7 @@ export default function Login() {
           <p className="text-center text-gray-500 mb-8">
             已向您的{loginData?.otpType === 'email' ? '邮箱' : '手机'}发送验证码，请输入6位验证码
           </p>
-          
+
           <form onSubmit={handleSubmitOtp(onOtpSubmit)} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">验证码</label>
@@ -140,9 +165,9 @@ export default function Login() {
               />
               {otpErrors.otpCode && <p className="text-red-500 text-sm mt-1">{otpErrors.otpCode.message}</p>}
             </div>
-            
+
             {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-            
+
             <button
               type="submit"
               disabled={isSubmitting}
@@ -151,7 +176,7 @@ export default function Login() {
               <LogIn size={18} />
               {isSubmitting ? '验证中...' : '验证'}
             </button>
-            
+
             <button
               type="button"
               onClick={handleBackToLogin}

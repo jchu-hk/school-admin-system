@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import Login from './pages/Login'
+import SetPasswordPage from './pages/SetPasswordPage'
+import LinkStudentPage from './pages/LinkStudentPage'
 import Dashboard from './pages/Dashboard'
 import StudentPage from './pages/StudentPage'
 import UserPage from './pages/UserPage'
@@ -42,6 +44,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/set-password" element={<SetPasswordPage />} />
           <Route path="/" element={
             <ProtectedRoute>
               <Layout />
@@ -62,6 +65,7 @@ export default function App() {
             <Route path="finance/scholarship" element={<FinanceScholarshipPage />} />
             <Route path="attendance" element={<AttendancePage />} />
             <Route path="attendance/mobile" element={<AttendanceMobilePage />} />
+            <Route path="link-student" element={<LinkStudentPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
