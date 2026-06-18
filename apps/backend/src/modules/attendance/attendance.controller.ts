@@ -12,7 +12,10 @@ import {
   Request,
   HttpCode,
   HttpStatus,
+  Headers,
+  UnauthorizedException,
 } from '@nestjs/common';
+import * as crypto from 'crypto';
 import {
   ApiTags,
   ApiOperation,
@@ -27,6 +30,10 @@ import {
   BatchCreateAttendanceDto,
   ConfirmPreviewDto,
   WebhookPayloadDto,
+  GenerateQrCodeDto,
+  BatchGenerateQrCodeDto,
+  MobileScanDto,
+  MobileBatchSubmitDto,
 } from './dto/batch-attendance.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -93,12 +100,13 @@ export class AttendanceController {
     UserRole.SCHOOL_STAFF,
     UserRole.TEACHER,
   )
-  getDailyStats(
+  async getDailyStats(
     @Query('date') date: string,
     @Query('classId') classId?: string,
   ) {
     const targetDate = date || new Date().toISOString().split('T')[0];
-    return this.attendanceService.getDailyStats(targetDate, classId);
+    const data = await this.attendanceService.getDailyStats(targetDate, classId);
+    return { success: true, data };
   }
 
   @Get('stats/monthly')
@@ -110,7 +118,7 @@ export class AttendanceController {
     UserRole.SCHOOL_STAFF,
     UserRole.TEACHER,
   )
-  getMonthlyStats(
+  async getMonthlyStats(
     @Query('year') year?: string,
     @Query('month') month?: string,
     @Query('classId') classId?: string,
@@ -118,11 +126,12 @@ export class AttendanceController {
     const now = new Date();
     const targetYear = year ? parseInt(year, 10) : now.getFullYear();
     const targetMonth = month ? parseInt(month, 10) : now.getMonth() + 1;
-    return this.attendanceService.getMonthlyStats(
+    const data = await this.attendanceService.getMonthlyStats(
       targetYear,
       targetMonth,
       classId,
     );
+    return { success: true, data };
   }
 
   @Get('stats/summary')
@@ -134,12 +143,13 @@ export class AttendanceController {
     UserRole.SCHOOL_STAFF,
     UserRole.TEACHER,
   )
-  getStats(
+  async getStats(
     @Query('classId') classId?: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ) {
-    return this.attendanceService.getStats(classId, startDate, endDate);
+    const data = await this.attendanceService.getStats(classId, startDate, endDate);
+    return { success: true, data };
   }
 
   @Get('student/:studentId')
@@ -194,15 +204,16 @@ export class AttendanceController {
     UserRole.SCHOOL_STAFF,
     UserRole.TEACHER,
   )
-  getClassStats(
+  async getClassStats(
     @Param('classId') classId: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ) {
-    return this.attendanceService.getClassStats(classId, startDate, endDate);
+    const data = await this.attendanceService.getClassStats(classId, startDate, endDate);
+    return { success: true, data };
   }
 
-  @Get('affected-studients')
+  @Get('affected-students')
   @ApiOperation({ summary: '获取受影响学生列表（数据源同步失败时）' })
   @ApiResponse({ status: 200, description: '获取成功' })
   @Roles(
@@ -211,18 +222,23 @@ export class AttendanceController {
     UserRole.SCHOOL_STAFF,
     UserRole.TEACHER,
   )
-  getAffectedStudents(@Query('date') date?: string) {
-    return this.attendanceService.getAffectedStudents(date);
+  async getAffectedStudents(@Query('date') date?: string) {
+    const data = await this.attendanceService.getAffectedStudents(date);
+    return {
+      success: true,
+      data,
+    };
   }
 
   @Get('reminders/unreported')
   @ApiOperation({ summary: '获取未上报的缺勤记录' })
   @ApiResponse({ status: 200, description: '获取成功' })
   @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
-  getUnreportedAbsences(
+  async getUnreportedAbsences(
     @Query('classId') classId?: string,
-  ): Promise<Attendance[]> {
-    return this.attendanceService.getUnreportedAbsences(classId);
+  ) {
+    const data = await this.attendanceService.getUnreportedAbsences(classId);
+    return { success: true, data };
   }
 
   @Get(':id')
@@ -303,11 +319,97 @@ export class AttendanceController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '生物识别设备 Webhook 推送（门禁/刷脸）' })
   @ApiResponse({ status: 200, description: '处理成功' })
+  @ApiResponse({ status: 401, description: '签名验证失败' })
   // Webhook 不走 JWT 鉴权，使用 HMAC 验签
   handleWebhook(
+    @Headers('x-signature') signature: string,
     @Body() payload: WebhookPayloadDto,
     @Query('deviceId') deviceId?: string,
   ) {
+    // 1. 验证签名
+    const webhookSecret = process.env.WEBHOOK_SECRET || 'default-secret-change-in-production';
+    const expectedSig = crypto
+      .createHmac('sha256', webhookSecret)
+      .update(JSON.stringify(payload))
+      .digest('hex');
+
+    if (signature !== expectedSig) {
+      throw new UnauthorizedException('Invalid signature');
+    }
+
+    // 2. 处理webhook
     return this.attendanceService.handleWebhook(payload, deviceId);
+  }
+
+  // ==================== 二维码生成（学生证扫码签到）====================
+
+  @Post('qrcode/generate')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '生成学生二维码' })
+  @ApiResponse({ status: 200, description: '二维码生成成功' })
+  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  generateQrCode(@Body() dto: GenerateQrCodeDto) {
+    return this.attendanceService.generateQrCode(dto);
+  }
+
+  @Post('qrcode/batch-generate')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '批量生成班级学生二维码' })
+  @ApiResponse({ status: 200, description: '批量二维码生成成功' })
+  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  batchGenerateQrCode(@Body() dto: BatchGenerateQrCodeDto) {
+    return this.attendanceService.batchGenerateQrCode(dto);
+  }
+
+  // ==================== 移动端扫码API ====================
+
+  @Post('mobile/scan')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '移动端扫码识别学生' })
+  @ApiResponse({ status: 200, description: '扫码成功' })
+  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  async mobileScan(@Body() dto: MobileScanDto, @Request() req) {
+    const data = await this.attendanceService.mobileScan(dto, req.user.id);
+    return {
+      success: true,
+      data,
+    };
+  }
+
+  @Get('mobile/classes')
+  @ApiOperation({ summary: '获取教师负责的班级列表' })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  async getTeacherClasses(@Request() req) {
+    const data = await this.attendanceService.getTeacherClasses(req.user.id);
+    return {
+      success: true,
+      data,
+    };
+  }
+
+  @Get('mobile/class/:id/students')
+  @ApiOperation({ summary: '获取班级学生列表' })
+  @ApiResponse({ status: 200, description: '获取成功' })
+  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  async getClassStudents(@Param('id') classId: string) {
+    const data = await this.attendanceService.getClassStudents(classId);
+    return {
+      success: true,
+      data,
+    };
+  }
+
+  @Post('mobile/batch')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '移动端批量提交出勤记录' })
+  @ApiResponse({ status: 200, description: '提交成功' })
+  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  async mobileBatchSubmit(@Body() dto: MobileBatchSubmitDto, @Request() req) {
+    const data = await this.attendanceService.mobileBatchSubmit(dto, req.user.id);
+    return {
+      success: true,
+      data,
+    };
   }
 }
