@@ -1,63 +1,74 @@
 # HEARTBEAT.md — 进度跟踪
 
-**更新**: 2026-06-18 06:11
+**更新**: 2026-06-18 08:10
 
-## ⚠️ 工作模式: 7x24 持续工作
+## ⚠️ 项目管理方式变更
 
-详见: `docs/pm/WORK-MODE-7x24.md`
+**原则**: GitHub驱动，不依赖Agent记忆
+
+- 所有任务 → GitHub Issue
+- 所有状态 → GitHub查询
+- 需要时才翻查 → gh issue list
 
 ---
 
-## 当前状态 (2026-06-18 05:50)
+## 当前状态 (2026-06-18 08:10)
 
-| 项目 | 状态 | 备注 |
-|------|------|------|
-| CI/CD | ✅ 通过 | |
-| v0.2.1 | ✅ 已发布 | |
-| Frontend Docker | ✅ 已修复 | commit ac14d94 |
-| 项目全景报告 | ✅ 已创建 | docs/PROJECT-OVERVIEW.md |
-| 部署验收流程 | ✅ 已建立 | docs/qa/DEPLOYMENT-CHECKLIST.md |
-| PM流程规范 | ✅ 已建立 | docs/pm/PROCESS-STANDARD.md |
-| AI任务分类指南 | ✅ 已创建 | docs/pm/AI-TASK-GUIDE.md |
-| Agent KPI定义 | ✅ 已创建 | docs/pm/AGENT-KPI.md |
-| 冲突解决机制 | ✅ 已创建 | docs/pm/CONFLICT-RESOLUTION.md |
-| 决策日志 | ✅ 已创建 | docs/process/DECISION-LOG.md |
+| 项目 | 状态 | GitHub Issue |
+|------|------|-------------|
+| CI/CD | ✅ 通过 | - |
+| v0.2.1 | ✅ 已发布 | - |
+| 出勤扫码功能 | 📋 待开发 | #99 |
+| 学费分期付款 | 📋 待开发 | #98 |
+| 家长密码设置 | 📋 待开发 | #100 |
+| 学生资助资格 | 📋 待开发 | #101 |
 
-## 🔴 缺陷检讨 (05:50)
+---
 
-**问题**: Frontend Docker配置错误，暴露placeholder页面
-**根因**: DEVOPS部署后无CHECKER验收
-**整改**: 建立强制验收流程
+## 📊 P0/P1 任务统计
 
-### 新增流程规范
+**P0 (必须完成)**: 4个
+**P1 (应该完成)**: 7个
 
-**部署验收流程** (docs/pm/PROCESS-STANDARD.md):
-```
-DEVOPS部署 → CHECKER验收 → PM确认
+**查看详情**:
+```bash
+gh issue list --label p0
+gh issue list --label p1
 ```
 
-**CHECKER必须验证**:
-- [ ] 构建成功
-- [ ] 容器健康
-- [ ] 功能可用
-- [ ] **代码完整性** (非placeholder)
-- [ ] 集成测试通过
+---
+
+## 🎯 当前迭代
+
+**周期**: 2026-06-18 ~ 2026-06-25
+
+**优先任务**:
+1. #99 出勤学生证二维码扫码签到 (P0)
+2. #98 学费分期付款管理功能 (P0)
+
+---
 
 ## 活跃Agent
 
-| Agent | 状态 | 任务 |
-|-------|------|------|
+| Agent | 状态 | Issue |
+|-------|------|-------|
 | 无 | - | - |
-
-## 待处理 (根据PROCESS-STANDARD)
-
-| 项目 | 优先级 | 说明 |
-|------|--------|------|
-| DEVOPS部署验收 | P0 | 所有部署必须CHECKER验收 |
-| 更新Issue模板 | P1 | 添加验收步骤 |
-| CI/CD自动验收 | P2 | 添加部署验收测试 |
 
 ---
 
-*7x24模式: 无需定时报告，任务驱动*
-*流程规范: docs/pm/PROCESS-STANDARD.md*
+## 📋 工件开发检查清单
+
+**开始前**:
+- [ ] 需求文档已阅读
+- [ ] 技术方案已确认
+- [ ] 设计已完成
+
+**完成后**:
+- [ ] 测试通过
+- [ ] 文档已更新
+- [ ] PR已合并
+
+---
+
+*项目管理唯一来源: docs/pm/PROJECT-STATUS.md*
+*查询方式: gh issue list*
