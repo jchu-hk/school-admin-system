@@ -367,7 +367,7 @@ export class AttendanceController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '移动端扫码识别学生' })
   @ApiResponse({ status: 200, description: '扫码成功' })
-  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
   async mobileScan(@Body() dto: MobileScanDto, @Request() req) {
     const data = await this.attendanceService.mobileScan(dto, req.user.id);
     return {
@@ -379,7 +379,7 @@ export class AttendanceController {
   @Get('mobile/classes')
   @ApiOperation({ summary: '获取教师负责的班级列表' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
   async getTeacherClasses(@Request() req) {
     const data = await this.attendanceService.getTeacherClasses(req.user.id);
     return {
@@ -391,7 +391,7 @@ export class AttendanceController {
   @Get('mobile/class/:id/students')
   @ApiOperation({ summary: '获取班级学生列表' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
   async getClassStudents(@Param('id') classId: string) {
     const data = await this.attendanceService.getClassStudents(classId);
     return {
@@ -404,7 +404,7 @@ export class AttendanceController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '移动端批量提交出勤记录' })
   @ApiResponse({ status: 200, description: '提交成功' })
-  @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
   async mobileBatchSubmit(@Body() dto: MobileBatchSubmitDto, @Request() req) {
     const data = await this.attendanceService.mobileBatchSubmit(dto, req.user.id);
     return {
