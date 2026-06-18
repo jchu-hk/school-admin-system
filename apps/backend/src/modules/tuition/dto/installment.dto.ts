@@ -13,7 +13,7 @@ import {
   IsBoolean,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 
 // ============ Installment Plan DTOs ============
 
@@ -139,6 +139,7 @@ export class SubStatusQueryDto {
 
   @ApiPropertyOptional({ description: '是否只返回本人记录（家长用）' })
   @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === '1')
   @IsBoolean()
   mine?: boolean;
 }

@@ -21,9 +21,9 @@ import { InstallmentService } from './installment.service';
     ]),
   ],
   controllers: [
+    SubStatusController,
     TuitionController,
     InstallmentController,
-    SubStatusController,
   ],
   providers: [TuitionService, InstallmentService],
   exports: [TuitionService, InstallmentService],

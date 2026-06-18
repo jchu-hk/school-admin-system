@@ -2,8 +2,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
   Index,
   ManyToOne,
   JoinColumn,
@@ -13,7 +11,6 @@ import { TuitionStandard } from './tuition-standard.entity';
 import { InstallmentPlan } from './installment-plan.entity';
 
 @Entity('tuition_payments')
-@Index(['studentId', 'academicYear'])
 @Index(['status'])
 export class TuitionPayment {
   @PrimaryGeneratedColumn('uuid')
@@ -26,35 +23,47 @@ export class TuitionPayment {
   @JoinColumn({ name: 'tuition_standard_id' })
   standard: TuitionStandard;
 
-  @Column()
+  @Column({ name: 'student_id' })
   studentId: string;
 
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ name: 'parent_id', type: 'uuid' })
   parentId: string;
 
-  @Column({ length: 100 })
-  studentName: string;
+  // Legacy fields (no @Column - not in DB schema, used by tuition service)
+  studentName?: string;
+  grade?: string;
+  className?: string;
+  academicYear?: string;
 
-  @Column({ length: 50 })
-  grade: string;
-
-  @Column({ length: 50, nullable: true })
-  className: string;
-
-  @Column({ length: 20 })
-  academicYear: string;
-
-  @Column({ type: 'decimal', precision: 12, scale: 2 })
+  @Column({ name: 'totalAmount', type: 'decimal', precision: 12, scale: 2 })
   amount: number;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, default: 0 })
+  @Column({ name: 'paidAmount', type: 'decimal', precision: 12, scale: 2, default: 0 })
   paidAmount: number;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ name: 'arrearsAmount', type: 'decimal', precision: 12, scale: 2, nullable: true })
+  arrearsAmount: number;
+
+  @Column({ name: 'discountAmount', type: 'decimal', precision: 12, scale: 2, nullable: true })
+  discountAmount: number;
+
+  @Column({ name: 'payment_method', length: 50, nullable: true })
+  paymentMethod: string;
+
+  @Column({ name: 'paid_at', type: 'timestamp', nullable: true })
   paymentDate: Date;
 
-  @Column({ length: 50, nullable: true })
-  paymentMethod: string;
+  @Column({ name: 'transaction_no', length: 100, nullable: true })
+  transactionNo: string;
+
+  @Column({ name: 'operator_id', type: 'uuid', nullable: true })
+  operatorId: string;
+
+  @Column({ name: 'payment_deadline', type: 'date', nullable: true })
+  paymentDeadline: Date;
+
+  @Column({ type: 'text', nullable: true })
+  remark: string;
 
   @Column({
     type: 'enum',
@@ -62,6 +71,9 @@ export class TuitionPayment {
     default: 'pending',
   })
   status: 'pending' | 'paid' | 'partial' | 'overdue';
+
+  @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt: Date;
 
   // ============ Installment Fields (Issue #98) ============
   @Column({
@@ -79,9 +91,9 @@ export class TuitionPayment {
   @JoinColumn({ name: 'installment_plan_id' })
   installmentPlan: InstallmentPlan;
 
-  @CreateDateColumn()
+  @Column({ name: 'created_at', type: 'timestamp', default: 'NOW()' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @Column({ name: 'updated_at', type: 'timestamp', default: 'NOW()' })
   updatedAt: Date;
 }
