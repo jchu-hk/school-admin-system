@@ -226,19 +226,14 @@ export class InstallmentService {
 
     const [plans, total] = await this.planRepository.findAndCount({
       where,
+      relations: ['schedules'],
       order: { createdAt: 'DESC' },
       skip: ((query.page || 1) - 1) * (query.pageSize || 10),
       take: query.pageSize || 10,
     });
 
-    const data = await Promise.all(
-      plans.map(async (plan) => {
-        const schedules = await this.scheduleRepository.find({
-          where: { planId: plan.id },
-          order: { sequence: 'ASC' },
-        });
-        return this.toPlanResponse(plan, schedules);
-      }),
+    const data = plans.map((plan) =>
+      this.toPlanResponse(plan, plan.schedules || []),
     );
 
     return { data, total, page: query.page || 1, pageSize: query.pageSize || 10 };
@@ -257,19 +252,14 @@ export class InstallmentService {
 
     const [plans, total] = await this.planRepository.findAndCount({
       where,
+      relations: ['schedules'],
       order: { createdAt: 'DESC' },
       skip: ((query.page || 1) - 1) * (query.pageSize || 10),
       take: query.pageSize || 10,
     });
 
-    const data = await Promise.all(
-      plans.map(async (plan) => {
-        const schedules = await this.scheduleRepository.find({
-          where: { planId: plan.id },
-          order: { sequence: 'ASC' },
-        });
-        return this.toPlanResponse(plan, schedules);
-      }),
+    const data = plans.map((plan) =>
+      this.toPlanResponse(plan, plan.schedules || []),
     );
 
     return { data, total, page: query.page || 1, pageSize: query.pageSize || 10 };
@@ -282,19 +272,14 @@ export class InstallmentService {
   ): Promise<{ data: InstallmentPlanResponseDto[]; total: number; page: number; pageSize: number }> {
     const [plans, total] = await this.planRepository.findAndCount({
       where: { status: InstallmentPlanStatus.PENDING_REVIEW },
+      relations: ['schedules'],
       order: { createdAt: 'ASC' },
       skip: ((query.page || 1) - 1) * (query.pageSize || 10),
       take: query.pageSize || 10,
     });
 
-    const data = await Promise.all(
-      plans.map(async (plan) => {
-        const schedules = await this.scheduleRepository.find({
-          where: { planId: plan.id },
-          order: { sequence: 'ASC' },
-        });
-        return this.toPlanResponse(plan, schedules);
-      }),
+    const data = plans.map((plan) =>
+      this.toPlanResponse(plan, plan.schedules || []),
     );
 
     return { data, total, page: query.page || 1, pageSize: query.pageSize || 10 };
@@ -318,6 +303,10 @@ export class InstallmentService {
 
     if (plan.status !== InstallmentPlanStatus.PENDING_REVIEW) {
       throw new BadRequestException('该分期计划不在待审核状态');
+    }
+
+    if (dto.action === 'reject' && !dto.reason) {
+      throw new BadRequestException('拒绝时必须填写原因');
     }
 
     // Check if already reviewed
@@ -457,6 +446,10 @@ export class InstallmentService {
 
     if (!schedule) {
       throw new NotFoundException('分期记录不存在');
+    }
+
+    if (schedule.plan.parentId !== userId && schedule.plan.studentId !== userId) {
+      throw new ForbiddenException('无权操作此分期计划');
     }
 
     if (schedule.status === InstallmentScheduleStatus.PAID) {
@@ -669,14 +662,31 @@ export class InstallmentService {
         where.parentId = userId;
       }
 
-      const payments = await this.paymentRepository.find({ where });
+      const payments = await this.paymentRepository.find({
+        where,
+        relations: ['installmentPlan', 'installmentPlan.schedules'],
+      });
       const today = new Date();
 
       for (const p of payments) {
-        const overdueDays = Math.floor(
-          (today.getTime() - (p.paymentDate as unknown as Date)?.getTime()) /
-            (1000 * 60 * 60 * 24),
-        );
+        // 计算逾期天数：基于分期期次的到期日
+        let overdueDays = 0;
+        if (p.installmentPlan?.schedules) {
+          const overdueSchedules = p.installmentPlan.schedules.filter(
+            (s) => s.status === InstallmentScheduleStatus.OVERDUE,
+          );
+          if (overdueSchedules.length > 0) {
+            // 取最早逾期的期次
+            const earliestOverdue = overdueSchedules.reduce((earliest, s) => {
+              const due = new Date(s.dueDate);
+              return due < new Date(earliest.dueDate) ? s : earliest;
+            });
+            overdueDays = Math.floor(
+              (today.getTime() - new Date(earliestOverdue.dueDate).getTime()) /
+                (1000 * 60 * 60 * 24),
+            );
+          }
+        }
         overdue.push({
           studentId: p.studentId,
           studentName: p.studentName,

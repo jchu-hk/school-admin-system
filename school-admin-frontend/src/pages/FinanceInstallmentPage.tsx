@@ -154,7 +154,7 @@ const FinanceInstallmentPage: React.FC = () => {
   const fetchSubStatus = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/tuition/payments/sub-status`, { headers });
+      const res = await fetch(`${API_BASE_URL}/tuition/payments/sub-status?mine=true`, { headers });
       if (res.ok) {
         const data = await res.json();
         setSubStatus(data);

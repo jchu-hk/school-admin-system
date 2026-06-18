@@ -57,6 +57,25 @@ export class InstallmentController {
     return this.installmentService.applyInstallment(dto, req.user.id);
   }
 
+  // ============ Get Student Installment Plans ============
+
+  @Get('student/:studentId')
+  @ApiOperation({ summary: '获取学生分期列表' })
+  @ApiResponse({ status: 200, description: '学生分期列表' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.PARENT,
+    UserRole.STUDENT,
+  )
+  getStudentInstallmentPlans(
+    @Param('studentId') studentId: string,
+    @Query() query: InstallmentPlanQueryDto,
+  ) {
+    return this.installmentService.getStudentInstallmentPlans(studentId, query);
+  }
+
   // ============ Get Installment Plan ============
 
   @Get(':planId')
@@ -78,25 +97,6 @@ export class InstallmentController {
       req.user.id,
       req.user.role,
     );
-  }
-
-  // ============ Get Student Installment Plans ============
-
-  @Get('student/:studentId')
-  @ApiOperation({ summary: '获取学生分期列表' })
-  @ApiResponse({ status: 200, description: '学生分期列表' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-    UserRole.PARENT,
-    UserRole.STUDENT,
-  )
-  getStudentInstallmentPlans(
-    @Param('studentId') studentId: string,
-    @Query() query: InstallmentPlanQueryDto,
-  ) {
-    return this.installmentService.getStudentInstallmentPlans(studentId, query);
   }
 
   // ============ Get Parent Installment Plans ============
