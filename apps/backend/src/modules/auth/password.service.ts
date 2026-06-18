@@ -238,6 +238,18 @@ export class PasswordService {
       });
     }
 
+    // If user has no password but provides old password, reject and record failed attempt
+    // (prevents attackers from using this endpoint to verify stolen credential lists)
+    if (!user.password && dto.oldPassword) {
+      await this.recordFailedAttempt(user);
+      throw new BadRequestException({
+        success: false,
+        code: 'INVALID_OLD_PASSWORD',
+        message: '原密码错误',
+        data: null,
+      });
+    }
+
     // For non-first-time users, validate old password
     if (user.password && dto.oldPassword) {
       const isOldPasswordValid = await bcrypt.compare(dto.oldPassword, user.password);
@@ -433,6 +445,8 @@ export class PasswordService {
 
   /**
    * Reset password with OTP
+   * SECURITY: Never reveal whether a phone/email is registered — always return
+   * the same success response so attackers cannot enumerate valid users.
    */
   async resetPassword(dto: ResetPasswordDto): Promise<ApiResponse> {
     const identifier = dto.phone || dto.email;
@@ -445,24 +459,7 @@ export class PasswordService {
       });
     }
 
-    // Find user
-    const user = await this.userRepository.findOne({
-      where: dto.phone ? { phone: dto.phone } : { email: dto.email },
-    });
-
-    if (!user) {
-      throw new NotFoundException({
-        success: false,
-        code: 'USER_NOT_FOUND',
-        message: '用户不存在',
-        data: null,
-      });
-    }
-
-    // Check lockout
-    await this.checkLockout(user);
-
-    // Find valid OTP request
+    // ── Step 1: Validate OTP FIRST, without checking user existence ──────────
     const whereClause: any = {
       used: false,
       expiresAt: MoreThan(new Date()),
@@ -484,9 +481,7 @@ export class PasswordService {
       });
     }
 
-    // Check attempts
     if (otpRequest.attempts >= OTP_CONFIG.maxAttempts) {
-      // Delete expired OTP
       await this.otpRequestRepository.delete(otpRequest.id);
       throw new BadRequestException({
         success: false,
@@ -496,12 +491,16 @@ export class PasswordService {
       });
     }
 
-    // Verify OTP code
     const isValid = await bcrypt.compare(dto.otp, otpRequest.codeHash);
     if (!isValid) {
+      // Record failed attempt against the user (if exists) for lockout
+      const user = await this.userRepository.findOne(
+        dto.phone ? { where: { phone: dto.phone } } : { where: { email: dto.email! } },
+      );
+      if (user) await this.recordFailedAttempt(user);
+
       otpRequest.attempts += 1;
       await this.otpRequestRepository.save(otpRequest);
-      await this.recordFailedAttempt(user);
 
       const remainingAttempts = OTP_CONFIG.maxAttempts - otpRequest.attempts;
       throw new BadRequestException({
@@ -512,7 +511,7 @@ export class PasswordService {
       });
     }
 
-    // Validate password strength
+    // ── Step 2: Validate password strength (same message whether user exists or not) ──
     const { valid, errors } = this.validatePasswordStrength(dto.newPassword);
     if (!valid) {
       throw new BadRequestException({
@@ -523,7 +522,26 @@ export class PasswordService {
       });
     }
 
-    // Check password history
+    // ── Step 3: Mark OTP as used BEFORE looking up user ─────────────────────
+    otpRequest.used = true;
+    await this.otpRequestRepository.save(otpRequest);
+
+    // ── Step 4: Find user — if not found, return success without revealing ──
+    const user = await this.userRepository.findOne({
+      where: dto.phone ? { phone: dto.phone } : { email: dto.email },
+    });
+
+    if (!user) {
+      // User doesn't exist — return the same success message to prevent enumeration
+      return {
+        success: true,
+        code: 'SUCCESS',
+        message: '如果该手机号已注册，密码已重置',
+        data: null,
+      };
+    }
+
+    // User exists — check password history
     const recentlyUsed = await this.isPasswordRecentlyUsed(user, dto.newPassword);
     if (recentlyUsed) {
       throw new BadRequestException({
@@ -534,11 +552,7 @@ export class PasswordService {
       });
     }
 
-    // Mark OTP as used
-    otpRequest.used = true;
-    await this.otpRequestRepository.save(otpRequest);
-
-    // Update password
+    // ── Step 5: Update password ─────────────────────────────────────────────
     const newHash = await this.hashPassword(dto.newPassword);
     const passwordHistory = user.passwordHistory || [];
     if (user.password) {
@@ -604,13 +618,14 @@ export class PasswordService {
       );
     }
 
-    // Create the link
+    // Create the link — NOT auto-verified (security: anyone can try linking,
+    // so require a separate verification step / admin approval)
     const link = this.linkRepository.create({
       parentId: userId,
       studentId: dto.studentId,
       relationship: dto.relationship,
       isPrimary: dto.isPrimary || false,
-      verifiedAt: new Date(), // Auto-verify for now
+      verifiedAt: null, // must be verified through separate process
     });
 
     await this.linkRepository.save(link);
