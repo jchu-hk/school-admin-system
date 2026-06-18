@@ -151,6 +151,29 @@ export class User {
   @ApiProperty({ description: '是否必须修改密码' })
   @Column({ name: 'must_change_password', default: false })
   mustChangePassword: boolean;
+
+  /** ====== 学生资助资格相关字段 ====== */
+
+  @ApiProperty({ description: '资助资格状态', enum: ['full_subsidy', 'half_subsidy', 'none', 'pending'] })
+  @Column({
+    type: 'enum',
+    enum: ['full_subsidy', 'half_subsidy', 'none', 'pending'],
+    default: 'none',
+    name: 'subsidy_eligibility',
+  })
+  subsidyEligibility: string;
+
+  @ApiProperty({ description: '资助开始日期', required: false })
+  @Column({ type: 'date', nullable: true, name: 'subsidy_start_date' })
+  subsidyStartDate: Date;
+
+  @ApiProperty({ description: '资助结束日期', required: false })
+  @Column({ type: 'date', nullable: true, name: 'subsidy_end_date' })
+  subsidyEndDate: Date;
+
+  @ApiProperty({ description: '资助证明编号', required: false })
+  @Column({ length: 50, nullable: true, name: 'subsidy_certificate_no' })
+  subsidyCertificateNo: string;
 }
 
 // Re-export entities for convenience

@@ -25,6 +25,13 @@ enum UserStatus {
   DISABLED = 'disabled',
 }
 
+enum SubsidyEligibility {
+  FULL_SUBSIDY = 'full_subsidy',
+  HALF_SUBSIDY = 'half_subsidy',
+  NONE = 'none',
+  PENDING = 'pending',
+}
+
 interface User {
   id: string
   username: string
@@ -46,6 +53,11 @@ interface User {
   deletedAt?: string
   createdBy?: string
   updatedBy?: string
+  /** 资助资格相关字段 */
+  subsidyEligibility?: SubsidyEligibility
+  subsidyStartDate?: string
+  subsidyEndDate?: string
+  subsidyCertificateNo?: string
 }
 
 interface PaginatedResponse<T> {
@@ -80,6 +92,11 @@ const studentSchema = z.object({
     .regex(/[a-z]/, '密码必须包含小写字母')
     .regex(/[0-9]/, '密码必须包含数字')
     .regex(/[!@#$%^&*(),.?":{}|<>]/, '密码必须包含特殊字符'),
+  /** 资助资格字段 */
+  subsidyEligibility: z.enum(['full_subsidy', 'half_subsidy', 'none', 'pending']).optional(),
+  subsidyStartDate: z.string().optional().or(z.literal('')),
+  subsidyEndDate: z.string().optional().or(z.literal('')),
+  subsidyCertificateNo: z.string().max(50, '资助证明编号不能超过50个字符').optional().or(z.literal('')),
 })
 
 type StudentFormData = z.infer<typeof studentSchema>
@@ -100,6 +117,13 @@ const STATUS_OPTIONS = [
   { value: UserStatus.ACTIVE, label: '活跃', color: 'bg-green-100 text-green-800' },
   { value: UserStatus.INACTIVE, label: '未激活', color: 'bg-gray-100 text-gray-800' },
   { value: UserStatus.DISABLED, label: '已禁用', color: 'bg-red-100 text-red-800' },
+]
+
+const SUBSIDY_OPTIONS = [
+  { value: SubsidyEligibility.FULL_SUBSIDY, label: '全额资助', color: 'bg-green-100 text-green-800' },
+  { value: SubsidyEligibility.HALF_SUBSIDY, label: '半额资助', color: 'bg-blue-100 text-blue-800' },
+  { value: SubsidyEligibility.NONE, label: '无资助', color: 'bg-gray-100 text-gray-800' },
+  { value: SubsidyEligibility.PENDING, label: '待审核', color: 'bg-yellow-100 text-yellow-800' },
 ]
 
 // ============ Main Component ============
@@ -137,6 +161,10 @@ export default function StudentPage() {
       whatsapp: '',
       className: '',
       password: '',
+      subsidyEligibility: 'none',
+      subsidyStartDate: '',
+      subsidyEndDate: '',
+      subsidyCertificateNo: '',
     },
   })
 
@@ -187,6 +215,10 @@ export default function StudentPage() {
         ...data,
         role: UserRole.STUDENT,
         status: UserStatus.ACTIVE,
+        subsidyEligibility: data.subsidyEligibility || 'none',
+        subsidyStartDate: data.subsidyStartDate || null,
+        subsidyEndDate: data.subsidyEndDate || null,
+        subsidyCertificateNo: data.subsidyCertificateNo || null,
       }, {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -204,9 +236,22 @@ export default function StudentPage() {
     
     try {
       const token = getToken()
-      const updateData = { ...data }
+      const updateData: Partial<StudentFormData> = { ...data }
       if (!updateData.password) {
-        delete (updateData as Partial<StudentFormData>).password
+        delete updateData.password
+      }
+      // Only include subsidy fields if they have values
+      if (updateData.subsidyEligibility === 'none') {
+        delete updateData.subsidyEligibility
+      }
+      if (!updateData.subsidyStartDate) {
+        delete updateData.subsidyStartDate
+      }
+      if (!updateData.subsidyEndDate) {
+        delete updateData.subsidyEndDate
+      }
+      if (!updateData.subsidyCertificateNo) {
+        delete updateData.subsidyCertificateNo
       }
       
       await apiClient.patch(`/api/users/${selectedStudent.id}`, updateData, {
@@ -248,6 +293,10 @@ export default function StudentPage() {
       whatsapp: student.whatsapp || '',
       className: student.className || '',
       password: '',
+      subsidyEligibility: student.subsidyEligibility || 'none',
+      subsidyStartDate: student.subsidyStartDate || '',
+      subsidyEndDate: student.subsidyEndDate || '',
+      subsidyCertificateNo: student.subsidyCertificateNo || '',
     })
     setShowEditModal(true)
   }
@@ -740,6 +789,52 @@ function StudentForm({ onSubmit, onCancel, isSubmitting, register, errors, showP
         )}
       </div>
 
+      {/* 资助资格部分 */}
+      <div className="border-t pt-4 mt-4">
+        <h4 className="text-sm font-medium text-gray-700 mb-3">资助资格信息</h4>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">资助资格</label>
+            <select
+              {...register('subsidyEligibility')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              {SUBSIDY_OPTIONS.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">资助证明编号</label>
+            <input
+              type="text"
+              {...register('subsidyCertificateNo')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              placeholder="请输入资助证明编号"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">资助开始日期</label>
+            <input
+              type="date"
+              {...register('subsidyStartDate')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">资助结束日期</label>
+            <input
+              type="date"
+              {...register('subsidyEndDate')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="flex justify-end gap-3 pt-4 border-t">
         <button
           type="button"
@@ -786,6 +881,20 @@ function StudentDetail({ student }: StudentDetailProps) {
             </span>
           }
         />
+        <DetailItem
+          icon={<CheckCircle size={20} />}
+          label="资助资格"
+          value={
+            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+              SUBSIDY_OPTIONS.find(s => s.value === student.subsidyEligibility)?.color || 'bg-gray-100 text-gray-800'
+            }`}>
+              {SUBSIDY_OPTIONS.find(s => s.value === student.subsidyEligibility)?.label || '无资助'}
+            </span>
+          }
+        />
+        <DetailItem icon={<User size={20} />} label="资助证明编号" value={student.subsidyCertificateNo || '-'} />
+        <DetailItem icon={<Calendar size={20} />} label="资助开始日期" value={student.subsidyStartDate ? new Date(student.subsidyStartDate).toLocaleDateString('zh-CN') : '-'} />
+        <DetailItem icon={<Calendar size={20} />} label="资助结束日期" value={student.subsidyEndDate ? new Date(student.subsidyEndDate).toLocaleDateString('zh-CN') : '-'} />
         <DetailItem
           icon={<Calendar size={20} />}
           label="创建时间"
