@@ -87,12 +87,15 @@ export class UserController {
     @Request() req: any,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('pageSize') pageSize?: string,
     @Query('role') role?: string,
     @Query('status') status?: string,
   ) {
+    // Support both 'limit' and 'pageSize' param names
+    const effectiveLimit = parseInt(limit || pageSize || '10');
     return this.userService.findAll(
-      parseInt(page),
-      parseInt(limit),
+      parseInt(page || '1'),
+      effectiveLimit,
       role,
       status,
       req.user,
