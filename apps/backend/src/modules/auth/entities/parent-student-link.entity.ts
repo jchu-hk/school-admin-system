@@ -34,7 +34,6 @@ export class ParentStudentLink {
   @Column({
     type: 'enum',
     enum: RelationshipType,
-    length: 20,
   })
   relationship: RelationshipType;
 
