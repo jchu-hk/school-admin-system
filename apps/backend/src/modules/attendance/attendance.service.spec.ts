@@ -506,10 +506,18 @@ describe('AttendanceService', () => {
     });
 
     it('should alert teacher when student is absent for 3+ consecutive days', async () => {
-      // Use dates with explicit HK timezone to avoid timezone mismatches
-      const d1 = new Date('2026-06-12T00:00:00+08:00');
-      const d2 = new Date('2026-06-11T00:00:00+08:00');
-      const d3 = new Date('2026-06-10T00:00:00+08:00');
+      // Build dates in HK timezone (matching server environment)
+      const now = new Date();
+      const toHKDate = (offsetDays) => {
+        const d = new Date(now);
+        d.setDate(d.getDate() - offsetDays);
+        d.setHours(0, 0, 0, 0);
+        return d;
+      };
+      // 3 consecutive school days ending today
+      const d1 = toHKDate(0); // today
+      const d2 = toHKDate(1); // yesterday
+      const d3 = toHKDate(2); // 2 days ago
 
       // Mock absences: 3 consecutive school days
       mockQueryBuilder.getMany.mockResolvedValue([
