@@ -438,7 +438,7 @@ export class LeaveAiVerificationService {
       const end = new Date(endDate);
       const endDayOfWeek = end.getDay();
 
-      if (dayOfWeek === 5 && endDayOfWeek === 0) {
+      if (dayOfWeek === 5 && endDayOfWeek === 1) {
         flags.push('周五至周一请假（连休模式）');
         recommendations.push('请确认连休的必要性');
       }
