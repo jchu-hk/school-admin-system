@@ -965,7 +965,7 @@ export class AttendanceService {
     // 使用聚合查询一次性获取班级和学生数量
     const queryBuilder = this.classRepository
       .createQueryBuilder('class')
-      .leftJoin('user', 'student', 'student.class_name = class.name AND student.role = :studentRole', {
+      .leftJoin('users', 'student', 'student.className = class.name AND student.role = :studentRole', {
         studentRole: UserRole.STUDENT,
       })
       .select([
