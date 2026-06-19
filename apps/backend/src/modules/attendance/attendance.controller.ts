@@ -105,7 +105,10 @@ export class AttendanceController {
     @Query('classId') classId?: string,
   ) {
     const targetDate = date || new Date().toISOString().split('T')[0];
-    const data = await this.attendanceService.getDailyStats(targetDate, classId);
+    const data = await this.attendanceService.getDailyStats(
+      targetDate,
+      classId,
+    );
     return { success: true, data };
   }
 
@@ -148,7 +151,11 @@ export class AttendanceController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ) {
-    const data = await this.attendanceService.getStats(classId, startDate, endDate);
+    const data = await this.attendanceService.getStats(
+      classId,
+      startDate,
+      endDate,
+    );
     return { success: true, data };
   }
 
@@ -209,7 +216,11 @@ export class AttendanceController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ) {
-    const data = await this.attendanceService.getClassStats(classId, startDate, endDate);
+    const data = await this.attendanceService.getClassStats(
+      classId,
+      startDate,
+      endDate,
+    );
     return { success: true, data };
   }
 
@@ -234,9 +245,7 @@ export class AttendanceController {
   @ApiOperation({ summary: '获取未上报的缺勤记录' })
   @ApiResponse({ status: 200, description: '获取成功' })
   @Roles(UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
-  async getUnreportedAbsences(
-    @Query('classId') classId?: string,
-  ) {
+  async getUnreportedAbsences(@Query('classId') classId?: string) {
     const data = await this.attendanceService.getUnreportedAbsences(classId);
     return { success: true, data };
   }
@@ -327,7 +336,8 @@ export class AttendanceController {
     @Query('deviceId') deviceId?: string,
   ) {
     // 1. 验证签名
-    const webhookSecret = process.env.WEBHOOK_SECRET || 'default-secret-change-in-production';
+    const webhookSecret =
+      process.env.WEBHOOK_SECRET || 'default-secret-change-in-production';
     const expectedSig = crypto
       .createHmac('sha256', webhookSecret)
       .update(JSON.stringify(payload))
@@ -367,7 +377,12 @@ export class AttendanceController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '移动端扫码识别学生' })
   @ApiResponse({ status: 200, description: '扫码成功' })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.TEACHER,
+    UserRole.SCHOOL_STAFF,
+    UserRole.SCHOOL_DIRECTOR,
+  )
   async mobileScan(@Body() dto: MobileScanDto, @Request() req) {
     const data = await this.attendanceService.mobileScan(dto, req.user.id);
     return {
@@ -379,7 +394,12 @@ export class AttendanceController {
   @Get('mobile/classes')
   @ApiOperation({ summary: '获取教师负责的班级列表' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.TEACHER,
+    UserRole.SCHOOL_STAFF,
+    UserRole.SCHOOL_DIRECTOR,
+  )
   async getTeacherClasses(@Request() req) {
     const data = await this.attendanceService.getTeacherClasses(req.user.id);
     return {
@@ -391,7 +411,12 @@ export class AttendanceController {
   @Get('mobile/class/:id/students')
   @ApiOperation({ summary: '获取班级学生列表' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.TEACHER,
+    UserRole.SCHOOL_STAFF,
+    UserRole.SCHOOL_DIRECTOR,
+  )
   async getClassStudents(@Param('id') classId: string) {
     const data = await this.attendanceService.getClassStudents(classId);
     return {
@@ -404,9 +429,36 @@ export class AttendanceController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '移动端批量提交出勤记录' })
   @ApiResponse({ status: 200, description: '提交成功' })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.TEACHER, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR)
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.TEACHER,
+    UserRole.SCHOOL_STAFF,
+    UserRole.SCHOOL_DIRECTOR,
+  )
   async mobileBatchSubmit(@Body() dto: MobileBatchSubmitDto, @Request() req) {
-    const data = await this.attendanceService.mobileBatchSubmit(dto, req.user.id);
+    const data = await this.attendanceService.mobileBatchSubmit(
+      dto,
+      req.user.id,
+    );
+    return {
+      success: true,
+      data,
+    };
+  }
+
+  // ==================== AC-04: 连续缺席告警 ====================
+
+  @Post('alerts/consecutive-absence')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '检测连续缺席≥3天的学生并通知班主任（AC-04）' })
+  @ApiResponse({ status: 200, description: '告警检测完成' })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  async checkConsecutiveAbsences(@Request() req) {
+    const schoolId = req.user?.schoolId || 'default';
+    const data = await this.attendanceService.checkConsecutiveAbsencesAndAlert(
+      schoolId,
+      req.user.id,
+    );
     return {
       success: true,
       data,

@@ -10,6 +10,7 @@ import {
 } from './attendance.entity';
 import { User, UserRole } from '../user/user.entity';
 import { Class } from '../user/class.entity';
+import { NotificationService } from '../notification/notification.service';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import * as QRCode from 'qrcode';
 
@@ -61,6 +62,10 @@ describe('AttendanceService', () => {
     createQueryBuilder: jest.fn(() => mockQueryBuilder),
   };
 
+  const mockNotificationService = {
+    sendNotification: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -76,6 +81,10 @@ describe('AttendanceService', () => {
         {
           provide: getRepositoryToken(Class),
           useValue: mockClassRepository,
+        },
+        {
+          provide: NotificationService,
+          useValue: mockNotificationService,
         },
       ],
     }).compile();
@@ -481,6 +490,113 @@ describe('AttendanceService', () => {
       expect(result.totalRecords).toBe(100);
       expect(result.present).toBe(85);
       expect(result.attendanceRate).toBe(85);
+    });
+  });
+
+  // ==================== AC-04: 连续缺席告警测试 ====================
+  describe('checkConsecutiveAbsencesAndAlert (AC-04)', () => {
+    it('should return empty result when no absences found', async () => {
+      mockQueryBuilder.getMany.mockResolvedValue([]);
+
+      const result = await service.checkConsecutiveAbsencesAndAlert('school-1', 'system');
+
+      expect(result.checkedStudents).toBe(0);
+      expect(result.alertedStudents).toBe(0);
+      expect(result.alerts).toHaveLength(0);
+    });
+
+    it('should alert teacher when student is absent for 3+ consecutive days', async () => {
+      // Use dates with explicit HK timezone to avoid timezone mismatches
+      const d1 = new Date('2026-06-12T00:00:00+08:00');
+      const d2 = new Date('2026-06-11T00:00:00+08:00');
+      const d3 = new Date('2026-06-10T00:00:00+08:00');
+
+      // Mock absences: 3 consecutive school days
+      mockQueryBuilder.getMany.mockResolvedValue([
+        {
+          id: 'att-1',
+          studentId: 'student-1',
+          student: { id: 'student-1', name: '王小明', role: UserRole.STUDENT },
+          classId: 'class-1',
+          status: AttendanceStatus.ABSENT,
+          attendanceDate: d1,
+        },
+        {
+          id: 'att-2',
+          studentId: 'student-1',
+          student: { id: 'student-1', name: '王小明', role: UserRole.STUDENT },
+          classId: 'class-1',
+          status: AttendanceStatus.ABSENT,
+          attendanceDate: d2,
+        },
+        {
+          id: 'att-3',
+          studentId: 'student-1',
+          student: { id: 'student-1', name: '王小明', role: UserRole.STUDENT },
+          classId: 'class-1',
+          status: AttendanceStatus.ABSENT,
+          attendanceDate: d3,
+        },
+      ]);
+
+      mockClassRepository.find.mockResolvedValue([
+        { id: 'class-1', name: '1A班', homeroomTeacherId: 'teacher-1' },
+      ]);
+
+      mockUserRepository.find.mockResolvedValue([
+        { id: 'teacher-1', name: '李老师', role: UserRole.TEACHER },
+      ]);
+
+      mockNotificationService.sendNotification.mockResolvedValue({ id: 'notif-1' });
+
+      const result = await service.checkConsecutiveAbsencesAndAlert('school-1', 'system');
+
+      expect(result.checkedStudents).toBe(1);
+      expect(result.alertedStudents).toBe(1);
+      expect(result.alerts).toHaveLength(1);
+      expect(result.alerts[0].studentName).toBe('王小明');
+      expect(result.alerts[0].consecutiveDays).toBeGreaterThanOrEqual(3);
+      expect(mockNotificationService.sendNotification).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: expect.stringContaining('连续缺席'),
+          recipientIds: ['teacher-1'],
+          urgency: 'high',
+        }),
+        'system',
+        'school-1',
+      );
+    });
+
+    it('should NOT alert when student has less than 3 consecutive absences', async () => {
+      const today = new Date();
+      const lastWeek = new Date(today);
+      lastWeek.setDate(today.getDate() - 7);
+
+      // Only 1 absence, not consecutive
+      mockQueryBuilder.getMany.mockResolvedValue([
+        {
+          id: 'att-1',
+          studentId: 'student-2',
+          student: { id: 'student-2', name: '李小红', role: UserRole.STUDENT },
+          classId: 'class-1',
+          status: AttendanceStatus.ABSENT,
+          attendanceDate: lastWeek,
+        },
+      ]);
+
+      mockClassRepository.find.mockResolvedValue([
+        { id: 'class-1', name: '1A班', homeroomTeacherId: 'teacher-1' },
+      ]);
+
+      mockUserRepository.find.mockResolvedValue([
+        { id: 'teacher-1', name: '李老师', role: UserRole.TEACHER },
+      ]);
+
+      const result = await service.checkConsecutiveAbsencesAndAlert('school-1', 'system');
+
+      expect(result.checkedStudents).toBe(1);
+      expect(result.alertedStudents).toBe(0);
+      expect(result.alerts).toHaveLength(0);
     });
   });
 });

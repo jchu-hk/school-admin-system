@@ -3,6 +3,8 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
@@ -27,6 +29,7 @@ import {
 } from './dto/batch-attendance.dto';
 import { User, UserRole } from '../user/user.entity';
 import { Class } from '../user/class.entity';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class AttendanceService {
@@ -37,6 +40,8 @@ export class AttendanceService {
     private userRepository: Repository<User>,
     @InjectRepository(Class)
     private classRepository: Repository<Class>,
+    @Inject(forwardRef(() => NotificationService))
+    private notificationService: NotificationService,
   ) {}
 
   // ==================== 基础 CRUD ====================
@@ -856,7 +861,9 @@ export class AttendanceService {
   /**
    * 解析二维码格式: STUDENT:{studentId}:{name}
    */
-  private parseStudentQrCode(qrcode: string): { studentId: string; name: string } | null {
+  private parseStudentQrCode(
+    qrcode: string,
+  ): { studentId: string; name: string } | null {
     const match = qrcode.match(/^STUDENT:([^:]+):(.+)$/);
     if (!match) {
       return null;
@@ -904,7 +911,8 @@ export class AttendanceService {
     }
 
     // 检查当天是否已有出勤记录
-    const attendanceDate = dto.attendanceDate || new Date().toISOString().split('T')[0];
+    const attendanceDate =
+      dto.attendanceDate || new Date().toISOString().split('T')[0];
     const existingRecord = await this.attendanceRepository.findOne({
       where: {
         studentId,
@@ -960,14 +968,21 @@ export class AttendanceService {
     }
 
     // 校务主任和系统管理员可以查看所有班级
-    const isAdmin = teacher.role === UserRole.SCHOOL_DIRECTOR || teacher.role === UserRole.SYSTEM_ADMIN;
+    const isAdmin =
+      teacher.role === UserRole.SCHOOL_DIRECTOR ||
+      teacher.role === UserRole.SYSTEM_ADMIN;
 
     // 使用聚合查询一次性获取班级和学生数量
     const queryBuilder = this.classRepository
       .createQueryBuilder('class')
-      .leftJoin('users', 'student', 'student.className = class.name AND student.role = :studentRole', {
-        studentRole: UserRole.STUDENT,
-      })
+      .leftJoin(
+        'users',
+        'student',
+        'student.className = class.name AND student.role = :studentRole',
+        {
+          studentRole: UserRole.STUDENT,
+        },
+      )
       .select([
         'class.id as id',
         'class.name as name',
@@ -980,7 +995,9 @@ export class AttendanceService {
       .addOrderBy('class.name', 'ASC');
 
     if (!isAdmin) {
-      queryBuilder.andWhere('class.homeroom_teacher_id = :teacherId', { teacherId });
+      queryBuilder.andWhere('class.homeroom_teacher_id = :teacherId', {
+        teacherId,
+      });
     }
 
     const classes = await queryBuilder.getRawMany();
@@ -1052,7 +1069,9 @@ export class AttendanceService {
       classId: dto.classId,
       attendanceDate: new Date(dto.attendanceDate),
       status: r.status,
-      checkInTime: r.checkInTime || new Date().toTimeString().split(' ')[0].substring(0, 8),
+      checkInTime:
+        r.checkInTime ||
+        new Date().toTimeString().split(' ')[0].substring(0, 8),
       syncSource: SyncSource.MANUAL,
       syncStatus: SyncStatus.SUCCESS,
       batchId,
@@ -1070,6 +1089,217 @@ export class AttendanceService {
       batchId,
       count: records.length,
       records,
+    };
+  }
+
+  // ==================== AC-04: 连续缺席告警 ====================
+
+  /**
+   * 检测连续缺席≥3天的学生，并通知班主任
+   * 验收标准 AC-04: 连续缺席≥3天的学生触发告警，通知班主任
+   */
+  async checkConsecutiveAbsencesAndAlert(
+    schoolId: string,
+    triggeredBy: string, // 触发检查的用户ID（system/scheduler）
+  ): Promise<{
+    checkedStudents: number;
+    alertedStudents: number;
+    alerts: Array<{
+      studentId: string;
+      studentName: string;
+      classId: string;
+      className: string;
+      consecutiveDays: number;
+      absentDates: string[];
+      teacherId: string;
+      teacherName: string;
+      notificationId?: string;
+    }>;
+  }> {
+    // 1. 找出所有状态为 ABSENT 的最近记录
+    const recentDate = new Date();
+    recentDate.setDate(recentDate.getDate() - 30); // 只看最近30天
+
+    const absences = await this.attendanceRepository
+      .createQueryBuilder('attendance')
+      .leftJoinAndSelect('attendance.student', 'student')
+      .leftJoinAndSelect('attendance.class', 'cls')
+      .where('attendance.status = :status', { status: AttendanceStatus.ABSENT })
+      .andWhere('attendance.attendanceDate >= :recentDate', {
+        recentDate: recentDate.toISOString().split('T')[0],
+      })
+      .orderBy('attendance.attendanceDate', 'DESC')
+      .getMany();
+
+    if (absences.length === 0) {
+      return { checkedStudents: 0, alertedStudents: 0, alerts: [] };
+    }
+
+    // 2. 按学生分组，统计连续缺席天数
+    // 排除节假日（sick_leave / personal_leave / absent_with_leave）
+    const studentAbsencesMap = new Map<
+      string,
+      { student: User; classId: string; className: string; dates: Date[] }
+    >();
+
+    for (const record of absences) {
+      if (!record.studentId || !record.student) continue;
+
+      const dateStr = new Date(record.attendanceDate)
+        .toISOString()
+        .split('T')[0];
+
+      if (!studentAbsencesMap.has(record.studentId)) {
+        studentAbsencesMap.set(record.studentId, {
+          student: record.student,
+          classId: record.classId,
+          className: (record as any).cls?.name || '',
+          dates: [],
+        });
+      }
+      // 去重（同一天多条记录只计一次）
+      const entry = studentAbsencesMap.get(record.studentId)!;
+      if (!entry.dates.some((d) => d.toISOString().split('T')[0] === dateStr)) {
+        entry.dates.push(new Date(record.attendanceDate));
+      }
+    }
+
+    // 3. 获取每个学生的班级班主任
+    const classTeacherMap = new Map<string, string>(); // classId -> teacherId
+    const classMap = new Map<
+      string,
+      { name: string; homeroomTeacherId: string }
+    >();
+
+    const classIds = [
+      ...new Set(
+        [...studentAbsencesMap.values()].map((e) => e.classId).filter(Boolean),
+      ),
+    ];
+
+    if (classIds.length > 0) {
+      const classes = await this.classRepository.find({
+        where: { id: In(classIds) },
+      });
+      for (const cls of classes) {
+        classMap.set(cls.id, {
+          name: cls.name,
+          homeroomTeacherId: cls.homeroomTeacherId,
+        });
+        if (cls.homeroomTeacherId) {
+          classTeacherMap.set(cls.id, cls.homeroomTeacherId);
+        }
+      }
+    }
+
+    // 4. 获取班主任信息
+    const teacherIds = [...new Set(classTeacherMap.values())];
+    const teachers =
+      teacherIds.length > 0
+        ? await this.userRepository.find({ where: { id: In(teacherIds) } })
+        : [];
+    const teacherMap = new Map(teachers.map((t) => [t.id, t]));
+
+    // 5. 计算连续缺席天数并过滤≥3天
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const alerts: Array<{
+      studentId: string;
+      studentName: string;
+      classId: string;
+      className: string;
+      consecutiveDays: number;
+      absentDates: string[];
+      teacherId: string;
+      teacherName: string;
+      notificationId?: string;
+    }> = [];
+
+    for (const [studentId, entry] of studentAbsencesMap) {
+      if (!entry.dates || entry.dates.length === 0) continue;
+
+      // 按日期排序（从新到旧）
+      const sortedDates = [...entry.dates].sort(
+        (a, b) => b.getTime() - a.getTime(),
+      );
+
+      // 计算从今天往前推算的连续缺席天数
+      let consecutiveDays = 0;
+      const absentDateSet = new Set(
+        sortedDates.map((d) => d.toISOString().split('T')[0]),
+      );
+
+      for (let i = 0; i < 30; i++) {
+        const checkDate = new Date(today);
+        checkDate.setDate(today.getDate() - i);
+        const dateStr = checkDate.toISOString().split('T')[0];
+
+        // 跳过周末
+        const dayOfWeek = checkDate.getDay();
+        if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+
+        if (absentDateSet.has(dateStr)) {
+          consecutiveDays++;
+        } else {
+          break; // 中断了，连续计算停止
+        }
+      }
+
+      if (consecutiveDays >= 3) {
+        const teacherId = classTeacherMap.get(entry.classId);
+        const teacher = teacherId ? teacherMap.get(teacherId) : null;
+
+        alerts.push({
+          studentId,
+          studentName: entry.student?.name || studentId,
+          classId: entry.classId,
+          className: entry.className || classMap.get(entry.classId)?.name || '',
+          consecutiveDays,
+          absentDates: sortedDates
+            .slice(0, consecutiveDays)
+            .map((d) => d.toISOString().split('T')[0])
+            .sort(),
+          teacherId: teacherId || '',
+          teacherName: teacher?.name || '',
+        });
+      }
+    }
+
+    // 6. 发送通知给班主任
+    let alertedStudents = 0;
+    for (const alert of alerts) {
+      if (!alert.teacherId) continue;
+
+      try {
+        const notification = await this.notificationService.sendNotification(
+          {
+            title: `【出勤告警】${alert.studentName} 连续缺席${alert.consecutiveDays}天`,
+            content: `学生 ${alert.studentName}（${alert.className}）已连续缺席 ${alert.consecutiveDays} 天（${alert.absentDates.join('、')}），请及时确认情况并跟进。`,
+            channel: 'app_push' as any,
+            urgency: 'high' as any,
+            recipientType: 'user',
+            recipientIds: [alert.teacherId],
+            relatedEntityType: 'attendance',
+            relatedEntityId: alert.studentId,
+          },
+          triggeredBy,
+          schoolId,
+        );
+        alert.notificationId = notification?.id;
+        alertedStudents++;
+      } catch (err) {
+        console.error(
+          `Failed to send notification for student ${alert.studentId}:`,
+          err,
+        );
+      }
+    }
+
+    return {
+      checkedStudents: studentAbsencesMap.size,
+      alertedStudents,
+      alerts,
     };
   }
 }

@@ -147,7 +147,7 @@ export class UserService {
     role?: string,
     status?: string,
     requester?: User,
-  ): Promise<{ users: User[]; total: number }> {
+  ): Promise<{ data: User[]; total: number }> {
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.relatedStudent', 'relatedStudent');
@@ -170,10 +170,10 @@ export class UserService {
       const maskedUsers = users.map((user) =>
         this.maskSensitiveFields(user, requester),
       );
-      return { users: maskedUsers, total };
+      return { data: maskedUsers, total };
     }
 
-    return { users, total };
+    return { data: users, total };
   }
 
   async findOne(id: string, requester?: User): Promise<User> {
