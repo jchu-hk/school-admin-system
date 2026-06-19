@@ -501,7 +501,7 @@ export class LunchService {
     // 按供应商分组（从菜品名中提取供应商标签，或按menuName前缀分组）
     const supplierMap: Record<
       string,
-      { orders: number; amount: number; byStatus: Record<string, number> }
+      { totalOrders: number; totalAmount: number; byStatus: Record<string, number> }
     > = {};
 
     orders.forEach((order) => {
@@ -509,10 +509,10 @@ export class LunchService {
       // 实际场景中建议在 lunch_orders 中增加 supplier 字段
       const supplier = this.extractSupplier(order.menuName);
       if (!supplierMap[supplier]) {
-        supplierMap[supplier] = { orders: 0, amount: 0, byStatus: {} };
+        supplierMap[supplier] = { totalOrders: 0, totalAmount: 0, byStatus: {} };
       }
-      supplierMap[supplier].orders += 1;
-      supplierMap[supplier].amount += Number(order.totalAmount);
+      supplierMap[supplier].totalOrders += 1;
+      supplierMap[supplier].totalAmount += Number(order.totalAmount);
       supplierMap[supplier].byStatus[order.status] =
         (supplierMap[supplier].byStatus[order.status] || 0) + 1;
     });

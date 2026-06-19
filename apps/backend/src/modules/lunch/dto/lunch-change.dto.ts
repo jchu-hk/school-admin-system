@@ -11,6 +11,7 @@ import {
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LunchChangeType, LunchChangeStatus } from '../lunch-change.entity';
+import { LunchMenuStatus } from '../lunch-menu.entity';
 
 // ============ 变更记录 DTO ============
 
