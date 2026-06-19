@@ -21,6 +21,9 @@ export const en = {
     courseManagement: 'Course Management',
     systemSettings: 'Settings',
     logout: 'Logout',
+    financeTuition: 'Tuition Management',
+    financeFee: 'Fee Management',
+    financeScholarship: 'Scholarship Management',
   },
   dashboard: {
     title: 'Dashboard',
