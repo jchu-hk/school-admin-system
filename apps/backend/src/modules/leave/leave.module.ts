@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LeaveController } from './leave.controller';
 import { LeaveService } from './leave.service';
 import { LeaveReminderService } from './leave-reminder.service';
+import { LeaveAiVerificationService } from './leave-ai-verification.service';
+import { LeaveAiVerificationController } from './leave-ai-verification.controller';
 import { LeaveApplication } from './leave.entity';
 import { LeaveReminder } from './leave-reminder.entity';
 import { AuditModule } from '../audit/audit.module';
@@ -18,8 +20,8 @@ import { Class } from '../user/class.entity';
     NotificationModule,
     UserModule,
   ],
-  controllers: [LeaveController],
-  providers: [LeaveService, LeaveReminderService],
-  exports: [LeaveService, LeaveReminderService],
+  controllers: [LeaveController, LeaveAiVerificationController],
+  providers: [LeaveService, LeaveReminderService, LeaveAiVerificationService],
+  exports: [LeaveService, LeaveReminderService, LeaveAiVerificationService],
 })
 export class LeaveModule {}

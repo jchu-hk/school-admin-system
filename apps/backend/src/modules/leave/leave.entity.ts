@@ -33,7 +33,7 @@ export enum ApprovalLevel {
   SCHOOL_DIRECTOR = 'school_director', // 校务主任审批（>3天）
 }
 
-@Entity('leave_applications')
+@Entity('leaves')
 export class LeaveApplication {
   @ApiProperty({ description: '请假申请ID' })
   @PrimaryGeneratedColumn('uuid')
