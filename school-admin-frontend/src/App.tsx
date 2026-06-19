@@ -15,6 +15,7 @@ import FinanceTuitionPage from './pages/FinanceTuitionPage'
 import FinanceInstallmentPage from './pages/FinanceInstallmentPage'
 import FinanceFeePage from './pages/FinanceFeePage'
 import FinanceScholarshipPage from './pages/FinanceScholarshipPage'
+import LunchOrderPage from './pages/LunchOrderPage'
 import AttendancePage from './pages/AttendancePage'
 import AttendanceMobilePage from './pages/AttendanceMobilePage'
 import Layout from './components/Layout'
@@ -63,6 +64,7 @@ export default function App() {
             <Route path="finance/installment" element={<FinanceInstallmentPage />} />
             <Route path="finance/fee" element={<FinanceFeePage />} />
             <Route path="finance/scholarship" element={<FinanceScholarshipPage />} />
+            <Route path="lunch" element={<LunchOrderPage />} />
             <Route path="attendance" element={<AttendancePage />} />
             <Route path="attendance/mobile" element={<AttendanceMobilePage />} />
             <Route path="link-student" element={<LinkStudentPage />} />
