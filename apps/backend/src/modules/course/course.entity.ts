@@ -43,8 +43,8 @@ export class Course {
   enrolled: number;
 
   @Column({
-    type: 'enum',
-    enum: ['active', 'inactive'],
+    type: 'varchar',
+    length: 20,
     default: 'active',
   })
   status: 'active' | 'inactive';
@@ -52,12 +52,12 @@ export class Course {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'uuid', nullable: true, name: 'school_id' })
   schoolId: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }

@@ -1,6 +1,6 @@
 # HEARTBEAT.md — 项目全景状况
 
-**更新时间**: 2026-06-19 12:45
+**更新时间**: 2026-06-19 13:14
 
 ---
 
@@ -15,8 +15,17 @@
 | 家长密码 | ✅ | 100% |
 | 学生资助 | ✅ | 100% |
 | 病假AI核验 | ✅ | 95% |
-| 课程管理 | ⚠️ | 60% |
-| 请假管理 | ⚠️ | 70% |
+| 课程管理 | ✅ | 100% | <!-- 2026-06-19 修复Courses表缺列问题 -->
+| 请假管理 | ✅ | 100% | <!-- 2026-06-19 修复Leaves表缺列问题 -->
+
+---
+
+## ✅ 已解决
+
+| 问题 | 解决时间 | 修复方案 |
+|------|----------|----------|
+| Courses表缺列 (teacher, classroom, schedule, capacity, enrolled, description, school_id) | 2026-06-19 | ALTER TABLE 添加缺失列 + entity entity修复(enum→varchar, schoolId name mapping, CreateDateColumn explicit names) |
+| Leaves表缺列 (student_id, class_id, application_no, director_comment 等) | 2026-06-19 | ALTER TABLE 添加缺失列 + entity修复(LeaveType枚举值更新, 列名映射) |
 
 ---
 
@@ -24,8 +33,7 @@
 
 | 问题 | 影响 | 优先级 |
 |------|------|--------|
-| Courses表缺列 | 课程API 500错误 | P0 |
-| Leaves表缺列 | 请假API 500错误 | P0 |
+| (无) | - | - |
 
 ---
 
@@ -33,7 +41,6 @@
 
 | 任务 | 状态 |
 |------|------|
-| 修复Courses/Leaves表 | 🔄 进行中 |
 | Issue #104 AI边界Bug | 🔄 进行中 |
 
 ---

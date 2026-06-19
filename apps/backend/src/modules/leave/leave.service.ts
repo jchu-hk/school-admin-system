@@ -68,7 +68,7 @@ export class LeaveService {
     leaveType: LeaveType,
     totalDays: number,
   ): boolean {
-    return leaveType === LeaveType.SICK && totalDays > 2;
+    return leaveType === LeaveType.SICK_LEAVE && totalDays > 2;
   }
 
   /**
