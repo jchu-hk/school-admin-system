@@ -48,7 +48,7 @@
 | 前端 | ✅ 已部署 | 2026-06-20 |
 | 数据库 | ✅ 14用户 | - |
 
-**URL**: https://sculpture-vat-million-freeze.trycloudflare.com
+**URL**: https://playing-shows-hits-phrases.trycloudflare.com
 
 ---
 
