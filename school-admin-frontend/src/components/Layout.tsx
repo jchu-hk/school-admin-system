@@ -25,7 +25,7 @@ export default function Layout() {
     { label: t.nav.userManagement, icon: UserCog, path: '/users' },
     { label: t.nav.leaveManagement, icon: Calendar, path: '/leaves' },
     { label: t.nav.parentInquiry, icon: MessageCircle, path: '/inquiries' },
-    { label: '📋 查詢隊列管理', icon: Clock, path: '/inquiries/queue' }, // AC-04 队列管理
+    { label: t.nav.inquiryQueue, icon: Clock, path: '/inquiries/queue' }, // AC-04 队列管理
     { label: t.nav.notificationManagement, icon: Bell, path: '/notifications' },
     { label: t.nav.courseManagement, icon: BookOpen, path: '/courses' },
     { label: '关联子女账号', icon: Link2, path: '/link-student' },

@@ -63,6 +63,7 @@ export default function App() {
             <Route path="notifications" element={<NotificationPage />} />
             <Route path="courses" element={<CourseManagementPage />} />
             <Route path="settings" element={<SystemSettingsPage />} />
+            <Route path="about" element={<AboutPage />} />
             <Route path="finance/tuition" element={<FinanceTuitionPage />} />
             <Route path="finance/installment" element={<FinanceInstallmentPage />} />
             <Route path="finance/fee" element={<FinanceFeePage />} />
