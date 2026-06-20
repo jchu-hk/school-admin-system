@@ -90,6 +90,7 @@ export class UserController {
     @Query('pageSize') pageSize?: string,
     @Query('role') role?: string,
     @Query('status') status?: string,
+    @Query('className') className?: string,
   ) {
     // Support both 'limit' and 'pageSize' param names
     const effectiveLimit = parseInt(limit || pageSize || '10');
@@ -98,6 +99,7 @@ export class UserController {
       effectiveLimit,
       role,
       status,
+      className,
       req.user,
     );
   }

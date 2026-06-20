@@ -21,17 +21,19 @@ export default function LanguageSelector() {
   const current = LOCALES.find(l => l.value === locale)!
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative inline-block">
       <button
-        onClick={() => setOpen(v => !v)}
+        onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition"
         title={t.common.language}
       >
         <Globe size={16} />
         <span>{current.flag}</span>
+        <span className="text-xs">▼</span>
       </button>
+      
       {open && (
-        <div className="absolute right-0 bottom-full mb-1 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50 min-w-[140px]">
+        <div className="absolute left-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-[9999] min-w-[140px]">
           {LOCALES.map(l => (
             <button
               key={l.value}

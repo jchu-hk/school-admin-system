@@ -146,6 +146,7 @@ export class UserService {
     limit: number = 10,
     role?: string,
     status?: string,
+    className?: string,
     requester?: User,
   ): Promise<{ data: User[]; total: number }> {
     const queryBuilder = this.userRepository
@@ -158,6 +159,10 @@ export class UserService {
 
     if (status) {
       queryBuilder.andWhere('user.status = :status', { status });
+    }
+
+    if (className) {
+      queryBuilder.andWhere('user.className = :className', { className });
     }
 
     const [users, total] = await queryBuilder
