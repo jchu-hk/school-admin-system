@@ -6,6 +6,7 @@ const VERSION = 'v1.5.0'
 const BUILD_DATE = '2026-06-20'
 
 const CHANGELOG = [
+  { version: 'v1.5.0', date: '2026-06-20', changes: ['家长查询队列管理', '学费管理完整功能', '费用管理', '奖学金/津贴管理', 'Bug修复(语言切换/班级筛选/Modal弹窗等)'] },
   { version: 'v1.4.0', date: '2026-06-19', changes: ['午膳订单管理', '教师请假管理', '学生出勤管理', '病假AI核验', 'i18n国际化'] },
   { version: 'v1.3.0', date: '2026-06-19', changes: ['AI边界Bug修复', '分期付款UUID校验'] },
   { version: 'v1.2.0', date: '2026-06-18', changes: ['学生资助资格', '家长密码设置', '出勤二维码扫码'] },
