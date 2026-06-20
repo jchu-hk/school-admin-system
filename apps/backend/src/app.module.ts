@@ -23,6 +23,7 @@ import { ScholarshipModule } from './modules/scholarship/scholarship.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { LunchModule } from './modules/lunch/lunch.module';
+import { GradesModule } from './modules/grades/grades.module';
 import { AiModule } from './modules/ai/ai.module';
 
 @Module({
