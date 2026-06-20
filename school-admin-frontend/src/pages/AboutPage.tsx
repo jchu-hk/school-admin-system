@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 
-const VERSION = 'v1.4.0'
+const VERSION = 'v1.5.0'
 const BUILD_DATE = '2026-06-20'
 
 const CHANGELOG = [
