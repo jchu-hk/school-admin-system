@@ -21,6 +21,8 @@ import { TuitionModule } from './modules/tuition/tuition.module';
 import { FeeModule } from './modules/fee/fee.module';
 import { ScholarshipModule } from './modules/scholarship/scholarship.module';
 import { AttendanceModule } from './modules/attendance/attendance.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { LunchModule } from './modules/lunch/lunch.module';
 import { AiModule } from './modules/ai/ai.module';
 
 @Module({
@@ -62,6 +64,8 @@ import { AiModule } from './modules/ai/ai.module';
     FeeModule,
     ScholarshipModule,
     AttendanceModule,
+    DashboardModule,
+    LunchModule,
     AiModule,
   ],
   controllers: [],

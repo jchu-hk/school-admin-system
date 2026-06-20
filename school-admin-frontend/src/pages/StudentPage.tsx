@@ -555,6 +555,7 @@ export default function StudentPage() {
             isSubmitting={isSubmitting}
             register={register}
             errors={errors}
+            handleSubmit={handleSubmit}
             showPassword
           />
         </Modal>
@@ -569,6 +570,7 @@ export default function StudentPage() {
             isSubmitting={isSubmitting}
             register={register}
             errors={errors}
+            handleSubmit={handleSubmit}
             showPassword
             isEdit
           />
@@ -647,6 +649,7 @@ function Modal({ title, children, onClose }: ModalProps) {
 
 interface StudentFormProps {
   onSubmit: (data: StudentFormData) => Promise<void>
+  handleSubmit: ReturnType<typeof useForm<StudentFormData>['handleSubmit']>
   onCancel: () => void
   isSubmitting: boolean
   register: ReturnType<typeof useForm<StudentFormData>>['register']
@@ -655,7 +658,7 @@ interface StudentFormProps {
   isEdit?: boolean
 }
 
-function StudentForm({ onSubmit, onCancel, isSubmitting, register, errors, showPassword, isEdit }: StudentFormProps) {
+function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register, errors, showPassword, isEdit }: StudentFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
