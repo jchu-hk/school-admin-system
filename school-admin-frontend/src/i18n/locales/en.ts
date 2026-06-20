@@ -30,6 +30,8 @@ export const en = {
     financeInstallment: 'Installments',
     attendance: 'Attendance',
     logout: 'Logout',
+    linkStudent: 'Link Student Account',
+    financeManagement: 'Finance Management',
   },
   // Dashboard
   dashboard: {
@@ -262,6 +264,8 @@ export const en = {
     error: 'Error',
     language: 'Language',
     logout: 'Logout',
+    linkStudent: 'Link Student Account',
+    financeManagement: 'Finance Management',
     back: 'Back',
     next: 'Next',
     previous: 'Previous',

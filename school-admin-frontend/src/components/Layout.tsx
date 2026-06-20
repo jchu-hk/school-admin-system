@@ -28,7 +28,7 @@ export default function Layout() {
     { label: t.nav.inquiryQueue, icon: Clock, path: '/inquiries/queue' }, // AC-04 队列管理
     { label: t.nav.notificationManagement, icon: Bell, path: '/notifications' },
     { label: t.nav.courseManagement, icon: BookOpen, path: '/courses' },
-    { label: '关联子女账号', icon: Link2, path: '/link-student' },
+    { label: t.nav.linkStudent, icon: Link2, path: '/link-student' },
   ]
 
   const financeItems = [
@@ -60,7 +60,7 @@ export default function Layout() {
               className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition"
             >
               <DollarSign size={20} />
-              <span className="flex-1 text-left">财政管理</span>
+              <span className="flex-1 text-left">{t.nav.financeManagement}</span>
               <ChevronDown size={16} className={`transition-transform ${financeExpanded ? 'rotate-180' : ''}`} />
             </button>
             {financeExpanded && (

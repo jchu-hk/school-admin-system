@@ -30,6 +30,8 @@ export const zhTW = {
     financeInstallment: '分期付款',
     attendance: '考勤管理',
     logout: '登出',
+    linkStudent: '關聯子女帳號',
+    financeManagement: '財務管理',
   },
   // 儀表盤
   dashboard: {
@@ -262,6 +264,8 @@ export const zhTW = {
     error: '操作失敗',
     language: '語言',
     logout: '登出',
+    linkStudent: '關聯子女帳號',
+    financeManagement: '財務管理',
     back: '返回',
     next: '下一步',
     previous: '上一步',

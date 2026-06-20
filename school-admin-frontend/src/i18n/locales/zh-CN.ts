@@ -30,6 +30,8 @@ export const zhCN = {
     financeInstallment: '分期付款',
     attendance: '考勤管理',
     logout: '退出登录',
+    linkStudent: '关联子女账号',
+    financeManagement: '财政管理',
   },
   // 仪表盘
   dashboard: {
@@ -262,6 +264,8 @@ export const zhCN = {
     error: '操作失败',
     language: '语言',
     logout: '退出登录',
+    linkStudent: '关联子女账号',
+    financeManagement: '财政管理',
     back: '返回',
     next: '下一步',
     previous: '上一步',
