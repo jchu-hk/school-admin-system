@@ -7,6 +7,7 @@ import {
   DeleteDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 
@@ -16,6 +17,7 @@ export enum TuitionStatus {
   PARTIAL = 'partial',
   OVERDUE = 'overdue',
   WAIVED = 'waived',
+  EXEMPTED = 'exempted',
 }
 
 export enum PaymentMethod {
@@ -25,6 +27,24 @@ export enum PaymentMethod {
   ALIPAY = 'alipay',
   CARD = 'card',
   OTHER = 'other',
+}
+
+export enum SubsidyType {
+  NONE = 'none',
+  FULL = 'full',
+  PARTIAL = 'partial',
+  EXEMPTED = 'exempted',
+}
+
+// Alias for backward compatibility
+export const TuitionPaymentStatus = TuitionStatus;
+
+export enum SubStatus {
+  NONE = 'none',
+  INSTALLMENT_PLAN = 'installment_plan',
+  OVERDUE = 'overdue',
+  DISPUTED = 'disputed',
+  PAUSED = 'paused',
 }
 
 @Entity('tuition_standards')
@@ -37,6 +57,12 @@ export class TuitionStandard {
 
   @Column({ name: 'grade_id', nullable: true })
   gradeId: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  grade: string;
+
+  @Column({ name: 'academic_year', length: 20, nullable: true })
+  academicYear: string;
 
   @Column({ type: 'varchar', length: 100 })
   title: string;
@@ -56,6 +82,9 @@ export class TuitionStandard {
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
+  @OneToMany(() => TuitionPayment, (payment) => payment.tuitionStandard)
+  payments: TuitionPayment[];
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
@@ -64,6 +93,8 @@ export class TuitionStandard {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
+
+  static readonly DEFAULT_FULL_SUBSIDY = 550;
 }
 
 @Entity('tuition_payments')
@@ -74,7 +105,7 @@ export class TuitionPayment {
   @Column({ name: 'tuition_standard_id' })
   tuitionStandardId: string;
 
-  @ManyToOne(() => TuitionStandard)
+  @ManyToOne(() => TuitionStandard, (standard) => standard.payments)
   @JoinColumn({ name: 'tuition_standard_id' })
   tuitionStandard: TuitionStandard;
 
@@ -93,22 +124,21 @@ export class TuitionPayment {
     enum: TuitionStatus,
     default: TuitionStatus.PENDING,
   })
-  status: TuitionStatus;
+  status: TuitionStatus | string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  totalAmount: number;
+  @Column({ name: 'totalAmount', type: 'decimal', precision: 12, scale: 2 })
+  amount: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @Column({ name: 'paidAmount', type: 'decimal', precision: 12, scale: 2, default: 0 })
   paidAmount: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({ name: 'arrearsAmount', type: 'decimal', precision: 12, scale: 2, nullable: true })
   arrearsAmount: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({ name: 'discountAmount', type: 'decimal', precision: 12, scale: 2, nullable: true })
   discountAmount: number;
 
   @Column({
-    type: 'enum',
     enum: PaymentMethod,
     name: 'payment_method',
     nullable: true,
@@ -116,7 +146,7 @@ export class TuitionPayment {
   paymentMethod: PaymentMethod;
 
   @Column({ name: 'paid_at', type: 'timestamp', nullable: true })
-  paidAt: Date;
+  paymentDate: Date;
 
   @Column({
     name: 'transaction_no',
@@ -138,6 +168,49 @@ export class TuitionPayment {
 
   @Column({ type: 'text', nullable: true })
   remark: string;
+
+  // Virtual fields (not in DB, populated by service)
+  studentName?: string;
+  grade?: string;
+  className?: string;
+  academicYear?: string;
+
+  // Subsidy fields
+  @Column({ name: 'subsidy_type', type: 'varchar', length: 50, nullable: true })
+  subsidyType: string;
+
+  @Column({ name: 'subsidy_amount', type: 'decimal', precision: 10, scale: 2, nullable: true })
+  subsidyAmount: number;
+
+  @Column({ name: 'subsidy_remark', type: 'text', nullable: true })
+  subsidyRemark: string;
+
+  // Dispute fields
+  @Column({ name: 'dispute_reason', type: 'text', nullable: true })
+  disputeReason: string;
+
+  @Column({ name: 'dispute_resolved_at', type: 'timestamp', nullable: true })
+  disputeResolvedAt: Date;
+
+  @Column({ name: 'dispute_resolution', type: 'varchar', length: 50, nullable: true })
+  disputeResolution: string;
+
+  // Sub status fields
+  @Column({ name: 'sub_status', type: 'varchar', length: 50, nullable: true })
+  subStatus: string;
+
+  // Virtual relation (not persisted, populated by service)
+  installmentPlan?: any;
+
+  @Column({ name: 'installment_plan_id', type: 'uuid', nullable: true })
+  installmentPlanId: string;
+
+  // Overdue tracking
+  @Column({ name: 'overdue_days', type: 'int', default: 0 })
+  overdueDays: number;
+
+  @Column({ name: 'last_overdue_check_at', type: 'timestamp', nullable: true })
+  lastOverdueCheckAt: Date;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

@@ -7,7 +7,7 @@ import {
   JoinColumn,
   OneToOne,
 } from 'typeorm';
-import { TuitionStandard } from './tuition-standard.entity';
+import { TuitionStandard } from './tuition.entity';
 import { InstallmentPlan } from './installment-plan.entity';
 
 // ============ AC-02/AC-03: Sub Status for tracking overdue and disputed ============

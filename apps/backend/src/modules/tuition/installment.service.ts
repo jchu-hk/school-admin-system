@@ -16,7 +16,7 @@ import {
   InstallmentScheduleStatus,
 } from './installment-schedule.entity';
 import { InstallmentPlanReview, InstallmentReviewAction } from './installment-review.entity';
-import { TuitionPayment } from './tuition-payment.entity';
+import { TuitionPayment } from './tuition.entity';
 import {
   ApplyInstallmentDto,
   ReviewInstallmentDto,

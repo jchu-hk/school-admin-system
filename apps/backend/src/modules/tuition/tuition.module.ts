@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TuitionStandard } from './tuition-standard.entity';
-import { TuitionPayment } from './tuition-payment.entity';
+import { TuitionStandard, TuitionPayment, TuitionArrears } from './tuition.entity';
 import { InstallmentPlan } from './installment-plan.entity';
 import { InstallmentSchedule } from './installment-schedule.entity';
 import { InstallmentPlanReview } from './installment-review.entity';
@@ -15,6 +14,7 @@ import { InstallmentService } from './installment.service';
     TypeOrmModule.forFeature([
       TuitionStandard,
       TuitionPayment,
+      TuitionArrears,
       InstallmentPlan,
       InstallmentSchedule,
       InstallmentPlanReview,

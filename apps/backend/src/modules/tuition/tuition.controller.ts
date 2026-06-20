@@ -20,9 +20,9 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { TuitionService, ReconciliationReport } from './tuition.service';
-import { TuitionStandard } from './tuition-standard.entity';
-import { TuitionPayment } from './tuition-payment.entity';
-import { SubsidyType } from './tuition-standard.entity';
+import { TuitionStandard } from './tuition.entity';
+import { TuitionPayment } from './tuition.entity';
+import { SubsidyType } from './tuition.entity';
 import {
   CreateTuitionStandardDto,
   UpdateTuitionStandardDto,

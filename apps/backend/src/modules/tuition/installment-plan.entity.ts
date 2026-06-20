@@ -10,7 +10,7 @@ import {
   Index,
 } from 'typeorm';
 import { User } from '../user/user.entity';
-import { TuitionPayment } from './tuition-payment.entity';
+import { TuitionPayment } from './tuition.entity';
 import { InstallmentSchedule } from './installment-schedule.entity';
 import { InstallmentPlanReview } from './installment-review.entity';
 

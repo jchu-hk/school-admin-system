@@ -5,8 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere, Not, IsNull } from 'typeorm';
-import { TuitionStandard, SubsidyType } from './tuition-standard.entity';
-import { TuitionPayment, SubStatus, TuitionPaymentStatus } from './tuition-payment.entity';
+import { TuitionStandard, TuitionPayment, TuitionStatus, TuitionPaymentStatus, PaymentMethod, SubStatus, SubsidyType } from './tuition.entity';
 import {
   CreateTuitionStandardDto,
   UpdateTuitionStandardDto,
@@ -145,6 +144,7 @@ export class TuitionService {
     createDto: CreateTuitionPaymentDto,
   ): Promise<TuitionPayment> {
     const payment = this.paymentRepository.create({
+      ...createDto as any,
       ...createDto,
       paymentDate: createDto.paymentDate
         ? new Date(createDto.paymentDate)
@@ -222,7 +222,7 @@ export class TuitionService {
   async findByStudent(studentId: string): Promise<TuitionPayment[]> {
     return this.paymentRepository.find({
       where: { studentId },
-      order: { academicYear: 'DESC', createdAt: 'DESC' },
+      order: { createdAt: 'DESC' },
     });
   }
 
