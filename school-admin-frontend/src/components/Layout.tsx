@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, BookOpen, Settings, LogOut, GraduationCap, Calendar, MessageCircle, Bell, UserCog, DollarSign, ChevronDown, ClipboardCheck, Link2 } from 'lucide-react'
+import { LayoutDashboard, Users, BookOpen, Settings, LogOut, GraduationCap, Calendar, MessageCircle, Bell, UserCog, DollarSign, ChevronDown, ClipboardCheck, Link2, Clock } from 'lucide-react'
 import LanguageSelector from './LanguageSelector'
 import { useI18n } from '../i18n'
 import { getToken, removeToken } from '../utils/tokenService'
@@ -25,6 +25,7 @@ export default function Layout() {
     { label: t.nav.userManagement, icon: UserCog, path: '/users' },
     { label: t.nav.leaveManagement, icon: Calendar, path: '/leaves' },
     { label: t.nav.parentInquiry, icon: MessageCircle, path: '/inquiries' },
+    { label: '📋 查詢隊列管理', icon: Clock, path: '/inquiries/queue' }, // AC-04 队列管理
     { label: t.nav.notificationManagement, icon: Bell, path: '/notifications' },
     { label: t.nav.courseManagement, icon: BookOpen, path: '/courses' },
     { label: '关联子女账号', icon: Link2, path: '/link-student' },
@@ -81,6 +82,10 @@ export default function Layout() {
           <button onClick={() => navigate('/settings')} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition">
             <Settings size={20} />
             {t.nav.systemSettings}
+          </button>
+          <button onClick={() => navigate('/about')} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition">
+            <Info size={20} />
+            {t.nav.about || '关于系统'}
           </button>
         </nav>
         <div className="p-4 border-t flex items-center justify-between">

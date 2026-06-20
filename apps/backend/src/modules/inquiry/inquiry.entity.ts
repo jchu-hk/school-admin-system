@@ -38,7 +38,32 @@ export enum InquiryStatus {
   PENDING = 'pending', // 待处理
   PROCESSING = 'processing', // 处理中
   REPLIED = 'replied', // 已回复
+  AUTO_REPLIED = 'auto_replied', // AI自动回复
+  ESCALATED = 'escalated', // 已升级
   CLOSED = 'closed', // 已关闭
+}
+
+// AC-04: 超时警告级别
+export enum TimeoutWarningLevel {
+  NONE = 'none', // 正常
+  WARNING = 'warning', // 超时警告 (>10分钟未处理)
+  CRITICAL = 'critical', // 严重超时 (>30分钟)
+}
+
+// 查询情绪分类 (AC-08)
+export enum InquirySentiment {
+  NEUTRAL = 'neutral', // 中性
+  POSITIVE = 'positive', // 正面/感谢
+  NEGATIVE = 'negative', // 负面/不满
+  ANGRY = 'angry', // 愤怒 (AC-03 情绪激动)
+}
+
+// 转交状态
+export enum TransferStatus {
+  NOT_TRANSFERRED = 'not_transferred',
+  PENDING = 'pending', // 待接收
+  ACCEPTED = 'accepted', // 已接收
+  REJECTED = 'rejected', // 已拒绝
 }
 
 @Entity('parent_inquiries')
@@ -177,6 +202,53 @@ export class ParentInquiry {
   @ApiProperty({ description: '通话结果' })
   @Column({ length: 30, nullable: true })
   callResult: string;
+
+  // AC-08: 情绪分类（不记录敏感内容）
+  @ApiProperty({ description: '家长情绪', enum: InquirySentiment })
+  @Column({
+    type: 'enum',
+    enum: InquirySentiment,
+    nullable: true,
+  })
+  sentiment: InquirySentiment;
+
+  // AC-04: 超时警告级别
+  @ApiProperty({ description: '超时警告级别', enum: TimeoutWarningLevel })
+  @Column({
+    type: 'enum',
+    enum: TimeoutWarningLevel,
+    default: TimeoutWarningLevel.NONE,
+  })
+  timeoutWarning: TimeoutWarningLevel;
+
+  // AC-06: 转交给谁
+  @ApiProperty({ description: '转交目标部门/人员' })
+  @Column({ type: 'uuid', nullable: true })
+  transferTo: string;
+
+  @ApiProperty({ description: '转交目标处理人' })
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'transferTo' })
+  transferredOfficer: User;
+
+  // AC-06: 转交状态
+  @ApiProperty({ description: '转交状态', enum: TransferStatus })
+  @Column({
+    type: 'enum',
+    enum: TransferStatus,
+    default: TransferStatus.NOT_TRANSFERRED,
+  })
+  transferStatus: TransferStatus;
+
+  // AC-06: 转交原因
+  @ApiProperty({ description: '转交原因' })
+  @Column({ type: 'text', nullable: true })
+  transferReason: string;
+
+  // AC-06: 转交发起人
+  @ApiProperty({ description: '转交发起人' })
+  @Column({ type: 'uuid', nullable: true })
+  transferredBy: string;
 
   @ApiProperty({ description: '创建时间' })
   @CreateDateColumn()

@@ -10,6 +10,33 @@ import {
 import { TuitionStandard } from './tuition-standard.entity';
 import { InstallmentPlan } from './installment-plan.entity';
 
+// ============ AC-02/AC-03: Sub Status for tracking overdue and disputed ============
+export enum SubStatus {
+  NONE = 'none',
+  INSTALLMENT_PLAN = 'installment_plan', // 分期中
+  OVERDUE = 'overdue',                    // 逾期
+  DISPUTED = 'disputed',                  // 争议中
+  PAUSED = 'paused',                      // 暂停催款
+}
+
+export enum TuitionPaymentStatus {
+  PENDING = 'pending',
+  PAID = 'paid',
+  PARTIAL = 'partial',
+  OVERDUE = 'overdue',
+  WAIVED = 'waived',
+  EXEMPTED = 'exempted', // AC-01:豁免状态
+}
+
+export enum PaymentMethod {
+  CASH = 'cash',
+  BANK_TRANSFER = 'bank_transfer',
+  WECHAT = 'wechat',
+  ALIPAY = 'alipay',
+  CARD = 'card',
+  OTHER = 'other',
+}
+
 @Entity('tuition_payments')
 @Index(['status'])
 export class TuitionPayment {
@@ -65,17 +92,66 @@ export class TuitionPayment {
   @Column({ type: 'text', nullable: true })
   remark: string;
 
+  // ============ AC-01: Tuition Status with EXEMPTED ============
   @Column({
     type: 'enum',
-    enum: ['pending', 'paid', 'partial', 'overdue'],
+    enum: ['pending', 'paid', 'partial', 'overdue', 'exempted'],
     default: 'pending',
   })
-  status: 'pending' | 'paid' | 'partial' | 'overdue';
+  status: 'pending' | 'paid' | 'partial' | 'overdue' | 'exempted' | 'waived';
+
+  // ============ AC-01: Subsidy/Exemption Fields ============
+  @Column({
+    name: 'subsidy_type',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
+  subsidyType: string;
+
+  @Column({
+    name: 'subsidy_amount',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
+  subsidyAmount: number;
+
+  @Column({
+    name: 'subsidy_remark',
+    type: 'text',
+    nullable: true,
+  })
+  subsidyRemark: string;
+
+  // ============ AC-03: Dispute Fields ============
+  @Column({
+    name: 'dispute_reason',
+    type: 'text',
+    nullable: true,
+  })
+  disputeReason: string;
+
+  @Column({
+    name: 'dispute_resolved_at',
+    type: 'timestamp',
+    nullable: true,
+  })
+  disputeResolvedAt: Date;
+
+  @Column({
+    name: 'dispute_resolution',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
+  disputeResolution: string;
 
   @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
   deletedAt: Date;
 
-  // ============ Installment Fields (Issue #98) ============
+  // ============ AC-02/AC-03: Installment and Sub-Status Fields ============
   @Column({
     name: 'sub_status',
     type: 'varchar',
@@ -90,6 +166,21 @@ export class TuitionPayment {
   @OneToOne(() => InstallmentPlan, (plan) => plan.tuitionPayment)
   @JoinColumn({ name: 'installment_plan_id' })
   installmentPlan: InstallmentPlan;
+
+  // ============ AC-02: Overdue Tracking ============
+  @Column({
+    name: 'overdue_days',
+    type: 'int',
+    default: 0,
+  })
+  overdueDays: number;
+
+  @Column({
+    name: 'last_overdue_check_at',
+    type: 'timestamp',
+    nullable: true,
+  })
+  lastOverdueCheckAt: Date;
 
   @Column({ name: 'created_at', type: 'timestamp', default: 'NOW()' })
   createdAt: Date;

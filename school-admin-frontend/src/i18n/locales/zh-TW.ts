@@ -21,7 +21,7 @@ export const zhTW = {
     parentInquiry: '家長查詢',
     notificationManagement: '通知管理',
     courseManagement: '課程管理',
-    systemSettings: '系統設定',
+    about: '系統設定',
     financeTuition: '學費管理',
     financeFee: '費用管理',
     financeScholarship: '獎學金管理',

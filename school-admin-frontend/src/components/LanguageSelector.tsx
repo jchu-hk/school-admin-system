@@ -31,7 +31,7 @@ export default function LanguageSelector() {
         <span>{current.flag}</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50 min-w-[140px]">
+        <div className="absolute right-0 bottom-full mb-1 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-50 min-w-[140px]">
           {LOCALES.map(l => (
             <button
               key={l.value}

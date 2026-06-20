@@ -21,7 +21,7 @@ export const en = {
     parentInquiry: 'Parent Inquiry',
     notificationManagement: 'Notifications',
     courseManagement: 'Course Management',
-    systemSettings: 'Settings',
+    about: 'Settings',
     financeTuition: 'Tuition',
     financeFee: 'Fees',
     financeScholarship: 'Scholarships',

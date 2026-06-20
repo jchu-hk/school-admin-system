@@ -17,26 +17,26 @@ export class FeeRecord {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ name: 'fee_type_id' })
   feeTypeId: string;
 
   @ManyToOne(() => FeeType)
-  @JoinColumn({ name: 'feeTypeId' })
+  @JoinColumn({ name: 'fee_type_id' })
   feeType: FeeType;
 
-  @Column()
+  @Column({ name: 'student_id' })
   studentId: string;
 
-  @Column({ length: 100 })
+  @Column({ name: 'student_name', length: 100 })
   studentName: string;
 
   @Column({ length: 50 })
   grade: string;
 
-  @Column({ length: 50, nullable: true })
+  @Column({ name: 'class_name', length: 50, nullable: true })
   className: string;
 
-  @Column({ length: 100 })
+  @Column({ name: 'fee_type_name', length: 100 })
   feeTypeName: string;
 
   @Column({ type: 'decimal', precision: 12, scale: 2 })
@@ -45,13 +45,13 @@ export class FeeRecord {
   @Column({ length: 10, default: 'HKD' })
   currency: string;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ name: 'payment_date', type: 'timestamp', nullable: true })
   paymentDate: Date;
 
-  @Column({ length: 50, nullable: true })
+  @Column({ name: 'payment_method', length: 50, nullable: true })
   paymentMethod: string;
 
-  @Column({ length: 50, nullable: true })
+  @Column({ name: 'receipt_number', length: 50, nullable: true })
   receiptNumber: string;
 
   @Column({
@@ -61,9 +61,9 @@ export class FeeRecord {
   })
   status: 'paid' | 'pending' | 'overdue';
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }

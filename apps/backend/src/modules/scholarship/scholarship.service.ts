@@ -1,13 +1,13 @@
 import {
   Injectable,
   NotFoundException,
-  ConflictException,
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindOptionsWhere } from 'typeorm';
+import { Repository, Like, FindOptionsWhere, IsNull } from 'typeorm';
 import { Scholarship } from './scholarship.entity';
 import { ScholarshipApplication } from './scholarship-application.entity';
+import { User } from '../user/user.entity';
 import {
   CreateScholarshipDto,
   UpdateScholarshipDto,
@@ -15,6 +15,7 @@ import {
   ApplyScholarshipDto,
   ReviewScholarshipApplicationDto,
   ScholarshipApplicationQueryDto,
+  APPLICATION_STATUSES,
 } from './dto/scholarship.dto';
 
 @Injectable()
@@ -24,24 +25,24 @@ export class ScholarshipService {
     private readonly scholarshipRepository: Repository<Scholarship>,
     @InjectRepository(ScholarshipApplication)
     private readonly applicationRepository: Repository<ScholarshipApplication>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   // ============ Scholarship Methods ============
 
-  async create(createDto: CreateScholarshipDto): Promise<Scholarship> {
-    const existing = await this.scholarshipRepository.findOne({
-      where: { code: createDto.code },
-    });
-
-    if (existing) {
-      throw new ConflictException(`奖学金代码 ${createDto.code} 已存在`);
-    }
-
+  async create(createDto: CreateScholarshipDto, userId: string): Promise<Scholarship> {
     const scholarship = this.scholarshipRepository.create({
       ...createDto,
-      applicationDeadline: createDto.applicationDeadline
-        ? new Date(createDto.applicationDeadline)
+      applicationStartDate: new Date(createDto.applicationStartDate),
+      applicationEndDate: new Date(createDto.applicationEndDate),
+      disbursementStartDate: createDto.disbursementStartDate
+        ? new Date(createDto.disbursementStartDate)
         : null,
+      disbursementEndDate: createDto.disbursementEndDate
+        ? new Date(createDto.disbursementEndDate)
+        : null,
+      createdBy: userId,
     } as Scholarship);
 
     return this.scholarshipRepository.save(scholarship);
@@ -53,12 +54,14 @@ export class ScholarshipService {
     page: number;
     pageSize: number;
   }> {
-    const { page = 1, pageSize = 10, status, academicYear, keyword } = query;
+    const { page = 1, pageSize = 10, status, scholarshipType, keyword } = query;
 
-    const where: FindOptionsWhere<Scholarship> = {};
+    const where: FindOptionsWhere<Scholarship> = {
+      deletedAt: IsNull(),
+    };
 
     if (status) where.status = status;
-    if (academicYear) where.academicYear = academicYear;
+    if (scholarshipType) where.scholarshipType = scholarshipType;
     if (keyword) {
       where.name = Like(`%${keyword}%`);
     }
@@ -75,7 +78,7 @@ export class ScholarshipService {
 
   async findOne(id: string): Promise<Scholarship> {
     const scholarship = await this.scholarshipRepository.findOne({
-      where: { id },
+      where: { id, deletedAt: IsNull() },
       relations: ['applications'],
     });
 
@@ -89,28 +92,32 @@ export class ScholarshipService {
   async update(
     id: string,
     updateDto: UpdateScholarshipDto,
+    userId: string,
   ): Promise<Scholarship> {
     const scholarship = await this.findOne(id);
 
-    if (updateDto.code && updateDto.code !== scholarship.code) {
-      const existing = await this.scholarshipRepository.findOne({
-        where: { code: updateDto.code },
-      });
-      if (existing) {
-        throw new ConflictException(`奖学金代码 ${updateDto.code} 已存在`);
-      }
-    }
-
     Object.assign(scholarship, updateDto);
-    if (updateDto.applicationDeadline) {
-      scholarship.applicationDeadline = new Date(updateDto.applicationDeadline);
+    if (updateDto.applicationStartDate) {
+      scholarship.applicationStartDate = new Date(updateDto.applicationStartDate);
     }
+    if (updateDto.applicationEndDate) {
+      scholarship.applicationEndDate = new Date(updateDto.applicationEndDate);
+    }
+    if (updateDto.disbursementStartDate) {
+      scholarship.disbursementStartDate = new Date(updateDto.disbursementStartDate);
+    }
+    if (updateDto.disbursementEndDate) {
+      scholarship.disbursementEndDate = new Date(updateDto.disbursementEndDate);
+    }
+    scholarship.updatedBy = userId;
+
     return this.scholarshipRepository.save(scholarship);
   }
 
   async remove(id: string): Promise<void> {
     const scholarship = await this.findOne(id);
-    await this.scholarshipRepository.remove(scholarship);
+    scholarship.deletedAt = new Date();
+    await this.scholarshipRepository.save(scholarship);
   }
 
   // ============ Scholarship Application Methods ============
@@ -118,45 +125,56 @@ export class ScholarshipService {
   async apply(
     scholarshipId: string,
     applyDto: ApplyScholarshipDto,
+    studentId: string,
   ): Promise<ScholarshipApplication> {
     const scholarship = await this.findOne(scholarshipId);
 
-    if (scholarship.status !== 'open') {
+    if (scholarship.status !== 'active') {
       throw new BadRequestException('该奖学金当前不开放申请');
     }
 
-    if (scholarship.applicationDeadline) {
-      const now = new Date();
-      if (now > new Date(scholarship.applicationDeadline)) {
-        throw new BadRequestException('该奖学金申请已截止');
-      }
+    const now = new Date();
+    const startDate = new Date(scholarship.applicationStartDate);
+    const endDate = new Date(scholarship.applicationEndDate);
+
+    if (now < startDate) {
+      throw new BadRequestException('该奖学金申请尚未开始');
+    }
+    if (now > endDate) {
+      throw new BadRequestException('该奖学金申请已截止');
     }
 
     const existing = await this.applicationRepository.findOne({
-      where: { scholarshipId, studentId: applyDto.studentId },
+      where: { scholarshipId, studentId, deletedAt: IsNull() },
     });
 
     if (existing) {
-      throw new ConflictException('该学生已申请过此奖学金');
+      throw new BadRequestException('该学生已申请过此奖学金');
     }
 
     const application = this.applicationRepository.create({
       scholarshipId,
-      ...applyDto,
+      studentId,
+      status: 'pending',
+      applicationReason: applyDto.applicationReason,
+      attachmentUrl: applyDto.attachmentUrl,
+      createdBy: studentId,
     } as ScholarshipApplication);
 
     return this.applicationRepository.save(application);
   }
 
   async findAllApplications(query: ScholarshipApplicationQueryDto): Promise<{
-    data: ScholarshipApplication[];
+    data: any[];
     total: number;
     page: number;
     pageSize: number;
   }> {
     const { page = 1, pageSize = 10, status, scholarshipId, keyword } = query;
 
-    const where: FindOptionsWhere<ScholarshipApplication> = {};
+    const where: FindOptionsWhere<ScholarshipApplication> = {
+      deletedAt: IsNull(),
+    };
 
     if (status) where.status = status;
     if (scholarshipId) where.scholarshipId = scholarshipId;
@@ -164,24 +182,44 @@ export class ScholarshipService {
     const [data, total] = await this.applicationRepository.findAndCount({
       where,
       relations: ['scholarship'],
-      order: { appliedAt: 'DESC' },
+      order: { createdAt: 'DESC' },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
-    let filtered = data;
+    // Enrich with student info
+    const studentIds = [...new Set(data.map((a) => a.studentId))];
+    const students = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.id IN (:...ids)', { ids: studentIds })
+      .getMany();
+
+    const studentMap = new Map(students.map((s) => [s.id, s]));
+
+    const enriched = data.map((app) => ({
+      ...app,
+      studentName: studentMap.get(app.studentId)?.name || '未知',
+      studentUsername: studentMap.get(app.studentId)?.username || '',
+      scholarshipName: app.scholarship?.name || '',
+      scholarshipType: app.scholarship?.scholarshipType || '',
+      scholarshipAmount: app.scholarship?.amount || 0,
+    }));
+
+    let filtered = enriched;
     if (keyword) {
-      filtered = data.filter((a) =>
-        a.studentName.toLowerCase().includes(keyword.toLowerCase()),
+      filtered = enriched.filter(
+        (a) =>
+          a.studentName.toLowerCase().includes(keyword.toLowerCase()) ||
+          (a.studentUsername && a.studentUsername.toLowerCase().includes(keyword.toLowerCase())),
       );
     }
 
     return { data: filtered, total, page, pageSize };
   }
 
-  async findOneApplication(id: string): Promise<ScholarshipApplication> {
+  async findOneApplication(id: string): Promise<any> {
     const application = await this.applicationRepository.findOne({
-      where: { id },
+      where: { id, deletedAt: IsNull() },
       relations: ['scholarship'],
     });
 
@@ -189,37 +227,43 @@ export class ScholarshipService {
       throw new NotFoundException(`申请记录 ID ${id} 不存在`);
     }
 
-    return application;
+    const student = await this.userRepository.findOne({
+      where: { id: application.studentId },
+    });
+
+    return {
+      ...application,
+      studentName: student?.name || '未知',
+      studentUsername: student?.username || '',
+      scholarshipName: application.scholarship?.name || '',
+      scholarshipType: application.scholarship?.scholarshipType || '',
+      scholarshipAmount: application.scholarship?.amount || 0,
+    };
   }
 
   async reviewApplication(
     id: string,
     reviewDto: ReviewScholarshipApplicationDto,
+    reviewerId: string,
   ): Promise<ScholarshipApplication> {
     const application = await this.findOneApplication(id);
 
-    if (
-      application.status !== 'pending' &&
-      application.status !== 'reviewing'
-    ) {
+    const validStatuses: any[] = ['pending', 'under_review'];
+    if (!validStatuses.includes(application.status)) {
       throw new BadRequestException('该申请已审核，无法重复审核');
     }
 
     application.status = reviewDto.status;
     application.reviewedAt = new Date();
+    application.reviewerId = reviewerId;
+    application.updatedBy = reviewerId;
 
-    if (reviewDto.reviewerComment) {
-      application.reviewerComment = reviewDto.reviewerComment;
+    if (reviewDto.reviewComment) {
+      application.reviewComment = reviewDto.reviewComment;
     }
 
-    if (reviewDto.awardedAmount) {
-      application.awardedAmount = reviewDto.awardedAmount;
-
-      // Update scholarship used budget
-      const scholarship = await this.findOne(application.scholarshipId);
-      scholarship.usedBudget =
-        Number(scholarship.usedBudget) + Number(reviewDto.awardedAmount);
-      await this.scholarshipRepository.save(scholarship);
+    if (reviewDto.approvedAmount !== undefined && reviewDto.approvedAmount !== null) {
+      application.approvedAmount = reviewDto.approvedAmount;
     }
 
     return this.applicationRepository.save(application);

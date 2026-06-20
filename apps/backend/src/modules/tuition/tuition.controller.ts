@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,9 +19,10 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { TuitionService } from './tuition.service';
+import { TuitionService, ReconciliationReport } from './tuition.service';
 import { TuitionStandard } from './tuition-standard.entity';
 import { TuitionPayment } from './tuition-payment.entity';
+import { SubsidyType } from './tuition-standard.entity';
 import {
   CreateTuitionStandardDto,
   UpdateTuitionStandardDto,
@@ -28,6 +30,9 @@ import {
   CreateTuitionPaymentDto,
   UpdateTuitionPaymentDto,
   TuitionPaymentQueryDto,
+  ApplySubsidyDto,
+  CreateDisputeDto,
+  ResolveDisputeDto,
 } from './dto/tuition.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -169,5 +174,99 @@ export class TuitionController {
   )
   findByStudent(@Param('studentId') studentId: string) {
     return this.tuitionService.findByStudent(studentId);
+  }
+
+  // ============ AC-01: Subsidy/Exemption Management ============
+
+  @Post('payments/:id/subsidy')
+  @ApiOperation({ summary: 'AC-01: 申请学费减免/资助' })
+  @ApiResponse({
+    status: 200,
+    description: '减免/资助申请成功',
+    type: TuitionPayment,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  applySubsidy(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: ApplySubsidyDto,
+  ) {
+    return this.tuitionService.applySubsidy(
+      id,
+      dto.subsidyType as unknown as SubsidyType,
+      dto.subsidyAmount,
+      dto.remark,
+    );
+  }
+
+  @Get('payments/:id/subsidy-summary')
+  @ApiOperation({ summary: 'AC-01: 获取资助汇总' })
+  @ApiResponse({ status: 200, description: '资助汇总信息' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.PARENT,
+  )
+  getSubsidySummary(@Param('id', ParseUUIDPipe) id: string) {
+    return this.tuitionService.getSubsidySummary(id);
+  }
+
+  // ============ AC-02: Overdue Management ============
+
+  @Post('payments/check-overdue')
+  @ApiOperation({ summary: 'AC-02: 检查逾期缴费' })
+  @ApiResponse({ status: 200, description: '逾期检查完成' })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  checkOverduePayments() {
+    return this.tuitionService.checkOverduePayments();
+  }
+
+  // ============ AC-03: Dispute Management ============
+
+  @Post('payments/:id/dispute')
+  @ApiOperation({ summary: 'AC-03: 发起缴费争议（家长申诉）' })
+  @ApiResponse({ status: 201, description: '争议已提交' })
+  @Roles(UserRole.PARENT, UserRole.STUDENT)
+  createDispute(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: CreateDisputeDto,
+    @Request() req: any,
+  ) {
+    return this.tuitionService.createDispute(id, dto.reason, req.user.id);
+  }
+
+  @Post('payments/:id/resolve-dispute')
+  @ApiOperation({ summary: 'AC-03: 解决缴费争议' })
+  @ApiResponse({ status: 200, description: '争议已解决' })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  resolveDispute(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: ResolveDisputeDto,
+    @Request() req: any,
+  ) {
+    return this.tuitionService.resolveDispute(
+      id,
+      dto.resolution,
+      dto.newAmount,
+      req.user.id,
+    );
+  }
+
+  // ============ AC-04: Reconciliation Report ============
+
+  @Get('reports/reconciliation')
+  @ApiOperation({ summary: 'AC-04: 学费对账报表（学期末）' })
+  @ApiResponse({ status: 200, description: '对账报表数据' })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  generateReconciliationReport(
+    @Query('academicYear') academicYear: string,
+  ) {
+    if (!academicYear) {
+      // Default to current academic year
+      const now = new Date();
+      const year = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
+      academicYear = `${year}-${year + 1}`;
+    }
+    return this.tuitionService.generateReconciliationReport(academicYear);
   }
 }

@@ -17,50 +17,54 @@ export class ScholarshipApplication {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ name: 'scholarship_id' })
   scholarshipId: string;
 
   @ManyToOne(() => Scholarship, (s) => s.applications)
-  @JoinColumn({ name: 'scholarshipId' })
+  @JoinColumn({ name: 'scholarship_id' })
   scholarship: Scholarship;
 
-  @Column()
+  @Column({ name: 'student_id' })
   studentId: string;
 
-  @Column({ length: 100 })
-  studentName: string;
-
-  @Column({ length: 50 })
-  grade: string;
-
-  @Column({ length: 50, nullable: true })
-  className: string;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  appliedAt: Date;
-
+  /** 申请状态: draft/pending/under_review/approved/rejected */
   @Column({
     type: 'enum',
-    enum: ['pending', 'reviewing', 'approved', 'rejected', 'awarded'],
-    default: 'pending',
+    enum: ['draft', 'pending', 'under_review', 'approved', 'rejected'],
+    default: 'draft',
   })
-  status: 'pending' | 'reviewing' | 'approved' | 'rejected' | 'awarded';
+  status: 'draft' | 'pending' | 'under_review' | 'approved' | 'rejected';
 
-  @Column({ type: 'text', nullable: true })
-  reviewerComment: string;
+  @Column({ name: 'application_reason', type: 'text', nullable: true })
+  applicationReason: string;
 
-  @Column({ length: 100, nullable: true })
-  reviewerName: string;
+  @Column({ name: 'attachment_url', type: 'varchar', length: 500, nullable: true })
+  attachmentUrl: string;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ name: 'reviewer_id', nullable: true })
+  reviewerId: string;
+
+  @Column({ name: 'reviewed_at', type: 'timestamp', nullable: true })
   reviewedAt: Date;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, nullable: true })
-  awardedAmount: number;
+  @Column({ name: 'review_comment', type: 'text', nullable: true })
+  reviewComment: string;
 
-  @CreateDateColumn()
+  @Column({ name: 'approved_amount', type: 'decimal', precision: 12, scale: 2, nullable: true })
+  approvedAmount: number;
+
+  @Column({ name: 'created_by', length: 100 })
+  createdBy: string;
+
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @Column({ name: 'updated_by', length: 100, nullable: true })
+  updatedBy: string;
+
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  deletedAt: Date;
 }

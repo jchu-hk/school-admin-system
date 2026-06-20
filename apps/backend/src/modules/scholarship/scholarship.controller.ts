@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -20,7 +21,6 @@ import {
 } from '@nestjs/swagger';
 import { ScholarshipService } from './scholarship.service';
 import { Scholarship } from './scholarship.entity';
-import { ScholarshipApplication } from './scholarship-application.entity';
 import {
   CreateScholarshipDto,
   UpdateScholarshipDto,
@@ -45,14 +45,10 @@ export class ScholarshipController {
 
   @Post()
   @ApiOperation({ summary: '创建奖学金' })
-  @ApiResponse({
-    status: 201,
-    description: '奖学金创建成功',
-    type: Scholarship,
-  })
+  @ApiResponse({ status: 201, description: '奖学金创建成功', type: Scholarship })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  create(@Body() createDto: CreateScholarshipDto) {
-    return this.scholarshipService.create(createDto);
+  create(@Body() createDto: CreateScholarshipDto, @Request() req: any) {
+    return this.scholarshipService.create(createDto, req.user?.sub);
   }
 
   @Get()
@@ -78,11 +74,7 @@ export class ScholarshipController {
 
   @Get('applications/:id')
   @ApiOperation({ summary: '获取奖学金申请详情' })
-  @ApiResponse({
-    status: 200,
-    description: '获取申请详情成功',
-    type: ScholarshipApplication,
-  })
+  @ApiResponse({ status: 200, description: '获取申请详情成功' })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findOneApplication(@Param('id', ParseUUIDPipe) id: string) {
     return this.scholarshipService.findOneApplication(id);
@@ -90,11 +82,7 @@ export class ScholarshipController {
 
   @Get(':id')
   @ApiOperation({ summary: '获取奖学金详情' })
-  @ApiResponse({
-    status: 200,
-    description: '获取奖学金详情成功',
-    type: Scholarship,
-  })
+  @ApiResponse({ status: 200, description: '获取奖学金详情成功', type: Scholarship })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -107,17 +95,14 @@ export class ScholarshipController {
 
   @Put(':id')
   @ApiOperation({ summary: '更新奖学金' })
-  @ApiResponse({
-    status: 200,
-    description: '奖学金更新成功',
-    type: Scholarship,
-  })
+  @ApiResponse({ status: 200, description: '奖学金更新成功', type: Scholarship })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateDto: UpdateScholarshipDto,
+    @Request() req: any,
   ) {
-    return this.scholarshipService.update(id, updateDto);
+    return this.scholarshipService.update(id, updateDto, req.user?.sub);
   }
 
   @Delete(':id')
@@ -131,31 +116,25 @@ export class ScholarshipController {
 
   @Post(':id/apply')
   @ApiOperation({ summary: '申请奖学金' })
-  @ApiResponse({
-    status: 201,
-    description: '申请成功',
-    type: ScholarshipApplication,
-  })
+  @ApiResponse({ status: 201, description: '申请成功' })
   @Roles(UserRole.STUDENT, UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_STAFF)
   apply(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() applyDto: ApplyScholarshipDto,
+    @Request() req: any,
   ) {
-    return this.scholarshipService.apply(id, applyDto);
+    return this.scholarshipService.apply(id, applyDto, req.user?.sub);
   }
 
   @Put('applications/:id/review')
   @ApiOperation({ summary: '审核奖学金申请' })
-  @ApiResponse({
-    status: 200,
-    description: '审核成功',
-    type: ScholarshipApplication,
-  })
+  @ApiResponse({ status: 200, description: '审核成功' })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   review(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() reviewDto: ReviewScholarshipApplicationDto,
+    @Request() req: any,
   ) {
-    return this.scholarshipService.reviewApplication(id, reviewDto);
+    return this.scholarshipService.reviewApplication(id, reviewDto, req.user?.sub);
   }
 }

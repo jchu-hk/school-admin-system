@@ -6,7 +6,12 @@ import type {
   CreateReplyRequest,
   SubmitRatingRequest,
   InquiryReply,
-  InquiryFilter
+  InquiryFilter,
+  QueueResponse,
+  TimeoutWarningsResponse,
+  TransferRequest,
+  CallLogRequest,
+  QuickReplyRequest,
 } from '../types/inquiry'
 
 const inquiryApi = {
@@ -33,9 +38,10 @@ const inquiryApi = {
   createInquiry: async (data: CreateInquiryRequest): Promise<Inquiry> => {
     const formData = new FormData()
     formData.append('type', data.type)
-    formData.append('title', data.title)
+    formData.append('title', data.title || '')
     formData.append('content', data.content)
     formData.append('priority', data.priority)
+    if (data.channel) formData.append('channel', data.channel)
 
     if (data.attachments) {
       data.attachments.forEach(file => {
@@ -100,7 +106,74 @@ const inquiryApi = {
   resolveInquiry: async (id: string): Promise<Inquiry> => {
     const response = await apiClient.patch(`/api/inquiries/${id}/resolve`)
     return response.data
-  }
+  },
+
+  // ==========================================
+  // 队列管理 API (AC-04, AC-05, AC-06)
+  // ==========================================
+
+  // 获取队列视图
+  getQueue: async (params?: {
+    assignedTo?: string
+    timeoutOnly?: boolean
+    escalatedOnly?: boolean
+    sortBy?: 'waitingMinutes' | 'priority' | 'submittedAt'
+    page?: number
+    limit?: number
+  }): Promise<QueueResponse> => {
+    const queryParams = new URLSearchParams()
+    if (params?.assignedTo) queryParams.append('assignedTo', params.assignedTo)
+    if (params?.timeoutOnly) queryParams.append('timeoutOnly', 'true')
+    if (params?.escalatedOnly) queryParams.append('escalatedOnly', 'true')
+    if (params?.sortBy) queryParams.append('sortBy', params.sortBy)
+    if (params?.page) queryParams.append('page', params.page.toString())
+    if (params?.limit) queryParams.append('limit', params.limit.toString())
+
+    const response = await apiClient.get(`/api/inquiries/queue?${queryParams}`)
+    return response.data
+  },
+
+  // 获取超时警告列表 (AC-04)
+  getTimeoutWarnings: async (): Promise<TimeoutWarningsResponse> => {
+    const response = await apiClient.get('/api/inquiries/timeout-warnings')
+    return response.data
+  },
+
+  // 快速回复 (AC-05)
+  quickReply: async (inquiryId: string, data: QuickReplyRequest): Promise<InquiryReply> => {
+    const response = await apiClient.post(`/api/inquiries/${inquiryId}/quick-reply`, data)
+    return response.data
+  },
+
+  // AI自动回复 (AC-07)
+  autoReply: async (inquiryId: string): Promise<{ success: boolean; replyId?: string }> => {
+    const response = await apiClient.post(`/api/inquiries/${inquiryId}/auto-reply`)
+    return response.data
+  },
+
+  // 转交查询 (AC-06)
+  transferInquiry: async (inquiryId: string, data: TransferRequest): Promise<Inquiry> => {
+    const response = await apiClient.post(`/api/inquiries/${inquiryId}/transfer`, data)
+    return response.data
+  },
+
+  // 接受转交
+  acceptTransfer: async (inquiryId: string): Promise<Inquiry> => {
+    const response = await apiClient.patch(`/api/inquiries/${inquiryId}/transfer/accept`)
+    return response.data
+  },
+
+  // 拒绝转交
+  rejectTransfer: async (inquiryId: string): Promise<Inquiry> => {
+    const response = await apiClient.patch(`/api/inquiries/${inquiryId}/transfer/reject`)
+    return response.data
+  },
+
+  // 记录来电通话 (AC-01)
+  recordCallLog: async (inquiryId: string, data: CallLogRequest): Promise<Inquiry> => {
+    const response = await apiClient.post(`/api/inquiries/${inquiryId}/call-log`, data)
+    return response.data
+  },
 }
 
 export default inquiryApi

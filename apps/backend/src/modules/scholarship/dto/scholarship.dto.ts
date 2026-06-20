@@ -14,6 +14,15 @@ import { Type } from 'class-transformer';
 
 // ============ Scholarship DTOs ============
 
+export const SCHOLARSHIP_TYPES = ['merit', 'need-based', 'book', 'transport', 'boarding'] as const;
+export type ScholarshipType = typeof SCHOLARSHIP_TYPES[number];
+
+export const SCHOLARSHIP_STATUSES = ['active', 'inactive', 'closed'] as const;
+export type ScholarshipStatus = typeof SCHOLARSHIP_STATUSES[number];
+
+export const APPLICATION_STATUSES = ['draft', 'pending', 'under_review', 'approved', 'rejected'] as const;
+export type ApplicationStatus = typeof APPLICATION_STATUSES[number];
+
 export class CreateScholarshipDto {
   @ApiProperty({ description: '奖学金名称', example: '优秀学生奖学金' })
   @IsString()
@@ -21,62 +30,69 @@ export class CreateScholarshipDto {
   @MaxLength(200)
   name: string;
 
-  @ApiProperty({ description: '奖学金代码', example: 'MERIT-2025' })
-  @IsString()
-  @MinLength(1)
-  @MaxLength(50)
-  code: string;
-
   @ApiPropertyOptional({ description: '描述' })
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiProperty({ description: '奖学金金额', example: 10000 })
+  @ApiProperty({ description: '类型', enum: SCHOLARSHIP_TYPES, example: 'merit' })
+  @IsString()
+  @IsEnum(SCHOLARSHIP_TYPES)
+  scholarshipType: ScholarshipType;
+
+  @ApiProperty({ description: '金额', example: 5000 })
   @IsNumber()
   @Min(0)
   amount: number;
 
-  @ApiPropertyOptional({ description: '货币', default: 'HKD' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(10)
-  currency?: string;
-
-  @ApiProperty({ description: '学年', example: '2025-2026' })
-  @IsString()
-  @MinLength(1)
-  @MaxLength(20)
-  academicYear: string;
-
-  @ApiPropertyOptional({ description: '申请截止日期' })
-  @IsOptional()
-  @IsDateString()
-  applicationDeadline?: string;
-
-  @ApiPropertyOptional({ description: '申请资格条件' })
-  @IsOptional()
-  @IsString()
-  eligibilityCriteria?: string;
-
-  @ApiPropertyOptional({ description: '总预算' })
+  @ApiPropertyOptional({ description: '名额总数' })
   @IsOptional()
   @IsNumber()
-  @Min(0)
-  totalBudget?: number;
+  @Min(1)
+  totalQuota?: number;
 
-  @ApiPropertyOptional({
-    description: '状态',
-    enum: ['open', 'closed', 'pending', 'awarded'],
-  })
+  @ApiProperty({ description: '申请开始日期', example: '2025-09-01' })
+  @IsDateString()
+  applicationStartDate: string;
+
+  @ApiProperty({ description: '申请截止日期', example: '2025-09-30' })
+  @IsDateString()
+  applicationEndDate: string;
+
+  @ApiPropertyOptional({ description: '发放开始日期' })
   @IsOptional()
-  @IsEnum(['open', 'closed', 'pending', 'awarded'])
-  status?: 'open' | 'closed' | 'pending' | 'awarded';
+  @IsDateString()
+  disbursementStartDate?: string;
 
-  @ApiPropertyOptional({ description: '学校ID' })
+  @ApiPropertyOptional({ description: '发放截止日期' })
+  @IsOptional()
+  @IsDateString()
+  disbursementEndDate?: string;
+
+  @ApiPropertyOptional({ description: '状态', enum: SCHOLARSHIP_STATUSES, default: 'active' })
+  @IsOptional()
+  @IsEnum(SCHOLARSHIP_STATUSES)
+  status?: ScholarshipStatus;
+
+  @ApiPropertyOptional({ description: '符合年级（逗号分隔）', example: '中一,中二,中三' })
   @IsOptional()
   @IsString()
-  schoolId?: string;
+  eligibleGrades?: string;
+
+  @ApiPropertyOptional({ description: '符合班级（逗号分隔）' })
+  @IsOptional()
+  @IsString()
+  eligibleClasses?: string;
+
+  @ApiPropertyOptional({ description: '申请要求' })
+  @IsOptional()
+  @IsString()
+  requirements?: string;
+
+  @ApiPropertyOptional({ description: '附件URL' })
+  @IsOptional()
+  @IsString()
+  attachmentUrl?: string;
 }
 
 export class UpdateScholarshipDto {
@@ -86,64 +102,72 @@ export class UpdateScholarshipDto {
   @MaxLength(200)
   name?: string;
 
-  @ApiPropertyOptional({ description: '奖学金代码' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(50)
-  code?: string;
-
   @ApiPropertyOptional({ description: '描述' })
   @IsOptional()
   @IsString()
   description?: string;
 
-  @ApiPropertyOptional({ description: '奖学金金额' })
+  @ApiPropertyOptional({ description: '类型', enum: SCHOLARSHIP_TYPES })
+  @IsOptional()
+  @IsEnum(SCHOLARSHIP_TYPES)
+  scholarshipType?: ScholarshipType;
+
+  @ApiPropertyOptional({ description: '金额' })
   @IsOptional()
   @IsNumber()
   @Min(0)
   amount?: number;
 
-  @ApiPropertyOptional({ description: '货币' })
+  @ApiPropertyOptional({ description: '名额总数' })
   @IsOptional()
-  @IsString()
-  @MaxLength(10)
-  currency?: string;
+  @IsNumber()
+  @Min(1)
+  totalQuota?: number;
 
-  @ApiPropertyOptional({ description: '学年' })
+  @ApiPropertyOptional({ description: '申请开始日期' })
   @IsOptional()
-  @IsString()
-  @MaxLength(20)
-  academicYear?: string;
+  @IsDateString()
+  applicationStartDate?: string;
 
   @ApiPropertyOptional({ description: '申请截止日期' })
   @IsOptional()
   @IsDateString()
-  applicationDeadline?: string;
+  applicationEndDate?: string;
 
-  @ApiPropertyOptional({ description: '申请资格条件' })
+  @ApiPropertyOptional({ description: '发放开始日期' })
+  @IsOptional()
+  @IsDateString()
+  disbursementStartDate?: string;
+
+  @ApiPropertyOptional({ description: '发放截止日期' })
+  @IsOptional()
+  @IsDateString()
+  disbursementEndDate?: string;
+
+  @ApiPropertyOptional({ description: '状态', enum: SCHOLARSHIP_STATUSES })
+  @IsOptional()
+  @IsEnum(SCHOLARSHIP_STATUSES)
+  status?: ScholarshipStatus;
+
+  @ApiPropertyOptional({ description: '符合年级' })
   @IsOptional()
   @IsString()
-  eligibilityCriteria?: string;
+  eligibleGrades?: string;
 
-  @ApiPropertyOptional({ description: '总预算' })
+  @ApiPropertyOptional({ description: '符合班级' })
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  totalBudget?: number;
+  @IsString()
+  eligibleClasses?: string;
 
-  @ApiPropertyOptional({ description: '已用预算' })
+  @ApiPropertyOptional({ description: '申请要求' })
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  usedBudget?: number;
+  @IsString()
+  requirements?: string;
 
-  @ApiPropertyOptional({
-    description: '状态',
-    enum: ['open', 'closed', 'pending', 'awarded'],
-  })
+  @ApiPropertyOptional({ description: '附件URL' })
   @IsOptional()
-  @IsEnum(['open', 'closed', 'pending', 'awarded'])
-  status?: 'open' | 'closed' | 'pending' | 'awarded';
+  @IsString()
+  attachmentUrl?: string;
 }
 
 export class ScholarshipQueryDto {
@@ -162,17 +186,17 @@ export class ScholarshipQueryDto {
   @Max(100)
   pageSize?: number = 10;
 
-  @ApiPropertyOptional({ description: '状态' })
+  @ApiPropertyOptional({ description: '状态', enum: SCHOLARSHIP_STATUSES })
   @IsOptional()
-  @IsEnum(['open', 'closed', 'pending', 'awarded'])
-  status?: 'open' | 'closed' | 'pending' | 'awarded';
+  @IsEnum(SCHOLARSHIP_STATUSES)
+  status?: ScholarshipStatus;
 
-  @ApiPropertyOptional({ description: '学年' })
+  @ApiPropertyOptional({ description: '类型', enum: SCHOLARSHIP_TYPES })
   @IsOptional()
-  @IsString()
-  academicYear?: string;
+  @IsEnum(SCHOLARSHIP_TYPES)
+  scholarshipType?: ScholarshipType;
 
-  @ApiPropertyOptional({ description: '搜索关键词' })
+  @ApiPropertyOptional({ description: '搜索关键词（名称/描述）' })
   @IsOptional()
   @IsString()
   keyword?: string;
@@ -181,27 +205,15 @@ export class ScholarshipQueryDto {
 // ============ Scholarship Application DTOs ============
 
 export class ApplyScholarshipDto {
-  @ApiProperty({ description: '学生ID' })
-  @IsString()
-  studentId: string;
-
-  @ApiProperty({ description: '学生姓名', example: '张三' })
+  @ApiProperty({ description: '申请理由' })
   @IsString()
   @MinLength(1)
-  @MaxLength(100)
-  studentName: string;
+  applicationReason: string;
 
-  @ApiProperty({ description: '年级', example: '中四' })
-  @IsString()
-  @MinLength(1)
-  @MaxLength(50)
-  grade: string;
-
-  @ApiPropertyOptional({ description: '班级' })
+  @ApiPropertyOptional({ description: '附件URL' })
   @IsOptional()
   @IsString()
-  @MaxLength(50)
-  className?: string;
+  attachmentUrl?: string;
 }
 
 export class ReviewScholarshipApplicationDto {
@@ -212,13 +224,13 @@ export class ReviewScholarshipApplicationDto {
   @ApiPropertyOptional({ description: '审核意见' })
   @IsOptional()
   @IsString()
-  reviewerComment?: string;
+  reviewComment?: string;
 
   @ApiPropertyOptional({ description: '批准金额' })
   @IsOptional()
   @IsNumber()
   @Min(0)
-  awardedAmount?: number;
+  approvedAmount?: number;
 }
 
 export class ScholarshipApplicationQueryDto {
@@ -237,10 +249,10 @@ export class ScholarshipApplicationQueryDto {
   @Max(100)
   pageSize?: number = 10;
 
-  @ApiPropertyOptional({ description: '审核状态' })
+  @ApiPropertyOptional({ description: '审核状态', enum: APPLICATION_STATUSES })
   @IsOptional()
-  @IsEnum(['pending', 'reviewing', 'approved', 'rejected', 'awarded'])
-  status?: 'pending' | 'reviewing' | 'approved' | 'rejected' | 'awarded';
+  @IsEnum(APPLICATION_STATUSES)
+  status?: ApplicationStatus;
 
   @ApiPropertyOptional({ description: '奖学金ID' })
   @IsOptional()

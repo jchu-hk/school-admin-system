@@ -1,9 +1,9 @@
 import {
   IsString,
+  IsBoolean,
   IsOptional,
   IsNumber,
   IsEnum,
-  IsBoolean,
   IsDateString,
   Min,
   Max,
@@ -12,6 +12,14 @@ import {
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+
+// ============ Subsidy Types (AC-01) ============
+export enum SubsidyTypeEnum {
+  NONE = 'none',
+  FULL = 'full',
+  PARTIAL = 'partial',
+  EXEMPTED = 'exempted',
+}
 
 // ============ Tuition Standard DTOs ============
 
@@ -53,6 +61,29 @@ export class CreateTuitionStandardDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  // ============ AC-01: Subsidy Fields ============
+  @ApiPropertyOptional({ description: '资助类型', enum: SubsidyTypeEnum })
+  @IsOptional()
+  @IsEnum(SubsidyTypeEnum)
+  subsidyType?: SubsidyTypeEnum;
+
+  @ApiPropertyOptional({ description: '资助金额', example: 550 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  subsidyAmount?: number;
+
+  @ApiPropertyOptional({ description: '豁免金额' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  exemptedAmount?: number;
+
+  @ApiPropertyOptional({ description: '资助备注' })
+  @IsOptional()
+  @IsString()
+  subsidyRemark?: string;
 }
 
 export class UpdateTuitionStandardDto {
@@ -89,6 +120,29 @@ export class UpdateTuitionStandardDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  // ============ AC-01: Subsidy Fields ============
+  @ApiPropertyOptional({ description: '资助类型', enum: SubsidyTypeEnum })
+  @IsOptional()
+  @IsEnum(SubsidyTypeEnum)
+  subsidyType?: SubsidyTypeEnum;
+
+  @ApiPropertyOptional({ description: '资助金额' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  subsidyAmount?: number;
+
+  @ApiPropertyOptional({ description: '豁免金额' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  exemptedAmount?: number;
+
+  @ApiPropertyOptional({ description: '资助备注' })
+  @IsOptional()
+  @IsString()
+  subsidyRemark?: string;
 }
 
 export class TuitionStandardQueryDto {
@@ -187,6 +241,18 @@ export class CreateTuitionPaymentDto {
   @IsString()
   @MaxLength(50)
   paymentMethod?: string;
+
+  // ============ AC-01: Subsidy Fields ============
+  @ApiPropertyOptional({ description: '资助类型', enum: SubsidyTypeEnum })
+  @IsOptional()
+  @IsEnum(SubsidyTypeEnum)
+  subsidyType?: SubsidyTypeEnum;
+
+  @ApiPropertyOptional({ description: '资助金额' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  subsidyAmount?: number;
 }
 
 export class UpdateTuitionPaymentDto {
@@ -233,11 +299,39 @@ export class UpdateTuitionPaymentDto {
 
   @ApiPropertyOptional({
     description: '状态',
-    enum: ['pending', 'paid', 'partial', 'overdue'],
+    enum: ['pending', 'paid', 'partial', 'overdue', 'exempted'],
   })
   @IsOptional()
-  @IsEnum(['pending', 'paid', 'partial', 'overdue'])
-  status?: 'pending' | 'paid' | 'partial' | 'overdue';
+  @IsEnum(['pending', 'paid', 'partial', 'overdue', 'exempted'])
+  status?: 'pending' | 'paid' | 'partial' | 'overdue' | 'exempted';
+
+  // ============ AC-01: Subsidy Fields ============
+  @ApiPropertyOptional({ description: '资助类型', enum: SubsidyTypeEnum })
+  @IsOptional()
+  @IsEnum(SubsidyTypeEnum)
+  subsidyType?: SubsidyTypeEnum;
+
+  @ApiPropertyOptional({ description: '资助金额' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  subsidyAmount?: number;
+
+  @ApiPropertyOptional({ description: '资助备注' })
+  @IsOptional()
+  @IsString()
+  subsidyRemark?: string;
+
+  // ============ AC-03: Dispute Fields ============
+  @ApiPropertyOptional({ description: '争议原因' })
+  @IsOptional()
+  @IsString()
+  disputeReason?: string;
+
+  @ApiPropertyOptional({ description: '争议解决方案', enum: ['adjusted', 'waived', 'maintained'] })
+  @IsOptional()
+  @IsEnum(['adjusted', 'waived', 'maintained'])
+  disputeResolution?: 'adjusted' | 'waived' | 'maintained';
 }
 
 export class TuitionPaymentQueryDto {
@@ -273,11 +367,62 @@ export class TuitionPaymentQueryDto {
 
   @ApiPropertyOptional({ description: '状态' })
   @IsOptional()
-  @IsEnum(['pending', 'paid', 'partial', 'overdue'])
-  status?: 'pending' | 'paid' | 'partial' | 'overdue';
+  @IsEnum(['pending', 'paid', 'partial', 'overdue', 'exempted'])
+  status?: 'pending' | 'paid' | 'partial' | 'overdue' | 'exempted';
 
   @ApiPropertyOptional({ description: '搜索关键词（学生姓名）' })
   @IsOptional()
   @IsString()
   keyword?: string;
+
+  // ============ Sub-status filter (AC-02/AC-03) ============
+  @ApiPropertyOptional({ description: '子状态', enum: ['none', 'installment_plan', 'overdue', 'disputed', 'paused'] })
+  @IsOptional()
+  @IsString()
+  subStatus?: string;
+}
+
+// ============ AC-01: Apply Subsidy DTO ============
+export class ApplySubsidyDto {
+  @ApiProperty({ description: '资助类型', enum: SubsidyTypeEnum })
+  @IsEnum(SubsidyTypeEnum)
+  subsidyType: SubsidyTypeEnum;
+
+  @ApiPropertyOptional({ description: '资助金额（全额资助默认HK$550）' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  subsidyAmount?: number;
+
+  @ApiPropertyOptional({ description: '备注' })
+  @IsOptional()
+  @IsString()
+  remark?: string;
+}
+
+// ============ AC-03: Dispute DTOs ============
+export class CreateDisputeDto {
+  @ApiProperty({ description: '争议原因' })
+  @IsString()
+  @MinLength(1)
+  @MaxLength(500)
+  reason: string;
+}
+
+export class ResolveDisputeDto {
+  @ApiProperty({ description: '解决方案', enum: ['adjusted', 'waived', 'maintained'] })
+  @IsEnum(['adjusted', 'waived', 'maintained'])
+  resolution: 'adjusted' | 'waived' | 'maintained';
+
+  @ApiPropertyOptional({ description: '调整后金额（仅当resolution=adjusted时有效）' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  newAmount?: number;
+
+  @ApiPropertyOptional({ description: '处理备注' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  notes?: string;
 }

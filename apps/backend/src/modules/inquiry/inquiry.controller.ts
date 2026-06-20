@@ -24,6 +24,10 @@ import {
   SatisfactionDto,
   CreateTemplateDto,
   InquiryQueryDto,
+  TransferInquiryDto,
+  CallLogDto,
+  QueueQueryDto,
+  QuickReplyDto,
 } from './dto/inquiry.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -258,6 +262,139 @@ export class InquiryController {
       `关闭查询 ${result.inquiryNo}`,
       req.ip,
       { id },
+      HttpStatus.OK,
+    );
+    return result;
+  }
+
+  // ==========================================
+  // 队列管理 API (AC-04, AC-05, AC-06)
+  // ==========================================
+
+  @Get('queue')
+  @ApiOperation({ summary: '获取家长查询队列（队列管理视图）' })
+  @ApiResponse({ status: 200, description: '队列数据' })
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  getQueue(@Query() query: QueueQueryDto, @Request() req) {
+    return this.inquiryService.getQueue(
+      query,
+      req.user.schoolId,
+      req.user.id,
+      req.user.role,
+    );
+  }
+
+  @Get('timeout-warnings')
+  @ApiOperation({ summary: '获取超时警告查询（AC-04）' })
+  @ApiResponse({ status: 200, description: '超时警告列表' })
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  getTimeoutWarnings(@Request() req) {
+    return this.inquiryService.checkTimeoutWarnings(req.user.schoolId);
+  }
+
+  @Post(':id/quick-reply')
+  @ApiOperation({ summary: '快速回复（AC-05）' })
+  @ApiResponse({ status: 201, description: '回复成功' })
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  async quickReply(
+    @Param('id') id: string,
+    @Body() dto: QuickReplyDto,
+    @Request() req,
+  ) {
+    const result = await this.inquiryService.quickReply(
+      id,
+      dto.content,
+      req.user.id,
+    );
+    await this.auditService.log(
+      'inquiry_quick_reply' as any,
+      req.user.id,
+      `快速回复查询 ${id}`,
+      req.ip,
+      { inquiryId: id, autoSend: dto.autoSend },
+      HttpStatus.CREATED,
+    );
+    return result;
+  }
+
+  @Post(':id/auto-reply')
+  @ApiOperation({ summary: 'AI自动回复（AC-07）' })
+  @ApiResponse({ status: 200, description: '自动回复结果' })
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  async autoReply(@Param('id') id: string, @Request() req) {
+    const result = await this.inquiryService.autoReply(id, req.user.schoolId);
+    await this.auditService.log(
+      'inquiry_auto_reply' as any,
+      req.user.id,
+      `AI自动回复查询 ${id}`,
+      req.ip,
+      { inquiryId: id },
+      HttpStatus.OK,
+    );
+    return result;
+  }
+
+  @Post(':id/transfer')
+  @ApiOperation({ summary: '转交查询给其他部门（AC-06）' })
+  @ApiResponse({ status: 200, description: '转交成功' })
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  async transfer(
+    @Param('id') id: string,
+    @Body() dto: TransferInquiryDto,
+    @Request() req,
+  ) {
+    const result = await this.inquiryService.transferInquiry(
+      id,
+      dto,
+      req.user.id,
+    );
+    await this.auditService.log(
+      'inquiry_transfer' as any,
+      req.user.id,
+      `转交查询 ${result.inquiryNo} 给 ${dto.transferTo}`,
+      req.ip,
+      { inquiryId: id, ...dto },
+      HttpStatus.OK,
+    );
+    return result;
+  }
+
+  @Patch(':id/transfer/accept')
+  @ApiOperation({ summary: '接受转交' })
+  @ApiResponse({ status: 200, description: '接受成功' })
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  async acceptTransfer(@Param('id') id: string, @Request() req) {
+    return this.inquiryService.handleTransfer(id, true, req.user.id);
+  }
+
+  @Patch(':id/transfer/reject')
+  @ApiOperation({ summary: '拒绝转交' })
+  @ApiResponse({ status: 200, description: '拒绝成功' })
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  async rejectTransfer(@Param('id') id: string, @Request() req) {
+    return this.inquiryService.handleTransfer(id, false, req.user.id);
+  }
+
+  @Post(':id/call-log')
+  @ApiOperation({ summary: '记录来电通话信息（AC-01）' })
+  @ApiResponse({ status: 200, description: '记录成功' })
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  async recordCallLog(
+    @Param('id') id: string,
+    @Body() dto: CallLogDto,
+    @Request() req,
+  ) {
+    const result = await this.inquiryService.recordCallLog(
+      id,
+      dto,
+      req.user.id,
+    );
+    await this.auditService.log(
+      'inquiry_call_log' as any,
+      req.user.id,
+      `记录来电 ${id}`,
+      req.ip,
+      { inquiryId: id, ...dto },
       HttpStatus.OK,
     );
     return result;

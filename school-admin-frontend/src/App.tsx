@@ -8,6 +8,7 @@ import StudentPage from './pages/StudentPage'
 import UserPage from './pages/UserPage'
 import LeavePage from './pages/LeavePage'
 import InquiryPage from './pages/InquiryPage'
+import InquiryQueuePage from './pages/InquiryQueuePage'
 import NotificationPage from './pages/NotificationPage'
 import CourseManagementPage from './pages/CourseManagementPage'
 import SystemSettingsPage from './pages/SystemSettingsPage'
@@ -18,6 +19,7 @@ import FinanceScholarshipPage from './pages/FinanceScholarshipPage'
 import LunchOrderPage from './pages/LunchOrderPage'
 import AttendancePage from './pages/AttendancePage'
 import AttendanceMobilePage from './pages/AttendanceMobilePage'
+import AboutPage from './pages/AboutPage'
 import Layout from './components/Layout'
 import ErrorBoundary from './components/ErrorBoundary'
 import { getToken } from './utils/tokenService'
@@ -57,6 +59,7 @@ export default function App() {
             <Route path="users" element={<UserPage />} />
             <Route path="leaves" element={<LeavePage />} />
             <Route path="inquiries" element={<InquiryPage />} />
+            <Route path="inquiries/queue" element={<InquiryQueuePage />} />
             <Route path="notifications" element={<NotificationPage />} />
             <Route path="courses" element={<CourseManagementPage />} />
             <Route path="settings" element={<SystemSettingsPage />} />

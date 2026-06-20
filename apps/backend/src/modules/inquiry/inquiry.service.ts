@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { UserRole } from '../user/user.entity';
 import { NotificationService } from '../notification/notification.service';
 import {
@@ -8,10 +8,14 @@ import {
   InquiryCategory,
   InquiryPriority,
   InquiryStatus,
+  TimeoutWarningLevel,
+  InquirySentiment,
+  TransferStatus,
 } from './inquiry.entity';
 import { InquiryReply, ReplyAuthorType } from './reply.entity';
 import { QuickReplyTemplate } from './template.entity';
 import { InquiryFaqService } from './inquiry-faq.service';
+import { InquiryEscalationService } from './inquiry-escalation.service';
 import {
   CreateInquiryDto,
   UpdateInquiryDto,
@@ -19,6 +23,13 @@ import {
   SatisfactionDto,
   CreateTemplateDto,
   InquiryQueryDto,
+  CallLogDto,
+  TransferInquiryDto,
+  QueueQueryDto,
+  QueueResponseDto,
+  QueueItemDto,
+  TimeoutWarningsResponseDto,
+  TimeoutWarningDto,
 } from './dto/inquiry.dto';
 
 @Injectable()
@@ -34,6 +45,7 @@ export class InquiryService {
     private templateRepository: Repository<QuickReplyTemplate>,
     private readonly notificationService: NotificationService,
     private readonly inquiryFaqService: InquiryFaqService,
+    private readonly escalationService: InquiryEscalationService,
   ) {}
 
   /**
@@ -553,5 +565,417 @@ export class InquiryService {
       .getMany();
 
     return { normal: normalViolations, urgent: urgentViolations };
+  }
+
+  // ==========================================
+  // 队列管理功能 (AC-04, AC-05, AC-06)
+  // ==========================================
+
+  /**
+   * AC-04: 检查超时警告 (>10分钟未处理标记warning)
+   * 每5分钟执行一次，更新所有待处理查询的超时警告级别
+   */
+  async checkTimeoutWarnings(schoolId: string): Promise<TimeoutWarningsResponseDto> {
+    const now = new Date();
+    const WARNING_THRESHOLD_MS = 10 * 60 * 1000; // 10分钟
+    const CRITICAL_THRESHOLD_MS = 30 * 60 * 1000; // 30分钟
+
+    // 获取所有未关闭且未首次回复的待处理查询
+    const pendingInquiries = await this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .leftJoinAndSelect('inquiry.parent', 'parent')
+      .where('inquiry.schoolId = :schoolId', { schoolId })
+      .andWhere('inquiry.status IN (:...statuses)', {
+        statuses: [
+          InquiryStatus.PENDING,
+          InquiryStatus.PROCESSING,
+          InquiryStatus.AUTO_REPLIED,
+          InquiryStatus.ESCALATED,
+        ],
+      })
+      .andWhere('inquiry.firstResponseAt IS NULL')
+      .getMany();
+
+    const warnings: TimeoutWarningDto[] = [];
+    let warningCount = 0;
+    let criticalCount = 0;
+
+    for (const inquiry of pendingInquiries) {
+      const waitingMs = now.getTime() - new Date(inquiry.parentSubmittedAt).getTime();
+      const waitingMinutes = Math.floor(waitingMs / 60000);
+
+      let warningLevel = TimeoutWarningLevel.NONE;
+
+      if (waitingMs >= CRITICAL_THRESHOLD_MS) {
+        warningLevel = TimeoutWarningLevel.CRITICAL;
+        criticalCount++;
+      } else if (waitingMs >= WARNING_THRESHOLD_MS) {
+        warningLevel = TimeoutWarningLevel.WARNING;
+        warningCount++;
+      }
+
+      // 更新数据库中的警告级别
+      if (inquiry.timeoutWarning !== warningLevel) {
+        await this.inquiryRepository.update(inquiry.id, { timeoutWarning: warningLevel });
+      }
+
+      if (warningLevel !== TimeoutWarningLevel.NONE) {
+        warnings.push({
+          inquiryId: inquiry.id,
+          inquiryNo: inquiry.inquiryNo,
+          parentName: (inquiry as any).parent?.name || '未知',
+          category: inquiry.category,
+          waitingMinutes,
+          warningLevel,
+        });
+      }
+    }
+
+    // 按等待时长降序排列
+    warnings.sort((a, b) => b.waitingMinutes - a.waitingMinutes);
+
+    return {
+      warningCounts: {
+        total: warningCount + criticalCount,
+        warning: warningCount,
+        critical: criticalCount,
+      },
+      warnings,
+    };
+  }
+
+  /**
+   * AC-04: 获取队列视图（包含超时警告信息）
+   */
+  async getQueue(
+    query: QueueQueryDto,
+    schoolId: string,
+    userId: string,
+    userRole: UserRole,
+  ): Promise<QueueResponseDto> {
+    const page = parseInt(query.page || '1');
+    const limit = parseInt(query.limit || '20');
+
+    const qb = this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .leftJoinAndSelect('inquiry.parent', 'parent')
+      .leftJoinAndSelect('inquiry.assignedOfficer', 'assignedOfficer');
+
+    // 只看校务人员/主任
+    if (userRole === UserRole.SCHOOL_STAFF || userRole === UserRole.SCHOOL_DIRECTOR) {
+      // 可以看所有
+    }
+
+    qb.where('inquiry.schoolId = :schoolId', { schoolId });
+
+    // 过滤条件
+    if (query.assignedTo) {
+      qb.andWhere('inquiry.assignedTo = :assignedTo', { assignedTo: query.assignedTo });
+    }
+
+    if (query.timeoutOnly) {
+      qb.andWhere('inquiry.timeoutWarning IN (:...levels)', {
+        levels: [TimeoutWarningLevel.WARNING, TimeoutWarningLevel.CRITICAL],
+      });
+    }
+
+    if (query.escalatedOnly) {
+      qb.andWhere('inquiry.escalationRequired = :escalated', { escalated: true });
+    }
+
+    // 只看未关闭的
+    qb.andWhere('inquiry.status NOT IN (:...closedStatuses)', {
+      closedStatuses: [InquiryStatus.CLOSED],
+    });
+
+    // 排序
+    const sortBy = query.sortBy || 'submittedAt';
+    if (sortBy === 'waitingMinutes') {
+      // 按等待时长降序（最久的在前）
+      qb.orderBy('inquiry.parentSubmittedAt', 'ASC');
+    } else if (sortBy === 'priority') {
+      // 紧急优先
+      qb.orderBy('inquiry.priority', 'ASC').addOrderBy('inquiry.parentSubmittedAt', 'ASC');
+    } else {
+      // 默认按提交时间降序（最新的在前）
+      qb.orderBy('inquiry.parentSubmittedAt', 'DESC');
+    }
+
+    const [inquiries, total] = await qb
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const now = new Date();
+
+    // 统计数据
+    const statsQb = this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .select('inquiry.status', 'status')
+      .addSelect('COUNT(*)', 'count')
+      .where('inquiry.schoolId = :schoolId', { schoolId })
+      .andWhere('inquiry.status NOT IN (:...closedStatuses)', {
+        closedStatuses: [InquiryStatus.CLOSED],
+      })
+      .groupBy('inquiry.status');
+
+    const statsRaw = await statsQb.getRawMany();
+    const statsMap: Record<string, number> = {};
+    statsRaw.forEach((s) => {
+      statsMap[s.status] = parseInt(s.count);
+    });
+
+    const timeoutQb = this.inquiryRepository
+      .createQueryBuilder('inquiry')
+      .select('inquiry.timeoutWarning', 'warning')
+      .addSelect('COUNT(*)', 'count')
+      .where('inquiry.schoolId = :schoolId', { schoolId })
+      .andWhere('inquiry.timeoutWarning IN (:...levels)', {
+        levels: [TimeoutWarningLevel.WARNING, TimeoutWarningLevel.CRITICAL],
+      })
+      .andWhere('inquiry.status NOT IN (:...closedStatuses)', {
+        closedStatuses: [InquiryStatus.CLOSED],
+      })
+      .groupBy('inquiry.timeoutWarning');
+
+    const timeoutRaw = await timeoutQb.getRawMany();
+    const timeoutMap: Record<string, number> = {};
+    timeoutRaw.forEach((s) => {
+      timeoutMap[s.warning] = parseInt(s.count);
+    });
+
+    const items: QueueItemDto[] = inquiries.map((inquiry) => {
+      const waitingMs = now.getTime() - new Date(inquiry.parentSubmittedAt).getTime();
+      const waitingMinutes = Math.floor(waitingMs / 60000);
+
+      return {
+        id: inquiry.id,
+        inquiryNo: inquiry.inquiryNo,
+        parentName: (inquiry as any).parent?.name || '未知',
+        category: inquiry.category,
+        channel: inquiry.channel,
+        priority: inquiry.priority,
+        status: inquiry.status,
+        aiIntent: inquiry.aiIntent || '未分类',
+        sentiment: inquiry.sentiment || InquirySentiment.NEUTRAL,
+        waitingMinutes,
+        timeoutWarning: inquiry.timeoutWarning,
+        escalationRequired: inquiry.escalationRequired,
+        autoResponseEligible: inquiry.autoResponseEligible,
+        aiSuggestedResponse: inquiry.aiSuggestedResponse || '',
+        assignedToName: (inquiry as any).assignedOfficer?.name || '待分配',
+        submittedAt: inquiry.parentSubmittedAt,
+      };
+    });
+
+    return {
+      stats: {
+        total: total,
+        pending: statsMap[InquiryStatus.PENDING] || 0,
+        processing: statsMap[InquiryStatus.PROCESSING] || 0,
+        autoReplied: statsMap[InquiryStatus.AUTO_REPLIED] || 0,
+        escalated: statsMap[InquiryStatus.ESCALATED] || 0,
+        timeoutWarning: timeoutMap[TimeoutWarningLevel.WARNING] || 0,
+        timeoutCritical: timeoutMap[TimeoutWarningLevel.CRITICAL] || 0,
+      },
+      items,
+      total,
+    };
+  }
+
+  /**
+   * AC-05: 一键快速回复（使用模板或AI建议）
+   */
+  async quickReply(
+    inquiryId: string,
+    content: string,
+    authorId: string,
+    authorType: ReplyAuthorType = ReplyAuthorType.OFFICER,
+  ): Promise<InquiryReply> {
+    const inquiry = await this.findOne(inquiryId);
+
+    const reply = this.replyRepository.create({
+      inquiryId,
+      authorId,
+      authorType,
+      content,
+    });
+
+    const saved = await this.replyRepository.save(reply);
+
+    // 更新状态（标记为已回复）
+    if (!inquiry.firstResponseAt) {
+      await this.inquiryRepository.update(inquiryId, {
+        status: InquiryStatus.REPLIED,
+        firstResponseAt: new Date(),
+      });
+    }
+
+    // 通知家长
+    await this.sendReplyNotification(saved, inquiry);
+
+    return saved;
+  }
+
+  /**
+   * AC-05: 自动回复（AI识别常见查询自动回复）
+   */
+  async autoReply(
+    inquiryId: string,
+    schoolId: string,
+  ): Promise<{ success: boolean; replyId?: string }> {
+    const inquiry = await this.findOne(inquiryId);
+
+    // 只有符合条件的才能自动回复
+    if (!inquiry.autoResponseEligible || !inquiry.aiSuggestedResponse) {
+      return { success: false };
+    }
+
+    // 创建AI回复
+    const reply = this.replyRepository.create({
+      inquiryId,
+      authorId: 'ai_system',
+      authorType: ReplyAuthorType.AI,
+      content: inquiry.aiSuggestedResponse,
+      isAiGenerated: true,
+    });
+
+    const saved = await this.replyRepository.save(reply);
+
+    // 更新状态为自动回复
+    await this.inquiryRepository.update(inquiryId, {
+      status: InquiryStatus.AUTO_REPLIED,
+      firstResponseAt: new Date(),
+    });
+
+    // 通知家长
+    await this.sendReplyNotification(saved, inquiry);
+
+    this.logger.log(`[AutoReply] Inquiry ${inquiryId} auto-replied successfully`);
+
+    return { success: true, replyId: saved.id };
+  }
+
+  /**
+   * AC-06: 转交查询给其他部门同事
+   */
+  async transferInquiry(
+    inquiryId: string,
+    dto: TransferInquiryDto,
+    transferredBy: string,
+  ): Promise<ParentInquiry> {
+    const inquiry = await this.findOne(inquiryId);
+
+    const updates: any = {
+      transferTo: dto.transferTo,
+      transferStatus: TransferStatus.PENDING,
+      transferReason: dto.reason,
+      transferredBy,
+      // 如果原状态是待处理，保持待处理（等待新处理人接收）
+      // 如果已经有人处理，可以改为PROCESSING让新处理人继续
+      status: InquiryStatus.PROCESSING,
+    };
+
+    await this.inquiryRepository.update(inquiryId, updates);
+
+    // 发送通知给转交目标
+    await this.notificationService.sendNotification(
+      {
+        recipientIds: [dto.transferTo],
+        title: '🔄 收到转交查询',
+        content: `有一条来自 ${(inquiry as any).parent?.name || '家长'} 的查询已转交给您处理。\n原因：${dto.reason}\n查询编号：${inquiry.inquiryNo}`,
+        recipientType: 'system',
+      },
+      undefined,
+      undefined,
+    );
+
+    this.logger.log(`[Transfer] Inquiry ${inquiryId} transferred to ${dto.transferTo} by ${transferredBy}`);
+
+    return this.findOne(inquiryId);
+  }
+
+  /**
+   * AC-06: 接受或拒绝转交
+   */
+  async handleTransfer(
+    inquiryId: string,
+    accept: boolean,
+    userId: string,
+  ): Promise<ParentInquiry> {
+    const inquiry = await this.findOne(inquiryId);
+
+    if (inquiry.transferTo !== userId) {
+      throw new Error('此查询未转交给您');
+    }
+
+    const updates: any = {
+      transferStatus: accept ? TransferStatus.ACCEPTED : TransferStatus.REJECTED,
+    };
+
+    if (accept) {
+      updates.assignedTo = userId;
+      updates.status = InquiryStatus.PROCESSING;
+    }
+
+    await this.inquiryRepository.update(inquiryId, updates);
+
+    return this.findOne(inquiryId);
+  }
+
+  /**
+   * AC-01: 记录来电通话信息（仅记录元数据，不含敏感内容）
+   */
+  async recordCallLog(
+    inquiryId: string,
+    dto: CallLogDto,
+    userId: string,
+  ): Promise<ParentInquiry> {
+    const inquiry = await this.findOne(inquiryId);
+
+    const updates: any = {
+      callDurationMinutes: dto.callDurationMinutes,
+      callResult: dto.callResult,
+      sentiment: dto.sentiment,
+      // AC-08: 情绪激动 → 自动升级至校务主任处理 (AC-03)
+      escalationRequired:
+        dto.sentiment === InquirySentiment.ANGRY ? true : inquiry.escalationRequired,
+    };
+
+    // 如果情绪激动，自动升级
+    if (dto.sentiment === InquirySentiment.ANGRY && !inquiry.escalationRequired) {
+      updates.escalationRequired = true;
+      updates.status = InquiryStatus.ESCALATED;
+
+      // 触发升级通知
+      await this.escalationService.checkAndEscalate(
+        inquiryId,
+        inquiry.content,
+        inquiry.subject,
+      );
+
+      await this.notificationService.sendNotification(
+        {
+          recipientIds: [],
+          title: '🚨 情绪激动查询 - 需升级处理',
+          content: `家长情绪激动，请校务主任及时处理此查询：${inquiry.inquiryNo}`,
+          recipientType: 'system',
+        },
+        undefined,
+        undefined,
+      );
+    }
+
+    // 如果这是第一次回复，更新状态
+    if (!inquiry.firstResponseAt) {
+      updates.firstResponseAt = new Date();
+      updates.status = InquiryStatus.PROCESSING;
+    }
+
+    await this.inquiryRepository.update(inquiryId, updates);
+
+    this.logger.log(`[CallLog] Recorded call log for ${inquiryId}: duration=${dto.callDurationMinutes}min, sentiment=${dto.sentiment}`);
+
+    return this.findOne(inquiryId);
   }
 }
