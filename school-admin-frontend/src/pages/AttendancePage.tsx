@@ -149,7 +149,7 @@ export default function AttendancePage() {
       if (statsData) {
         setStats(statsData);
       }
-      if (affectedData) {
+      if (affectedData && affectedData.students) {
         setAffectedStudents(affectedData.students);
       }
     } catch (err) {
