@@ -8,18 +8,34 @@ interface ApiResponse<T> {
   success: boolean;
 }
 
-// 仪表盘统计数据类型
+// 仪表盘统计数据类型 (与后端匹配)
 export interface DashboardStats {
-  students: number;
-  teachers: number;
-  courses: number;
-  attendance: number;
+  todayAttendance: {
+    total: number;
+    present: number;
+    absent: number;
+    late: number;
+    leave: number;
+    attendanceRate: number;
+  };
+  monthlyLeave: {
+    total: number;
+    approved: number;
+    pending: number;
+    rejected: number;
+  };
+  pendingInquiries: number;
+  todayNotifications: number;
 }
 
 // 出勤趋势数据类型
 export interface AttendanceTrend {
-  name: string;
-  value: number;
+  date: string;
+  present: number;
+  absent: number;
+  late: number;
+  leave: number;
+  attendanceRate: number;
 }
 
 // 请假统计类型
@@ -37,7 +53,12 @@ export const dashboardApi = {
     const response = await apiClient.get<ApiResponse<DashboardStats>>('/api/dashboard/stats');
     // 防御性编程：确保返回有效数据
     const data = response.data?.data;
-    return data || { students: 0, teachers: 0, courses: 0, attendance: 0 };
+    return data || {
+      todayAttendance: { total: 0, present: 0, absent: 0, late: 0, leave: 0, attendanceRate: 0 },
+      monthlyLeave: { total: 0, approved: 0, pending: 0, rejected: 0 },
+      pendingInquiries: 0,
+      todayNotifications: 0
+    };
   },
 
   // 获取出勤趋势
