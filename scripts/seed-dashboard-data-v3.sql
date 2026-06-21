@@ -1,0 +1,453 @@
+-- =====================================================
+-- School Admin System - Dashboard Test Data v3
+-- 智能校务助理系统 - 仪表板测试数据 v3
+-- =====================================================
+-- 生成日期: 2026-06-21
+-- 执行: docker exec -i school-admin-postgres psql -U school_admin -d school_admin < seed-dashboard-data-v3.sql
+-- =====================================================
+
+SET datestyle = 'ISO, DMY';
+
+-- =====================================================
+-- 1. 班级数据 (Classes) - 如果不存在则创建
+-- =====================================================
+INSERT INTO classes (name, grade, class_code, academic_year_id, capacity, is_active, created_at, updated_at)
+SELECT
+    '中一A班',
+    'S1',
+    '1A',
+    academic_year_id,
+    40,
+    true,
+    NOW(),
+    NOW()
+FROM classes LIMIT 1
+WHERE NOT EXISTS (SELECT 1 FROM classes WHERE class_code = '1A')
+ON CONFLICT (class_code) DO NOTHING;
+
+INSERT INTO classes (name, grade, class_code, academic_year_id, capacity, is_active, created_at, updated_at)
+SELECT
+    '中一B班',
+    'S1',
+    '1B',
+    academic_year_id,
+    40,
+    true,
+    NOW(),
+    NOW()
+FROM classes LIMIT 1
+WHERE NOT EXISTS (SELECT 1 FROM classes WHERE class_code = '1B')
+ON CONFLICT (class_code) DO NOTHING;
+
+INSERT INTO classes (name, grade, class_code, academic_year_id, capacity, is_active, created_at, updated_at)
+SELECT
+    '中二A班',
+    'S2',
+    '2A',
+    academic_year_id,
+    40,
+    true,
+    NOW(),
+    NOW()
+FROM classes LIMIT 1
+WHERE NOT EXISTS (SELECT 1 FROM classes WHERE class_code = '2A')
+ON CONFLICT (class_code) DO NOTHING;
+
+INSERT INTO classes (name, grade, class_code, academic_year_id, capacity, is_active, created_at, updated_at)
+SELECT
+    '中二B班',
+    'S2',
+    '2B',
+    academic_year_id,
+    40,
+    true,
+    NOW(),
+    NOW()
+FROM classes LIMIT 1
+WHERE NOT EXISTS (SELECT 1 FROM classes WHERE class_code = '2B')
+ON CONFLICT (class_code) DO NOTHING;
+
+INSERT INTO classes (name, grade, class_code, academic_year_id, capacity, is_active, created_at, updated_at)
+SELECT
+    '中三A班',
+    'S3',
+    '3A',
+    academic_year_id,
+    40,
+    true,
+    NOW(),
+    NOW()
+FROM classes LIMIT 1
+WHERE NOT EXISTS (SELECT 1 FROM classes WHERE class_code = '3A')
+ON CONFLICT (class_code) DO NOTHING;
+
+-- =====================================================
+-- 2. 学生数据 (Users - role='student')
+-- =====================================================
+INSERT INTO users (user_type, username, name, email, phone, role, status, password, created_at, updated_at)
+VALUES
+('student', 's2024001', '陳大文', 's2024001@school.edu', '13800138020', 'student', 'active', '$2b$12$7sgmKQSuz5F1Oe0/Fwi3d.1t63EvF228gXooyVP2PBbpYS/7EYjZ.', NOW(), NOW())
+ON CONFLICT (username) DO NOTHING;
+
+INSERT INTO users (user_type, username, name, email, phone, role, status, password, created_at, updated_at)
+VALUES
+('student', 's2024002', '李小明', 's2024002@school.edu', '13800138021', 'student', 'active', '$2b$12$7sgmKQSuz5F1Oe0/Fwi3d.1t63EvF228gXooyVP2PBbpYS/7EYjZ.', NOW(), NOW())
+ON CONFLICT (username) DO NOTHING;
+
+INSERT INTO users (user_type, username, name, email, phone, role, status, password, created_at, updated_at)
+VALUES
+('student', 's2024003', '王小美', 's2024003@school.edu', '13800138022', 'student', 'active', '$2b$12$7sgmKQSuz5F1Oe0/Fwi3d.1t63EvF228gXooyVP2PBbpYS/7EYjZ.', NOW(), NOW())
+ON CONFLICT (username) DO NOTHING;
+
+INSERT INTO users (user_type, username, name, email, phone, role, status, password, created_at, updated_at)
+VALUES
+('student', 's2024004', '張家豪', 's2024004@school.edu', '13800138023', 'student', 'active', '$2b$12$7sgmKQSuz5F1Oe0/Fwi3d.1t63EvF228gXooyVP2PBbpYS/7EYjZ.', NOW(), NOW())
+ON CONFLICT (username) DO NOTHING;
+
+INSERT INTO users (user_type, username, name, email, phone, role, status, password, created_at, updated_at)
+VALUES
+('student', 's2024005', '劉雅婷', 's2024005@school.edu', '13800138024', 'student', 'active', '$2b$12$7sgmKQSuz5F1Oe0/Fwi3d.1t63EvF228gXooyVP2PBbpYS/7EYjZ.', NOW(), NOW())
+ON CONFLICT (username) DO NOTHING;
+
+INSERT INTO users (user_type, username, name, email, phone, role, status, password, created_at, updated_at)
+VALUES
+('student', 's2024006', '黃志強', 's2024006@school.edu', '13800138025', 'student', 'active', '$2b$12$7sgmKQSuz5F1Oe0/Fwi3d.1t63EvF228gXooyVP2PBbpYS/7EYjZ.', NOW(), NOW())
+ON CONFLICT (username) DO NOTHING;
+
+INSERT INTO users (user_type, username, name, email, phone, role, status, password, created_at, updated_at)
+VALUES
+('student', 's2024007', '林小娟', 's2024007@school.edu', '13800138026', 'student', 'active', '$2b$12$7sgmKQSuz5F1Oe0/Fwi3d.1t63EvF228gXooyVP2PBbpYS/7EYjZ.', NOW(), NOW())
+ON CONFLICT (username) DO NOTHING;
+
+INSERT INTO users (user_type, username, name, email, phone, role, status, password, created_at, updated_at)
+VALUES
+('student', 's2024008', '鄭傑輝', 's2024008@school.edu', '13800138027', 'student', 'active', '$2b$12$7sgmKQSuz5F1Oe0/Fwi3d.1t63EvF228gXooyVP2PBbpYS/7EYjZ.', NOW(), NOW())
+ON CONFLICT (username) DO NOTHING;
+
+-- =====================================================
+-- 3. 今日出勤记录 (Attendances) - 2026-06-21
+-- =====================================================
+-- 获取班级ID并插入出勤记录
+INSERT INTO attendances (student_id, class_id, attendance_date, attendance_type, status, check_in_time, check_out_time, remark, created_by, created_at, updated_at)
+SELECT
+    u.id,
+    c.id::text,
+    '2026-06-21',
+    'check_in',
+    'present',
+    '07:45:00',
+    '15:30:00',
+    NULL,
+    'admin',
+    NOW(),
+    NOW()
+FROM users u, classes c
+WHERE u.username = 's2024001' AND c.class_code = '1A'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO attendances (student_id, class_id, attendance_date, attendance_type, status, check_in_time, check_out_time, remark, created_by, created_at, updated_at)
+SELECT
+    u.id,
+    c.id::text,
+    '2026-06-21',
+    'check_in',
+    'late',
+    '08:15:00',
+    '15:30:00',
+    '迟到30分钟',
+    'admin',
+    NOW(),
+    NOW()
+FROM users u, classes c
+WHERE u.username = 's2024002' AND c.class_code = '1A'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO attendances (student_id, class_id, attendance_date, attendance_type, status, check_in_time, check_out_time, remark, created_by, created_at, updated_at)
+SELECT
+    u.id,
+    c.id::text,
+    '2026-06-21',
+    'check_in',
+    'present',
+    '07:50:00',
+    '15:30:00',
+    NULL,
+    'admin',
+    NOW(),
+    NOW()
+FROM users u, classes c
+WHERE u.username = 's2024003' AND c.class_code = '1A'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO attendances (student_id, class_id, attendance_date, attendance_type, status, check_in_time, check_out_time, remark, created_by, created_at, updated_at)
+SELECT
+    u.id,
+    c.id::text,
+    '2026-06-21',
+    'check_in',
+    'present',
+    '07:55:00',
+    '15:30:00',
+    NULL,
+    'admin',
+    NOW(),
+    NOW()
+FROM users u, classes c
+WHERE u.username = 's2024004' AND c.class_code = '1A'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO attendances (student_id, class_id, attendance_date, attendance_type, status, check_in_time, check_out_time, remark, created_by, created_at, updated_at)
+SELECT
+    u.id,
+    c.id::text,
+    '2026-06-21',
+    'check_in',
+    'present',
+    '08:00:00',
+    '15:30:00',
+    NULL,
+    'admin',
+    NOW(),
+    NOW()
+FROM users u, classes c
+WHERE u.username = 's2024005' AND c.class_code = '1A'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO attendances (student_id, class_id, attendance_date, attendance_type, status, check_in_time, check_out_time, remark, created_by, created_at, updated_at)
+SELECT
+    u.id,
+    c.id::text,
+    '2026-06-21',
+    'check_in',
+    'leave_early',
+    '07:40:00',
+    '14:00:00',
+    '早退-牙医预约',
+    'admin',
+    NOW(),
+    NOW()
+FROM users u, classes c
+WHERE u.username = 's2024006' AND c.class_code = '1A'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO attendances (student_id, class_id, attendance_date, attendance_type, status, check_in_time, check_out_time, remark, created_by, created_at, updated_at)
+SELECT
+    u.id,
+    c.id::text,
+    '2026-06-21',
+    'check_in',
+    'present',
+    '07:48:00',
+    '15:30:00',
+    NULL,
+    'admin',
+    NOW(),
+    NOW()
+FROM users u, classes c
+WHERE u.username = 's2024007' AND c.class_code = '1A'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO attendances (student_id, class_id, attendance_date, attendance_type, status, check_in_time, check_out_time, remark, created_by, created_at, updated_at)
+SELECT
+    u.id,
+    c.id::text,
+    '2026-06-21',
+    'check_in',
+    'absent',
+    NULL,
+    NULL,
+    '病假-已获批准',
+    'admin',
+    NOW(),
+    NOW()
+FROM users u, classes c
+WHERE u.username = 's2024008' AND c.class_code = '1A'
+ON CONFLICT DO NOTHING;
+
+-- =====================================================
+-- 4. 家长查询记录 (Inquiries)
+-- =====================================================
+INSERT INTO inquiries (parent_id, inquiry_type, subject, description, status, priority, submitted_at, assigned_to, resolved_at, created_by, created_at, updated_at)
+VALUES
+((SELECT id FROM users WHERE role = 'parent' LIMIT 1), 'attendance', '出勤問題', '請問為什麼我的孩子昨天的出勤記錄顯示為缺勤？', 'pending', 'urgent', NOW(), (SELECT id FROM users WHERE role = 'school_staff' LIMIT 1), NULL, 'admin', NOW(), NOW())
+ON CONFLICT DO NOTHING;
+
+INSERT INTO inquiries (parent_id, inquiry_type, subject, description, status, priority, submitted_at, assigned_to, resolved_at, created_by, created_at, updated_at)
+VALUES
+((SELECT id FROM users WHERE role = 'parent' LIMIT 1), 'finance', '學費繳費', '我想詢問下學期的學費標準是否有調整', 'pending', 'normal', NOW(), NULL, NULL, 'admin', NOW(), NOW())
+ON CONFLICT DO NOTHING;
+
+INSERT INTO inquiries (parent_id, inquiry_type, subject, description, status, priority, submitted_at, assigned_to, resolved_at, created_by, created_at, updated_at)
+VALUES
+((SELECT id FROM users WHERE role = 'parent' LIMIT 1), 'general', '校服問題', '學校是否有指定的校服供應商？', 'pending', 'low', NOW(), NULL, NULL, 'admin', NOW(), NOW())
+ON CONFLICT DO NOTHING;
+
+-- =====================================================
+-- 5. 校车记录 (Bus Records) - 今日
+-- =====================================================
+INSERT INTO bus_records (route_id, bus_number, driver_name, driver_phone, status, arrival_time, departure_time, capacity, current_passengers, notes, record_date, created_by, created_at, updated_at)
+VALUES
+((SELECT id FROM bus_routes LIMIT 1), 'BUS01', '張司機', '13800901001', 'arrived', '07:25:00', '16:00:00', 45, 38, '正常運作', '2026-06-21', 'admin', NOW(), NOW()),
+((SELECT id FROM bus_routes LIMIT 1), 'BUS02', '李司機', '13800901002', 'arrived', '07:30:00', '16:05:00', 45, 42, '正常運作', '2026-06-21', 'admin', NOW(), NOW()),
+((SELECT id FROM bus_routes LIMIT 1), 'BUS03', '王司機', '13800901003', 'arrived', '07:20:00', '15:55:00', 40, 35, '正常運作', '2026-06-21', 'admin', NOW(), NOW())
+ON CONFLICT DO NOTHING;
+
+-- =====================================================
+-- 6. 午餐订单 (Lunch Orders) - 2026-06-21
+-- =====================================================
+INSERT INTO lunch_orders (class_id, order_date, total_orders, special_diet_orders, supplier, status, created_by, created_at, updated_at)
+SELECT
+    id::text,
+    '2026-06-21',
+    8,
+    1,
+    '美味膳食',
+    'confirmed',
+    'admin',
+    NOW(),
+    NOW()
+FROM classes WHERE class_code = '1A'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO lunch_orders (class_id, order_date, total_orders, special_diet_orders, supplier, status, created_by, created_at, updated_at)
+SELECT
+    id::text,
+    '2026-06-21',
+    4,
+    0,
+    '美味膳食',
+    'confirmed',
+    'admin',
+    NOW(),
+    NOW()
+FROM classes WHERE class_code = '1B'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO lunch_orders (class_id, order_date, total_orders, special_diet_orders, supplier, status, created_by, created_at, updated_at)
+SELECT
+    id::text,
+    '2026-06-21',
+    4,
+    1,
+    '美味膳食',
+    'confirmed',
+    'admin',
+    NOW(),
+    NOW()
+FROM classes WHERE class_code = '2A'
+ON CONFLICT DO NOTHING;
+
+-- =====================================================
+-- 7. 请假申请 (Leaves)
+-- =====================================================
+INSERT INTO leaves (student_id, leave_type, start_date, end_date, total_days, reason, status, submitted_at, reviewed_by, reviewed_at, rejection_reason, created_by, created_at, updated_at)
+SELECT
+    id,
+    'sick',
+    '2026-06-21',
+    '2026-06-22',
+    2,
+    '發燒，醫生建議休息兩天',
+    'approved',
+    NOW() - INTERVAL '2 hours',
+    (SELECT id FROM users WHERE role = 'school_staff' LIMIT 1),
+    NOW() - INTERVAL '1 hour',
+    NULL,
+    'admin',
+    NOW(),
+    NOW()
+FROM users WHERE username = 's2024008'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO leaves (student_id, leave_type, start_date, end_date, total_days, reason, status, submitted_at, reviewed_by, reviewed_at, rejection_reason, created_by, created_at, updated_at)
+SELECT
+    id,
+    'personal',
+    '2026-06-21',
+    '2026-06-21',
+    0.5,
+    '牙醫預約',
+    'approved',
+    NOW() - INTERVAL '5 hours',
+    (SELECT id FROM users WHERE role = 'school_staff' LIMIT 1),
+    NOW() - INTERVAL '4 hours',
+    NULL,
+    'admin',
+    NOW(),
+    NOW()
+FROM users WHERE username = 's2024006'
+ON CONFLICT DO NOTHING;
+
+INSERT INTO leaves (student_id, leave_type, start_date, end_date, total_days, reason, status, submitted_at, reviewed_by, reviewed_at, rejection_reason, created_by, created_at, updated_at)
+SELECT
+    id,
+    'sick',
+    '2026-06-21',
+    '2026-06-23',
+    3,
+    '發燒，需要在家休息',
+    'pending',
+    NOW() - INTERVAL '3 hours',
+    NULL,
+    NULL,
+    NULL,
+    'admin',
+    NOW(),
+    NOW()
+FROM users WHERE username = 'student1'
+ON CONFLICT DO NOTHING;
+
+-- =====================================================
+-- 验证数据创建结果
+-- =====================================================
+SELECT '=== 数据统计 ===' as info;
+
+SELECT '班级' as type, COUNT(*) as count FROM classes WHERE is_active = true
+UNION ALL
+SELECT '学生', COUNT(*) FROM users WHERE role = 'student'
+UNION ALL
+SELECT '家长', COUNT(*) FROM users WHERE role = 'parent'
+UNION ALL
+SELECT '今日出勤记录', COUNT(*) FROM attendances WHERE attendance_date = '2026-06-21'
+UNION ALL
+SELECT '家长查询', COUNT(*) FROM inquiries WHERE status = 'pending'
+UNION ALL
+SELECT '校车', COUNT(*) FROM bus_records WHERE record_date = '2026-06-21' AND status = 'arrived'
+UNION ALL
+SELECT '午餐订单', COUNT(*) FROM lunch_orders WHERE order_date = '2026-06-21'
+UNION ALL
+SELECT '待审批请假', COUNT(*) FROM leaves WHERE status = 'pending';
+
+SELECT '=== 今日出勤概览 (2026-06-21) ===' as info;
+SELECT
+    c.name as 班级,
+    COUNT(CASE WHEN a.status = 'present' THEN 1 END) as 出勤,
+    COUNT(CASE WHEN a.status = 'late' THEN 1 END) as 迟到,
+    COUNT(CASE WHEN a.status = 'leave_early' THEN 1 END) as 早退,
+    COUNT(CASE WHEN a.status = 'absent' THEN 1 END) as 缺勤,
+    COUNT(*) as 总人数
+FROM attendances a
+JOIN classes c ON a.class_id::uuid = c.id
+WHERE a.attendance_date = '2026-06-21'
+GROUP BY c.id, c.name
+ORDER BY c.class_code;
+
+SELECT '=== 待处理项目 ===' as info;
+SELECT
+    '家长查询' as 类型,
+    COUNT(*) as 数量,
+    SUM(CASE WHEN priority = 'urgent' THEN 1 ELSE 0 END) as 紧急
+FROM inquiries
+WHERE status = 'pending'
+UNION ALL
+SELECT
+    '请假申请',
+    COUNT(*),
+    0
+FROM leaves
+WHERE status = 'pending';
+
+SELECT '=== 测试账号信息 ===' as info;
+SELECT username, name, role, email FROM users WHERE username IN ('admin', 'staff1', 'parent1', 'student1', 'teacher1', 's2024001', 's2024002', 's2024003', 's2024004', 's2024005', 's2024006', 's2024007', 's2024008') ORDER BY role;
+
+SELECT '✅ 测试数据准备完成！' as info;
