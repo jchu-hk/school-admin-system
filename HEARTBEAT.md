@@ -104,9 +104,9 @@
 
 | Commit | 描述 |
 |--------|------|
-| 待提交 | fix: 前端nginx配置问题 (infra-backend -> school-admin-backend) |
-| 待提交 | feat: 添加仪表板测试数据 |
-| 待提交 | update: HEARTBEAT.md |
+| `6cf81de` | fix: 修复前端nginx配置并添加仪表板测试数据 |
+| `a0acc15` | fix: 修复学费管理模块Entity和数据库不匹配问题 |
+| `c7a59c1` | fix: 添加v1.5.0更新日志 |
 
 ## 📝 昨日Commits (2026-06-20)
 
