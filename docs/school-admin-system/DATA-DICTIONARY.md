@@ -1,305 +1,576 @@
 # 数据字典 (Data Dictionary)
 ## Smart School Admin AI System — Data Dictionary
-## v1.4.0 | 2026-06-03
+## v1.5.1 | 2026-06-22 | 基于生产环境数据库实际审查
+
+---
+
+> ⚠️ **重要说明**: 本文档 v1.5.1 起基于实际数据库架构审查，所有字段名、数据类型、枚举值均与生产环境 1:1 对应。
 
 ---
 
 ## 1. 概述
 
-本数据字典定义了智能校务助理系统中所有数据元素的详细说明，包括：
-- 数据项名称及定义
-- 数据类型和格式
-- 取值范围/枚举值
-- 业务规则
-- 数据来源
+本数据字典定义智能校务助理系统中所有数据元素的详细说明。
 
 ---
 
-## 2. 核心实体数据字典
+## 2. 用户管理 (users)
 
-### 2.1 学校 (School)
+### 2.1 用户主表 (users)
 
-| 数据项 | 数据类型 | 长度 | 必填 | 取值/格式 | 业务规则 |
-|--------|----------|------|------|-----------|----------|
-| school_code | VARCHAR | 20 | Y | SCH-XXX | 唯一标识学校 |
-| name_zh | VARCHAR | 200 | Y | | 学校中文全名 |
-| name_en | VARCHAR | 200 | | | 学校英文名称 |
-| edb_school_code | VARCHAR | 20 | | | EDB分配的学校编号 |
-| academic_year_start | DATE | | | YYYY-MM-DD | 学年起始日期 |
-| settings | JSONB | | | | 扩展配置JSON |
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 用户唯一标识 |
+| username | VARCHAR | 100 | UNIQUE, NOT NULL | 用户名/登录账号 |
+| password | VARCHAR | 255 | NOT NULL | bcrypt哈希密码 |
+| email | VARCHAR | 255 | UNIQUE | 邮箱 |
+| phone | VARCHAR | 20 | | 电话 |
+| name | VARCHAR | 100 | | 姓名 |
+| role | ENUM | | | 角色 |
+| status | ENUM | | | 状态 |
+| hk_id | VARCHAR | 20 | UNIQUE | 香港身份证 |
+| whatsapp | VARCHAR | 20 | | WhatsApp |
+| class_name | VARCHAR | 50 | | 所属班级 |
+| otp_secret | VARCHAR | 255 | | OTP密钥 |
+| otp_enabled | BOOLEAN | | DEFAULT false | 是否启用OTP |
+| failed_attempts | INTEGER | | DEFAULT 0 | 失败尝试次数 |
+| lockout_until | TIMESTAMPTZ | | | 账户锁定截止时间 |
+| password_history | ARRAY | | | 密码历史 |
+| must_change_password | BOOLEAN | | DEFAULT false | 必须修改密码 |
+| password_expires_at | TIMESTAMPTZ | | | 密码过期时间 |
+| last_login_at | TIMESTAMPTZ | | | 最后登录时间 |
+| last_login_ip | VARCHAR | 50 | | 最后登录IP |
+| subsidy_eligibility | ENUM | | DEFAULT 'none' | 资助资格 |
+| subsidy_start_date | DATE | | | 资助开始日期 |
+| subsidy_end_date | DATE | | | 资助结束日期 |
+| subsidy_certificate_no | VARCHAR | 50 | | 资助证明编号 |
+| related_student_id | UUID | | | 关联学生ID（家长使用）|
+| student_id | UUID | | | 学生ID |
+| enrollment_date | DATE | | | 入学日期 |
+| graduation_date | DATE | | | 毕业日期 |
+| previous_school | VARCHAR | 200 | | 原学校 |
+| home_address | TEXT | | | 家庭地址 |
+| date_of_birth | DATE | | | 出生日期 |
+| gender | VARCHAR | 10 | | 性别 |
+| emergency_contact | VARCHAR | 100 | | 紧急联系人 |
+| emergency_phone | VARCHAR | 20 | | 紧急联系电话 |
+| is_first_login | BOOLEAN | | DEFAULT true | 首次登录 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+| created_by | UUID | | | 创建人 |
+| updated_by | UUID | | | 更新人 |
+| deleted_at | TIMESTAMPTZ | | | 软删除时间 |
 
----
+**枚举值 — role (user_role_new):**
+| 值 | 说明 |
+|----|------|
+| system_admin | 系统管理员 |
+| school_director | 校务主任 |
+| school_staff | 校务人员 |
+| teacher | 教师 |
+| parent | 家长 |
+| student | 学生 |
 
-### 2.2 用户 (User)
+**枚举值 — status (user_status_new):**
+| 值 | 说明 |
+|----|------|
+| active | 启用 |
+| inactive | 未激活 |
+| disabled | 已禁用 |
 
-| 数据项 | 数据类型 | 长度 | 必填 | 取值/格式 | 业务规则 |
-|--------|----------|------|------|-----------|----------|
-| user_type | VARCHAR | 20 | Y | 见枚举 | 用户类型分类 |
-| user_code | VARCHAR | 50 | Y | | 工号/学号，全校唯一 |
-| name_zh | VARCHAR | 100 | Y | | 中文姓名 |
-| hkid | VARCHAR | 20 | | X123456(X) | 香港身份证，加密存储 |
-| email | VARCHAR | 255 | | a@b.c | 联系邮箱 |
-| phone | VARCHAR | 20 | | | 联系电话 |
-| gender | VARCHAR | 1 | | M/F | 性别 |
-| employment_type | VARCHAR | 20 | | 见枚举 | 雇佣类型 |
-| account_expiry_date | DATE | | | YYYY-MM-DD | 账户到期日 |
-| language_preference | VARCHAR | 10 | Y | zh-HK | 界面语言偏好 |
-| deleted_at | TIMESTAMPTZ | | | | 软删除时间戳 |
-
-**枚举值 - user_type:**
-- `SCHOOL_ADMIN` — 校务主任（全权限）
-- `OFFICER` — 校务处同工（日常操作）
-- `TEACHER` — 教师（查询与填报）
-- `PARENT` — 家长（门户查询）
-- `STUDENT` — 学生（自主查询）
-- `SYSTEM` — 系统管理员（技术运维）
-
-**枚举值 - employment_type:**
-- `permanent` — 常额
-- `contract` — 合约
-- `supply` — 代课
-- `relief` — 替假
-
----
-
-### 2.3 学生 (Student)
-
-| 数据项 | 数据类型 | 长度 | 必填 | 取值/格式 | 业务规则 |
-|--------|----------|------|------|-----------|----------|
-| student_id | VARCHAR | 20 | Y | YYYYSXXXXX | 学号格式：年份+S+班级+序号 |
-| name_zh | VARCHAR | 100 | Y | | 学生中文姓名 |
-| date_of_birth | DATE | | Y | YYYY-MM-DD | 出生日期 |
-| gender | VARCHAR | 1 | Y | M/F | 性别 |
-| birth_place | VARCHAR | 50 | | HK/MO/CN/Other | 出生地点 |
-| is_sen | BOOLEAN | | Y | true/false | 是否有特殊教育需要 |
-| sen_type | VARCHAR | 50 | | | SEN类型分类 |
-| sen_details | JSONB | | | | SEN详细信息 |
-| enrollment_date | DATE | | | YYYY-MM-DD | 正式入学日期 |
-| graduation_date | DATE | | | YYYY-MM-DD | 毕业/离校日期 |
-
-**SEN类型 (sen_type):**
-- `ADHD` — 专注力不足/过度活跃症
-- `ASD` — 自闭症谱系障碍
-- `SLD` — 特殊学习困难
-- `HI` — 听力障碍
-- `VI` — 视觉障碍
-- `PD` — 肢体伤残
-- `ID` — 智力障碍
-- `SpLD` — 言语及语言障碍
-- `Others` — 其他
-
----
-
-### 2.4 班级 (Class)
-
-| 数据项 | 数据类型 | 长度 | 必填 | 取值/格式 | 业务规则 |
-|--------|----------|------|------|-----------|----------|
-| class_code | VARCHAR | 10 | Y | 1A / S2C | 班级代码 |
-| grade | VARCHAR | 3 | Y | S1-S6 | 年级 |
-| class_type | VARCHAR | 20 | Y | 见枚举 | 班级类型 |
-| max_capacity | INT | | Y | 40 | 最大容量 |
-| current_enrollment | INT | | Y | | 当前人数 |
-
-**枚举值 - class_type:**
-- `regular` — 普通班
-- `intensive` — 加强班
-- `elective` — 选修班
+**枚举值 — subsidy_eligibility:**
+| 值 | 说明 |
+|----|------|
+| full_subsidy | 全额资助 |
+| half_subsidy | 半额资助 |
+| none | 无资助 |
+| pending | 待审核 |
 
 ---
 
-## 3. 日常操作数据字典
+## 3. 角色与权限 (user_roles, permissions)
 
-### 3.1 出勤记录 (Attendance Record)
+### 3.1 角色定义 (user_roles)
 
-| 数据项 | 数据类型 | 长度 | 必填 | 取值/格式 | 业务规则 |
-|--------|----------|------|------|-----------|----------|
-| date | DATE | | Y | YYYY-MM-DD | 考勤日期 |
-| status | VARCHAR | 20 | Y | 见枚举 | 出勤状态 |
-| source | VARCHAR | 20 | | 见枚举 | 数据来源 |
-| consecutive_days | INT | | Y | 0-999 | 连续缺席天数 |
-| alert_level | VARCHAR | 20 | | 见枚举 | 预警级别 |
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 角色ID |
+| name | VARCHAR | 50 | NOT NULL | 角色名称 |
+| description | TEXT | | | 说明 |
+| permissions | JSONB | | DEFAULT '[]' | 权限数组 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
 
-**枚举值 - status:**
-- `present` — 出席
-- `absent` — 缺席
-- `late` — 迟到
-- `early` — 早退
-- `excused` — 有理由缺席
+### 3.2 角色分配 (user_role_assignments)
 
-**枚举值 - source:**
-- `eclass` — eClass系统
-- `manual` — 人工录入
-- `biometric` — 生物识别
-- `websams` — WebSAMS同步
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 记录ID |
+| user_id | UUID | | FK→users, NOT NULL | 用户 |
+| role_id | UUID | | FK→user_roles | 角色 |
+| school_id | UUID | | | 学校 |
+| assigned_by | UUID | | | 分配人 |
+| assigned_at | TIMESTAMPTZ | | NOT NULL | 分配时间 |
 
-**枚举值 - alert_level:**
-- `none` — 无预警
-- `low` — 低级别（连续2天缺席）
-- `medium` — 中级别（连续3天缺席）
-- `high` — 高级别（连续5天+或异常模式）
+### 3.3 权限定义 (permissions)
 
----
-
-### 3.2 迟到/早退记录 (Late/Early Record)
-
-| 数据项 | 数据类型 | 长度 | 必填 | 取值/格式 | 业务规则 |
-|--------|----------|------|------|-----------|----------|
-| type | VARCHAR | 20 | Y | 见枚举 | 记录类型 |
-| recorded_time | TIMESTAMPTZ | | Y | ISO8601 | 实际记录时间 |
-| threshold_time | TIME | | Y | HH:MM | 规定时间 |
-| duration_minutes | INT | | | 0-999 | 迟到/早退分钟数 |
-| pattern_triggered | BOOLEAN | | Y | true/false | 是否触发模式预警 |
-
-**枚举值 - type:**
-- `late_arrival` — 迟到
-- `early_departure` — 早退
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 权限ID |
+| module | VARCHAR | 50 | NOT NULL | 所属模块 |
+| code | VARCHAR | 100 | NOT NULL | 权限代码 |
+| name_zh | VARCHAR | 100 | NOT NULL | 中文名称 |
+| name_en | VARCHAR | 100 | | 英文名称 |
+| description | TEXT | | | 说明 |
+| resource_type | VARCHAR | 50 | | 资源类型 |
+| action | VARCHAR | 20 | | 操作(create/read/update/delete/approve) |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
 
 ---
 
-### 3.3 请假申请 (Leave Application)
+## 4. 会话与认证 (sessions, otp_sessions)
 
-| 数据项 | 数据类型 | 长度 | 必填 | 取值/格式 | 业务规则 |
-|--------|----------|------|------|-----------|----------|
-| application_no | VARCHAR | 20 | Y | LV-YYYYMMDD-XXX | 申请编号 |
-| leave_type | VARCHAR | 20 | Y | 见枚举 | 请假类型 |
-| start_date | DATE | | Y | YYYY-MM-DD | 开始日期 |
-| end_date | DATE | | Y | YYYY-MM-DD | 结束日期 |
-| total_days | DECIMAL | 4,1 | | 0.5-365 | 总天数（支持半天）|
-| status | VARCHAR | 20 | Y | 见枚举 | 申请状态 |
+### 4.1 会话 (sessions)
 
-**枚举值 - leave_type:**
-- `sick` — 病假
-- `personal` — 事假
-- `compassionate` — 恩恤假
-- `other` — 其他
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 会话ID |
+| user_id | UUID | | FK→users, NOT NULL | 用户 |
+| token | TEXT | | | JWT token |
+| ip | VARCHAR | 50 | | IP地址 |
+| user_agent | TEXT | | | User Agent |
+| expires_at | TIMESTAMPTZ | | | 过期时间 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
 
-**枚举值 - status:**
-- `pending` — 待审批
-- `approved` — 已批准
-- `rejected` — 已拒绝
-- `cancelled` — 已取消
+### 4.2 OTP会话 (otp_sessions)
 
----
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | OTP会话ID |
+| user_id | UUID | | FK→users | 用户 |
+| otp_code | VARCHAR | 10 | | OTP验证码 |
+| otp_type | ENUM | | | OTP类型 |
+| status | ENUM | | DEFAULT 'active' | 状态 |
+| expires_at | TIMESTAMPTZ | | NOT NULL | 过期时间 |
+| failed_attempts | INTEGER | | DEFAULT 0 | 失败次数 |
+| operation_type | VARCHAR | 50 | NOT NULL | 操作类型 |
+| operation_details | JSONB | | | 操作详情 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
 
-## 4. 财务数据字典
+**枚举值 — otp_type:**
+| 值 | 说明 |
+|----|------|
+| sms | 短信OTP |
+| email | 邮箱OTP |
+| google_authenticator | Google验证器 |
+| ukey | U盾 |
 
-### 4.1 学费项目 (Fee Item)
-
-| 数据项 | 数据类型 | 长度 | 必填 | 取值/格式 | 业务规则 |
-|--------|----------|------|------|-----------|----------|
-| fee_type | VARCHAR | 20 | Y | 见枚举 | 费用类型 |
-| annual_amount | DECIMAL | 10,2 | Y | 0.00-999999.99 | 年度金额 |
-| edb_subsidy | DECIMAL | 10,2 | Y | 0.00-999999.99 | 教育局津贴 |
-| net_payable | DECIMAL | 10,2 | Y | 0.00-999999.99 | 实付金额 |
-| status | VARCHAR | 20 | Y | 见枚举 | 状态 |
-
-**枚举值 - fee_type:**
-- `tuition` — 学费
-- `subsidy` — 堂费
-- `aircon` — 冷气费
-- `activity` — 活动费
-- `bus` — 校车费
-- `insurance` — 学生保险
-- `scholarship` — 奖学金（负数）
-
----
-
-### 4.2 零用现金交易 (Petty Cash)
-
-| 数据项 | 数据类型 | 长度 | 必填 | 取值/格式 | 业务规则 |
-|--------|----------|------|------|-----------|----------|
-| transaction_no | VARCHAR | 20 | Y | PC-YYYYMMDD-XXX | 交易编号 |
-| transaction_type | VARCHAR | 10 | Y | payment/receipt | 交易类型 |
-| amount | DECIMAL | 10,2 | Y | 0.00-3000.00 | 金额（上限3000）|
-| category | VARCHAR | 50 | | 见枚举 | 支出类别 |
-| dual_authorized | BOOLEAN | | Y | true/false | 是否双重授权 |
-
-**枚举值 - category:**
-- `printing` — 印刷
-- `stationery` — 文具
-- `transport` — 交通
-- `refreshment` — 茶点
-- `minor_repairs` — 小额维修
-- `other` — 其他
-
-**业务规则:**
-- 单笔交易限额：HK$3,000
-- 现金交易>HK$500需双重授权
-- 备用金上限：HK$5,000
+**枚举值 — otp_session_status:**
+| 值 | 说明 |
+|----|------|
+| active | 有效 |
+| expired | 已过期 |
+| used | 已使用 |
 
 ---
 
-## 5. 枚举值汇总
+## 5. 审计日志 (audit_logs)
 
-### 5.1 通用状态枚举
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 日志ID |
+| operatorid | UUID | | | 操作者ID |
+| action | ENUM | | NOT NULL | 操作类型 |
+| description | TEXT | | | 描述 |
+| ip | VARCHAR | 50 | | IP地址 |
+| user_agent | TEXT | | | User Agent |
+| metadata | JSONB | | DEFAULT '{}' | 附加数据 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
 
-| 枚举名称 | 取值 | 说明 |
-|----------|------|------|
-| status_active | active | 启用/进行中 |
-| status_active | inactive | 停用 |
-| status_active | deleted | 已删除（软删）|
-| status_pending | pending | 待处理 |
-| status_pending | processing | 处理中 |
-| status_pending | completed | 已完成 |
-| status_pending | cancelled | 已取消 |
+**枚举值 — audit_action (部分):**
+| 值 | 说明 |
+|----|------|
+| user_create | 创建用户 |
+| user_update | 更新用户 |
+| user_delete | 删除用户 |
+| user_restore | 恢复用户 |
+| user_status_change | 用户状态变更 |
+| user_password_reset | 重置密码 |
+| permission_change | 权限变更 |
+| login | 登录 |
+| logout | 登出 |
+| attendance_check_in | 签到 |
+| attendance_check_out | 签退 |
+| leave_apply | 申请请假 |
+| leave_approve | 批准请假 |
+| leave_reject | 拒绝请假 |
+| fee_create | 创建费用 |
+| fee_update | 更新费用 |
+| inquiry_create | 创建查询 |
+| inquiry_reply | 回复查询 |
 
-### 5.2 优先级枚举
+---
 
-| 枚举值 | 说明 |
-|--------|------|
-| low | 低优先级 |
-| normal | 普通优先级 |
-| high | 高优先级 |
+## 6. 班级管理 (classes)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 班级ID |
+| name | VARCHAR | 50 | NOT NULL | 班级名称 |
+| academic_year | VARCHAR | 9 | | 学年 |
+| grade_level | VARCHAR | 20 | | 年级 |
+| homeroom_teacher_id | UUID | | FK→users | 班主任 |
+| assistant_teacher_id | UUID | | FK→users | 副班主任 |
+| max_students | INTEGER | | DEFAULT 40 | 最大人数 |
+| current_student_count | INTEGER | | DEFAULT 0 | 当前人数 |
+| status | VARCHAR | 20 | DEFAULT 'active' | 状态 |
+| school_id | UUID | | | 学校 |
+| department_id | UUID | | | 部门 |
+| room | VARCHAR | 50 | | 教室 |
+| year | VARCHAR | 9 | | 学年 |
+| description | TEXT | | | 描述 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+
+---
+
+## 7. 出勤管理 (attendances)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 出勤记录ID |
+| student_id | UUID | | FK→users | 学生 |
+| teacher_id | UUID | | FK→users | 记录教师 |
+| class_id | VARCHAR | 100 | | 班级 |
+| attendance_date | DATE | | NOT NULL | 出勤日期 |
+| check_in_time | TIME | | | 签到时间 |
+| check_out_time | TIME | | | 签退时间 |
+| status | ENUM | | NOT NULL | 出勤状态 |
+| attendance_type | ENUM | | NOT NULL | 出勤类型 |
+| remark | TEXT | | | 备注 |
+| approver_id | UUID | | FK→users | 审批人 |
+| approved_at | TIMESTAMPTZ | | | 审批时间 |
+| reminder_sent | BOOLEAN | | DEFAULT false | 提醒已发送 |
+| reminder_sent_at | TIMESTAMPTZ | | | 提醒时间 |
+| created_by | VARCHAR | 100 | NOT NULL | 创建人 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_by | VARCHAR | 100 | | 更新人 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+| deleted_at | TIMESTAMPTZ | | | 软删除 |
+| sync_source | VARCHAR | 50 | DEFAULT 'MANUAL' | 同步来源 |
+| sync_status | VARCHAR | 50 | DEFAULT 'SUCCESS' | 同步状态 |
+| device_id | VARCHAR | 100 | | 设备ID |
+| device_name | VARCHAR | 200 | | 设备名称 |
+| batch_id | UUID | | | 批次ID |
+| can_revoke_until | TIMESTAMPTZ | | | 可撤销截止时间 |
+
+**枚举值 — status:**
+| 值 | 说明 |
+|----|------|
+| present | 出勤 |
+| absent | 缺勤 |
+| late | 迟到 |
+| leave_early | 早退 |
+| sick_leave | 病假 |
+| personal_leave | 事假 |
+| official_leave | 公假 |
+
+**枚举值 — attendance_type:**
+| 值 | 说明 |
+|----|------|
+| check_in | 签到 |
+| check_out | 签退 |
+| manual | 手动 |
+
+---
+
+## 8. 请假管理 (leaves)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 请假记录ID |
+| applicant_id | UUID | | FK→users, NOT NULL | 申请人 |
+| leave_type | ENUM | | NOT NULL | 请假类型 |
+| start_date | DATE | | NOT NULL | 开始日期 |
+| end_date | DATE | | NOT NULL | 结束日期 |
+| start_time | TIME | | | 开始时间 |
+| end_time | TIME | | | 结束时间 |
+| total_days | INTEGER | | NOT NULL | 总天数 |
+| total_hours | INTEGER | | | 总小时数 |
+| reason | TEXT | | NOT NULL | 原因 |
+| status | ENUM | | DEFAULT 'pending' | 状态 |
+| substitute_teacher_id | UUID | | FK→users | 代理教师 |
+| substitute_teacher_class_hours | INTEGER | | | 代理课时数 |
+| approver_id | UUID | | FK→users | 审批人 |
+| approved_at | TIMESTAMPTZ | | | 审批时间 |
+| approval_comment | TEXT | | | 审批意见 |
+| attachment_url | VARCHAR | 255 | | 附件URL |
+| school_id | UUID | | | 学校 |
+| student_id | UUID | | FK→users | 学生 |
+| class_id | UUID | | | 班级 |
+| ocr_status | VARCHAR | 30 | | OCR状态 |
+| medical_cert_required | BOOLEAN | | DEFAULT false | 需医疗证明 |
+| parent_submitted_at | TIMESTAMPTZ | | | 家长提交时间 |
+| created_by | UUID | | | 创建人 |
+| updated_by | UUID | | | 更新人 |
+| deleted_at | TIMESTAMPTZ | | | 软删除 |
+| director_comment | TEXT | | | 主任意见 |
+| admin_recorded_by | UUID | | | 备案人 |
+| admin_recorded_at | TIMESTAMPTZ | | | 备案时间 |
+| ai_review_flagged | BOOLEAN | | DEFAULT false | AI审核标记 |
+| ai_review_note | TEXT | | | AI审核说明 |
+| ai_verify_result | VARCHAR | 30 | | AI核验结果 |
+| certificate_verify_result | VARCHAR | 30 | | 证明文件核验结果 |
+| certificate_url | TEXT | | | 证明文件URL |
+| verified_at | TIMESTAMPTZ | | | 核验时间 |
+| follow_up_date | DATE | | | 跟进日期 |
+| follow_up_content | TEXT | | | 跟进内容 |
+| checked_in_at | TIMESTAMPTZ | | | 销假时间 |
+| checked_in_by | UUID | | | 销假操作人 |
+| parent_notified | BOOLEAN | | DEFAULT false | 家长已通知 |
+| class_teacher_notified | BOOLEAN | | DEFAULT false | 班主任已通知 |
+| bus_admin_notified | BOOLEAN | | DEFAULT false | 校车管理员已通知 |
+| current_approval_level | VARCHAR | 30 | | 当前审批级别 |
+| application_no | VARCHAR | 20 | UNIQUE | 申请编号 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+
+**枚举值 — leave_type:**
+| 值 | 说明 |
+|----|------|
+| sick_leave | 病假 |
+| personal_leave | 事假 |
+| official_leave | 公假 |
+| annual_leave | 年假 |
+| other | 其他 |
+
+**枚举值 — status:**
+| 值 | 说明 |
+|----|------|
+| pending | 待审批 |
+| approved | 已批准 |
+| rejected | 已拒绝 |
+| cancelled | 已取消 |
+
+---
+
+## 9. 财务管理 (fees, fee_records, scholarship_applications)
+
+### 9.1 费用定义 (fees)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 费用ID |
+| fee_name | VARCHAR | 200 | NOT NULL | 费用名称 |
+| description | TEXT | | | 说明 |
+| amount | NUMERIC | | NOT NULL | 金额 |
+| due_date | DATE | | | 截止日期 |
+| academic_year | VARCHAR | 9 | | 学年 |
+| category | VARCHAR | 50 | | 类别 |
+| is_active | BOOLEAN | | DEFAULT true | 是否启用 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+
+### 9.2 缴费记录 (fee_records)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 记录ID |
+| student_id | UUID | | FK→users, NOT NULL | 学生 |
+| fee_id | UUID | | FK→fees, NOT NULL | 费用项目 |
+| amount | NUMERIC | | NOT NULL | 应缴金额 |
+| paid_amount | NUMERIC | | DEFAULT 0 | 已缴金额 |
+| payment_date | DATE | | | 缴费日期 |
+| payment_method | VARCHAR | 50 | | 缴费方式 |
+| status | VARCHAR | 20 | DEFAULT 'unpaid' | 状态 |
+| academic_year | VARCHAR | 9 | | 学年 |
+| remarks | TEXT | | | 备注 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+
+### 9.3 奖学金申请 (scholarship_applications)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 申请ID |
+| student_id | UUID | | FK→users, NOT NULL | 学生 |
+| scholarship_name | VARCHAR | 200 | NOT NULL | 奖学金名称 |
+| application_date | DATE | | NOT NULL | 申请日期 |
+| amount | NUMERIC | | | 金额 |
+| status | VARCHAR | 20 | DEFAULT 'pending' | 状态 |
+| academic_year | VARCHAR | 9 | | 学年 |
+| remarks | TEXT | | | 备注 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+
+---
+
+## 10. 家长查询 (inquiries, inquiry_replies)
+
+### 10.1 家长查询 (inquiries)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 查询ID |
+| inquiry_type | VARCHAR | 50 | | 查询类型 |
+| subject | VARCHAR | 255 | | 主题 |
+| content | TEXT | | NOT NULL | 内容 |
+| parent_id | UUID | | FK→users | 家长 |
+| student_id | UUID | | | 学生 |
+| status | ENUM | | DEFAULT 'pending' | 状态 |
+| priority | ENUM | | DEFAULT 'medium' | 优先级 |
+| assigned_to | UUID | | | 分配给 |
+| school_id | UUID | | | 学校 |
+| is_ai_processed | BOOLEAN | | DEFAULT false | AI已处理 |
+| ai_intent | VARCHAR | 100 | | AI意图 |
+| is_escalated | BOOLEAN | | DEFAULT false | 是否升级 |
+| escalation_reason | TEXT | | | 升级原因 |
+| resolved_at | TIMESTAMPTZ | | | 解决时间 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+| deleted_at | TIMESTAMPTZ | | | 软删除 |
+
+**枚举值 — status:**
+| 值 | 说明 |
+|----|------|
+| pending | 待处理 |
+| in_progress | 处理中 |
+| resolved | 已解决 |
+| escalated | 已升级 |
+| closed | 已关闭 |
+
+**枚举值 — priority:**
+| 值 | 说明 |
+|----|------|
+| low | 低 |
+| medium | 中 |
+| high | 高 |
 | urgent | 紧急 |
 
-### 5.3 性别枚举
+### 10.2 查询回复 (inquiry_replies)
 
-| 枚举值 | 说明 |
-|--------|------|
-| M | 男性 |
-| F | 女性 |
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 回复ID |
+| inquiry_id | UUID | | FK→inquiries, NOT NULL | 查询 |
+| content | TEXT | | NOT NULL | 回复内容 |
+| replier_id | UUID | | | 回复人 |
+| is_official_reply | BOOLEAN | | DEFAULT false | 是否官方回复 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
 
 ---
 
-## 6. 数据质量规则
+## 11. 家长学生关联 (parent_student_links)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 关联ID |
+| parent_id | UUID | | FK→users, NOT NULL | 家长 |
+| student_id | UUID | | FK→users, NOT NULL | 学生 |
+| relationship | VARCHAR | 50 | | 关系 |
+| is_primary | BOOLEAN | | DEFAULT false | 是否主要联系人 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+
+---
+
+## 12. 午膳管理 (lunch_orders)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 订单ID |
+| student_id | UUID | | FK→users, NOT NULL | 学生 |
+| class_id | VARCHAR | 100 | | 班级 |
+| order_date | DATE | | NOT NULL | 订餐日期 |
+| meal_type | VARCHAR | 20 | DEFAULT 'regular' | 餐食类型 |
+| menu_item_id | UUID | | | 菜单项 |
+| notes | TEXT | | | 备注 |
+| status | VARCHAR | 20 | DEFAULT 'confirmed' | 状态 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+
+---
+
+## 13. 学校 (schools)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 学校ID |
+| school_code | VARCHAR | 20 | UNIQUE, NOT NULL | 学校代码 |
+| name_zh | VARCHAR | 200 | NOT NULL | 中文名称 |
+| name_en | VARCHAR | 200 | | 英文名称 |
+| address | TEXT | | | 地址 |
+| is_active | BOOLEAN | | DEFAULT true | 是否启用 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+
+---
+
+## 14. 枚举值汇总
+
+### 14.1 用户相关
+
+| 枚举名 | 值 |
+|--------|-----|
+| user_role_new | system_admin, school_director, school_staff, teacher, parent, student |
+| user_status_new | active, inactive, disabled |
+| subsidy_eligibility_enum | full_subsidy, half_subsidy, none, pending |
+
+### 14.2 出勤相关
+
+| 枚举名 | 值 |
+|--------|-----|
+| attendances_status_enum | present, absent, late, leave_early, sick_leave, personal_leave, official_leave |
+| attendances_attendance_type_enum | check_in, check_out, manual |
+
+### 14.3 请假相关
+
+| 枚举名 | 值 |
+|--------|-----|
+| leaves_leave_type_enum | sick_leave, personal_leave, official_leave, annual_leave, other |
+| leaves_status_enum | pending, approved, rejected, cancelled |
+
+### 14.4 查询相关
+
+| 枚举名 | 值 |
+|--------|-----|
+| inquiry_status_enum | pending, in_progress, resolved, escalated, closed |
+| inquiry_priority_enum | low, medium, high, urgent |
+
+### 14.5 OTP相关
+
+| 枚举名 | 值 |
+|--------|-----|
+| otp_type | sms, email, google_authenticator, ukey |
+| otp_session_status | active, expired, used |
+
+### 14.6 审计相关
+
+| 枚举名 | 值 |
+|--------|-----|
+| audit_action | user_create, user_update, user_delete, user_restore, user_status_change, user_password_reset, permission_change, login, logout, attendance_check_in, attendance_check_out, leave_apply, leave_approve, leave_reject, fee_create, fee_update, inquiry_create, inquiry_reply |
+
+---
+
+## 15. 数据质量规则
 
 | 规则类别 | 规则描述 | 适用字段 |
 |----------|----------|----------|
-| **格式校验** | 香港身份证格式：X123456(X) | users.hkid, students.hkid, parents.hkid |
-| **格式校验** | 邮箱格式：xxx@xxx.xxx | users.email, parents.email |
-| **格式校验** | 电话格式：8位数字 | users.phone, parents.phone |
-| **范围校验** | 日期不得晚于当前日期 | date_of_birth, enrollment_date |
-| **范围校验** | 结束日期 >= 开始日期 | start_date, end_date |
-| **范围校验** | 金额 >= 0 | 所有金额字段 |
-| **唯一性** | 学号全校唯一 | students.student_id |
-| **唯一性** | 工号全校唯一 | users.user_code |
+| **唯一性** | 用户名全校唯一 | users.username |
+| **唯一性** | 邮箱全校唯一 | users.email |
+| **唯一性** | 申请编号唯一 | leaves.application_no |
 | **引用完整性** | 外键必须存在对应主键 | 所有外键字段 |
-| **业务逻辑** | 离校日期 >= 入学日期 | enrollment_date, graduation_date |
+| **范围校验** | 结束日期 >= 开始日期 | leaves.start_date, leaves.end_date |
+| **范围校验** | 金额 >= 0 | fees.amount, fee_records.amount |
+| **格式校验** | 香港身份证格式 | users.hk_id |
+| **状态约束** | 锁定时间必须在未来 | users.lockout_until |
+| **业务逻辑** | OTP过期时间必须在未来 | otp_sessions.expires_at |
 
 ---
 
-## 7. 敏感数据处理
+## 16. 版本历史
 
-| 数据项 | 敏感度 | 处理方式 |
-|--------|--------|----------|
-| hkid (香港身份证) | 高 | AES-256加密存储 |
-| email | 中 | 常规存储，传输加密 |
-| phone | 中 | 常规存储，传输加密 |
-| home_address | 中 | 常规存储，访问控制 |
-| bank_account | 高 | AES-256加密存储 |
-| password_hash | 高 | bcrypt/argon2哈希 |
-| audit_logs | 高 | 只增不改，定期归档 |
-
----
-
-## 8. 数据保留政策
-
-| 数据类型 | 保留期限 | 处理方式 |
-|----------|----------|----------|
-| 审计日志 | 7年 | 归档后删除 |
-| 学生记录 | 学生离校后7年 | 软删除，归档保留 |
-| 财务记录 | 7年 | 归档保留 |
-| 考勤记录 | 当前学年+2年 | 删除 |
-| 会话记录 | 30天 | 自动清理 |
-| 系统日志 | 90天 | 自动清理 |
-
+| 版本 | 日期 | 变更 |
+|------|------|------|
+| v1.5.1 | 2026-06-22 | 基于生产环境数据库实际审查重建；新增 AI 核验相关字段 (ai_review_flagged, ai_review_note, ai_verify_result, certificate_verify_result 等)；更新枚举值定义 |
+| v1.5.0 | 2026-06-20 | 添加午膳管理、奖学金、家长查询队列模块 |
+| v1.4.0 | 2026-06-03 | 初始版本 |
