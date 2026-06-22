@@ -74,6 +74,7 @@ export class LeaveApplication {
     enum: LeaveType,
     default: LeaveType.SICK_LEAVE,
     enumName: 'leaves_leave_type_enum',
+    name: 'leave_type',
   })
   leaveType: LeaveType;
 
@@ -168,19 +169,19 @@ export class LeaveApplication {
   aiReviewNote: string;
 
   @ApiProperty({ description: 'AI核验结果' })
-  @Column({ length: 30, nullable: true, name: 'aiVerifyResult' })
+  @Column({ length: 30, nullable: true, name: 'ai_verify_result' })
   aiVerifyResult: string;
 
   @ApiProperty({ description: '证明文件核验结果' })
-  @Column({ length: 30, nullable: true, name: 'certificateVerifyResult' })
+  @Column({ length: 30, nullable: true, name: 'certificate_verify_result' })
   certificateVerifyResult: string;
 
   @ApiProperty({ description: '证明文件URL' })
-  @Column({ type: 'text', nullable: true, name: 'certificateUrl' })
+  @Column({ type: 'text', nullable: true, name: 'certificate_url' })
   certificateUrl: string;
 
   @ApiProperty({ description: 'AI核验完成时间' })
-  @Column({ type: 'timestamp', nullable: true, name: 'verifiedAt' })
+  @Column({ type: 'timestamp', nullable: true, name: 'verified_at' })
   verifiedAt: Date;
 
   @ApiProperty({ description: '需跟进提醒日期' })
