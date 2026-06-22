@@ -221,7 +221,7 @@ export default function LeavePage() {
       const response = await apiClient.get('/api/users?role=teacher&limit=100', {
         headers: { Authorization: `Bearer ${token}` },
       })
-      setTeachers(response.data.data || [])
+      setTeachers(response.data || [])
     } catch (error) {
       console.error('Failed to fetch teachers:', error)
     }
@@ -265,7 +265,7 @@ export default function LeavePage() {
       // 兼容不同的响应格式
       let apiLeaves: Leave[] = []
       if (response.data) {
-        apiLeaves = response.data.leaves || response.data.data || []
+        apiLeaves = response.data || []
       }
 
       // 客户端筛选：leaveType

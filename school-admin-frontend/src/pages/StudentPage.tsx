@@ -191,8 +191,8 @@ export default function StudentPage() {
         headers: { Authorization: `Bearer ${token}` },
       })
 
-      setStudents(response.data.data || [])
-      setTotal(response.data.total || 0)
+      setStudents(response.data || [])
+      setTotal((response.data as any).total || 0)
     } catch (error) {
       console.error('Failed to fetch students:', error)
       if (isAxiosError(error) && error.response?.status === 401) {
