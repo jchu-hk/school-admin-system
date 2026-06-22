@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CamelCaseNamingStrategy } from './database/camel-case.strategy';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HealthModule } from './modules/health/health.module';
 import { BackupModule } from './modules/backup/backup.module';
@@ -43,6 +44,8 @@ import { AiModule } from './modules/ai/ai.module';
         entities: [User],
         synchronize: false,
         autoLoadEntities: true,
+        namingStrategy: new CamelCaseNamingStrategy(),
+
       }),
       inject: [ConfigService],
     }),

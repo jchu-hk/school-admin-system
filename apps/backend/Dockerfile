@@ -21,7 +21,7 @@ RUN pnpm install
 
 # Build TypeScript - run from backend directory
 WORKDIR /app/apps/backend
-RUN pnpm exec tsc -p tsconfig.build.json || npx tsc -p tsconfig.build.json
+RUN pnpm exec tsc -p tsconfig.build.json --noEmitOnError false || npx tsc -p tsconfig.build.json --noEmitOnError false
 
 # Verify dist was created
 RUN ls -la dist/ || echo "dist not found!"

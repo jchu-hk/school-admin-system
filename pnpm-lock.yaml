@@ -119,9 +119,12 @@ importers:
       typeorm:
         specifier: ^0.3.17
         version: 0.3.30(pg@8.21.0)(ts-node@10.9.2(@types/node@20.19.43)(typescript@5.9.3))
+      typeorm-naming-strategies:
+        specifier: ^3.0.0
+        version: 3.0.0(typeorm@0.3.30(pg@8.21.0)(ts-node@10.9.2(@types/node@20.19.43)(typescript@5.9.3)))
       uuid:
-        specifier: ^14.0.0
-        version: 14.0.0
+        specifier: ^9.0.1
+        version: 9.0.1
       winston:
         specifier: ^3.10.0
         version: 3.19.0
@@ -195,6 +198,8 @@ importers:
       typescript:
         specifier: ^5.1.3
         version: 5.9.3
+
+  apps/frontend: {}
 
   e2e-tests:
     dependencies:
@@ -3493,6 +3498,11 @@ packages:
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
 
+  typeorm-naming-strategies@3.0.0:
+    resolution: {integrity: sha512-N8unfoNa+TYzmH2G5hA2Uh2ZHDACRRshHv8GsB7l/oakcoA9cUTtdeNp24pjpb9HY96sBub2pb8wxXX1afT5RA==}
+    peerDependencies:
+      typeorm: ^0.2.0
+
   typeorm@0.3.30:
     resolution: {integrity: sha512-8T35PzjefOdqc2ZR9mwLQj0pUGp6lQhMbK2EvVMwJVJWlaoHm0v/Q6dThNOZkFchD+0yMg8gwjKM28ePiLSXSQ==}
     engines: {node: '>=16.13.0'}
@@ -3604,10 +3614,6 @@ packages:
 
   uuid@11.1.1:
     resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
-    hasBin: true
-
-  uuid@14.0.0:
-    resolution: {integrity: sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==}
     hasBin: true
 
   uuid@9.0.1:
@@ -7507,6 +7513,10 @@ snapshots:
 
   typedarray@0.0.6: {}
 
+  typeorm-naming-strategies@3.0.0(typeorm@0.3.30(pg@8.21.0)(ts-node@10.9.2(@types/node@20.19.43)(typescript@5.9.3))):
+    dependencies:
+      typeorm: 0.3.30(pg@8.21.0)(ts-node@10.9.2(@types/node@20.19.43)(typescript@5.9.3))
+
   typeorm@0.3.30(pg@8.21.0)(ts-node@10.9.2(@types/node@20.19.43)(typescript@5.9.3)):
     dependencies:
       '@sqltools/formatter': 1.2.5
@@ -7567,8 +7577,6 @@ snapshots:
   uuid@11.0.3: {}
 
   uuid@11.1.1: {}
-
-  uuid@14.0.0: {}
 
   uuid@9.0.1: {}
 

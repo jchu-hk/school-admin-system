@@ -283,7 +283,7 @@ export class InquiryFaqService {
         question: '校车时间表',
         answer:
           '校车一般在校上学日运行，具体时间如下：\n上学：上午 7:30 从各站点出发\n放学：下午 3:30 从学校出发\n如有调整，学校会提前通知家长。',
-        category: InquiryCategory.BUS_SCHEDULE,
+        category: InquiryCategory.ATTENDANCE,
         keywords: '校車,校车,校巴,时间,時刻表,schedule,bus time',
         matchType: FaqMatchType.KEYWORD,
         priority: 1,
@@ -293,7 +293,7 @@ export class InquiryFaqService {
         question: '校车路线查询',
         answer:
           '校车路线根据学生居住区域安排。如需查询具体路线，请提供学生姓名和居住区域，我们将为您查询对应的校车站点和时间。',
-        category: InquiryCategory.BUS_SCHEDULE,
+        category: InquiryCategory.ATTENDANCE,
         keywords: '路线,route,站點,stop,上車,下车',
         matchType: FaqMatchType.KEYWORD,
         priority: 2,
@@ -303,7 +303,7 @@ export class InquiryFaqService {
         question: '学费缴纳方式',
         answer:
           '学费可通过以下方式缴纳：\n1. 银行转账\n2. 学校缴费窗口（周一至周五 9:00-16:00）\n3. 网上缴费系统\n请留意学校发出的缴费通知书，按时缴纳。',
-        category: InquiryCategory.TUITION_FEE,
+        category: InquiryCategory.FINANCE,
         keywords: '學費,学费,繳費,payment,fee,交費',
         matchType: FaqMatchType.KEYWORD,
         priority: 1,
@@ -313,7 +313,7 @@ export class InquiryFaqService {
         question: '午餐菜单查询',
         answer:
           '学校每周一会公布当周午餐菜单，请在学校官网或家长群查看。如有食物过敏，请提前告知学校医务室。',
-        category: InquiryCategory.LUNCH,
+        category: InquiryCategory.ATTENDANCE,
         keywords: '午膳,午餐,午餐,menu,餐單,吃什么',
         matchType: FaqMatchType.KEYWORD,
         priority: 1,
@@ -333,7 +333,7 @@ export class InquiryFaqService {
         question: '请假申请流程',
         answer:
           '请假申请可通过以下方式：\n1. 在学校APP提交请假申请\n2. 联系班主任说明情况\n3. 长期病假需提供医生证明\n请假审批结果将通过APP通知您。',
-        category: InquiryCategory.LEAVE,
+        category: InquiryCategory.ATTENDANCE,
         keywords: '請假,请假,leave,病假,事假,申请',
         matchType: FaqMatchType.KEYWORD,
         priority: 1,

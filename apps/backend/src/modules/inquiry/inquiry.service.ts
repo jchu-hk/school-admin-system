@@ -64,13 +64,12 @@ export class InquiryService {
   private autoAssignOfficer(category: InquiryCategory): string | null {
     // 根据类别返回对应的处理队列
     const categoryMap: Record<InquiryCategory, string | null> = {
-      [InquiryCategory.BUS_SCHEDULE]: 'bus_team',
-      [InquiryCategory.TUITION_FEE]: 'finance_team',
       [InquiryCategory.ACADEMIC]: 'academic_team',
-      [InquiryCategory.LEAVE]: 'leave_team',
-      [InquiryCategory.LUNCH]: 'lunch_team',
+      [InquiryCategory.ATTENDANCE]: 'attendance_team',
+      [InquiryCategory.DISCIPLINE]: 'discipline_team',
+      [InquiryCategory.HEALTH]: 'health_team',
+      [InquiryCategory.FINANCE]: 'finance_team',
       [InquiryCategory.GENERAL]: 'general_team',
-      [InquiryCategory.COMPLAINT]: 'director_queue',
       [InquiryCategory.OTHER]: 'general_team',
     };
     // 实际应从用户表查询，这里返回标识符
@@ -181,30 +180,13 @@ export class InquiryService {
   private async performAIAnalysis(inquiry: ParentInquiry): Promise<void> {
     // 意图分类映射
     const intentMap: Record<InquiryCategory, string[]> = {
-      [InquiryCategory.BUS_SCHEDULE]: [
-        'bus_time_inquiry',
-        'bus_route_inquiry',
-        'bus_delay',
-      ],
-      [InquiryCategory.TUITION_FEE]: [
-        'fee_inquiry',
-        'payment_method',
-        'outstanding_fee',
-      ],
-      [InquiryCategory.ACADEMIC]: [
-        'grade_inquiry',
-        'homework',
-        'exam_schedule',
-      ],
-      [InquiryCategory.LEAVE]: ['leave_application', 'leave_status'],
-      [InquiryCategory.LUNCH]: ['lunch_menu', 'lunch_change'],
-      [InquiryCategory.GENERAL]: [
-        'general_info',
-        'contact_info',
-        'school_calendar',
-      ],
-      [InquiryCategory.COMPLAINT]: ['complaint', 'feedback'],
-      [InquiryCategory.OTHER]: ['other_inquiry'],
+      [InquiryCategory.ACADEMIC]: ['grade_inquiry', 'homework', 'exam_schedule', 'academic'],
+      [InquiryCategory.ATTENDANCE]: ['bus_time_inquiry', 'bus_route_inquiry', 'bus_delay', 'leave_application', 'leave_status', 'attendance'],
+      [InquiryCategory.DISCIPLINE]: ['discipline', 'behavior', 'rule_violation'],
+      [InquiryCategory.HEALTH]: ['health', 'sick', 'medical', 'health_check'],
+      [InquiryCategory.FINANCE]: ['fee_inquiry', 'payment_method', 'outstanding_fee', 'tuition', 'finance'],
+      [InquiryCategory.GENERAL]: ['general_info', 'contact_info', 'school_calendar', 'lunch_menu', 'lunch_change'],
+      [InquiryCategory.OTHER]: ['complaint', 'feedback', 'other_inquiry'],
     };
 
     // 简单的关键词检测
@@ -267,9 +249,8 @@ export class InquiryService {
 
     const qb = this.inquiryRepository
       .createQueryBuilder('inquiry')
-      .leftJoinAndSelect('inquiry.parent', 'parent')
-      .leftJoinAndSelect('inquiry.student', 'student')
-      .leftJoinAndSelect('inquiry.assignedOfficer', 'assignedOfficer')
+      
+      
       .orderBy('inquiry.parentSubmittedAt', 'DESC');
 
     // 按角色过滤
@@ -317,7 +298,7 @@ export class InquiryService {
   async findOne(id: string): Promise<ParentInquiry> {
     const inquiry = await this.inquiryRepository.findOne({
       where: { id },
-      relations: ['parent', 'student', 'assignedOfficer'],
+      relations: [],
     });
 
     if (!inquiry) {
@@ -396,7 +377,7 @@ export class InquiryService {
     try {
       await this.notificationService.sendNotification(
         {
-          recipientIds: [inquiry.parentId],
+          recipientIds: [],
           title: '您的查询已有新回复',
           content: `您关于"${inquiry.subject || '查询'}"的查询已收到回复，请查看。`,
           recipientType: 'system',
@@ -583,7 +564,7 @@ export class InquiryService {
     // 获取所有未关闭且未首次回复的待处理查询
     const pendingInquiries = await this.inquiryRepository
       .createQueryBuilder('inquiry')
-      .leftJoinAndSelect('inquiry.parent', 'parent')
+      
       .where('inquiry.schoolId = :schoolId', { schoolId })
       .andWhere('inquiry.status IN (:...statuses)', {
         statuses: [
@@ -658,8 +639,8 @@ export class InquiryService {
 
     const qb = this.inquiryRepository
       .createQueryBuilder('inquiry')
-      .leftJoinAndSelect('inquiry.parent', 'parent')
-      .leftJoinAndSelect('inquiry.assignedOfficer', 'assignedOfficer');
+      
+      ;
 
     // 只看校务人员/主任
     if (userRole === UserRole.SCHOOL_STAFF || userRole === UserRole.SCHOOL_DIRECTOR) {
@@ -763,7 +744,7 @@ export class InquiryService {
         escalationRequired: inquiry.escalationRequired,
         autoResponseEligible: inquiry.autoResponseEligible,
         aiSuggestedResponse: inquiry.aiSuggestedResponse || '',
-        assignedToName: (inquiry as any).assignedOfficer?.name || '待分配',
+        assignedToName: inquiry.assignedTo || '待分配',
         submittedAt: inquiry.parentSubmittedAt,
       };
     });

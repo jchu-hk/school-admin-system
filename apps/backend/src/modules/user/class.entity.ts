@@ -19,7 +19,7 @@ export class Class {
   id: string;
 
   @ApiProperty({ description: '学校ID' })
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', name: 'school_id' })
   schoolId: string;
 
   @ApiProperty({ description: '班级名称（如 1A班）' })

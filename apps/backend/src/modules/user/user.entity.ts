@@ -41,7 +41,7 @@ export class User {
   name: string;
 
   @ApiProperty({ description: '香港身份证号' })
-  @Column({ length: 20, unique: true, nullable: true })
+  @Column({ length: 20, unique: true, nullable: true, name: 'hk_id' })
   hkId: string;
 
   @ApiProperty({ description: '手机号' })
@@ -53,20 +53,20 @@ export class User {
   email: string;
 
   @ApiProperty({ description: 'WhatsApp号' })
-  @Column({ length: 20, nullable: true })
+  @Column({ length: 20, nullable: true, name: 'whatsapp' })
   whatsapp: string;
 
   @ApiProperty({ description: '所属班级' })
-  @Column({ length: 50, nullable: true })
+  @Column({ length: 50, nullable: true, name: 'class_name' })
   className: string;
 
   @ApiProperty({ description: '关联学生ID（家长角色使用）' })
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ type: 'uuid', nullable: true, name: 'related_student_id' })
   relatedStudentId: string;
 
   @ApiProperty({ description: '关联学生信息' })
   @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: 'relatedStudentId' })
+  @JoinColumn({ name: 'related_student_id' })
   relatedStudent: User;
 
   @ApiProperty({ description: '用户角色', enum: UserRole })
@@ -95,43 +95,43 @@ export class User {
   password: string;
 
   @Exclude()
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'otp_secret' })
   otpSecret: string;
 
   @ApiProperty({ description: '是否启用OTP二次认证' })
-  @Column({ default: false })
+  @Column({ default: false, name: 'otp_enabled' })
   otpEnabled: boolean;
 
   @ApiProperty({ description: '密码过期时间' })
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', nullable: true, name: 'password_expires_at' })
   passwordExpiresAt: Date;
 
   @ApiProperty({ description: '最后登录时间' })
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', nullable: true, name: 'last_login_at' })
   lastLoginAt: Date;
 
   @ApiProperty({ description: '最后登录IP' })
-  @Column({ length: 50, nullable: true })
+  @Column({ length: 50, nullable: true, name: 'last_login_ip' })
   lastLoginIp: string;
 
   @ApiProperty({ description: '创建时间' })
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
   @ApiProperty({ description: '更新时间' })
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
   @ApiProperty({ description: '删除时间（软删除标记）' })
-  @DeleteDateColumn({ nullable: true })
+  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt: Date;
 
   @ApiProperty({ description: '创建人ID' })
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ type: 'uuid', nullable: true, name: 'created_by' })
   createdBy: string;
 
   @ApiProperty({ description: '更新人ID' })
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ type: 'uuid', nullable: true, name: 'updated_by' })
   updatedBy: string;
 
   /** ====== 家长密码安全相关字段 ====== */

@@ -81,6 +81,7 @@ services:
       NODE_ENV: ${NODE_ENV:-development}
       PORT: 3000
       APP_NAME: SmartSchoolAdmin
+      TZ: Asia/Hong_Kong
 
       # Database
       DB_HOST: postgres

@@ -18,12 +18,12 @@ services:
       POSTGRES_MAX_CONNECTIONS: "200"
 
   redis:
-    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    command: redis-server --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
 
   backend:
     build:
-      context: ./apps/backend
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: apps/backend/Dockerfile
       args:
         NODE_ENV: production
         NPM_REGISTRY: ${NPM_REGISTRY:-}
@@ -32,6 +32,7 @@ services:
     environment:
       NODE_ENV: production
       LOG_LEVEL: warn
+      TZ: Asia/Hong_Kong
       DB_SSL: "true"
       SESSION_SECURE_COOKIE: "true"
     healthcheck:
