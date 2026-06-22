@@ -50,10 +50,9 @@ export interface LeaveStats {
 export const dashboardApi = {
   // 获取仪表盘统计数据
   getStats: async (): Promise<DashboardStats> => {
-    const response = await apiClient.get<ApiResponse<DashboardStats>>('/api/dashboard/stats');
-    // 防御性编程：确保返回有效数据
-    const data = response.data?.data;
-    return data || {
+    // 后端直接返回 DashboardStats 对象（无 ApiResponse 包装）
+    const response = await apiClient.get<DashboardStats>('/api/dashboard/stats');
+    return response.data || {
       todayAttendance: { total: 0, present: 0, absent: 0, late: 0, leave: 0, attendanceRate: 0 },
       monthlyLeave: { total: 0, approved: 0, pending: 0, rejected: 0 },
       pendingInquiries: 0,
@@ -64,18 +63,18 @@ export const dashboardApi = {
   // 获取出勤趋势
   getAttendanceTrend: async (period: 'week' | 'month' = 'week'): Promise<AttendanceTrend[]> => {
     const days = period === 'week' ? 7 : 30;
-    const response = await apiClient.get<ApiResponse<AttendanceTrend[]>>('/api/dashboard/attendance-trend', {
+    // 后端直接返回 AttendanceTrend[] 数组（无 ApiResponse 包装）
+    const response = await apiClient.get<AttendanceTrend[]>('/api/dashboard/attendance-trend', {
       params: { period, days }
     });
-    // 防御性编程：确保返回有效数据
-    return response.data?.data || [];
+    return response.data || [];
   },
 
   // 获取请假统计
   getLeaveStats: async (): Promise<LeaveStats> => {
-    const response = await apiClient.get<ApiResponse<LeaveStats>>('/api/dashboard/leave-stats');
-    // 防御性编程：确保返回有效数据
-    return response.data?.data || { totalLeaves: 0, pendingLeaves: 0, approvedLeaves: 0, rejectedLeaves: 0 };
+    // 后端直接返回 LeaveStats 对象（无 ApiResponse 包装）
+    const response = await apiClient.get<LeaveStats>('/api/dashboard/leave-stats');
+    return response.data || { totalLeaves: 0, pendingLeaves: 0, approvedLeaves: 0, rejectedLeaves: 0 };
   }
 };
 
