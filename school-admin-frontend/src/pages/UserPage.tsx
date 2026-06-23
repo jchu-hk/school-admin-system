@@ -1220,8 +1220,10 @@ interface PermissionModalProps {
 
 function PermissionModal({ role, onClose }: PermissionModalProps) {
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>(role.permissions || [])
+  const [isSaving, setIsSaving] = useState(false)
 
   const handleSave = async () => {
+    setIsSaving(true)
     try {
       const token = getToken()
       await apiClient.patch(`/api/roles/${role.id}`, { permissions: selectedPermissions }, {
@@ -1230,6 +1232,9 @@ function PermissionModal({ role, onClose }: PermissionModalProps) {
       onClose()
     } catch (error) {
       console.error('Failed to save permissions:', error)
+      alert('保存权限配置失败，请重试')
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -1249,12 +1254,19 @@ function PermissionModal({ role, onClose }: PermissionModalProps) {
   }, {} as Record<string, typeof PERMISSIONS>)
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-[9999] overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-        <div className="fixed inset-0 transition-opacity" onClick={onClose}>
-          <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-        </div>
-        <div className="inline-block w-full max-w-3xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+        {/* Backdrop */}
+        <div 
+          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity cursor-pointer"
+          onClick={onClose}
+          style={{ zIndex: -1 }}
+        />
+        {/* Modal Content */}
+        <div 
+          className="relative inline-block w-full max-w-3xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl"
+          style={{ zIndex: 1 }}
+        >
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">配置权限 - {role.name}</h3>
@@ -1298,9 +1310,10 @@ function PermissionModal({ role, onClose }: PermissionModalProps) {
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+              disabled={isSaving}
+              className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              保存权限配置
+              {isSaving ? '保存中...' : '保存权限配置'}
             </button>
           </div>
         </div>
