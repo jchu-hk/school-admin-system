@@ -187,12 +187,12 @@ export default function StudentPage() {
       if (statusFilter) params.append('status', statusFilter)
       if (searchTerm) params.append('search', searchTerm)
 
-      const response = await apiClient.get<PaginatedResponse<User>>(`/api/users?${params.toString()}`, {
+      const response = await apiClient.get<{ users: User[]; total: number; page?: number; limit?: number; totalPages?: number }>(`/api/users?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
-      setStudents(response.data || [])
-      setTotal((response.data as any).total || 0)
+      setStudents(response.data.users || [])
+      setTotal(response.data.total || 0)
     } catch (error) {
       console.error('Failed to fetch students:', error)
       if (isAxiosError(error) && error.response?.status === 401) {
