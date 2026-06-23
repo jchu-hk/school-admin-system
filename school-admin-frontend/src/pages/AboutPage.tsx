@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 
 const VERSION = 'v1.5.1'
 const BUILD_DATE = '2026-06-22'
@@ -15,6 +15,27 @@ const CHANGELOG = [
 
 export default function AboutPage() {
   const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(true)
+
+  // 模拟页面加载，确保组件完全挂载后再显示内容
+  useEffect(() => {
+    // 使用 requestAnimationFrame 确保 DOM 已更新
+    const timer = requestAnimationFrame(() => {
+      setIsLoading(false)
+    })
+    return () => cancelAnimationFrame(timer)
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+          <p className="text-gray-500">加载中...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
