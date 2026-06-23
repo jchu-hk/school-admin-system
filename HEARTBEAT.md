@@ -197,7 +197,25 @@
 
 ---
 
+## ✅ 已完成任务
+
+| 任务 | 状态 | 完成时间 | 交付物 |
+|------|------|----------|--------|
+| 自动化每日测试出勤数据 | ✅ 完成 | 2026-06-24 06:25 | `scripts/seed-daily-attendance.sh` + `.ts` |
+
+---
+
 ## 🎉 Release
+
+**v1.5.3** (d664b3a) - https://github.com/jchu-hk/school-admin-system/releases/tag/v1.5.0
+
+---
+
+## 🔄 进行中任务
+
+(暂无)
+
+---
 
 **v1.5.0** - https://github.com/jchu-hk/school-admin-system/releases/tag/v1.5.0
 
