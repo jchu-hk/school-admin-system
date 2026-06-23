@@ -115,7 +115,14 @@
 
 ---
 
-## 🔄 PM自主工作记录
+## ⚠️ GitHub Actions CI/CD 问题 (2026-06-23)
+
+**问题**: Railway Token无效导致CI/CD部署失败
+- 错误: `Invalid RAILWAY_TOKEN. Please check that it is valid and has access to the resource you're trying to use.`
+- 影响: GitHub Actions自动部署到Railway失败
+- 状态: 本地部署正常，Railway部署需手动处理
+
+**解决方案**: 需要更新GitHub Secrets中的 `RAILWAY_TOKEN`
 
 ### 2026-06-22 11:00 - 数据库文档更新
 1. ✅ **DB-SCHEMA.md v1.5.1** - 基于生产环境实际审查重建
