@@ -18,16 +18,9 @@ const CHANGELOG = [
 export default function AboutPage() {
   const navigate = useNavigate()
   const { t } = useI18n()
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
-  // 模拟页面加载，确保组件完全挂载后再显示内容
-  useEffect(() => {
-    // 使用 requestAnimationFrame 确保 DOM 已更新
-    const timer = requestAnimationFrame(() => {
-      setIsLoading(false)
-    })
-    return () => cancelAnimationFrame(timer)
-  }, [])
+  // 组件直接渲染，无需模拟加载
 
   if (isLoading) {
     return (
