@@ -21,6 +21,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../user/user.entity';
+import { ValidateUuidPipe } from '../../common/pipes/validate-uuid.pipe';
 import {
   ApplyInstallmentDto,
   ReviewInstallmentDto,
@@ -70,7 +71,7 @@ export class InstallmentController {
     UserRole.STUDENT,
   )
   getStudentInstallmentPlans(
-    @Param('studentId', ParseUUIDPipe) studentId: string,
+    @Param('studentId', ValidateUuidPipe) studentId: string,
     @Query() query: InstallmentPlanQueryDto,
   ) {
     return this.installmentService.getStudentInstallmentPlans(studentId, query);
