@@ -32,22 +32,64 @@ const mockLeaveStats = {
   rejectedLeaves: 2,
 };
 
+// Test accounts with correct password Admin123!
+const testAccounts = {
+  admin1: { id: 'admin1', name: '系统管理员', role: 'system_admin', requireOtp: false },
+  teacher1: { id: 'teacher1', name: '张老师', role: 'teacher', requireOtp: false },
+  parent1: { id: 'parent1', name: '王小明家长', role: 'parent', requireOtp: false },
+  student1: { id: 'student1', name: '王小明', role: 'student', requireOtp: false },
+  staff1: { id: 'staff1', name: '校务人员', role: 'school_staff', requireOtp: false },
+};
+
 // 登录处理 - 单独保留（dashboard和auth不需要拆分文件）
 const authHandlers = [
   // 登录接口
-  http.post('/api/auth/login', async () => {
+  http.post('/api/auth/login', async ({ request }) => {
     await delay(MOCK_DELAY);
-    return HttpResponse.json({
-      requestId: 'req_' + Date.now(),
-      success: true,
-      data: {
-        temp_token: 'mock_temp_token_' + Date.now(),
-        sessionId: 'mock_session_' + Date.now(),
-        requiresOtp: true,
-        otpType: 'email',
-        message: '请查收OTP验证码',
-      },
-    });
+    const { username, password } = await request.json() as { username: string; password: string };
+    
+    // Validate credentials: password must be Admin123!
+    if (password !== 'Admin123!') {
+      return HttpResponse.json(
+        { message: '用户名或密码错误', success: false },
+        { status: 401 }
+      );
+    }
+    
+    // Check if username is a valid test account
+    const account = testAccounts[username as keyof typeof testAccounts];
+    if (!account) {
+      return HttpResponse.json(
+        { message: '用户名或密码错误', success: false },
+        { status: 401 }
+      );
+    }
+    
+    // Return appropriate response
+    if (account.requireOtp) {
+      return HttpResponse.json({
+        requestId: 'req_' + Date.now(),
+        success: true,
+        data: {
+          temp_token: 'mock_temp_token_' + Date.now(),
+          sessionId: 'mock_session_' + Date.now(),
+          requiresOtp: true,
+          otpType: 'email',
+          message: '请查收OTP验证码',
+        },
+      });
+    } else {
+      // Directly return access token for test accounts
+      return HttpResponse.json({
+        requestId: 'req_' + Date.now(),
+        success: true,
+        data: {
+          access_token: `mock_access_token_${account.id}_${Date.now()}`,
+          user: { id: account.id, username, name: account.name, role: account.role },
+          requiresOtp: false,
+        },
+      });
+    }
   }),
 
   // OTP验证接口

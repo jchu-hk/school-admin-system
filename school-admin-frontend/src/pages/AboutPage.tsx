@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../i18n'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 
-const VERSION = 'v1.5.1'
+const VERSION = 'v1.5.2'
 const BUILD_DATE = '2026-06-23'
 
 const CHANGELOG = [
+  { version: 'v1.5.2', date: '2026-06-23', changes: ['Bug修复: staff1账号登录错误', '测试账号admin/teacher1/parent1/student1/staff1统一密码Admin123!生效'] },
   { version: 'v1.5.1', date: '2026-06-23', changes: ['Bug修复: 仪表板出勤数据不显示', '前端重新构建部署', 'i18n翻译全覆盖', '全缺陷回归验证'] },
   { version: 'v1.5.0', date: '2026-06-20', changes: ['家长查询队列管理', '学费管理完整功能', '费用管理', '奖学金/津贴管理', 'Bug修复(语言切换/班级筛选/Modal弹窗等)'] },
   { version: 'v1.4.0', date: '2026-06-19', changes: ['午膳订单管理', '教师请假管理', '学生出勤管理', '病假AI核验', 'i18n国际化'] },
