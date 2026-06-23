@@ -35,7 +35,7 @@ export default function Layout() {
     { label: t.nav.financeTuition, path: '/finance/tuition' },
     { label: t.nav.financeFee, path: '/finance/fee' },
     { label: t.nav.financeScholarship, path: '/finance/scholarship' },
-    { label: t('menu.financeInstallment'), path: '/finance/installment' },
+    { label: t.nav.financeInstallment, path: '/finance/installment' },
   ]
 
   return (
