@@ -104,6 +104,19 @@ export class UserController {
     );
   }
 
+  @Get('classes')
+  @ApiOperation({ summary: '获取所有班级名称列表（去重）' })
+  @ApiResponse({ status: 200, description: '获取班级列表成功' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+  )
+  getClasses() {
+    return this.userService.getClasses();
+  }
+
   @Get(':id')
   @ApiOperation({ summary: '获取用户详情' })
   @ApiResponse({ status: 200, description: '获取用户详情成功', type: User })

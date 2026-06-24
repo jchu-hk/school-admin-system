@@ -281,4 +281,16 @@ export class UserService {
   ): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword);
   }
+
+  async getClasses(): Promise<string[]> {
+    // 获取所有活跃用户的班级名称，去重后返回
+    const result = await this.userRepository
+      .createQueryBuilder('user')
+      .select('DISTINCT user.className', 'className')
+      .where('user.className IS NOT NULL')
+      .andWhere('user.className != :empty', { empty: '' })
+      .orderBy('user.className', 'ASC')
+      .getRawMany();
+    return result.map((r) => r.className).filter(Boolean);
+  }
 }
