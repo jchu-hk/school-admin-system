@@ -1,0 +1,376 @@
+{
+  "dashboard": {
+    "title": "OPS Health Overview - F-OPS-009",
+    "uid": "ops-health-overview",
+    "tags": ["ops", "health", "monitoring"],
+    "timezone": "browser",
+    "refresh": "30s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "title": "System Health Score",
+        "type": "gauge",
+        "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "avg(\n  (1 - (up{job=~\"backend|frontend|database|redis\"} == 0) * 100) +\n  (1 - clamp_max(rate(http_requests_total{status=~\"5..\"}[5m]) / rate(http_requests_total[5m]), 1) * 50) +\n  (1 - clamp_max(postgres_connection_usage, 1) * 30) +\n  (1 - clamp_max(audit_log_backlog_size / 5000, 1) * 20)\n) * 100\n",
+            "legendFormat": "Health Score"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 60},
+                {"color": "green", "value": 85}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "title": "Services Status",
+        "type": "stat",
+        "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "count(up == 1)",
+            "legendFormat": "Healthy"
+          },
+          {
+            "expr": "count(up == 0)",
+            "legendFormat": "Down"
+          }
+        ],
+        "options": {
+          "colorMode": "background"
+        }
+      },
+      {
+        "title": "Active Alerts",
+        "type": "stat",
+        "gridPos": {"x": 12, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "count(ALERTS{alertstate=\"firing\",severity=\"critical\"})",
+            "legendFormat": "Critical"
+          },
+          {
+            "expr": "count(ALERTS{alertstate=\"firing\",severity=\"warning\"})",
+            "legendFormat": "Warning"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 1},
+                {"color": "red", "value": 3}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "title": "Database Connection Pool",
+        "type": "gauge",
+        "gridPos": {"x": 0, "y": 4, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "postgres_connection_usage * 100",
+            "legendFormat": "Usage %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 60},
+                {"color": "red", "value": 80}
+              ]
+            }
+          }
+        },
+        "description": "F-OPS-001: PostgreSQL连接池使用率"
+      },
+      {
+        "title": "WAL Backlog",
+        "type": "graph",
+        "gridPos": {"x": 6, "y": 4, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "postgres_wal_archive_backlog",
+            "legendFormat": "WAL Backlog (MB)"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "MB",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 200},
+                {"color": "red", "value": 500}
+              ]
+            }
+          }
+        },
+        "description": "F-OPS-001: WAL积压监控 (< 500MB)"
+      },
+      {
+        "title": "Redis Cache Hit Rate",
+        "type": "gauge",
+        "gridPos": {"x": 12, "y": 4, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "redis_cache_hit_rate * 100",
+            "legendFormat": "Hit Rate %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 60},
+                {"color": "green", "value": 80}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "title": "API Response Time (P95)",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 8, "w": 12, "h": 4},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "{{service}} - P95"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "{{service}} - P99"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "description": "API响应时间百分位"
+      },
+      {
+        "title": "Error Rate (5xx)",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 8, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\"}[5m]) * 100",
+            "legendFormat": "{{service}} - {{status}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent"
+          }
+        },
+        "description": "HTTP 5xx错误率"
+      },
+      {
+        "title": "Audit Log Integrity",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 12, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "audit_log_sequence_gap_size",
+            "legendFormat": "Sequence Gaps"
+          },
+          {
+            "expr": "audit_log_backlog_size",
+            "legendFormat": "Backlog"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "red", "value": 1}
+              ]
+            }
+          }
+        },
+        "description": "F-OPS-005: 审计日志完整性监控"
+      },
+      {
+        "title": "Coze API Quota Usage",
+        "type": "gauge",
+        "gridPos": {"x": 6, "y": 12, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "coze_api_quota_usage_percent",
+            "legendFormat": "Quota Usage %"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": 0},
+                {"color": "yellow", "value": 80},
+                {"color": "red", "value": 95}
+              ]
+            }
+          }
+        },
+        "description": "F-OPS-006: Coze API配额监控"
+      },
+      {
+        "title": "Sensitive Field Access Rate",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 12, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "sensitive_field_access_rate",
+            "legendFormat": "{{field_name}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ops/h"
+          }
+        },
+        "description": "F-OPS-007: 敏感字段访问频率监控"
+      },
+      {
+        "title": "DDL Operations",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 16, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "increase(ddl_operations_total[24h])",
+            "legendFormat": "Last 24h"
+          },
+          {
+            "expr": "ddl_approval_pending",
+            "legendFormat": "Pending"
+          },
+          {
+            "expr": "ddl_unauthorized_attempts_total",
+            "legendFormat": "Unauthorized"
+          }
+        ],
+        "description": "F-OPS-008: DDL操作统计"
+      },
+      {
+        "title": "DR Backup Status",
+        "type": "stat",
+        "gridPos": {"x": 6, "y": 16, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "dr_backup_age_seconds / 3600",
+            "legendFormat": "Backup Age (h)"
+          },
+          {
+            "expr": "dr_recovery_executions_total",
+            "legendFormat": "Recoveries"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "h"
+          }
+        },
+        "description": "F-OPS-004: 灾难恢复备份状态"
+      },
+      {
+        "title": "SSL Certificates Expiry",
+        "type": "stat",
+        "gridPos": {"x": 12, "y": 16, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "ssl_cert_days_remaining",
+            "legendFormat": "{{domain}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "d",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": 0},
+                {"color": "yellow", "value": 7},
+                {"color": "green", "value": 30}
+              ]
+            }
+          }
+        },
+        "description": "F-OPS-002: SSL证书到期监控"
+      },
+      {
+        "title": "Node CPU & Memory Usage",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 20, "w": 12, "h": 4},
+        "targets": [
+          {
+            "expr": "100 - (avg by(instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+            "legendFormat": "{{instance}} - CPU"
+          },
+          {
+            "expr": "(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100",
+            "legendFormat": "{{instance}} - Memory"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "title": "Disk Space Usage",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 20, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "(1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|overlay\"}) * 100",
+            "legendFormat": "{{mountpoint}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "max": 100
+          }
+        }
+      }
+    ]
+  }
+}
