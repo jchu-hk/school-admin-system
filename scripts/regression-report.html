@@ -1,0 +1,366 @@
+#!/bin/bash
+# =============================================================================
+# 回归测试报告生成器 (Python版)
+# 读取JSON报告并生成HTML格式
+# =============================================================================
+# 使用方法:
+#   ./regression-report.html [json_file]
+#   # 默认读取 /tmp/regression-report-*.json 最新文件
+# =============================================================================
+
+set -euo pipefail
+
+# 查找最新报告文件
+if [[ -n "${1:-}" && -f "$1" ]]; then
+  REPORT_FILE="$1"
+elif [[ -d "/tmp" ]]; then
+  REPORT_FILE=$(ls -t /tmp/regression-report-*.json 2>/dev/null | head -1 || echo "")
+else
+  REPORT_FILE=""
+fi
+
+if [[ -z "$REPORT_FILE" || ! -f "$REPORT_FILE" ]]; then
+  echo "错误: 未找到回归测试报告文件"
+  echo "请先运行: ./regression-test.sh"
+  exit 1
+fi
+
+OUT_FILE="${REPORT_FILE%.json}.html"
+
+python3 << PYEOF
+import json
+import sys
+from datetime import datetime
+
+try:
+    with open("$REPORT_FILE") as f:
+        data = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError) as e:
+    print(f"错误: 无法读取报告文件 ($REPORT_FILE): {e}")
+    sys.exit(1)
+
+summary = data.get('summary', {})
+results = data.get('results', [])
+
+total = summary.get('total', 0)
+passed = summary.get('passed', 0)
+failed = summary.get('failed', 0)
+skipped = summary.get('skipped', 0)
+pass_rate = summary.get('pass_rate', 0)
+duration_ms = summary.get('duration_ms', 0)
+timestamp = summary.get('timestamp', '')
+
+try:
+    dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+    date_str = dt.strftime('%Y-%m-%d %H:%M:%S')
+except:
+    date_str = timestamp
+
+passed_green = passed
+failed_red = failed
+skipped_gray = skipped
+
+# Status icon mapping
+STATUS_ICONS = {'passed': '✅', 'failed': '❌', 'warning': '⚠️', 'skipped': '⏭️'}
+STATUS_LABELS = {'passed': '通过', 'failed': '失败', 'warning': '警告', 'skipped': '跳过'}
+STATUS_COLORS = {'passed': 'pass', 'failed': 'fail', 'warning': 'warn', 'skipped': 'skip'}
+STATUS_CSS = {'passed': 'rgba(16, 185, 129, 0.15)', 'failed': 'rgba(239, 68, 68, 0.15)',
+              'warning': 'rgba(245, 158, 11, 0.15)', 'skipped': 'rgba(107, 114, 128, 0.15)'}
+STATUS_TEXT_COLOR = {'passed': '#10b981', 'failed': '#ef4444', 'warning': '#f59e0b', 'skipped': '#6b7280'}
+
+rows_html = ""
+for r in results:
+    name = r.get('name', 'Unknown')
+    status = r.get('status', 'unknown')
+    dur_ms = r.get('duration_ms', 0)
+    message = r.get('message', '')
+    issue = r.get('issue', '')
+
+    icon = STATUS_ICONS.get(status, '❓')
+    label = STATUS_LABELS.get(status, status)
+    color = STATUS_COLORS.get(status, 'skip')
+    css_bg = STATUS_CSS.get(status, 'rgba(107, 114, 128, 0.15)')
+    css_color = STATUS_TEXT_COLOR.get(status, '#6b7280')
+
+    issue_html = f'<span class="issue-tag">{issue}</span>' if issue else '—'
+
+    # Duration bar color
+    if dur_ms < 200:
+        dur_bar_color = '#10b981'
+    elif dur_ms < 1000:
+        dur_bar_color = '#f59e0b'
+    else:
+        dur_bar_color = '#ef4444'
+
+    dur_bar_width = min(dur_ms / 2000 * 100, 100)
+
+    rows_html += f"""          <tr>
+            <td><span class="badge" style="background:{css_bg};color:{css_color}">{icon} {label}</span></td>
+            <td>{name}</td>
+            <td>{issue_html}</td>
+            <td>
+              <div class="duration-cell">
+                <div class="duration-bar">
+                  <div class="duration-fill" style="width:{dur_bar_width}%;background:{dur_bar_color}"></div>
+                </div>
+                <span>{dur_ms}ms</span>
+              </div>
+            </td>
+            <td style="color:#94a3b8;font-size:0.8rem">{message}</td>
+          </tr>
+"""
+
+html_content = f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Admin - 回归测试报告</title>
+  <style>
+    :root {{
+      --pass: #10b981;
+      --fail: #ef4444;
+      --warn: #f59e0b;
+      --skip: #6b7280;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+    }}
+    * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+    body {{
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+    }}
+    .container {{ max-width: 1200px; margin: 0 auto; }}
+
+    .header {{
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }}
+    .header h1 {{
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }}
+    .header .meta {{ color: var(--muted); font-size: 0.875rem; }}
+
+    .summary-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }}
+    .card {{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      text-align: center;
+    }}
+    .card .value {{
+      font-size: 2.25rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }}
+    .card .label {{
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }}
+    .card.pass .value {{ color: var(--pass); }}
+    .card.fail .value {{ color: var(--fail); }}
+    .card.warn .value {{ color: var(--warn); }}
+    .card.skip .value {{ color: var(--skip); }}
+    .card.rate .value {{ color: #60a5fa; }}
+
+    .progress-section {{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+    }}
+    .progress-header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }}
+    .progress-header span {{ font-size: 0.875rem; color: var(--muted); }}
+    .progress-bar {{
+      height: 0.75rem;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }}
+    .progress-fill.pass {{ height: 100%; border-radius: 999px; background: var(--pass); transition: width 0.6s ease; }}
+
+    .results-section {{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }}
+    .results-header {{
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }}
+    .results-table {{ width: 100%; border-collapse: collapse; }}
+    .results-table th {{
+      text-align: left;
+      padding: 0.75rem 1.25rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+    }}
+    .results-table td {{
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }}
+    .results-table tr:last-child td {{ border-bottom: none; }}
+    .results-table tr:hover td {{ background: rgba(255,255,255,0.03); }}
+
+    .badge {{
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.625rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }}
+
+    .duration-cell {{
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }}
+    .duration-bar {{
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      width: 80px;
+    }}
+    .duration-fill {{
+      height: 100%;
+      border-radius: 2px;
+    }}
+
+    .issue-tag {{
+      font-size: 0.7rem;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: monospace;
+    }}
+
+    .footer {{
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+      padding-top: 1rem;
+    }}
+    .footer p {{ margin: 0.25rem 0; }}
+
+    @media print {{
+      body {{ background: white; color: black; }}
+      .card, .results-section {{ border-color: #ccc; }}
+      .badge {{ background: #eee !important; color: #333 !important; }}
+    }}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎯 School Admin - 回归测试报告</h1>
+      <div class="meta">
+        <span>生成时间: {date_str}</span>
+        &nbsp;|&nbsp;
+        <span>Issue #133</span>
+        &nbsp;|&nbsp;
+        <span>Duration: {duration_ms}ms</span>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="card">
+        <div class="value">{total}</div>
+        <div class="label">测试总数</div>
+      </div>
+      <div class="card pass">
+        <div class="value">{passed_green}</div>
+        <div class="label">通过 ✅</div>
+      </div>
+      <div class="card fail">
+        <div class="value">{failed_red}</div>
+        <div class="label">失败 ❌</div>
+      </div>
+      <div class="card skip">
+        <div class="value">{skipped_gray}</div>
+        <div class="label">跳过 ⏭️</div>
+      </div>
+      <div class="card rate">
+        <div class="value">{pass_rate}%</div>
+        <div class="label">通过率</div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-header">
+        <span>测试进度</span>
+        <span>{passed}/{total} 通过</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill pass" style="width:{min(passed*100//max(total,1),100)}%"></div>
+      </div>
+    </div>
+
+    <div class="results-section">
+      <div class="results-header">📋 测试详情 ({len(results)} 项)</div>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>状态</th>
+            <th>测试名称</th>
+            <th>关联Issue</th>
+            <th>响应时间</th>
+            <th>详情</th>
+          </tr>
+        </thead>
+        <tbody>
+{rows_html}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer">
+      <p>School Admin System - 自动化回归测试 | Issue #133</p>
+      <p>防止已修复缺陷再次出现</p>
+    </div>
+  </div>
+</body>
+</html>
+"""
+
+with open("$OUT_FILE", "w", encoding="utf-8") as out:
+    out.write(html_content)
+
+print(f"✅ HTML报告已生成: $OUT_FILE")
+print(f"   测试总数: {total} | 通过: {passed} | 失败: {failed} | 跳过: {skipped}")
+PYEOF
