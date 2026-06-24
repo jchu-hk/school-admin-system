@@ -84,7 +84,7 @@
 | 前端 | ✅ 已部署 | v1.5.0 |
 | 数据库 | ✅ 运行中 | - |
 
-**URL**: https://playing-shows-hits-phrases.trycloudflare.com
+**URL**: https://hockey-deviant-brooks-litigation.trycloudflare.com
 
 ---
 
@@ -202,6 +202,7 @@
 | 任务 | 状态 | 完成时间 | 交付物 |
 |------|------|----------|--------|
 | 自动化每日测试出勤数据 | ✅ 完成 | 2026-06-24 06:25 | `scripts/seed-daily-attendance.sh` + `.ts` |
+| 完成OPS系统维护文档和监控配置 | ✅ 完成 | 2026-06-24 08:58 | Issue #132, commit 4677b3d, 7个文件 |
 
 ---
 
@@ -213,9 +214,7 @@
 
 ## 🔄 进行中任务
 
-| 任务 | 状态 | Agent | 说明 |
-|------|------|-------|------|
-| 完成OPS系统维护文档和监控配置 | 🔄 开发中 | ARCH | Issue #132, 2026-06-24 08:45 启动 |
+(暂无)
 
 ---
 
