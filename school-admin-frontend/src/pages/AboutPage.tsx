@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../i18n'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 
-const VERSION = 'v1.5.2'
-const BUILD_DATE = '2026-06-23'
+const VERSION = 'v1.5.3'
+const BUILD_DATE = '2026-06-24'
 
 const CHANGELOG = [
   { version: 'v1.5.2', date: '2026-06-23', changes: ['Bug修复: staff1账号登录错误', '测试账号admin/teacher1/parent1/student1/staff1统一密码Admin123!生效'] },
