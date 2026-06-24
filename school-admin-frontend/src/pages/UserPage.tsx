@@ -208,7 +208,7 @@ export default function UserPage() {
         headers: { Authorization: `Bearer ${token}` },
       })
 
-      setUsers(response.data.users || [])
+      setUsers(response.data.data || [])
       setTotal(response.data.total || 0)
     } catch (error) {
       console.error('Failed to fetch users:', error)

@@ -104,15 +104,6 @@ type StudentFormData = z.infer<typeof studentSchema>
 // ============ Constants ============
 const PAGE_SIZE = 20
 
-const CLASS_OPTIONS = [
-  '1A', '1B', '1C', '1D', '1E',
-  '2A', '2B', '2C', '2D', '2E',
-  '3A', '3B', '3C', '3D', '3E',
-  '4A', '4B', '4C', '4D', '4E',
-  '5A', '5B', '5C', '5D', '5E',
-  '6A', '6B', '6C', '6D', '6E',
-]
-
 const STATUS_OPTIONS = [
   { value: UserStatus.ACTIVE, label: '活跃', color: 'bg-green-100 text-green-800' },
   { value: UserStatus.INACTIVE, label: '未激活', color: 'bg-gray-100 text-gray-800' },
@@ -130,6 +121,7 @@ const SUBSIDY_OPTIONS = [
 export default function StudentPage() {
   // State
   const [students, setStudents] = useState<User[]>([])
+  const [classOptions, setClassOptions] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
@@ -169,6 +161,30 @@ export default function StudentPage() {
   })
 
   // API calls
+  const fetchClassOptions = useCallback(async () => {
+    try {
+      const token = getToken()
+      if (!token) return
+
+      const response = await apiClient.get<{ data: string[] }>('/api/users/classes', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      setClassOptions(response.data.data || [])
+    } catch (error) {
+      console.error('Failed to fetch class options:', error)
+      // Fallback to default options if API fails
+      setClassOptions([
+        '1A', '1B', '1C', '1D', '1E',
+        '2A', '2B', '2C', '2D', '2E',
+        '3A', '3B', '3C', '3D', '3E',
+        '4A', '4B', '4C', '4D', '4E',
+        '5A', '5B', '5C', '5D', '5E',
+        '6A', '6B', '6C', '6D', '6E',
+      ])
+    }
+  }, [])
+
   const fetchStudents = useCallback(async () => {
     setLoading(true)
     try {
@@ -187,12 +203,19 @@ export default function StudentPage() {
       if (statusFilter) params.append('status', statusFilter)
       if (searchTerm) params.append('search', searchTerm)
 
-      const response = await apiClient.get<{ users: User[]; total: number; page?: number; limit?: number; totalPages?: number }>(`/api/users?${params.toString()}`, {
+      const response = await apiClient.get<{ data: User[]; total: number }>(`/api/users?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
-      setStudents(response.data.users || [])
+      const newStudents = response.data.data || []
+      setStudents(newStudents)
       setTotal(response.data.total || 0)
+
+      // Refresh selectedStudent with updated data from the list
+      if (selectedStudent) {
+        const updated = newStudents.find(s => s.id === selectedStudent.id)
+        if (updated) setSelectedStudent(updated)
+      }
     } catch (error) {
       console.error('Failed to fetch students:', error)
       if (isAxiosError(error) && error.response?.status === 401) {
@@ -201,7 +224,11 @@ export default function StudentPage() {
     } finally {
       setLoading(false)
     }
-  }, [page, classFilter, statusFilter, searchTerm])
+  }, [page, classFilter, statusFilter, searchTerm, selectedStudent])
+
+  useEffect(() => {
+    fetchClassOptions()
+  }, [fetchClassOptions])
 
   useEffect(() => {
     fetchStudents()
@@ -240,10 +267,8 @@ export default function StudentPage() {
       if (!updateData.password) {
         delete updateData.password
       }
-      // Only include subsidy fields if they have values
-      if (updateData.subsidyEligibility === 'none') {
-        delete updateData.subsidyEligibility
-      }
+      // Send subsidyEligibility as-is (including 'none' which is a valid value)
+      // Only remove empty/null values for optional date fields
       if (!updateData.subsidyStartDate) {
         delete updateData.subsidyStartDate
       }
@@ -362,7 +387,7 @@ export default function StudentPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">全部班级</option>
-              {CLASS_OPTIONS.map(cls => (
+              {classOptions.map(cls => (
                 <option key={cls} value={cls}>{cls}</option>
               ))}
             </select>
@@ -557,6 +582,7 @@ export default function StudentPage() {
             errors={errors}
             handleSubmit={handleSubmit}
             showPassword
+            classOptions={classOptions}
           />
         </Modal>
       )}
@@ -573,6 +599,7 @@ export default function StudentPage() {
             handleSubmit={handleSubmit}
             showPassword
             isEdit
+            classOptions={classOptions}
           />
         </Modal>
       )}
@@ -656,9 +683,10 @@ interface StudentFormProps {
   errors: ReturnType<typeof useForm<StudentFormData>>['formState']['errors']
   showPassword?: boolean
   isEdit?: boolean
+  classOptions: string[]
 }
 
-function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register, errors, showPassword, isEdit }: StudentFormProps) {
+function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register, errors, showPassword, isEdit, classOptions }: StudentFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
@@ -718,7 +746,7 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="">请选择班级</option>
-            {CLASS_OPTIONS.map(cls => (
+            {classOptions.map(cls => (
               <option key={cls} value={cls}>{cls}</option>
             ))}
           </select>
