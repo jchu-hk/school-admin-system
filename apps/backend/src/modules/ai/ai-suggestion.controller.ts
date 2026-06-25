@@ -20,7 +20,7 @@ import {
  * AI智能建议控制器
  * F-AI-001: 提供智能建议API，分析学生出勤、成绩等数据，提供建议
  */
-@Controller('api/v1/ai/suggestions')
+@Controller('v1/ai/suggestions')
 @UseGuards(JwtAuthGuard)
 export class AiSuggestionController {
   constructor(private readonly aiSuggestionService: AiSuggestionService) {}

@@ -32,7 +32,7 @@ import { UserRole } from '../user/user.entity';
 import { AuditService } from '../audit/audit.service';
 
 @ApiTags('请假申请管理')
-@Controller('api/leaves')
+@Controller('leaves')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class LeaveController {

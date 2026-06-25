@@ -30,7 +30,7 @@ import { UserRole } from '../user/user.entity';
 import { AuditService } from '../audit/audit.service';
 
 @ApiTags('多渠道通知服务')
-@Controller('api/notifications')
+@Controller('notifications')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class NotificationController {

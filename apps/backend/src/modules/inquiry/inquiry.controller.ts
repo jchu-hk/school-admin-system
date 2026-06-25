@@ -36,7 +36,7 @@ import { UserRole } from '../user/user.entity';
 import { AuditService } from '../audit/audit.service';
 
 @ApiTags('家长查询管理')
-@Controller('api/inquiries')
+@Controller('inquiries')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class InquiryController {
