@@ -109,7 +109,7 @@ agent-PM (调度中枢)
 | 前端 | ✅ 已部署 | v1.5.0 |
 | 数据库 | ✅ 运行中 | - |
 
-**URL**: https://promotion-acceptable-isle-planning.trycloudflare.com
+**URL**: https://inspections-universal-ending-lifestyle.trycloudflare.com
 
 ---
 
@@ -272,7 +272,7 @@ agent-PM (调度中枢)
 
 ### 当前测试URL
 
-**https://promotion-acceptable-isle-planning.trycloudflare.com**
+**https://inspections-universal-ending-lifestyle.trycloudflare.com**
 
 ### 测试账号
 
