@@ -40,6 +40,15 @@ export enum AuditAction {
   OTP_BIND_INITIATED = 'otp_bind_initiated',
   OTP_BIND_SUCCESS = 'otp_bind_success',
   OTP_UNBIND_SUCCESS = 'otp_unbind_success',
+  // 用户生命周期模块
+  USER_EXPIRY_WARNING_SENT = 'user_expiry_warning_sent',
+  USER_DEPARTURE = 'user_departure',
+  USER_GRADUATION = 'user_graduation',
+  // 权限审批模块
+  PERMISSION_APPROVAL_REQUEST_CREATED = 'permission_approval_request_created',
+  PERMISSION_APPROVAL_REQUEST_APPROVED = 'permission_approval_request_approved',
+  PERMISSION_APPROVAL_REQUEST_REJECTED = 'permission_approval_request_rejected',
+  PERMISSION_APPROVAL_REQUEST_CANCELLED = 'permission_approval_request_cancelled',
 }
 
 @Entity('audit_logs')
@@ -48,6 +57,7 @@ export class AuditLog {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  /** 操作人ID（数据库列为 operatorId） */
   @ApiProperty({ description: '操作人ID' })
   @Column({ type: 'uuid', nullable: true })
   operatorId: string;
