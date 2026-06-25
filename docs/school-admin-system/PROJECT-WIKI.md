@@ -24,11 +24,11 @@
 ### 监控Dashboard
 | 资源 | URL | 说明 |
 |------|-----|------|
-| Grafana | http://localhost:3001 (本地) | 系统监控、性能指标 |
-| Prometheus | http://localhost:9091 (本地) | 指标数据采集 |
-| Swagger UI | http://localhost:3000/api/docs (本地) | API文档 |
+| Grafana | https://school-admin-monitor.trycloudflare.com (待配置) | 系统监控、性能指标 |
+| Prometheus | http://localhost:9091 (仅内网) | 指标数据采集 |
+| Swagger UI | http://localhost:3000/api/docs (仅内网) | API文档 |
 
-> ⚠️ 监控Dashboard仅内网访问，使用端口转发或VPN
+> ⚠️ Grafana需要配置账户密码登录
 
 ---
 

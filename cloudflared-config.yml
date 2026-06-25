@@ -1,0 +1,19 @@
+tunnel: YOUR_TUNNEL_ID
+credentials-file: /root/.cloudflared/YOUR_TUNNEL_ID.json
+
+ingress:
+  # 主应用
+  - hostname: hockey-deviant-brooks-litigation.trycloudflare.com
+    service: http://localhost:8080
+
+  # Grafana监控Dashboard (需要auth)
+  - hostname: school-admin-monitor.trycloudflare.com
+    service: http://localhost:3001
+
+  # Prometheus (不公开，仅内网)
+  - service: http://localhost:9091
+    originRequest:
+      noTLSVerify: true
+
+  # Default fallback
+  - service: http://localhost:8080
