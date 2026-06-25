@@ -109,7 +109,7 @@ agent-PM (调度中枢)
 | 前端 | ✅ 已部署 | v1.5.0 |
 | 数据库 | ✅ 运行中 | - |
 
-**URL**: https://hockey-deviant-brooks-litigation.trycloudflare.com
+**URL**: https://promotion-acceptable-isle-planning.trycloudflare.com
 
 ---
 
@@ -272,7 +272,7 @@ agent-PM (调度中枢)
 
 ### 当前测试URL
 
-**https://hockey-deviant-brooks-litigation.trycloudflare.com**
+**https://promotion-acceptable-isle-planning.trycloudflare.com**
 
 ### 测试账号
 

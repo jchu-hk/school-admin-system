@@ -17,14 +17,14 @@
 
 ## 🧪 测试环境
 
-**当前环境**: https://hockey-deviant-brooks-litigation.trycloudflare.com
+**当前环境**: https://promotion-acceptable-isle-planning.trycloudflare.com
 
 > ⚠️ 环境变更请更新此链接
 
 ### 监控Dashboard
 | 资源 | URL | 说明 |
 |------|-----|------|
-| Grafana | https://sri-initiated-grew-loaded.trycloudflare.com ✅ | 系统监控、性能指标 |
+| Grafana | https://dive-earl-basics-reforms.trycloudflare.com ⚠️ | 系统监控、性能指标 (530错误待修复) |
 | Prometheus | http://localhost:9091 (仅内网) | 指标数据采集 |
 | Swagger UI | http://localhost:3000/api/docs (仅内网) | API文档 |
 
