@@ -36,11 +36,11 @@
 
 | 角色 | 用户名 | 密码 | OTP | 权限 |
 |------|--------|------|-----|------|
-| 系统管理员 | admin | Admin123! | ✅ | 全部功能 |
-| 校务人员 | staff1 | Admin123! | ❌ | 日常管理 |
-| 教师 | teacher1 | Admin123! | ✅ | 教学管理 |
-| 家长 | parent1 | Admin123! | ❌ | 家长门户 |
-| 学生 | student1 | Admin123! | ❌ | 学生门户 |
+| 系统管理员 | admin | password | ✅ | 全部功能 |
+| 校务人员 | staff1 | password | ❌ | 日常管理 |
+| 教师 | teacher1 | password | ✅ | 教学管理 |
+| 家长 | parent1 | password | ❌ | 家长门户 |
+| 学生 | student1 | password | ❌ | 学生门户 |
 
 ---
 
