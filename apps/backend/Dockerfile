@@ -31,6 +31,9 @@ WORKDIR /app
 # Prune devDependencies for production
 RUN pnpm prune --prod || true
 
+# Ensure bcryptjs is available at runtime (required for auth)
+RUN cd /app/apps/backend && pnpm add bcryptjs || npm install bcryptjs
+
 # Create non-root user
 RUN useradd -m -s /bin/bash nestjs && chown -R nestjs:nestjs /app
 USER nestjs

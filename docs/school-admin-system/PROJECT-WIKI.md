@@ -24,7 +24,7 @@
 ### 监控Dashboard
 | 资源 | URL | 说明 |
 |------|-----|------|
-| Grafana | https://school-admin-monitor.trycloudflare.com (待配置) | 系统监控、性能指标 |
+| Grafana | https://sri-initiated-grew-loaded.trycloudflare.com ✅ | 系统监控、性能指标 |
 | Prometheus | http://localhost:9091 (仅内网) | 指标数据采集 |
 | Swagger UI | http://localhost:3000/api/docs (仅内网) | API文档 |
 
@@ -36,11 +36,13 @@
 
 | 角色 | 用户名 | 密码 | OTP | 权限 |
 |------|--------|------|-----|------|
-| 系统管理员 | admin | password | ✅ | 全部功能 |
-| 校务人员 | staff1 | password | ❌ | 日常管理 |
-| 教师 | teacher1 | password | ✅ | 教学管理 |
-| 家长 | parent1 | password | ❌ | 家长门户 |
-| 学生 | student1 | password | ❌ | 学生门户 |
+| 系统管理员 | admin | admin | ✅ | 全部功能 |
+| 校务人员 | staff1 | staff1 | ❌ | 日常管理 |
+| 教师 | teacher1 | teacher1 | ✅ | 教学管理 |
+| 家长 | parent1 | parent1 | ❌ | 家长门户 |
+| 学生 | student1 | student1 | ❌ | 学生门户 |
+
+> ⚠️ **注意**: 2026-06-25 更新 - 密码与用户名相同（因bcryptjs运行时兼容性问题）
 
 ---
 
