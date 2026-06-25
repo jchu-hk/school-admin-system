@@ -10,7 +10,7 @@
 |------|------|
 | 📦 Releases | [github.com/.../releases](https://github.com/jchu-hk/school-admin-system/releases) |
 | 🐛 Issues | [github.com/.../issues](https://github.com/jchu-hk/school-admin-system/issues) |
-| 📖 API文档 | `/api/docs` (本地) |
+| 📖 API文档 | Swagger UI (测试环境) |
 | 📋 PM流程 | [PM-WORKFLOW.md](./PM-WORKFLOW.md) |
 
 ---
@@ -20,6 +20,15 @@
 **当前环境**: https://hockey-deviant-brooks-litigation.trycloudflare.com
 
 > ⚠️ 环境变更请更新此链接
+
+### 监控Dashboard
+| 资源 | URL | 说明 |
+|------|-----|------|
+| Grafana | http://localhost:3001 (本地) | 系统监控、性能指标 |
+| Prometheus | http://localhost:9091 (本地) | 指标数据采集 |
+| Swagger UI | http://localhost:3000/api/docs (本地) | API文档 |
+
+> ⚠️ 监控Dashboard仅内网访问，使用端口转发或VPN
 
 ---
 
