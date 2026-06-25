@@ -70,6 +70,7 @@ import { AiModule } from './modules/ai/ai.module';
     AttendanceModule,
     DashboardModule,
     LunchModule,
+    GradesModule,
     AiModule,
   ],
   controllers: [],
