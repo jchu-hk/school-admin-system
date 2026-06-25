@@ -131,6 +131,32 @@ CHECKER质检
 
 ---
 
+## GitHub工作跟踪原则 (2026-06-25新增)
+
+### 核心: GitHub是单一真相来源 (SSOT)
+所有工作状态、缺陷跟踪、进度都在GitHub上可见。
+
+### 6项PM工作要求:
+1. **工作状态**: 所有工作以GitHub Issue/PR跟踪
+2. **缺陷跟踪**: 包括排查结果、优先级(P0/P1/P2/P3)
+3. **质量保证**: 每件工作有独立人测试验收(DEV≠QA)
+4. **测试报告**: QA提供模块级/系统级/缺陷级测试报告
+5. **文档同步**: 代码变更先更新文档，文档任务也创建Issue
+6. **项目Wiki**: 集中发布版本、测试环境、账号等信息
+
+### PM工作检查清单:
+- [ ] Issue创建 → 指派 → 进度更新 → PR关联 → 关闭
+- [ ] 代码变更前检查文档是否需要同步
+- [ ] 文档更新也创建Issue追踪
+- [ ] QA独立验收，不依赖DEV自测
+- [ ] 汇报前确认所有流程完成
+- [ ] **Wiki更新**: 新版本发布/新文档/环境变更时更新PROJECT-WIKI.md
+
+### 参考文档:
+- PM工作流程: `docs/PM-WORKFLOW.md`
+
+---
+
 ## Continuity
 
 Each session starts fresh. This file is your guardrail. If you change it, tell the user.

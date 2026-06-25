@@ -1,140 +1,115 @@
 # 智慧校园管理系统 - 项目Wiki
 
-> 📌 **最后更新**: 2026-06-25 09:01
+> 静态常查阅资料集成页 | **版本**: v1.5.x | **最后更新**: 2026-06-25
 
 ---
 
-## 🔗 快速链接
+## 🔗 核心链接
 
 | 资源 | 链接 |
 |------|------|
-| 📦 最新版本 | [v1.5.x Releases](https://github.com/jchu-hk/school-admin-system/releases) |
-| 🐛 问题跟踪 | [Issues](https://github.com/jchu-hk/school-admin-system/issues) |
-| 📖 API文档 | [Swagger UI](http://localhost:3000/api/docs) |
-| 📊 数据库设计 | [DB-SCHEMA.md](./DB-SCHEMA.md) |
-| 🏗️ 架构设计 | [SPEC-SYSTEM-DESIGN.md](./SPEC-SYSTEM-DESIGN.md) |
-| ✅ 功能规格 | [SPEC-COMPLETE.md](./SPEC-COMPLETE.md) |
-| 📋 PM工作流程 | [PM-WORKFLOW.md](./PM-WORKFLOW.md) |
-
----
-
-## 🎯 当前版本
-
-**v1.5.x** (开发中)
-
-| 项目 | 内容 |
-|------|------|
-| 版本号 | v1.5.x |
-| 状态 | 🟡 开发中 |
-| 最新Commit | `0712ea2` |
-
-### 本周更新 (2026-06-25)
-| Issue | 描述 | 状态 |
-|-------|------|------|
-| #136 | About页面空白修复 | ✅ 已合并 |
-| #134 | 学生编辑保存修复 | ✅ 已合并 |
-| #135 | 班级筛选器修复 | ✅ 已合并 |
-
-### 本周完成 (2026-06-24)
-| Issue | 描述 | 状态 |
-|-------|------|------|
-| #132 | OPS系统维护文档 | ✅ 完成 |
-| #133 | 自动化回归测试框架 | ✅ 完成 |
-
-### 完整更新日志
-👉 [查看所有版本](https://github.com/jchu-hk/school-admin-system/releases)
+| 📦 Releases | [github.com/.../releases](https://github.com/jchu-hk/school-admin-system/releases) |
+| 🐛 Issues | [github.com/.../issues](https://github.com/jchu-hk/school-admin-system/issues) |
+| 📖 API文档 | `/api/docs` (本地) |
+| 📋 PM流程 | [PM-WORKFLOW.md](./PM-WORKFLOW.md) |
 
 ---
 
 ## 🧪 测试环境
 
-### 当前可用环境
+**当前环境**: https://hockey-deviant-brooks-litigation.trycloudflare.com
 
-| 环境 | URL | 状态 | 最后验证 |
-|------|-----|------|----------|
-| **测试环境** | https://hockey-deviant-brooks-litigation.trycloudflare.com | ✅ 正常 | 2026-06-25 |
-
-### 环境状态
-| 组件 | 状态 | 备注 |
-|------|------|------|
-| 前端 | ✅ 正常 | |
-| 后端API | ✅ 正常 | |
-| PostgreSQL | ✅ 正常 | |
-| Redis | ✅ 正常 | |
-| Prometheus | ✅ 正常 | |
-| Grafana | ✅ 正常 | |
-| Kafka | 🔄 启动中 | |
+> ⚠️ 环境变更请更新此链接
 
 ---
 
 ## 👤 测试账号
 
-| 角色 | 用户名 | 密码 | OTP |
-|------|--------|------|-----|
-| 系统管理员 | admin | Admin123! | ✅ 需要 |
-| 校务人员 | staff1 | Admin123! | ❌ |
-| 教师 | teacher1 | Admin123! | ✅ 需要 |
-| 家长 | parent1 | Admin123! | ❌ |
-| 学生 | student1 | Admin123! | ❌ |
-
----
-
-## 📊 项目状态
-
-### 缺陷统计 (本周)
-
-| 状态 | 数量 | 说明 |
-|------|------|------|
-| 🔴 新增Open | 0 | |
-| ✅ 已关闭 | 6 | #134, #135, #136, #132, #133 |
-| 🟡 进行中 | 1 | 成绩管理 (#42) |
-
-### Open Issues
-
-| # | 描述 | 优先级 | 模块 |
-|---|------|--------|------|
-| #42 | 学生成绩管理 | P2 | mod-new |
-| #43-46 | 考试/课程/文档管理 | P2 | mod-new |
-| #54-56 | AI功能 | P3 | mod-ai |
-| #47-48 | 学校信息/通讯录 | P2 | mod-cycl |
-
-### 最近修复
-
-| Issue | 描述 | 日期 | 验证状态 |
-|-------|------|------|----------|
-| #136 | About页面空白 | 2026-06-25 | ⚠️ 待QA验证 |
-| #134 | 学生编辑保存 | 2026-06-25 | ⚠️ 待QA验证 |
-| #135 | 班级筛选器 | 2026-06-25 | ⚠️ 待QA验证 |
+| 角色 | 用户名 | 密码 | OTP | 权限 |
+|------|--------|------|-----|------|
+| 系统管理员 | admin | Admin123! | ✅ | 全部功能 |
+| 校务人员 | staff1 | Admin123! | ❌ | 日常管理 |
+| 教师 | teacher1 | Admin123! | ✅ | 教学管理 |
+| 家长 | parent1 | Admin123! | ❌ | 家长门户 |
+| 学生 | student1 | Admin123! | ❌ | 学生门户 |
 
 ---
 
 ## 📚 文档库
 
-| 文档 | 说明 | 最后更新 |
-|------|------|----------|
-| [PM-WORKFLOW.md](./PM-WORKFLOW.md) | PM工作流程规范 | 2026-06-25 |
-| [PROJECT-WIKI.md](./PROJECT-WIKI.md) | 项目Wiki | 2026-06-25 |
-| [SPEC-COMPLETE.md](./SPEC-COMPLETE.md) | 功能规格 | v1.2.0 |
+### 规格文档
+| 文档 | 说明 | 版本 |
+|------|------|------|
+| [SPEC-COMPLETE.md](./SPEC-COMPLETE.md) | 功能规格说明书 | v1.2.0 |
+| [SPEC-SYSTEM-DESIGN.md](./SPEC-SYSTEM-DESIGN.md) | 系统架构设计 | - |
+| [API-DESIGN.md](./API-DESIGN.md) | API设计文档 | - |
 | [DB-SCHEMA.md](./DB-SCHEMA.md) | 数据库Schema | v1.5.1 |
-| [OPS.md](./OPS.md) | 运维手册 | 2026-06-24 |
+| [DATA-DICTIONARY.md](./DATA-DICTIONARY.md) | 数据字典 | v1.5.1 |
+
+### 运维文档
+| 文档 | 说明 |
+|------|------|
+| [OPS.md](./OPS.md) | 运维手册 |
+
+### 开发文档
+| 文档 | 说明 |
+|------|------|
+| [DEVELOPMENT.md](./DEVELOPMENT.md) | 开发指南 |
+| [DEPLOYMENT.md](./DEPLOYMENT.md) | 部署指南 |
 
 ---
 
-## 🔧 开发指南
+## 📊 模块完成度
 
-### 本地开发
+| 模块 | 完成度 | 状态 |
+|------|--------|------|
+| 用户管理 | 100% | ✅ |
+| 认证授权 | 100% | ✅ |
+| 出勤管理 | 100% | ✅ |
+| 学费管理 | 100% | ✅ |
+| 请假管理 | 100% | ✅ |
+| 病假AI核验 | 100% | ✅ |
+| 午膳管理 | 100% | ✅ |
+| i18n国际化 | 100% | ✅ |
+| 家长查询队列 | 100% | ✅ |
+| 费用管理 | 100% | ✅ |
+| 奖学金管理 | 100% | ✅ |
+| 成绩管理 | 40% | 🔄 |
+
+---
+
+## 🛠️ 开发指南
+
+### 快速启动
 ```bash
 git clone https://github.com/jchu-hk/school-admin-system.git
 cd school-admin-system
 docker-compose -f infra/docker-compose.yml up -d
 ```
 
-### 测试命令
+### 测试
 ```bash
-pnpm test          # 单元测试
-pnpm test:e2e     # E2E测试
+pnpm test       # 单元测试
+pnpm test:e2e  # E2E测试
+```
+
+### 提交规范
+```bash
+feat:     新功能
+fix:      Bug修复
+docs:     文档更新
+refactor: 重构
+test:     测试
+chore:    杂项
 ```
 
 ---
 
-*此页面由PM Agent持续维护*
+## 📞 联系方式
+
+- **仓库**: https://github.com/jchu-hk/school-admin-system
+- **Owner**: jchu-hk
+
+---
+
+*此页面在版本发布或重大变更时更新*
