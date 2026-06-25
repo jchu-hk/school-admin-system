@@ -1,6 +1,32 @@
 # HEARTBEAT.md — 项目全景状况
 
-**更新时间**: 2026-06-25 22:25
+**更新时间**: 2026-06-26 07:02
+
+---
+
+## 🔧 关键缺陷修复 (2026-06-26 06:59)
+
+| # | 缺陷 | 严重程度 | 状态 | 修复Commit | 备注 |
+|---|------|----------|------|-----------|-----|
+| #1 | leaves_status_enum 缺失值 | CRITICAL | ✅ 已修复 | DB直接修改 | 添加 pending_director, pending_review |
+| #2 | BusModule 未注册 | CRITICAL | ✅ 已修复 | 95422c3 | /api/bus/routes 现在返回200 |
+| #3 | /api/users/students 500错误 | CRITICAL | ✅ 已修复 | 95422c3 | 添加 @Get('students') 端点 |
+
+**修复详情**:
+- **#1 数据库修复**: 执行SQL添加缺失enum值
+  ```sql
+  ALTER TYPE leaves_status_enum ADD VALUE IF NOT EXISTS 'pending_director';
+  ALTER TYPE leaves_status_enum ADD VALUE IF NOT EXISTS 'pending_review';
+  ```
+- **#2 BusModule**: 在 `app.module.ts` 中导入 `BusModule` 并添加到 imports 数组
+- **#3 路由修复**: 在 `UserController` 中添加 `/users/students` 端点，避免被 `/:id` 路由捕获
+
+**验证状态**:
+- ✅ `/api/bus/routes` - 返回200
+- ✅ `/api/users/students` - 返回200 (学生列表API)
+- ✅ Database enum - 包含6个值
+
+---
 
 ---
 
