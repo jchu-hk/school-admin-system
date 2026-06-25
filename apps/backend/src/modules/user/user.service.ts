@@ -1,20 +1,20 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { instanceToPlain } from 'class-transformer';
 import { User, UserStatus, UserRole } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ParentStudentLink } from '../auth/entities/parent-student-link.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(ParentStudentLink)
+    private parentStudentLinkRepository: Repository<ParentStudentLink>,
   ) {}
 
   private maskSensitiveFields(user: User, requester: User): User {
@@ -24,8 +24,13 @@ export class UserService {
       requester.role === UserRole.SCHOOL_DIRECTOR ||
       requester.id === user.id // 用户自己可以看到自己的完整信息
     ) {
-      return user;
+      // Use instanceToPlain to strip @Exclude fields (password, otpSecret)
+      return instanceToPlain(user) as unknown as User;
     }
+
+    // Build a clean user object with sensitive fields masked.
+    // Use instanceToPlain to strip @Exclude fields first.
+    const clean = instanceToPlain(user) as Record<string, unknown>;
 
     // 教师角色：只能看到本班学生的部分信息，敏感字段掩码
     if (requester.role === UserRole.TEACHER) {
@@ -33,9 +38,9 @@ export class UserService {
         user.className === requester.className &&
         user.role === UserRole.STUDENT
       ) {
-        // 本班学生，掩码敏感字段
+        // 本班学生，掩码部分敏感字段
         return {
-          ...user,
+          ...clean,
           roles: user.roles,
           hkId: user.hkId
             ? user.hkId.replace(/(.{2}).*(.{2})/, '$1****$2')
@@ -46,26 +51,26 @@ export class UserService {
           whatsapp: user.whatsapp
             ? user.whatsapp.replace(/(.{3}).*(.{2})/, '$1****$2')
             : null,
-        };
+        } as User;
       } else {
         // 非本班学生，所有敏感字段掩码
         return {
-          ...user,
+          ...clean,
           roles: user.roles,
           hkId: user.hkId ? '****' : null,
           phone: user.phone ? '****' : null,
           whatsapp: user.whatsapp ? '****' : null,
           email: user.email ? '****' : null,
-        };
+        } as User;
       }
     }
 
     // 家长角色：只能看到自己关联学生的信息，其他用户信息掩码
     if (requester.role === UserRole.PARENT) {
       if (user.id === requester.relatedStudentId) {
-        // 自己关联的学生，掩码敏感字段
+        // 自己关联的学生，掩码部分敏感字段
         return {
-          ...user,
+          ...clean,
           roles: user.roles,
           hkId: user.hkId
             ? user.hkId.replace(/(.{2}).*(.{2})/, '$1****$2')
@@ -76,33 +81,65 @@ export class UserService {
           whatsapp: user.whatsapp
             ? user.whatsapp.replace(/(.{3}).*(.{2})/, '$1****$2')
             : null,
-        };
+        } as User;
       } else {
         // 其他用户，所有敏感字段掩码
         return {
-          ...user,
+          ...clean,
           roles: user.roles,
           hkId: user.hkId ? '****' : null,
           phone: user.phone ? '****' : null,
           whatsapp: user.whatsapp ? '****' : null,
           email: user.email ? '****' : null,
-        };
+        } as User;
       }
     }
 
     // 学生角色：只能看到自己的信息，其他用户信息全部掩码
     if (requester.role === UserRole.STUDENT) {
       return {
-        ...user,
+        ...clean,
         roles: user.roles,
         hkId: user.hkId ? '****' : null,
         phone: user.phone ? '****' : null,
         whatsapp: user.whatsapp ? '****' : null,
         email: user.email ? '****' : null,
-      };
+      } as User;
     }
 
-    return user;
+    return { ...clean, roles: user.roles } as User;
+  }
+
+  /**
+   * Populate relatedStudentId for parent users from the parent_student_links table.
+   * This ensures parent accounts correctly link to their primary student.
+   */
+  private async populateRelatedStudentIds(users: User[]): Promise<void> {
+    const parentIds = users
+      .filter((u) => u.role === UserRole.PARENT)
+      .map((u) => u.id);
+
+    if (parentIds.length === 0) return;
+
+    const links = await this.parentStudentLinkRepository
+      .createQueryBuilder('link')
+      .where('link.parent_id IN (:...parentIds)', { parentIds })
+      .andWhere('link.is_primary = true')
+      .getMany();
+
+    const primaryLinkMap = new Map<string, string>();
+    for (const link of links) {
+      primaryLinkMap.set(link.parentId, link.studentId);
+    }
+
+    for (const user of users) {
+      if (user.role === UserRole.PARENT) {
+        const primaryStudentId = primaryLinkMap.get(user.id);
+        if (primaryStudentId) {
+          user.relatedStudentId = primaryStudentId;
+        }
+      }
+    }
   }
 
   async create(
@@ -170,6 +207,9 @@ export class UserService {
       .take(limit)
       .getManyAndCount();
 
+    // Populate relatedStudentId from parent_student_links table
+    await this.populateRelatedStudentIds(users);
+
     // 掩码敏感字段
     if (requester) {
       const maskedUsers = users.map((user) =>
@@ -190,6 +230,9 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('用户不存在');
     }
+
+    // Populate relatedStudentId from parent_student_links table
+    await this.populateRelatedStudentIds([user]);
 
     // 掩码敏感字段
     if (requester) {
