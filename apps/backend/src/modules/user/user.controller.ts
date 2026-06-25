@@ -8,6 +8,8 @@ import {
   Delete,
   Query,
   UseGuards,
+  Inject,
+  forwardRef,
   Request,
   HttpCode,
   HttpStatus,
@@ -22,11 +24,11 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User, UserStatus } from './user.entity';
+import { User, UserStatus, UserRole } from './user.entity';
+import { UserLifecycleService } from './user-lifecycle.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { UserRole } from './user.entity';
 import { AuditService } from '../audit/audit.service';
 import { AuditAction } from '../audit/audit-log.entity';
 
@@ -36,6 +38,8 @@ import { AuditAction } from '../audit/audit-log.entity';
 @ApiBearerAuth()
 export class UserController {
   constructor(
+    @Inject(forwardRef(() => UserLifecycleService))
+    private readonly userLifecycleService: UserLifecycleService,
     private readonly userService: UserService,
     private readonly auditService: AuditService,
   ) {}
@@ -92,7 +96,6 @@ export class UserController {
     @Query('status') status?: string,
     @Query('className') className?: string,
   ) {
-    // Support both 'limit' and 'pageSize' param names
     const effectiveLimit = parseInt(limit || pageSize || '10');
     return this.userService.findAll(
       parseInt(page || '1'),
@@ -102,6 +105,21 @@ export class UserController {
       className,
       req.user,
     );
+  }
+
+  @Get('profile/me')
+  @ApiOperation({ summary: '获取当前用户信息' })
+  @ApiResponse({ status: 200, description: '获取用户信息成功', type: User })
+  getProfile(@Request() req) {
+    return this.userService.findOne(req.user.id, req.user);
+  }
+
+  @Get('expiry-stats')
+  @ApiOperation({ summary: '获取账户过期统计信息' })
+  @ApiResponse({ status: 200, description: '获取统计信息成功' })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
+  async getExpiryStatistics() {
+    return this.userLifecycleService.getExpiryStatistics();
   }
 
   @Get('classes')
@@ -115,6 +133,39 @@ export class UserController {
   )
   getClasses() {
     return this.userService.getClasses();
+  }
+
+  @Get('students')
+  @ApiOperation({ summary: '获取学生列表' })
+  @ApiQuery({ name: 'page', required: false, description: '页码，默认1' })
+  @ApiQuery({ name: 'limit', required: false, description: '每页数量，默认10' })
+  @ApiQuery({ name: 'status', required: false, description: '用户状态筛选' })
+  @ApiQuery({ name: 'className', required: false, description: '班级名称筛选' })
+  @ApiResponse({ status: 200, description: '获取学生列表成功' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
+    UserRole.PARENT,
+  )
+  getStudents(
+    @Request() req: any,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('pageSize') pageSize?: string,
+    @Query('status') status?: string,
+    @Query('className') className?: string,
+  ) {
+    const effectiveLimit = parseInt(limit || pageSize || '10');
+    return this.userService.findAll(
+      parseInt(page || '1'),
+      effectiveLimit,
+      UserRole.STUDENT,
+      status,
+      className,
+      req.user,
+    );
   }
 
   @Get(':id')
@@ -167,6 +218,56 @@ export class UserController {
       );
       throw error;
     }
+  }
+
+  @Post(':id/handle-departure')
+  @ApiOperation({ summary: '处理员工离职' })
+  @ApiResponse({ status: 200, description: '离职处理成功' })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
+  async handleDeparture(
+    @Param('id') id: string,
+    @Body('departureDate') departureDate: string,
+    @Request() req,
+    @Body('reason') reason?: string,
+  ) {
+    const user = await this.userLifecycleService.handleStaffDeparture(
+      id,
+      new Date(departureDate),
+      reason,
+    );
+    await this.auditService.log(
+      AuditAction.USER_DEPARTURE,
+      req.user.id,
+      `处理员工离职: ${user.name} (${user.username})`,
+      req.ip,
+      { id, departureDate, reason },
+      HttpStatus.OK,
+    );
+    return user;
+  }
+
+  @Post(':id/handle-graduation')
+  @ApiOperation({ summary: '处理学生毕业' })
+  @ApiResponse({ status: 200, description: '毕业处理成功' })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
+  async handleGraduation(
+    @Param('id') id: string,
+    @Body('graduationDate') graduationDate: string,
+    @Request() req,
+  ) {
+    const user = await this.userLifecycleService.handleStudentGraduation(
+      id,
+      new Date(graduationDate),
+    );
+    await this.auditService.log(
+      AuditAction.USER_GRADUATION,
+      req.user.id,
+      `处理学生毕业: ${user.name} (${user.username})`,
+      req.ip,
+      { id, graduationDate },
+      HttpStatus.OK,
+    );
+    return user;
   }
 
   @Delete(':id')
@@ -280,7 +381,7 @@ export class UserController {
         req.user.id,
         `重置用户密码: ${user.name} (${user.username})`,
         req.ip,
-        { id }, // 不记录密码参数
+        { id },
         HttpStatus.OK,
       );
       return user;
@@ -297,10 +398,28 @@ export class UserController {
     }
   }
 
-  @Get('profile/me')
-  @ApiOperation({ summary: '获取当前用户信息' })
-  @ApiResponse({ status: 200, description: '获取用户信息成功', type: User })
-  getProfile(@Request() req) {
-    return this.userService.findOne(req.user.id, req.user);
+  @Post(':id/role')
+  @ApiOperation({ summary: '变更用户角色' })
+  @ApiResponse({ status: 200, description: '角色变更成功', type: User })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
+  async changeRole(
+    @Param('id') id: string,
+    @Body('role') role: UserRole,
+    @Request() req,
+  ) {
+    const user = await this.userService.update(
+      id,
+      { role } as UpdateUserDto,
+      req.user.id,
+    );
+    await this.auditService.log(
+      AuditAction.PERMISSION_CHANGE,
+      req.user.id,
+      `变更用户角色: ${user.name} (${user.username}) -> ${role}`,
+      req.ip,
+      { id, role },
+      HttpStatus.OK,
+    );
+    return user;
   }
 }

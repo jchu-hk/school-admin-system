@@ -26,6 +26,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { LunchModule } from './modules/lunch/lunch.module';
 import { GradesModule } from './modules/grades/grades.module';
 import { AiModule } from './modules/ai/ai.module';
+import { BusModule } from './modules/bus/bus.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { AiModule } from './modules/ai/ai.module';
     LunchModule,
     GradesModule,
     AiModule,
+    BusModule,
   ],
   controllers: [],
   providers: [],
