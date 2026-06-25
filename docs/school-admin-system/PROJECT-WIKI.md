@@ -17,9 +17,13 @@
 
 ## 🧪 测试环境
 
-**当前环境**: https://promotion-acceptable-isle-planning.trycloudflare.com
+| 服务 | URL | 状态 |
+|------|-----|------|
+| 前端 (用户登录) | https://sas-acrobat-unified-lawn.trycloudflare.com | ✅ |
+| 后端API | https://promotion-acceptable-isle-planning.trycloudflare.com | ✅ |
+| Grafana | https://dive-earl-basics-reforms.trycloudflare.com | ⚠️ |
 
-> ⚠️ 环境变更请更新此链接
+> ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化
 
 ### 监控Dashboard
 | 资源 | URL | 说明 |
