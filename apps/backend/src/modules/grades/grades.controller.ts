@@ -31,51 +31,9 @@ export class GradesController {
     private readonly gradePdfService: GradePdfService,
   ) {}
 
-  // ==================== Original Grades API ====================
-
-  @Post()
-  @ApiOperation({ summary: '创建成绩记录（单个科目）' })
-  @ApiResponse({ status: 201, description: '成绩记录已创建' })
-  create(@Body() dto: CreateGradeDto) {
-    return this.gradesService.create(dto)
-  }
-
-  @Get()
-  @ApiOperation({ summary: '查询成绩列表' })
-  @ApiResponse({ status: 200, description: '成绩列表' })
-  findAll(@Query() query: QueryGradesDto) {
-    return this.gradesService.findAll(query)
-  }
-
-  @Get('stats/:studentId/:term')
-  @ApiOperation({ summary: '获取学生成绩统计' })
-  @ApiResponse({ status: 200, description: '成绩统计' })
-  getStudentStats(@Param('studentId') studentId: string, @Param('term') term: string) {
-    return this.gradesService.getStudentStats(studentId, term)
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: '获取成绩详情' })
-  @ApiResponse({ status: 200, description: '成绩详情' })
-  findOne(@Param('id') id: string) {
-    return this.gradesService.findOne(id)
-  }
-
-  @Put(':id')
-  @ApiOperation({ summary: '更新成绩' })
-  @ApiResponse({ status: 200, description: '成绩已更新' })
-  update(@Param('id') id: string, @Body() dto: Partial<CreateGradeDto>) {
-    return this.gradesService.update(id, dto)
-  }
-
-  @Delete(':id')
-  @ApiOperation({ summary: '删除成绩' })
-  @ApiResponse({ status: 200, description: '成绩已删除' })
-  remove(@Param('id') id: string) {
-    return this.gradesService.remove(id)
-  }
-
   // ==================== Grade Records API ====================
+  // NOTE: Placed FIRST to ensure routes like /grades/records are matched
+  // before the wildcard /grades/:id route
 
   @Post('records')
   @ApiOperation({ summary: '创建学生成绩记录（完整成绩单）' })
@@ -169,7 +127,6 @@ export class GradesController {
   @ApiResponse({ status: 200, description: 'PDF文件' })
   async downloadPdf(@Param('id') id: string, @Req() req: any, @Res() res: Response) {
     const { filepath, filename } = await this.gradePdfService.downloadPdf(id, req.user.id)
-
     res.setHeader('Content-Type', 'application/pdf')
     res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(filename)}"`)
     res.sendFile(filepath)
@@ -217,5 +174,50 @@ export class GradesController {
   @ApiResponse({ status: 200, description: '未处理告警数量' })
   getOpenAlertsCount(@Req() req: any) {
     return this.gradeAlertsService.getOpenAlertsCount(req.user.id)
+  }
+
+  // ==================== Original Grades API ====================
+  // NOTE: Wildcard :id routes placed LAST so more specific routes take priority
+
+  @Post()
+  @ApiOperation({ summary: '创建成绩记录（单个科目）' })
+  @ApiResponse({ status: 201, description: '成绩记录已创建' })
+  create(@Body() dto: CreateGradeDto) {
+    return this.gradesService.create(dto)
+  }
+
+  @Get()
+  @ApiOperation({ summary: '查询成绩列表' })
+  @ApiResponse({ status: 200, description: '成绩列表' })
+  findAll(@Query() query: QueryGradesDto) {
+    return this.gradesService.findAll(query)
+  }
+
+  @Get('stats/:studentId/:term')
+  @ApiOperation({ summary: '获取学生成绩统计' })
+  @ApiResponse({ status: 200, description: '成绩统计' })
+  getStudentStats(@Param('studentId') studentId: string, @Param('term') term: string) {
+    return this.gradesService.getStudentStats(studentId, term)
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: '获取成绩详情' })
+  @ApiResponse({ status: 200, description: '成绩详情' })
+  findOne(@Param('id') id: string) {
+    return this.gradesService.findOne(id)
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: '更新成绩' })
+  @ApiResponse({ status: 200, description: '成绩已更新' })
+  update(@Param('id') id: string, @Body() dto: Partial<CreateGradeDto>) {
+    return this.gradesService.update(id, dto)
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: '删除成绩' })
+  @ApiResponse({ status: 200, description: '成绩已删除' })
+  remove(@Param('id') id: string) {
+    return this.gradesService.remove(id)
   }
 }
