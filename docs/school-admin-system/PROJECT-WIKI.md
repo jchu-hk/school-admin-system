@@ -1,6 +1,6 @@
 # 智慧校园管理系统 - 项目Wiki
 
-> 📌 **最后更新**: 2026-06-25
+> 📌 **最后更新**: 2026-06-25 09:01
 
 ---
 
@@ -14,6 +14,7 @@
 | 📊 数据库设计 | [DB-SCHEMA.md](./DB-SCHEMA.md) |
 | 🏗️ 架构设计 | [SPEC-SYSTEM-DESIGN.md](./SPEC-SYSTEM-DESIGN.md) |
 | ✅ 功能规格 | [SPEC-COMPLETE.md](./SPEC-COMPLETE.md) |
+| 📋 PM工作流程 | [PM-WORKFLOW.md](./PM-WORKFLOW.md) |
 
 ---
 
@@ -25,14 +26,20 @@
 |------|------|
 | 版本号 | v1.5.x |
 | 状态 | 🟡 开发中 |
-| 发布日期 | TBD |
+| 最新Commit | `0712ea2` |
 
-### 更新内容 (v1.5.x)
-- [ ] 缺陷修复: About页面空白 (#136)
-- [ ] 缺陷修复: 学生管理班级筛选器 (#135)
-- [ ] 缺陷修复: 学生编辑保存 (#134)
-- [ ] 自动化回归测试框架 (#133)
-- [ ] OPS系统维护文档 (#132)
+### 本周更新 (2026-06-25)
+| Issue | 描述 | 状态 |
+|-------|------|------|
+| #136 | About页面空白修复 | ✅ 已合并 |
+| #134 | 学生编辑保存修复 | ✅ 已合并 |
+| #135 | 班级筛选器修复 | ✅ 已合并 |
+
+### 本周完成 (2026-06-24)
+| Issue | 描述 | 状态 |
+|-------|------|------|
+| #132 | OPS系统维护文档 | ✅ 完成 |
+| #133 | 自动化回归测试框架 | ✅ 完成 |
 
 ### 完整更新日志
 👉 [查看所有版本](https://github.com/jchu-hk/school-admin-system/releases)
@@ -47,127 +54,87 @@
 |------|-----|------|----------|
 | **测试环境** | https://hockey-deviant-brooks-litigation.trycloudflare.com | ✅ 正常 | 2026-06-25 |
 
-### 环境配置
-
-| 组件 | 端口 | 状态 |
+### 环境状态
+| 组件 | 状态 | 备注 |
 |------|------|------|
-| 前端 | 8080 | ✅ |
-| 后端API | 3000 | ✅ |
-| PostgreSQL | 5432 | ✅ |
-| Redis | 6379 | ✅ |
-| Prometheus | 9091 | ✅ |
-| Grafana | 3001 | ✅ |
+| 前端 | ✅ 正常 | |
+| 后端API | ✅ 正常 | |
+| PostgreSQL | ✅ 正常 | |
+| Redis | ✅ 正常 | |
+| Prometheus | ✅ 正常 | |
+| Grafana | ✅ 正常 | |
+| Kafka | 🔄 启动中 | |
 
 ---
 
 ## 👤 测试账号
 
-| 角色 | 用户名 | 密码 | OTP | 说明 |
-|------|--------|------|-----|------|
-| 系统管理员 | admin | Admin123! | ✅ 需要 | 最高权限 |
-| 校务人员 | staff1 | Admin123! | ❌ | 日常管理 |
-| 教师 | teacher1 | Admin123! | ✅ 需要 | 教学管理 |
-| 家长 | parent1 | Admin123! | ❌ | 家长门户 |
-| 学生 | student1 | Admin123! | ❌ | 学生门户 |
-
-### 测试数据
-
-| 数据类型 | 数量 | 说明 |
-|---------|------|------|
-| 班级 | 7个 | 1A, 2A, 中一A/B, 中二A/B, 中三A |
-| 用户 | 33个 | 包含各类角色 |
-| 今日出勤 | 5条 | present×4, late×1 |
+| 角色 | 用户名 | 密码 | OTP |
+|------|--------|------|-----|
+| 系统管理员 | admin | Admin123! | ✅ 需要 |
+| 校务人员 | staff1 | Admin123! | ❌ |
+| 教师 | teacher1 | Admin123! | ✅ 需要 |
+| 家长 | parent1 | Admin123! | ❌ |
+| 学生 | student1 | Admin123! | ❌ |
 
 ---
 
 ## 📊 项目状态
 
-### 缺陷统计
+### 缺陷统计 (本周)
 
 | 状态 | 数量 | 说明 |
 |------|------|------|
-| 🔴 Open | TBD | 待处理 |
-| 🟡 In Progress | TBD | 处理中 |
-| ✅ Closed (本周) | 3 | #134, #135, #136 |
+| 🔴 新增Open | 0 | |
+| ✅ 已关闭 | 6 | #134, #135, #136, #132, #133 |
+| 🟡 进行中 | 1 | 成绩管理 (#42) |
 
-### 模块完成度
+### Open Issues
 
-| 模块 | 完成度 | 状态 |
-|------|--------|------|
-| 用户管理 | 100% | ✅ |
-| 认证授权 | 100% | ✅ |
-| 出勤管理 | 100% | ✅ |
-| 学费管理 | 100% | ✅ |
-| 请假管理 | 100% | ✅ |
-| 病假AI核验 | 100% | ✅ |
-| 午膳管理 | 100% | ✅ |
-| i18n国际化 | 100% | ✅ |
-| 家长查询队列 | 100% | ✅ |
-| 费用管理 | 100% | ✅ |
-| 奖学金管理 | 100% | ✅ |
-| 成绩管理 | 40% | 🔄 开发中 |
+| # | 描述 | 优先级 | 模块 |
+|---|------|--------|------|
+| #42 | 学生成绩管理 | P2 | mod-new |
+| #43-46 | 考试/课程/文档管理 | P2 | mod-new |
+| #54-56 | AI功能 | P3 | mod-ai |
+| #47-48 | 学校信息/通讯录 | P2 | mod-cycl |
+
+### 最近修复
+
+| Issue | 描述 | 日期 | 验证状态 |
+|-------|------|------|----------|
+| #136 | About页面空白 | 2026-06-25 | ⚠️ 待QA验证 |
+| #134 | 学生编辑保存 | 2026-06-25 | ⚠️ 待QA验证 |
+| #135 | 班级筛选器 | 2026-06-25 | ⚠️ 待QA验证 |
 
 ---
 
 ## 📚 文档库
 
-### 开发文档
-| 文档 | 说明 | 状态 |
-|------|------|------|
-| [SPEC-COMPLETE.md](./SPEC-COMPLETE.md) | 功能规格说明书 | ✅ |
-| [SPEC-SYSTEM-DESIGN.md](./SPEC-SYSTEM-DESIGN.md) | 系统架构设计 | ✅ |
-| [API-DESIGN.md](./API-DESIGN.md) | API设计文档 | ✅ |
-| [DB-SCHEMA.md](./DB-SCHEMA.md) | 数据库Schema | ✅ |
-| [DATA-DICTIONARY.md](./DATA-DICTIONARY.md) | 数据字典 | ✅ |
-
-### 运维文档
-| 文档 | 说明 | 状态 |
-|------|------|------|
-| [OPS.md](./OPS.md) | 运维手册 | ✅ |
-| [DEPLOYMENT.md](./DEPLOYMENT.md) | 部署指南 | 🔄 待完善 |
-
-### PM文档
-| 文档 | 说明 | 状态 |
-|------|------|------|
-| [PM-WORKFLOW.md](./PM-WORKFLOW.md) | PM工作流程 | ✅ |
-| [AGENTS.md](../AGENTS.md) | Agent工作规范 | ✅ |
+| 文档 | 说明 | 最后更新 |
+|------|------|----------|
+| [PM-WORKFLOW.md](./PM-WORKFLOW.md) | PM工作流程规范 | 2026-06-25 |
+| [PROJECT-WIKI.md](./PROJECT-WIKI.md) | 项目Wiki | 2026-06-25 |
+| [SPEC-COMPLETE.md](./SPEC-COMPLETE.md) | 功能规格 | v1.2.0 |
+| [DB-SCHEMA.md](./DB-SCHEMA.md) | 数据库Schema | v1.5.1 |
+| [OPS.md](./OPS.md) | 运维手册 | 2026-06-24 |
 
 ---
 
 ## 🔧 开发指南
 
 ### 本地开发
-
 ```bash
-# 克隆仓库
 git clone https://github.com/jchu-hk/school-admin-system.git
 cd school-admin-system
-
-# 启动开发环境
 docker-compose -f infra/docker-compose.yml up -d
-
-# 运行测试
-pnpm test
-
-# 运行E2E测试
-pnpm test:e2e
 ```
 
-### 代码规范
-
-- 遵循 TypeScript 最佳实践
-- 所有API需有 Swagger 文档注释
-- 提交前运行 lint 检查
-- 新功能需有对应测试用例
-
----
-
-## 📞 联系与支持
-
-- **Owner**: jchu-hk
-- **仓库**: https://github.com/jchu-hk/school-admin-system
-- **讨论**: https://github.com/jchu-hk/school-admin-system/discussions
+### 测试命令
+```bash
+pnpm test          # 单元测试
+pnpm test:e2e     # E2E测试
+```
 
 ---
 
-*此页面由PM Agent自动维护*
+*此页面由PM Agent持续维护*
