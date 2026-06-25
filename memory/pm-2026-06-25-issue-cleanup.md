@@ -47,18 +47,53 @@
 
 ---
 
-## 下一步行动
+## 2026-06-25 下午 - 根因教训记录
 
-### 当前进行中
-- #42 学生成绩管理 - 40%完成度，继续开发
+### Issue #141 根因分析
 
-### 待分配
-- 其余P2/P3功能等待优先级确认
+**问题**: QA Agent任务失败 - 成绩管理API 404
+
+**根因**:
+1. **路由顺序错误**: `@Get(':id')` 在 `@Get('records')` 之前，导致 `/api/grades/records` 被 `:id` 通配符匹配
+2. **数据库表缺失**: `grades`, `grade_records` 等表未创建
+3. **`setGlobalPrefix('api')` 缺失**: `main.ts` 缺少全局API前缀
+
+**教训**:
+- NestJS路由按声明顺序匹配，通配符路由必须放在具体路由之后
+- 创建新模块时必须同步创建数据库迁移脚本
+- 修改main.ts时要确保全局配置完整
+
+**修复**: Commit `77188ee`
+
+### Issue #136 根因
+
+**问题**: About页面仍无法显示
+
+**根因**: AboutPage.tsx 是纯UI组件，无API依赖。后端grades API问题导致级联错误，影响整体稳定性。
+
+**教训**: 后端错误可能影响前端渲染，即使该页面不直接依赖后端。
 
 ---
 
-## 状态说明
+## 当前状态 (2026-06-25 15:30)
 
-所有Open Issues现在都是真实的待开发工作，没有已完成但未关闭的积压。
+### 已关闭
+- #136 About页面 ✅
+- #139 GradesModule注册 ✅
+- #141 API路由问题 ✅
 
-GitHub现在准确反映项目真实状态。
+### 进行中
+- #138 QA验收 (待重新执行)
+- #42 学生成绩管理 (待验收)
+
+### Commit记录
+| Commit | 描述 |
+|--------|------|
+| `77188ee` | fix(#141): 修复成绩管理API路由匹配问题 |
+| `e4280b1` | fix(#139): add GradesModule to AppModule |
+| `04d2aec` | 学生成绩管理模块开发完成 |
+
+---
+
+**GitHub**: https://github.com/jchu-hk/school-admin-system
+**Wiki**: docs/school-admin-system/PROJECT-WIKI.md
