@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Agent 监控 Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 20px 30px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-badge {
+            background: #22c55e;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-badge.idle {
+            background: #6b7280;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #334155;
+        }
+        
+        .card h2 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .agent-grid {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .agent-item {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #22c55e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .agent-item.idle {
+            border-left-color: #6b7280;
+            opacity: 0.7;
+        }
+        
+        .agent-info h3 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .agent-info p {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .agent-status {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+        
+        .agent-status.idle {
+            background: rgba(107, 114, 128, 0.2);
+            color: #6b7280;
+        }
+        
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: 15px;
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 35px;
+            bottom: -15px;
+            width: 2px;
+            background: #334155;
+        }
+        
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #22c55e;
+            margin-top: 5px;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        
+        .timeline-dot.pm { background: #3b82f6; }
+        .timeline-dot.dev { background: #f59e0b; }
+        .timeline-dot.qa { background: #8b5cf6; }
+        .timeline-dot.user { background: #10b981; }
+        
+        .timeline-content {
+            flex: 1;
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .timeline-agent {
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
+        .timeline-time {
+            font-size: 11px;
+            color: #64748b;
+        }
+        
+        .timeline-message {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .stat-item {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #22c55e;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .issue-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .issue-item {
+            background: #0f172a;
+            padding: 10px 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        
+        .issue-id {
+            color: #3b82f6;
+            font-weight: bold;
+        }
+        
+        .issue-priority {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        
+        .issue-priority.p3 {
+            background: rgba(107, 114, 128, 0.2);
+            color: #6b7280;
+        }
+        
+        .cron-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .cron-item {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cron-name {
+            font-size: 13px;
+        }
+        
+        .cron-schedule {
+            font-size: 11px;
+            color: #64748b;
+        }
+        
+        .cron-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .refresh-info {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🤖 Agent 监控 Dashboard</h1>
+        <div>
+            <span class="status-badge idle">空闲状态</span>
+            <span style="margin-left: 10px; font-size: 12px; color: #64748b;">最后更新: 2026-06-25 23:21</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Agent状态 -->
+        <div class="card">
+            <h2>👥 Agent 状态</h2>
+            <div class="agent-grid">
+                <div class="agent-item">
+                    <div class="agent-info">
+                        <h3>agent-PM</h3>
+                        <p>调度中枢 | Session: agent:main:main</p>
+                    </div>
+                    <span class="agent-status">运行中</span>
+                </div>
+                <div class="agent-item idle">
+                    <div class="agent-info">
+                        <h3>agent-DEV</h3>
+                        <p>开发执行 | 等待派工</p>
+                    </div>
+                    <span class="agent-status idle">空闲</span>
+                </div>
+                <div class="agent-item idle">
+                    <div class="agent-info">
+                        <h3>agent-QA</h3>
+                        <p>测试验收 | 等待派工</p>
+                    </div>
+                    <span class="agent-status idle">空闲</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 统计 -->
+        <div class="card">
+            <h2>📊 今日统计</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">完成任务</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">关闭Issues</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">消息交换</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 消息时间线 -->
+        <div class="card full-width">
+            <h2>📡 消息交换流</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot user"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-agent">User</span>
+                            <span class="timeline-time">23:21</span>
+                        </div>
+                        <div class="timeline-message">请求创建Agent监控Web界面</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot pm"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-agent">agent-PM</span>
+                            <span class="timeline-time">23:16</span>
+                        </div>
+                        <div class="timeline-message">关闭Issues #149, #150, #151 (P2 Bug修复完成)</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot dev"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-agent">agent-DEV</span>
+                            <span class="timeline-time">23:15</span>
+                        </div>
+                        <div class="timeline-message">报告: 3个P2 Bug修复完成 (WORK_COMPLETE)</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot pm"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-agent">agent-PM</span>
+                            <span class="timeline-time">23:00</span>
+                        </div>
+                        <div class="timeline-message">派工给agent-DEV: 修复P2 Bug #149, #150, #151 (TASK_ASSIGN)</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot qa"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <span class="timeline-agent">agent-QA</span>
+                            <span class="timeline-time">22:17</span>
+                        </div>
+                        <div class="timeline-message">验收通过: 用户管理模块 #39 (94.4%通过率)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cron Jobs -->
+        <div class="card">
+            <h2>⏰ 自动化任务</h2>
+            <div class="cron-list">
+                <div class="cron-item">
+                    <div>
+                        <div class="cron-name">GitHub Issue巡检</div>
+                        <div class="cron-schedule">每30分钟</div>
+                    </div>
+                    <div class="cron-status"></div>
+                </div>
+                <div class="cron-item">
+                    <div>
+                        <div class="cron-name">Subagent状态检查</div>
+                        <div class="cron-schedule">每60分钟</div>
+                    </div>
+                    <div class="cron-status"></div>
+                </div>
+                <div class="cron-item">
+                    <div>
+                        <div class="cron-name">每日状态汇报</div>
+                        <div class="cron-schedule">09:00, 18:00</div>
+                    </div>
+                    <div class="cron-status"></div>
+                </div>
+                <div class="cron-item">
+                    <div>
+                        <div class="cron-name">测试环境密码检查</div>
+                        <div class="cron-schedule">每6小时</div>
+                    </div>
+                    <div class="cron-status"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Open Issues -->
+        <div class="card">
+            <h2>🐛 待处理 Issues</h2>
+            <div class="issue-list">
+                <div class="issue-item">
+                    <span><span class="issue-id">#140</span> TypeORM实体元数据警告</span>
+                    <span class="issue-priority p3">P3</span>
+                </div>
+                <div class="issue-item">
+                    <span><span class="issue-id">#56</span> 自动提醒</span>
+                    <span class="issue-priority p3">P3</span>
+                </div>
+                <div class="issue-item">
+                    <span><span class="issue-id">#55</span> 工作流自动化</span>
+                    <span class="issue-priority p3">P3</span>
+                </div>
+                <div class="issue-item">
+                    <span><span class="issue-id">#54</span> AI数据分析</span>
+                    <span class="issue-priority p3">P3</span>
+                </div>
+                <div class="issue-item">
+                    <span><span class="issue-id">#53</span> AI自动分类</span>
+                    <span class="issue-priority p3">P3</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="refresh-info">
+        Dashboard 静态页面 | 刷新页面获取最新状态
+    </div>
+    
+    <script>
+        // 自动刷新时间
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            // 可以在这里添加动态更新逻辑
+        }
+        
+        // 每30秒刷新一次
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>
