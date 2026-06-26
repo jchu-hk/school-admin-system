@@ -1,0 +1,28 @@
+{
+  "name": "project-admin",
+  "description": "Project Admin Agent - 中央协调者",
+  "version": "1.0.0",
+  "agentId": "project-admin",
+  "capabilities": [
+    "coordinate_agents",
+    "update_dashboard",
+    "monitor_heartbeats",
+    "check_issue_status"
+  ],
+  "settings": {
+    "heartbeat_dir": "/tmp",
+    "dashboard_file": "/workspace/projects/workspace/multi-agent-dashboard.html",
+    "max_age_seconds": 600,
+    "check_interval_seconds": 300
+  },
+  "schedule": {
+    "check_issues": "*/5 * * * *",
+    "update_dashboard": "*/5 * * * *"
+  },
+  "dependencies": {
+    "github": "gh cli",
+    "python": ">=3.8"
+  },
+  "author": "PM",
+  "created": "2026-06-27"
+}
