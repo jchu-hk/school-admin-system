@@ -45,9 +45,9 @@ https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.h
 
 | 服务 | URL | 状态 |
 |------|-----|------|
-| 前端 (用户登录) | https://arbor-issued-genre-karma.trycloudflare.com | ✅ |
-| 后端API | https://tire-symantec-compiled-pst.trycloudflare.com | ✅ |
-| Grafana | https://dive-earl-basics-reforms.trycloudflare.com | ⚠️ |
+| 前端 (用户登录) |  | ✅ |
+| 后端API |  | ✅ |
+| Grafana |  | ⚠️ |
 
 > ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化
 
@@ -65,7 +65,7 @@ https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.h
 ### 监控Dashboard
 | 资源 | URL | 说明 |
 |------|-----|------|
-| Grafana | https://dive-earl-basics-reforms.trycloudflare.com ⚠️ | 系统监控、性能指标 (530错误待修复) |
+| Grafana |  ⚠️ | 系统监控、性能指标 (530错误待修复) |
 | Prometheus | http://localhost:9091 (仅内网) | 指标数据采集 |
 | Swagger UI | http://localhost:3000/api/docs (仅内网) | API文档 |
 
