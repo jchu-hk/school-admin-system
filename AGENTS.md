@@ -484,3 +484,174 @@ sessions_send(
 - [ ] Agent资源是否可用？
 - [ ] 是否需要安排QA验收？
 
+
+---
+
+## Project Admin Agent (2026-06-27新增)
+
+**Agent ID**: `project-admin`
+
+### 职责
+- 协调Agent状态 (心跳监控)
+- 更新Multi-Agent Dashboard
+- 跟踪任务进度
+- Issue状态检查
+- 超时提醒 (通知PM)
+
+### 不做
+- ❌ 直接与用户通信 (外部交给PM)
+- ❌ 使用LLM (纯脚本逻辑)
+- ❌ 任务分配 (PM负责)
+- ❌ Project Wiki更新 (PM负责)
+
+### 工作方式
+- **定时任务**: 每5分钟Cron Job
+- **心跳机制**: Agent写心跳文件到 `/tmp`
+- **Dashboard更新**: 自动commit/push到GitHub
+
+### Agent通信
+
+#### Agent如何写心跳
+```bash
+# DEV Agent开始工作
+python3 /workspace/projects/workspace/agents/project-admin/main.py \
+  --write-heartbeat DEV 158 running "正在修复About页面"
+
+# DEV Agent完成工作
+python3 /workspace/projects/workspace/agents/project-admin/main.py \
+  --write-heartbeat DEV 158 done "修复完成"
+
+# DEV Agent失败
+python3 /workspace/projects/workspace/agents/project-admin/main.py \
+  --write-heartbeat DEV 158 failed "修复失败: 数据库连接错误"
+```
+
+#### 心跳文件格式
+```json
+{
+  "agent_id": "DEV",
+  "issue_id": "158",
+  "status": "running|done|failed",
+  "message": "任务描述",
+  "timestamp": "2026-06-27T01:00:00.000Z"
+}
+```
+
+#### Project Admin检查流程
+```
+1. 读取所有心跳文件 (/tmp/agent-heartbeat-*.json)
+2. 检查心跳年龄 (< 10分钟 = 正常)
+3. 更新Dashboard Agent状态
+4. 提交/push到GitHub
+5. 超时Issue → 通知PM
+```
+
+### 工作流程
+
+```
+PM分配任务 (Issue #158)
+    ↓
+派发DEV Agent
+    ↓
+DEV Agent写心跳: agent-heartbeat-DEV-158.json
+    ↓
+Project Admin (每5分钟)
+    ↓
+检查心跳 → 更新Dashboard → 推送GitHub
+    ↓
+DEV Agent完成 → 删除心跳文件
+    ↓
+PM关闭Issue
+```
+
+### Dashboard更新
+
+| 更新内容 | 数据源 |
+|---------|--------|
+| Agent状态 | 心跳文件 |
+| 统计数据 | GitHub API |
+| 消息流 | GitHub Commits |
+| 时间戳 | 自动生成 |
+
+### 配置
+
+```bash
+# 心跳目录
+HEARTBEAT_DIR="/tmp"
+
+# Dashboard文件
+DASHBOARD_FILE="/workspace/projects/workspace/multi-agent-dashboard.html"
+
+# 超时时间 (秒)
+MAX_AGE_SECONDS=600  # 10分钟
+
+# 检查间隔 (秒)
+CHECK_INTERVAL_SECONDS=300  # 5分钟
+```
+
+### Cron Job
+
+```cron
+*/5 * * * * cd /workspace/projects/workspace/agents/project-admin && /usr/bin/python3 main.py >> /tmp/project-admin-cron.log 2>&1
+```
+
+### 日志
+
+```bash
+tail -f /tmp/project-admin-cron.log
+```
+
+### 代码文件
+
+- `/workspace/projects/workspace/agents/project-admin/main.py` - 主逻辑
+- `/workspace/projects/workspace/agents/project-admin/AGENT.json` - 配置
+- `/workspace/projects/workspace/agents/project-admin/README.md` - 文档
+- `/workspace/projects/workspace/agents/project-admin/CRON.md` - Cron说明
+
+### 架构优势
+
+| 优势 | 说明 |
+|------|------|
+| 职责分离 | PM做决策，Project Admin做执行跟进 |
+| 去中心化 | PM不是唯一的信息汇总点 |
+| 实时可见 | Project Admin持续更新Dashboard |
+| 解放PM | PM专注战略，不用管琐碎的跟进 |
+| 可追溯 | 所有状态变化都有Git记录 |
+
+### 与PM的协作
+
+| 任务 | PM | Project Admin |
+|------|-----|---------------|
+| 任务分配 | ✅ | |
+| 需求评审 | ✅ | |
+| 战略决策 | ✅ | |
+| Project Wiki更新 | ✅ | |
+| 状态同步 | | ✅ |
+| Dashboard更新 | | ✅ |
+| Agent协调 | | ✅ |
+| Issue状态更新 | | ✅ |
+| 定时检查 | | ✅ |
+| 催办提醒 | | ✅ |
+| 向用户汇报 | ✅ | |
+
+### 常见问题
+
+**Q: Project Admin如何知道PM分配了任务？**
+A: PM分配任务时标记Issue为 `in-progress`，Project Admin检查时发现
+
+**Q: 如何查看Dashboard？**
+A: https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
+
+**Q: 心超时怎么办？**
+A: Project Admin通知PM，PM决定是否重新派发
+
+**Q: 如何调试Project Admin？**
+A: 查看日志 `/tmp/project-admin-cron.log`
+
+---
+
+## Git Commit
+
+- **Commit**: `b02e87a`
+- **Branch**: `main`
+- **Message**: feat: Add project-admin agent for coordinator
