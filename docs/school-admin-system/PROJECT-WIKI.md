@@ -1,6 +1,6 @@
 # 智慧校园管理系统 - 项目Wiki
 
-> 静态常查阅资料集成页 | **版本**: v1.5.x | **最后更新**: 2026-06-25
+> 静态常查阅资料集成页 | **版本**: v1.5.0 | **最后更新**: 2026-06-26 08:11:18
 
 ---
 
@@ -19,11 +19,22 @@
 
 | 服务 | URL | 状态 |
 |------|-----|------|
-| 前端 (用户登录) | https://filling-terrain-sea-danny.trycloudflare.com | ✅ |
+| 前端 (用户登录) | https://inspections-universal-ending-lifestyle.trycloudflare.com | ✅ |
 | 后端API | https://inspections-universal-ending-lifestyle.trycloudflare.com | ✅ |
 | Grafana | https://dive-earl-basics-reforms.trycloudflare.com | ⚠️ |
 
 > ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化
+
+### 系统版本信息
+
+| 组件 | 版本 | Git Commit | 更新时间 |
+|------|------|------------|----------|
+| 后端 | v1.5.0 | `67e3dd9` | 2026-06-26 07:06:07 |
+| 前端 | v1.5.0 | `67e3dd9` | 2026-06-26 07:06:07 |
+| 数据库 | v1.5.1 | - | 2026-06-26 |
+
+**代码基线**: https://github.com/jchu-hk/school-admin-system/commit/67e3dd9
+**最新Tag**: v1.5.0
 
 ### 监控Dashboard
 | 资源 | URL | 说明 |
@@ -40,13 +51,13 @@
 
 | 角色 | 用户名 | 密码 | OTP | 权限 |
 |------|--------|------|-----|------|
-| 系统管理员 | admin | admin | ✅ | 全部功能 |
-| 校务人员 | staff1 | staff1 | ❌ | 日常管理 |
-| 教师 | teacher1 | teacher1 | ✅ | 教学管理 |
-| 家长 | parent1 | parent1 | ❌ | 家长门户 |
-| 学生 | student1 | student1 | ❌ | 学生门户 |
+| 系统管理员 | admin | Admin123! | ✅ | 全部功能 |
+| 校务人员 | staff1 | Admin123! | ❌ | 日常管理 |
+| 教师 | teacher1 | Admin123! | ✅ | 教学管理 |
+| 家长 | parent1 | Admin123! | ❌ | 家长门户 |
+| 学生 | student1 | Admin123! | ❌ | 学生门户 |
 
-> ⚠️ **注意**: 2026-06-25 更新 - 密码与用户名相同（因bcryptjs运行时兼容性问题）
+> ✅ **注意**: 2026-06-26 更新 - 所有测试账号密码统一为 `Admin123!`
 
 ---
 
@@ -93,6 +104,39 @@
 
 ---
 
+## 🧪 QA模块测试案例
+
+### 已完成的模块测试
+
+| 模块 | 测试案例文档 | 状态 | 测试日期 |
+|------|-------------|------|----------|
+| 用户管理 | [user.spec.ts](../../e2e-tests/tests/user.spec.ts) | ✅ 通过 | 2026-06-25 |
+| 登录认证 | [login.spec.ts](../../e2e-tests/tests/login.spec.ts) | ✅ 通过 | 2026-06-25 |
+| 学生管理 | [student.spec.ts](../../e2e-tests/tests/student.spec.ts) | ✅ 通过 | 2026-06-25 |
+| 权限管理 | [permission.spec.ts](../../e2e-tests/tests/permission/permission.spec.ts) | ✅ 通过 | 2026-06-25 |
+| 通知系统 | [notification.spec.ts](../../e2e-tests/tests/notification/notification.spec.ts) | ✅ 通过 | 2026-06-25 |
+| 请假审批 | [leave-approval.spec.ts](../../e2e-tests/tests/leave/leave-approval.spec.ts) | ✅ 通过 | 2026-06-25 |
+| 成绩管理 | [grades-qa-report](./archive/grades-qa-report-20250625.md) | ✅ 通过 | 2026-06-25 |
+
+### 测试报告归档
+
+| 报告 | 路径 | 日期 |
+|------|------|------|
+| 成绩管理QA报告 | [qa_report/grades-qa-report-20250625.md](../../qa_report/grades-qa-report-20250625.md) | 2026-06-25 |
+| 用户管理QA报告 | [qa_report/user_qa_report_20260625.md](../../qa_report/user_qa_report_20260625.md) | 2026-06-25 |
+
+### 运行测试
+```bash
+# E2E测试
+pnpm test:e2e
+
+# 特定模块测试
+pnpm --filter @school-admin/e2e-tests test:auth    # 认证测试
+pnpm --filter @school-admin/e2e-tests test:leave   # 请假测试
+```
+
+---
+
 ## 🛠️ 开发指南
 
 ### 快速启动
@@ -132,14 +176,23 @@ chore:    杂项
 
 ---
 
-## 🚀 PM工作队列
+## 🚀 进行中的工作 (In Progress)
 
-| Issue | 描述 | 状态 | 下一步 |
-|-------|------|------|--------|
-| #138 | 成绩管理QA验收 | ✅ 已完成 | - |
-| #42 | 学生成绩管理 | ✅ 已完成 | - |
-| #39 | 用户管理开发 | ✅ 准备就绪 | 立即启动 |
-| #143 | P0: teacher_id列 | ✅ 已修复 | - |
-| #144 | P0: 外键约束 | ✅ 已修复 | - |
+| Issue | 描述 | 负责人 | 开始时间 | 预计完成 |
+|-------|------|--------|----------|----------|
+| #152 | 配置Grafana公网访问 | agent-DEVOPS | 2026-06-26 | 2026-06-27 |
+| #45 | 成绩发布管理 | agent-ARCH | 2026-06-25 | 2026-06-28 |
+
+> 标注 `in-progress` 标签的Issue会在此列表显示
+
+---
+
+## 📋 近期完成
+
+| Issue | 描述 | 完成时间 | 交付物 |
+|-------|------|----------|--------|
+| #136-#141 | 关键缺陷修复 | 2026-06-26 07:06 | commit 67e3dd9 |
+| #138 | 成绩管理QA验收 | 2026-06-25 | 测试报告 |
+| #42 | 学生成绩管理 | 2026-06-25 | PR合并 |
 
 *此页面在版本发布或重大变更时更新*
