@@ -311,8 +311,8 @@ class ProjectAdmin:
 
         # 读取并更新Dashboard
         html = self.dashboard_updater.get_current_dashboard()
-        html = self.dashboard_updater.update_agent_status(html, heartbeats)
-        html = self.dashboard_updater.update_stats(html, commits, issues)
+        # html = self.dashboard_updater.update_agent_status(html, heartbeats)  # 禁用 - 破坏HTML结构
+        # html = self.dashboard_updater.update_stats(html, commits, issues)  # 禁用 - 破坏HTML结构
         html = self.dashboard_updater.update_timestamp(html)
 
         # 保存
