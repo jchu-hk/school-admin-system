@@ -160,7 +160,7 @@ export default function StudentPage() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<StudentFormData>({
-    resolver: zodResolver(studentSchema),
+    resolver: zodResolver(editStudentSchema), // Use edit schema (password optional)
     defaultValues: {
       username: '',
       name: '',
@@ -253,6 +253,16 @@ export default function StudentPage() {
 
   // Handlers
   const handleCreate = async (data: StudentFormData) => {
+    // Validate password for create mode
+    if (!data.password || data.password.trim() === '') {
+      throw new Error('创建学生必须设置密码');
+    }
+    // Validate password strength
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+    if (!passwordRegex.test(data.password)) {
+      throw new Error('密码至少8位，必须包含大小写字母、数字和特殊字符');
+    }
+
     try {
       const token = getToken()
       await apiClient.post('/api/users', {
