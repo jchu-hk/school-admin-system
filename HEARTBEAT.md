@@ -168,7 +168,7 @@ agent-PM (调度中枢)
 | 前端 | ✅ 已部署 | v1.5.0 |
 | 数据库 | ✅ 运行中 | - |
 
-**URL**: https://mobiles-informed-cassette-produce.trycloudflare.com
+**URL**: https://yang-wanna-dramatically-given.trycloudflare.com
 
 **Frontend: 
 **Backend API**: 
@@ -334,7 +334,7 @@ agent-PM (调度中枢)
 
 ### 当前测试URL
 
-**https://mobiles-informed-cassette-produce.trycloudflare.com**
+**https://yang-wanna-dramatically-given.trycloudflare.com**
 
 ### 测试账号
 
@@ -352,3 +352,18 @@ agent-PM (调度中枢)
 |-------|------|------|
 | #132 | OPS系统维护文档 | ✅ 完成 |
 | #133 | 自动化回归测试 | ✅ 完成 |
+
+## 🔄 Dashboard实时更新修复 (2026-06-26 23:55)
+
+| Issue | 描述 | 负责人 | 状态 | Commit |
+|-------|------|--------|------|--------|
+| #162 | Dashboard数据未实时更新 | DEVOPS | ✅ QA通过 | 6d26c8c |
+
+### 修复内容
+- GitHub API实时数据获取
+- 每30秒自动刷新
+- 手动刷新按钮
+- Agent状态动态显示
+
+### Dashboard地址
+https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
