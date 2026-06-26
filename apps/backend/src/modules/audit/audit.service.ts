@@ -47,6 +47,7 @@ export class AuditService {
     }
 
     const log = this.auditLogRepository.create({
+      // Map userId → operatorId (entity field name) → DB column userId
       operatorId: opts.userId,
       action: opts.action as AuditAction,
       resourceType: opts.resourceType,

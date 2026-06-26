@@ -23,9 +23,10 @@ import {
 } from '../inquiry.entity';
 
 export class CreateInquiryDto {
-  @ApiProperty({ description: '家长ID' })
+  @ApiProperty({ description: '家长ID', required: false })
+  @IsOptional()
   @IsUUID()
-  parentId: string;
+  parentId?: string;
 
   @ApiProperty({ description: '关联学生ID', required: false })
   @IsOptional()

@@ -55,8 +55,9 @@ export default function Dashboard() {
   }, [period])
 
   // 从后端数据结构中提取值
+  const studentCount = stats?.studentCount ?? 0
   const attendanceRate = stats?.todayAttendance?.attendanceRate ?? 0
-  const totalStudents = stats?.todayAttendance?.total ?? 0
+  const totalStudents = studentCount // Use studentCount instead of todayAttendance.total
   const presentCount = stats?.todayAttendance?.present ?? 0
   const absentCount = stats?.todayAttendance?.absent ?? 0
   const lateCount = stats?.todayAttendance?.late ?? 0

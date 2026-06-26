@@ -40,6 +40,15 @@ import {
 } from '../types/inquiry'
 
 // 表单验证Schema
+// 后端category字段映射
+const categoryMap: Record<string, string> = {
+  bus: 'attendance',      // 校车相关 -> 出勤
+  fee: 'finance',         // 学费相关 -> 财务
+  grade: 'academic',      // 成绩相关 -> 学业
+  leave: 'attendance',    // 请假相关 -> 出勤
+  other: 'general'        // 其他 -> 一般行政
+}
+
 const createInquirySchema = z.object({
   type: z.enum(['bus', 'fee', 'grade', 'leave', 'other']),
   title: z.string().min(2, '标题至少需要2个字符').max(100, '标题最多100个字符'),
@@ -202,9 +211,19 @@ export default function InquiryPage() {
   // 创建查询
   const onCreateInquiry = async (data: CreateInquiryForm) => {
     try {
+      // 获取当前用户信息（从localStorage或token解析）
+      const userStr = localStorage.getItem('user')
+      const user = userStr ? JSON.parse(userStr) : null
+      const parentId = user?.id || 'default-parent-id'
+      
+      // 转换前端字段为后端期望的字段
       await inquiryApi.createInquiry({
-        ...data,
-        attachments
+        parentId: parentId,
+        category: categoryMap[data.type] || 'general',
+        subject: data.title,
+        content: data.content,
+        priority: data.priority,
+        channel: 'app'
       })
       setShowCreateModal(false)
       resetCreate()

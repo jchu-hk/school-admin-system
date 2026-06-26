@@ -1,0 +1,75 @@
+=========================================
+成绩管理模块QA验收测试报告
+功能ID: F-EXAM-004
+模块: MOD-NEW-002
+Issue: #138, #42
+测试时间: 2026-06-25 17:02:38
+测试环境: https://hockey-deviant-brooks-litigation.trycloudflare.com
+=========================================
+
+=== 1. 登录功能测试 ===
+✅ staff1登录成功
+✅ teacher1登录 - OTP流程正常
+
+=== 2. 数据库表结构验证 ===
+通过Entity文件检查表结构:
+✅ grade_records 表定义存在
+✅ grade_reviews 表定义存在
+✅ grade_audit_alerts 表定义存在
+
+=== 3. API功能测试 ===
+测试: 查询成绩记录列表 ... ❌ FAIL (HTTP unknown)
+Response: {"data":[],"total":0,"page":1,"pageSize":10}
+
+测试: 查询审计告警列表 ... ❌ FAIL (HTTP 500)
+Response: {"statusCode":500,"message":"Internal server error"}
+
+测试: 获取未处理告警数量 ... ❌ FAIL (HTTP )
+Response: 0
+
+测试: 查询原始成绩列表 ... ❌ FAIL (HTTP unknown)
+Response: {"data":[],"total":0,"page":1,"pageSize":10}
+
+测试: 获取学生历史成绩 ... ❌ FAIL (HTTP )
+Response: []
+
+
+=== 4. 核心功能验证 ===
+检查48小时撤回机制实现...
+✅ 48小时撤回机制字段存在 (can_revoke_until)
+检查多级审批流程实现...
+✅ 多级审批流程字段存在 (approval_level)
+检查PDF生成功能...
+✅ PDF生成服务存在
+
+=== 5. Swagger文档验证 ===
+检查Swagger装饰器...
+✅ Swagger文档装饰器存在
+
+=== 6. 代码完整性检查 ===
+✅ grade-record.entity.ts 存在
+✅ grade-review.entity.ts 存在
+✅ grade-audit-alert.entity.ts 存在
+✅ grades.controller.ts 存在
+✅ grades.service.ts 存在
+✅ grade-records.service.ts 存在
+✅ grade-alerts.service.ts 存在
+✅ grade-pdf.service.ts 存在
+✅ dto/grade-record.dto.ts 存在
+
+=== 7. 已知问题记录 ===
+⚠️  发现的缺陷:
+1. 创建成绩记录失败 - 外键约束错误 (student_id, class_id 不存在)
+2. 审计告警列表查询失败 - 数据库列缺失 (teacher_id)
+3. 缺少数据库迁移文件
+
+=========================================
+测试总结
+=========================================
+通过: 18
+失败: 5
+总计: 23
+
+结论: ❌ 发现缺陷，需要修复
+建议: 创建Bug Issue并修复后重新验收
+=========================================

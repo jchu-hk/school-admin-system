@@ -11,7 +11,7 @@ COPY packages packages/
 
 # Install pnpm and all dependencies (including dev for build)
 RUN npm install -g pnpm@9.15.4 \
-    && pnpm install --frozen-lockfile
+    && pnpm install --no-frozen-lockfile
 
 # Build backend using tsc (avoid nest CLI dependency)
 WORKDIR /app/apps/backend

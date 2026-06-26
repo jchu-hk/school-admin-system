@@ -253,6 +253,10 @@ export class UserService {
   ): Promise<User> {
     const user = await this.findOne(id);
 
+    // Debug: Log incoming update data (for Issue #156)
+    console.log('[UserService.update] Input DTO:', JSON.stringify(updateUserDto, null, 2));
+    console.log('[UserService.update] User before update - phone:', user.phone);
+
     // 如果修改了密码，重新加密
     if (updateUserDto.password) {
       const salt = await bcrypt.genSalt(10);
@@ -269,7 +273,12 @@ export class UserService {
       updatedBy,
     });
 
-    return this.userRepository.save(user);
+    console.log('[UserService.update] User after assign - phone:', user.phone);
+
+    const savedUser = await this.userRepository.save(user);
+    console.log('[UserService.update] Saved user - phone:', savedUser.phone);
+
+    return savedUser;
   }
 
   async remove(id: string, deletedBy?: string): Promise<void> {

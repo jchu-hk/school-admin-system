@@ -4,7 +4,7 @@ credentials-file: /root/.cloudflared/YOUR_TUNNEL_ID.json
 ingress:
   # 主应用
   - hostname: hockey-deviant-brooks-litigation.trycloudflare.com
-    service: http://localhost:8080
+    service: http://localhost:3000
 
   # Grafana监控Dashboard (需要auth)
   - hostname: school-admin-monitor.trycloudflare.com

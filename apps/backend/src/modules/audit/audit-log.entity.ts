@@ -57,9 +57,8 @@ export class AuditLog {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  /** 操作人ID（数据库列为 operatorId） */
   @ApiProperty({ description: '操作人ID' })
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ name: 'operatorId', type: 'uuid', nullable: true })
   operatorId: string;
 
   @ApiProperty({ description: '操作类型' })
@@ -75,26 +74,26 @@ export class AuditLog {
   ip: string;
 
   @ApiProperty({ description: '请求参数' })
-  @Column({ type: 'json', nullable: true })
+  @Column({ name: 'requestParams', type: 'json', nullable: true })
   requestParams: any;
 
   @ApiProperty({ description: '响应状态' })
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'responseStatus', type: 'int', nullable: true })
   responseStatus: number;
 
   @ApiProperty({ description: '资源类型' })
-  @Column({ length: 50, nullable: true })
+  @Column({ name: 'resourceType', length: 50, nullable: true })
   resourceType: string;
 
   @ApiProperty({ description: '资源ID' })
-  @Column({ type: 'uuid', nullable: true })
+  @Column({ name: 'resourceId', type: 'uuid', nullable: true })
   resourceId: string;
 
   @ApiProperty({ description: '详情' })
-  @Column({ type: 'json', nullable: true })
+  @Column({ name: 'details', type: 'json', nullable: true })
   details: any;
 
   @ApiProperty({ description: '操作时间' })
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'createdAt' })
   createdAt: Date;
 }

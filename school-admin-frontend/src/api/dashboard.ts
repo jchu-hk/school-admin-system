@@ -10,6 +10,7 @@ interface ApiResponse<T> {
 
 // 仪表盘统计数据类型 (与后端匹配)
 export interface DashboardStats {
+  studentCount: number;
   todayAttendance: {
     total: number;
     present: number;
@@ -53,6 +54,7 @@ export const dashboardApi = {
     // 后端直接返回 DashboardStats 对象（无 ApiResponse 包装）
     const response = await apiClient.get<DashboardStats>('/api/dashboard/stats');
     return response.data || {
+      studentCount: 0,
       todayAttendance: { total: 0, present: 0, absent: 0, late: 0, leave: 0, attendanceRate: 0 },
       monthlyLeave: { total: 0, approved: 0, pending: 0, rejected: 0 },
       pendingInquiries: 0,

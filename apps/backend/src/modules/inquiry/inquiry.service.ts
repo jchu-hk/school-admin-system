@@ -84,8 +84,12 @@ export class InquiryService {
     userId: string,
     schoolId: string,
   ): Promise<ParentInquiry> {
+    // 如果dto中没有parentId，使用当前用户ID
+    const parentId = dto.parentId || userId;
+    
     const inquiry = this.inquiryRepository.create({
       ...dto,
+      parentId,
       inquiryNo: this.generateInquiryNo(),
       schoolId,
       parentSubmittedAt: new Date(),

@@ -1,0 +1,33 @@
+==== QA Results: Thu Jun 25 07:19:34 PM CST 2026 ====
+
+=== 1. 用户CRUD功能 ===
+  [PASS] 查询用户列表 - GET /users
+  [PASS] 查询单个用户 - GET /users/:id
+  [FAIL] 更新用户 - PATCH /users/:id: 返回500内部错误
+  [INFO] 删除用户 - 因POST /users返回500跳过
+
+=== 2. 角色和权限 ===
+  [PASS] 角色列表 - GET /roles
+  [FAIL] 权限变更 - POST /users/:id/role: 端点不存在，返回404
+  [FAIL] RBAC验证 - 校务无创建用户权限: {"message":"Unauthorized","statusCode":401}
+
+=== 3. 账户管理 ===
+  [FAIL] 账户状态管理 - toggle-status: 返回500内部错误
+  [FAIL] 密码重置 - reset-password: 返回500内部错误
+  [FAIL] 过期预警机制 - expiry-stats: 返回500内部错误
+  [PASS] 离职处理 - handle-departure
+
+=== 4. 家长功能 ===
+  [PASS] 家长列表 - GET /users?role=parent
+  [INFO] 家长多子女绑定: relatedStudentId字段存在但所有家长为null（未关联学生）
+  [INFO] Student IDs available for linking: 0133b92f-269b-4880-a4ab-ac51a0d2c6e1
+  [PASS] 班级列表 - GET /users/classes
+
+=== 5. API文档 ===
+  [FAIL] Swagger文档 - /api/docs: HTTP 404
+  [FAIL] Swagger JSON - /api/docs-json: HTTP 404
+
+=== 6. 额外验收 ===
+  [PASS] 当前用户信息 - GET /users/profile/me
+  [PASS] 分页查询 - GET /users?page=2&limit=2
+  [PASS] 输入验证 - 无效输入返回400

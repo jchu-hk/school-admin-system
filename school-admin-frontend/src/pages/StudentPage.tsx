@@ -69,7 +69,8 @@ interface PaginatedResponse<T> {
 }
 
 // ============ Validation Schema ============
-const studentSchema = z.object({
+// Schema for creating new student - password required
+const createStudentSchema = z.object({
   username: z.string().min(1, '用户名不能为空').max(50, '用户名不能超过50个字符'),
   name: z.string().min(1, '姓名不能为空').max(100, '姓名不能超过100个字符'),
   hkId: z.string()
@@ -87,19 +88,35 @@ const studentSchema = z.object({
     .or(z.literal('')),
   className: z.string().max(50, '班级不能超过50个字符').optional().or(z.literal('')),
   password: z.string()
+    .min(1, '密码不能为空')
     .min(8, '密码至少8位')
     .regex(/[A-Z]/, '密码必须包含大写字母')
     .regex(/[a-z]/, '密码必须包含小写字母')
     .regex(/[0-9]/, '密码必须包含数字')
     .regex(/[!@#$%^&*(),.?":{}|<>]/, '密码必须包含特殊字符'),
-  /** 资助资格字段 */
   subsidyEligibility: z.enum(['full_subsidy', 'half_subsidy', 'none', 'pending']).optional(),
   subsidyStartDate: z.string().optional().or(z.literal('')),
   subsidyEndDate: z.string().optional().or(z.literal('')),
   subsidyCertificateNo: z.string().max(50, '资助证明编号不能超过50个字符').optional().or(z.literal('')),
-})
+});
 
-type StudentFormData = z.infer<typeof studentSchema>
+// Schema for editing student - password optional (empty = no change)
+const editStudentSchema = createStudentSchema.extend({
+  password: z.string()
+    .optional()
+    .refine(
+      (val) => !val || val === '' || (
+        val.length >= 8 &&
+        /[A-Z]/.test(val) &&
+        /[a-z]/.test(val) &&
+        /[0-9]/.test(val) &&
+        /[!@#$%^&*(),.?":{}|<>]/.test(val)
+      ),
+      { message: '密码至少8位，必须包含大小写字母、数字和特殊字符' }
+    ),
+});
+
+type StudentFormData = z.infer<typeof createStudentSchema>
 
 // ============ Constants ============
 const PAGE_SIZE = 20

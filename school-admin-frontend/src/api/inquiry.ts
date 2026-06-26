@@ -35,23 +35,26 @@ const inquiryApi = {
   },
 
   // 创建查询
-  createInquiry: async (data: CreateInquiryRequest): Promise<Inquiry> => {
-    const formData = new FormData()
-    formData.append('type', data.type)
-    formData.append('title', data.title || '')
-    formData.append('content', data.content)
-    formData.append('priority', data.priority)
-    if (data.channel) formData.append('channel', data.channel)
-
-    if (data.attachments) {
-      data.attachments.forEach(file => {
-        formData.append('attachments', file)
-      })
+  createInquiry: async (data: {
+    parentId?: string
+    category?: string
+    subject?: string
+    content: string
+    priority?: string
+    channel?: string
+    attachments?: File[]
+  }): Promise<Inquiry> => {
+    // 后端期望的字段格式
+    const payload = {
+      parentId: data.parentId || '',
+      category: data.category || 'general',
+      subject: data.subject || '',
+      content: data.content,
+      priority: data.priority || 'normal',
+      channel: data.channel || 'app'
     }
-
-    const response = await apiClient.post('/api/inquiries', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    
+    const response = await apiClient.post('/api/inquiries', payload)
     return response.data
   },
 

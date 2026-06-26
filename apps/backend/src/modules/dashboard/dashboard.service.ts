@@ -6,6 +6,7 @@ import { LeaveApplication, LeaveStatus } from '../leave/leave.entity';
 import { Attendance, AttendanceStatus } from '../attendance/attendance.entity';
 
 export interface DashboardStats {
+  studentCount: number;
   todayAttendance: {
     total: number;
     present: number;
@@ -149,6 +150,11 @@ export class DashboardService {
     tomorrow: Date,
     firstDayOfMonth: Date,
   ): Promise<DashboardStats> {
+    // 从 users 表读取学生总数
+    const studentCount = await this.userRepository.count({
+      where: { role: UserRole.STUDENT, status: UserStatus.ACTIVE },
+    });
+
     // 从 attendances 表读取今日出勤数据
     const todayAttendances = await this.attendanceRepository.find({
       where: {
@@ -201,6 +207,7 @@ export class DashboardService {
     const pendingInquiries = parseInt(pendingInquiriesResult[0]?.count || '0', 10);
 
     return {
+      studentCount,
       todayAttendance: {
         total,
         present,
@@ -229,6 +236,15 @@ export class DashboardService {
     tomorrow: Date,
     firstDayOfMonth: Date,
   ): Promise<DashboardStats> {
+    // 获取本班学生总数
+    const studentCount = await this.userRepository.count({
+      where: {
+        role: UserRole.STUDENT,
+        status: UserStatus.ACTIVE,
+        className: user.className,
+      },
+    });
+
     // 获取本班今日出勤数据
     const todayAttendances = await this.attendanceRepository
       .createQueryBuilder('attendance')
@@ -279,6 +295,7 @@ export class DashboardService {
       total > 0 ? Math.round(((present + late) / total) * 100) : 0;
 
     return {
+      studentCount,
       todayAttendance: {
         total,
         present,
@@ -359,6 +376,7 @@ export class DashboardService {
     }
 
     return {
+      studentCount: 1, // 家长关联1个学生
       todayAttendance: {
         total: 1,
         present,
@@ -437,6 +455,7 @@ export class DashboardService {
     }
 
     return {
+      studentCount: 1, // 学生自己
       todayAttendance: {
         total: 1,
         present,
@@ -463,6 +482,7 @@ export class DashboardService {
    */
   private getDefaultStats(): DashboardStats {
     return {
+      studentCount: 0,
       todayAttendance: {
         total: 0,
         present: 0,
