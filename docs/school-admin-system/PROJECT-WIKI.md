@@ -19,8 +19,8 @@
 
 | 服务 | URL | 状态 |
 |------|-----|------|
-| 前端 (用户登录) | https://inspections-universal-ending-lifestyle.trycloudflare.com | ✅ |
-| 后端API | https://inspections-universal-ending-lifestyle.trycloudflare.com | ✅ |
+| 前端 (用户登录) | https://mobiles-informed-cassette-produce.trycloudflare.com | ✅ |
+| 后端API | https://semester-tent-facial-frederick.trycloudflare.com | ✅ |
 | Grafana | https://dive-earl-basics-reforms.trycloudflare.com | ⚠️ |
 
 > ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化

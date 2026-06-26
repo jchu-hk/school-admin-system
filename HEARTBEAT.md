@@ -4,13 +4,24 @@
 
 ---
 
-## 🔧 关键缺陷修复 (2026-06-26 06:59)
+## 🔧 关键缺陷修复 (2026-06-26 06:59:00)
 
 | # | 缺陷 | 严重程度 | 状态 | 修复Commit | 备注 |
 |---|------|----------|------|-----------|-----|
 | #1 | leaves_status_enum 缺失值 | CRITICAL | ✅ 已修复 | DB直接修改 | 添加 pending_director, pending_review |
 | #2 | BusModule 未注册 | CRITICAL | ✅ 已修复 | 95422c3 | /api/bus/routes 现在返回200 |
 | #3 | /api/users/students 500错误 | CRITICAL | ✅ 已修复 | 95422c3 | 添加 @Get('students') 端点 |
+
+---
+
+## 🔄 进行中的工作 (In Progress)
+
+| Issue | 描述 | 负责人 | 标签 | 状态 |
+|-------|------|--------|------|------|
+| #152 | 配置Grafana公网访问 | agent-DEVOPS | `in-progress`, `p2` | 🔄 进行中 |
+| #45 | 成绩发布管理 | agent-ARCH | `in-progress`, `p2` | 🔄 进行中 |
+
+> 所有正在处理的工作都已标记 `in-progress` 标签
 
 **修复详情**:
 - **#1 数据库修复**: 执行SQL添加缺失enum值
@@ -135,7 +146,10 @@ agent-PM (调度中枢)
 | 前端 | ✅ 已部署 | v1.5.0 |
 | 数据库 | ✅ 运行中 | - |
 
-**URL**: https://inspections-universal-ending-lifestyle.trycloudflare.com
+**URL**: https://mobiles-informed-cassette-produce.trycloudflare.com
+
+**Frontend**: https://mobiles-informed-cassette-produce.trycloudflare.com
+**Backend API**: https://semester-tent-facial-frederick.trycloudflare.com
 
 ---
 
@@ -298,7 +312,7 @@ agent-PM (调度中枢)
 
 ### 当前测试URL
 
-**https://inspections-universal-ending-lifestyle.trycloudflare.com**
+**https://mobiles-informed-cassette-produce.trycloudflare.com**
 
 ### 测试账号
 
