@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Agent 实时看板</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #4ade80;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .status-running { background: #4ade80; }
+        .status-idle { background: #fbbf24; }
+        .status-error { background: #f87171; }
+        
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .agent {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .agent-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .agent-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .agent-status {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .message-flow {
+            height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .message-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid #4ade80;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .message-time {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        .message-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #4ade80;
+        }
+        .stat-label {
+            color: #888;
+            font-size: 14px;
+        }
+        .refresh-info {
+            text-align: center;
+            color: #888;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #4ade80 rgba(255, 255, 255, 0.1);
+        }
+        .scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: #4ade80;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Multi-Agent 实时看板</h1>
+        
+        <div class="dashboard">
+            <!-- Agent Status -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="status-indicator status-running"></div>
+                    <h3>🤖 AI团队状态</h3>
+                </div>
+                <div class="agent-grid" id="agents">
+                    <!-- Agents will be inserted here -->
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="status-indicator status-running"></div>
+                    <h3>📊 今日统计</h3>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="defectsFixed">8</div>
+                        <div class="stat-label">修复缺陷</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="commits">6</div>
+                        <div class="stat-label">Git提交</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="efficiency">4.3x</div>
+                        <div class="stat-label">效率提升</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalTime">41</div>
+                        <div class="stat-label">总耗时(分)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Health -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="status-indicator status-running"></div>
+                    <h3>🏥 系统健康</h3>
+                </div>
+                <div id="healthStatus">
+                    <div style="margin-bottom: 10px;">
+                        <span>Backend API:</span>
+                        <span style="color: #4ade80;"> 🟢 Running</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <span>Frontend:</span>
+                        <span style="color: #4ade80;"> 🟢 Running</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <span>PostgreSQL:</span>
+                        <span style="color: #4ade80;"> 🟢 Healthy</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <span>Cloudflare Tunnel:</span>
+                        <span style="color: #4ade80;"> 🟢 Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Message Flow -->
+        <div class="card">
+            <div class="card-header">
+                <div class="status-indicator status-running"></div>
+                <h3>💬 消息流活动</h3>
+            </div>
+            <div class="message-flow scrollbar" id="messageFlow">
+                <!-- Messages will be inserted here -->
+            </div>
+        </div>
+        
+        <div class="refresh-info">
+            🔄 自动刷新: 30秒 | 最后更新: <span id="lastUpdate">--:--:--</span>
+        </div>
+    </div>
+
+    <script>
+        // Agent Data
+        const agents = [
+            { icon: '🧑‍💼', name: 'PM', status: 'running', task: '调度中枢', color: '#fbbf24' },
+            { icon: '🤖', name: 'DEV', status: 'idle', task: '上次: #155', color: '#60a5fa' },
+            { icon: '🔍', name: 'QA', status: 'idle', task: '上次: 验收8个P0 ✅', color: '#4ade80' },
+            { icon: '🔧', name: 'DEVOPS', status: 'idle', task: '上次: 修复隧道', color: '#f97316' },
+            { icon: '✓', name: 'CHECKER', status: 'idle', task: '上次: #42审查', color: '#a855f7' },
+            { icon: '🏗️', name: 'ARCH', status: 'idle', task: '等待设计', color: '#6b7280' },
+            { icon: '📝', name: 'REQ', status: 'idle', task: '等待需求', color: '#ec4899' }
+        ];
+
+        // Message Flow Data
+        const messages = [
+            { time: '20:27:00', from: 'PM', to: 'GitHub', action: '推送AGENTS.md更新', icon: '💻' },
+            { time: '20:17:00', from: 'PM', to: 'GitHub', action: '更新PROJECT-WIKI', icon: '💻' },
+            { time: '19:17:00', from: 'PM', to: 'DEVOPS', action: '修复基础设施', icon: '🔧' },
+            { time: '16:35:00', from: 'QA', to: 'PM', action: '验收8个P0通过', icon: '✅' },
+            { time: '16:26:00', from: 'PM', to: 'QA', action: '派发验收任务', icon: '📨' },
+            { time: '16:25:00', from: 'DEV2', to: 'PM', action: '#156完成', icon: '📤' },
+            { time: '16:23:00', from: 'DEV1', to: 'PM', action: '#154,#155完成', icon: '📤' },
+            { time: '16:19:00', from: 'DEV4', to: 'PM', action: '#157,#160完成', icon: '📤' },
+            { time: '16:18:00', from: 'DEV3', to: 'PM', action: '#158,#159完成', icon: '📤' },
+            { time: '15:54:00', from: 'PM', to: '4xDEV', action: '并行派发', icon: '📢' }
+        ];
+
+        // Render Agents
+        function renderAgents() {
+            const container = document.getElementById('agents');
+            container.innerHTML = agents.map(agent => `
+                <div class="agent">
+                    <div class="agent-icon">${agent.icon}</div>
+                    <div class="agent-name">${agent.name}</div>
+                    <div class="agent-status">
+                        ${agent.status === 'running' ? '🟢 运行中' : '⏸️ 空闲'}
+                    </div>
+                    <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                        ${agent.task}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Messages
+        function renderMessages() {
+            const container = document.getElementById('messageFlow');
+            container.innerHTML = messages.map(msg => `
+                <div class="message-item">
+                    <div class="message-time">${msg.time}</div>
+                    <div class="message-content">
+                        <span>${msg.icon}</span>
+                        <span>${msg.from}</span>
+                        <span style="color: #888;">──→</span>
+                        <span>${msg.to}</span>
+                        <span style="color: #4ade80;">${msg.action}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update Time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = 
+                now.toLocaleTimeString('zh-CN', { hour12: false });
+        }
+
+        // Initial Render
+        renderAgents();
+        renderMessages();
+        updateTime();
+
+        // Auto Refresh every 30 seconds
+        setInterval(() => {
+            updateTime();
+            // In a real implementation, fetch data from API
+            console.log('Auto-refreshed at', new Date().toLocaleTimeString());
+        }, 30000);
+    </script>
+</body>
+</html>
