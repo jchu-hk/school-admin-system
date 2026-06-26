@@ -1,6 +1,6 @@
 # 智慧校园管理系统 - 项目Wiki
 
-> 静态常查阅资料集成页 | **版本**: v1.5.4 | **最后更新**: 2026-06-26 20:15:33
+> 静态常查阅资料集成页 | **版本**: v1.5.4 | **最后更新**: 2026-06-26 23:40:35
 
 ---
 
@@ -45,8 +45,8 @@ https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.h
 
 | 服务 | URL | 状态 |
 |------|-----|------|
-| 前端 (用户登录) | https://expanding-contributor-mic-holiday.trycloudflare.com | ✅ |
-| 后端API | https://cases-emily-nottingham-seasons.trycloudflare.com | ✅ |
+| 前端 (用户登录) | https://arbor-issued-genre-karma.trycloudflare.com | ✅ |
+| 后端API | https://tire-symantec-compiled-pst.trycloudflare.com | ✅ |
 | Grafana | https://dive-earl-basics-reforms.trycloudflare.com | ⚠️ |
 
 > ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化
