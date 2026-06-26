@@ -45,8 +45,8 @@ https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.h
 
 | 服务 | URL | 状态 |
 |------|-----|------|
-| 前端 (用户登录) | https://pipe-switched-modules-butterfly.trycloudflare.com | ✅ |
-| 后端API | https://weeks-plot-greeting-acknowledged.trycloudflare.com | ✅ |
+| 前端 (用户登录) | https://factory-chris-side-indirect.trycloudflare.com | ✅ |
+| 后端API | https://amenities-international-tied-affairs.trycloudflare.com | ✅ |
 | Grafana | https://dive-earl-basics-reforms.trycloudflare.com | ⚠️ |
 
 > ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化

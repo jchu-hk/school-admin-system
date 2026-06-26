@@ -170,7 +170,7 @@ agent-PM (调度中枢)
 
 **URL**: https://mobiles-informed-cassette-produce.trycloudflare.com
 
-**Frontend**: https://mobiles-informed-cassette-produce.trycloudflare.com
+**Frontend: https://factory-chris-side-indirect.trycloudflare.com
 **Backend API**: 
 
 ---

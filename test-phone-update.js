@@ -1,4 +1,4 @@
-// Test script to verify Issue #156: Phone number update problem
+// Test script to debug Issue #156: Phone number update
 const axios = require('axios');
 
 const BASE_URL = 'http://localhost:3000/api';
@@ -17,13 +17,17 @@ async function testPhoneUpdate() {
     const token = loginResponse.data.access_token;
     console.log('✅ Login successful, token received\n');
     
-    // Find an existing user to test with
+    // 2. Get existing school_staff user to test
     console.log('2. Getting existing school_staff user...');
     const usersResponse = await axios.get(`${BASE_URL}/users?role=school_staff&limit=5`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     
-    const testUser = usersResponse.data.data.find(u => u.username === 'staff1');
+    let testUser = usersResponse.data.data.find(u => u.username === 'staff1');
+    if (!testUser) {
+      testUser = usersResponse.data.data[0];
+    }
+    
     if (!testUser) {
       console.log('No test user found, creating one...');
       const createResponse = await axios.post(`${BASE_URL}/users`, {
@@ -67,24 +71,21 @@ async function testPhoneUpdate() {
     });
     console.log(`   Phone after update: ${getResponse2.data.phone || 'null'}\n`);
     
-    // 6. Check database directly
-    console.log('6. Checking database directly...');
-    
-    // 7. Verify
+    // 6. Verification
     console.log('=== Verification ===');
     if (getResponse2.data.phone === newPhone) {
       console.log('✅✅✅ SUCCESS: Phone update works correctly!\n');
     } else if (getResponse2.data.phone === '852****32') {
-      console.log('⚠️ PROBLEM: Phone is masked but should show clear for admin\n');
+      console.log('⚠️ PROBLEM: Phone is masked but should be clear for admin\n');
     } else if (getResponse2.data.phone === getResponse1.data.phone) {
-      console.log('❌❌❌ BUG CONFIRMED: Phone number NOT updated in API response!\n');
+      console.log('❌❌❌ BUG CONFIRMED: Phone number NOT updated in response!\n');
     } else if (!getResponse2.data.phone) {
       console.log('❌❌❌ BUG CONFIRMED: Phone is NULL after update!\n');
     } else {
       console.log(`⚠️ Unexpected phone value: ${getResponse2.data.phone}\n`);
     }
     
-    // Restore original phone
+    // 7. Restore original phone
     console.log('7. Restoring original phone...');
     await axios.patch(`${BASE_URL}/users/${userId}`, {
       phone: getResponse1.data.phone || ''
