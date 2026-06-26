@@ -23,9 +23,11 @@ enum LeaveType {
 
 enum LeaveStatus {
   PENDING = 'pending',
+  PENDING_DIRECTOR = 'pending_director', // 待校务主任审批（超过3天）
   APPROVED = 'approved',
   REJECTED = 'rejected',
   CANCELLED = 'cancelled',
+  CHECKED_IN = 'checked_in', // 已销假
 }
 
 enum UserRole {
@@ -98,9 +100,11 @@ const LEAVE_TYPE_OPTIONS = [
 
 const LEAVE_STATUS_OPTIONS = [
   { value: LeaveStatus.PENDING, label: '待审批', color: 'bg-yellow-100 text-yellow-800' },
+  { value: LeaveStatus.PENDING_DIRECTOR, label: '待校务主任审批', color: 'bg-orange-100 text-orange-800' },
   { value: LeaveStatus.APPROVED, label: '已通过', color: 'bg-green-100 text-green-800' },
   { value: LeaveStatus.REJECTED, label: '已拒绝', color: 'bg-red-100 text-red-800' },
   { value: LeaveStatus.CANCELLED, label: '已取消', color: 'bg-gray-100 text-gray-800' },
+  { value: LeaveStatus.CHECKED_IN, label: '已销假', color: 'bg-blue-100 text-blue-800' },
 ]
 
 // ============ Validation Schema ============
@@ -139,6 +143,38 @@ const formatDate = (dateStr: string): string => {
 
 const formatDateTime = (dateStr: string): string => {
   return new Date(dateStr).toLocaleString('zh-CN')
+}
+
+// 转换后端 LeaveApplication 格式为前端 Leave 格式
+const transformLeaveApplication = (app: any): Leave => {
+  return {
+    id: app.id,
+    applicantId: app.studentId,
+    applicant: app.student ? {
+      id: app.student.id,
+      username: app.student.username || '',
+      name: app.student.name || app.student.username || '未知学生',
+      role: UserRole.STUDENT,
+    } : undefined,
+    leaveType: app.leaveType as LeaveType,
+    startDate: app.startDate instanceof Date ? app.startDate.toISOString().split('T')[0] : String(app.startDate || '').split('T')[0],
+    endDate: app.endDate instanceof Date ? app.endDate.toISOString().split('T')[0] : String(app.endDate || '').split('T')[0],
+    totalDays: Number(app.totalDays) || 0,
+    reason: app.reason || '',
+    status: app.status as LeaveStatus,
+    substituteTeacherId: app.classTeacherApprovedBy,
+    substituteTeacher: undefined, // 后端暂无此字段
+    substituteTeacherClassHours: (app as any).substituteTeacherClassHours,
+    approverId: app.classTeacherApprovedBy || app.directorApprovedBy,
+    approver: undefined, // 后端暂未返回审批人详情
+    approvedAt: app.classTeacherApprovedAt || app.directorApprovedAt ?
+      (app.classTeacherApprovedAt || app.directorApprovedAt).toISOString() : undefined,
+    approvalComment: app.classTeacherComment || app.directorComment,
+    attachmentUrl: app.documentUrl,
+    createdBy: app.createdBy || '',
+    createdAt: app.createdAt instanceof Date ? app.createdAt.toISOString() : String(app.createdAt || ''),
+    updatedAt: app.updatedAt instanceof Date ? app.updatedAt.toISOString() : String(app.updatedAt || ''),
+  }
 }
 
 // ============ Main Component ============
@@ -253,7 +289,7 @@ export default function LeavePage() {
       // leaveType 筛选移至客户端执行（后端暂不支持此参数）
       // if (typeFilter) params.append('leaveType', typeFilter)
 
-      const response = await apiClient.get<{ leaves?: Leave[]; data?: Leave[]; total?: number }>(
+      const response = await apiClient.get<{ applications?: Leave[]; leaves?: Leave[]; data?: Leave[]; total?: number }>(
         `/api/leaves?${params.toString()}`,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -263,9 +299,24 @@ export default function LeavePage() {
       )
 
       // 兼容不同的响应格式
+      // 后端返回 { applications: LeaveApplication[], total: number }
+      // 前端期望 leaves 数组
       let apiLeaves: Leave[] = []
       if (response.data) {
-        apiLeaves = response.data || []
+        // 优先使用 applications 字段（后端实际返回格式）
+        let rawLeaves: any[] = []
+        if (Array.isArray(response.data.applications)) {
+          rawLeaves = response.data.applications
+        } else if (Array.isArray(response.data.leaves)) {
+          rawLeaves = response.data.leaves
+        } else if (Array.isArray(response.data.data)) {
+          rawLeaves = response.data.data
+        } else if (Array.isArray(response.data)) {
+          // 兼容直接返回数组的格式
+          rawLeaves = response.data
+        }
+        // 转换后端格式到前端格式
+        apiLeaves = rawLeaves.map(transformLeaveApplication)
       }
 
       // 客户端筛选：leaveType
@@ -285,7 +336,9 @@ export default function LeavePage() {
 
       // 筛选 pending tab
       if (activeTab === 'pending') {
-        filteredLeaves = filteredLeaves.filter(leave => leave.status === LeaveStatus.PENDING)
+        filteredLeaves = filteredLeaves.filter(leave => 
+          leave.status === LeaveStatus.PENDING || leave.status === LeaveStatus.PENDING_DIRECTOR
+        )
       }
 
       setLeaves(filteredLeaves)
@@ -428,10 +481,10 @@ export default function LeavePage() {
         createdAt: leave.createdAt,
       },
     ]
-    if (leave.status !== LeaveStatus.PENDING) {
+    if (leave.status !== LeaveStatus.PENDING && leave.status !== LeaveStatus.PENDING_DIRECTOR) {
       history.push({
         id: '2',
-        action: leave.status === LeaveStatus.APPROVED ? 'approve' : 'reject',
+        action: leave.status === LeaveStatus.APPROVED || leave.status === LeaveStatus.CHECKED_IN ? 'approve' : 'reject',
         actor: leave.approver || { id: leave.approverId || '', name: '审批人', username: '', role: UserRole.SCHOOL_DIRECTOR },
         comment: leave.approvalComment,
         createdAt: leave.approvedAt || leave.updatedAt,
@@ -459,7 +512,7 @@ export default function LeavePage() {
   }
 
   const canApprove = (leave: Leave): boolean => {
-    if (leave.status !== LeaveStatus.PENDING) return false
+    if (leave.status !== LeaveStatus.PENDING && leave.status !== LeaveStatus.PENDING_DIRECTOR) return false
     // Check if user has approval permission (simplified)
     const user = getCurrentUser()
     if (!user) return false
@@ -467,7 +520,7 @@ export default function LeavePage() {
   }
 
   const canCancel = (leave: Leave): boolean => {
-    if (leave.status !== LeaveStatus.PENDING) return false
+    if (leave.status !== LeaveStatus.PENDING && leave.status !== LeaveStatus.PENDING_DIRECTOR) return false
     const user = getCurrentUser()
     if (!user) return false
     return leave.applicantId === user.id
