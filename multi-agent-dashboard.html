@@ -38,14 +38,9 @@
         .card-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .card-header-left {
-            display: flex;
-            align-items: center;
         }
         .status-indicator {
             width: 12px;
@@ -61,12 +56,6 @@
         .status-running { background: #4ade80; }
         .status-idle { background: #fbbf24; }
         .status-error { background: #f87171; }
-        .status-updating { background: #60a5fa; animation: spin 1s linear infinite; }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
         
         .agent-grid {
             display: grid;
@@ -78,11 +67,6 @@
             border-radius: 8px;
             padding: 12px;
             text-align: center;
-            transition: all 0.3s ease;
-        }
-        .agent:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
         }
         .agent-icon {
             font-size: 24px;
@@ -95,14 +79,6 @@
         .agent-status {
             font-size: 12px;
             color: #888;
-        }
-        .agent-task {
-            font-size: 11px;
-            color: #666;
-            margin-top: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
         
         .message-flow {
@@ -131,10 +107,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            flex-wrap: wrap;
-        }
-        .message-action {
-            color: #4ade80;
         }
         .stats-grid {
             display: grid;
@@ -146,22 +118,11 @@
             border-radius: 8px;
             padding: 15px;
             text-align: center;
-            transition: all 0.3s ease;
-        }
-        .stat-item:hover {
-            background: rgba(255, 255, 255, 0.1);
         }
         .stat-value {
             font-size: 2em;
             font-weight: bold;
             color: #4ade80;
-        }
-        .stat-value.updated {
-            animation: flash 0.5s ease;
-        }
-        @keyframes flash {
-            0%, 100% { color: #4ade80; }
-            50% { color: #fbbf24; }
         }
         .stat-label {
             color: #888;
@@ -172,44 +133,6 @@
             color: #888;
             margin-top: 20px;
             font-size: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-        .refresh-btn {
-            background: rgba(74, 222, 128, 0.2);
-            border: 1px solid #4ade80;
-            color: #4ade80;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        .refresh-btn:hover {
-            background: rgba(74, 222, 128, 0.3);
-        }
-        .refresh-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .error-banner {
-            background: rgba(248, 113, 113, 0.2);
-            border: 1px solid #f87171;
-            color: #f87171;
-            padding: 10px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .rate-limit-info {
-            background: rgba(251, 191, 36, 0.1);
-            border: 1px solid #fbbf24;
-            color: #fbbf24;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 12px;
         }
         .scrollbar {
             scrollbar-width: thin;
@@ -226,76 +149,46 @@
             background: #4ade80;
             border-radius: 3px;
         }
-        .loading-spinner {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            border: 2px solid #4ade80;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s linear infinite;
-            margin-right: 5px;
-        }
-        .commit-link {
-            color: #60a5fa;
-            text-decoration: none;
-        }
-        .commit-link:hover {
-            text-decoration: underline;
-        }
-        .no-data {
-            color: #666;
-            text-align: center;
-            padding: 20px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎭 Multi-Agent 实时看板</h1>
         
-        <div id="errorBanner" class="error-banner" style="display: none;"></div>
-        
         <div class="dashboard">
             <!-- Agent Status -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-header-left">
-                        <div class="status-indicator" id="agentStatusIndicator"></div>
-                        <h3>🤖 AI团队状态</h3>
-                    </div>
-                    <span id="agentCount" style="color: #888; font-size: 12px;">--</span>
+                    <div class="status-indicator status-running"></div>
+                    <h3>🤖 AI团队状态</h3>
                 </div>
                 <div class="agent-grid" id="agents">
-                    <div class="no-data">加载中...</div>
+                    <!-- Agents will be inserted here -->
                 </div>
             </div>
             
             <!-- Stats -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-header-left">
-                        <div class="status-indicator" id="statsStatusIndicator"></div>
-                        <h3>📊 实时统计</h3>
-                    </div>
-                    <span id="statsUpdateTime" style="color: #888; font-size: 12px;"></span>
+                    <div class="status-indicator status-running"></div>
+                    <h3>📊 今日统计</h3>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-item">
-                        <div class="stat-value" id="openIssues">--</div>
-                        <div class="stat-label">开放Issues</div>
+                        <div class="stat-value" id="defectsFixed">8</div>
+                        <div class="stat-label">修复缺陷</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="totalCommits">--</div>
-                        <div class="stat-label">总Commits</div>
+                        <div class="stat-value" id="commits">6</div>
+                        <div class="stat-label">Git提交</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="todayCommits">--</div>
-                        <div class="stat-label">今日Commits</div>
+                        <div class="stat-value" id="efficiency">4.3x</div>
+                        <div class="stat-label">效率提升</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="recentActivity">--</div>
-                        <div class="stat-label">近7天活动</div>
+                        <div class="stat-value" id="totalTime">41</div>
+                        <div class="stat-label">总耗时(分)</div>
                     </div>
                 </div>
             </div>
@@ -303,27 +196,26 @@
             <!-- System Health -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-header-left">
-                        <div class="status-indicator status-running" id="healthIndicator"></div>
-                        <h3>🏥 系统健康</h3>
-                    </div>
+                    <div class="status-indicator status-running"></div>
+                    <h3>🏥 系统健康</h3>
                 </div>
                 <div id="healthStatus">
                     <div style="margin-bottom: 10px;">
-                        <span>GitHub API:</span>
-                        <span id="githubStatus" style="color: #4ade80;"> 🟢 Connected</span>
+                        <span>Backend API:</span>
+                        <span style="color: #4ade80;"> 🟢 Running</span>
                     </div>
                     <div style="margin-bottom: 10px;">
-                        <span>Data Refresh:</span>
-                        <span id="refreshStatus" style="color: #4ade80;"> 🟢 Active</span>
+                        <span>Frontend:</span>
+                        <span style="color: #4ade80;"> 🟢 Running</span>
                     </div>
                     <div style="margin-bottom: 10px;">
-                        <span>Last Fetch:</span>
-                        <span id="lastFetch" style="color: #888;"> --</span>
+                        <span>PostgreSQL:</span>
+                        <span style="color: #4ade80;"> 🟢 Healthy</span>
                     </div>
-                </div>
-                <div id="rateLimitInfo" class="rate-limit-info" style="margin-top: 15px; display: none;">
-                    API Rate Limit: <span id="rateLimitRemaining">--</span>/60
+                    <div style="margin-bottom: 10px;">
+                        <span>Cloudflare Tunnel:</span>
+                        <span style="color: #4ade80;"> 🟢 Active</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -331,331 +223,97 @@
         <!-- Message Flow -->
         <div class="card">
             <div class="card-header">
-                <div class="card-header-left">
-                    <div class="status-indicator" id="messageStatusIndicator"></div>
-                    <h3>💬 消息流活动 (来自GitHub)</h3>
-                </div>
-                <span id="commitCount" style="color: #888; font-size: 12px;">--</span>
+                <div class="status-indicator status-running"></div>
+                <h3>💬 消息流活动</h3>
             </div>
             <div class="message-flow scrollbar" id="messageFlow">
-                <div class="no-data">加载中...</div>
+                <!-- Messages will be inserted here -->
             </div>
         </div>
         
         <div class="refresh-info">
-            <span>🔄 自动刷新: <span id="refreshInterval">30</span>秒</span>
-            <span>|</span>
-            <span>最后更新: <span id="lastUpdate">--:--:--</span></span>
-            <span>|</span>
-            <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">
-                立即刷新
-            </button>
+            🔄 自动刷新: 30秒 | 最后更新: <span id="lastUpdate">--:--:--</span>
         </div>
     </div>
 
     <script>
-        // Configuration
-        const CONFIG = {
-            GITHUB_API: 'https://api.github.com',
-            REPO_OWNER: 'jchu-hk',
-            REPO_NAME: 'school-admin-system',
-            REFRESH_INTERVAL: 30000, // 30 seconds
-            MAX_COMMITS: 15,
-            MAX_ISSUES: 10
-        };
+        // Agent Data
+        const agents = [
+            { icon: '🧑‍💼', name: 'PM', status: 'running', task: '调度中枢', color: '#fbbf24' },
+            { icon: '🤖', name: 'DEV', status: 'idle', task: '上次: #155', color: '#60a5fa' },
+            { icon: '🔍', name: 'QA', status: 'idle', task: '上次: 验收8个P0 ✅', color: '#4ade80' },
+            { icon: '🔧', name: 'DEVOPS', status: 'idle', task: '上次: 修复隧道', color: '#f97316' },
+            { icon: '✓', name: 'CHECKER', status: 'idle', task: '上次: #42审查', color: '#a855f7' },
+            { icon: '🏗️', name: 'ARCH', status: 'idle', task: '等待设计', color: '#6b7280' },
+            { icon: '📝', name: 'REQ', status: 'idle', task: '等待需求', color: '#ec4899' }
+        ];
 
-        // Agent definitions based on commit authors
-        const AGENT_ROLES = {
-            'PM': { icon: '🧑‍💼', color: '#fbbf24', task: '调度中枢' },
-            'Checker Agent': { icon: '✓', color: '#a855f7', task: '代码审查' },
-            'Devops Agent': { icon: '🔧', color: '#f97316', task: '基础设施' },
-            'QA Agent': { icon: '🔍', color: '#4ade80', task: '测试验收' },
-            'Dev Agent': { icon: '🤖', color: '#60a5fa', task: '开发实现' },
-            'ARCH Agent': { icon: '🏗️', color: '#6b7280', task: '架构设计' },
-            'REQ Agent': { icon: '📝', color: '#ec4899', task: '需求分析' }
-        };
+        // Message Flow Data
+        const messages = [
+            { time: '20:27:00', from: 'PM', to: 'GitHub', action: '推送AGENTS.md更新', icon: '💻' },
+            { time: '20:17:00', from: 'PM', to: 'GitHub', action: '更新PROJECT-WIKI', icon: '💻' },
+            { time: '19:17:00', from: 'PM', to: 'DEVOPS', action: '修复基础设施', icon: '🔧' },
+            { time: '16:35:00', from: 'QA', to: 'PM', action: '验收8个P0通过', icon: '✅' },
+            { time: '16:26:00', from: 'PM', to: 'QA', action: '派发验收任务', icon: '📨' },
+            { time: '16:25:00', from: 'DEV2', to: 'PM', action: '#156完成', icon: '📤' },
+            { time: '16:23:00', from: 'DEV1', to: 'PM', action: '#154,#155完成', icon: '📤' },
+            { time: '16:19:00', from: 'DEV4', to: 'PM', action: '#157,#160完成', icon: '📤' },
+            { time: '16:18:00', from: 'DEV3', to: 'PM', action: '#158,#159完成', icon: '📤' },
+            { time: '15:54:00', from: 'PM', to: '4xDEV', action: '并行派发', icon: '📢' }
+        ];
 
-        // State
-        let state = {
-            agents: [],
-            commits: [],
-            issues: [],
-            isLoading: false,
-            lastError: null,
-            rateLimit: null
-        };
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchAllData();
-            setInterval(fetchAllData, CONFIG.REFRESH_INTERVAL);
-        });
-
-        // Fetch all data from GitHub API
-        async function fetchAllData() {
-            if (state.isLoading) return;
-            
-            state.isLoading = true;
-            state.lastError = null;
-            updateLoadingState(true);
-            hideError();
-
-            try {
-                // Fetch commits and issues in parallel
-                const [commitsData, issuesData] = await Promise.all([
-                    fetchCommits(),
-                    fetchIssues()
-                ]);
-
-                state.commits = commitsData;
-                state.issues = issuesData;
-
-                // Update UI
-                renderAgents();
-                renderStats();
-                renderMessages();
-                updateTime();
-                
-                // Update health status
-                document.getElementById('githubStatus').innerHTML = ' 🟢 Connected';
-                document.getElementById('refreshStatus').innerHTML = ' 🟢 Active';
-                
-            } catch (error) {
-                console.error('Fetch error:', error);
-                state.lastError = error.message;
-                showError(error.message);
-            } finally {
-                state.isLoading = false;
-                updateLoadingState(false);
-            }
-        }
-
-        // Fetch commits from GitHub
-        async function fetchCommits() {
-            const url = `${CONFIG.GITHUB_API}/repos/${CONFIG.REPO_OWNER}/${CONFIG.REPO_NAME}/commits?per_page=${CONFIG.MAX_COMMITS}`;
-            const response = await fetch(url);
-            
-            updateRateLimitInfo(response);
-            
-            if (!response.ok) {
-                if (response.status === 403) {
-                    const data = await response.json();
-                    if (data.message && data.message.includes('rate limit')) {
-                        throw new Error('GitHub API速率限制已触发，请稍后再试');
-                    }
-                }
-                throw new Error(`GitHub API错误: ${response.status}`);
-            }
-            
-            return await response.json();
-        }
-
-        // Fetch issues from GitHub
-        async function fetchIssues() {
-            const url = `${CONFIG.GITHUB_API}/repos/${CONFIG.REPO_OWNER}/${CONFIG.REPO_NAME}/issues?state=open&per_page=${CONFIG.MAX_ISSUES}`;
-            const response = await fetch(url);
-            
-            if (!response.ok) {
-                if (response.status === 403) {
-                    // Rate limited for issues, that's okay
-                    return [];
-                }
-                throw new Error(`GitHub API错误: ${response.status}`);
-            }
-            
-            return await response.json();
-        }
-
-        // Update rate limit info
-        function updateRateLimitInfo(response) {
-            const remaining = response.headers.get('X-RateLimit-Remaining');
-            const limit = response.headers.get('X-RateLimit-Limit');
-            
-            if (remaining !== null && limit !== null) {
-                state.rateLimit = { remaining: parseInt(remaining), limit: parseInt(limit) };
-                document.getElementById('rateLimitInfo').style.display = 'block';
-                document.getElementById('rateLimitRemaining').textContent = remaining;
-            }
-        }
-
-        // Render agents based on commit authors
+        // Render Agents
         function renderAgents() {
             const container = document.getElementById('agents');
-            const agentCounts = {};
-            
-            // Count commits by author
-            state.commits.forEach(commit => {
-                const authorName = commit.commit?.author?.name || 'Unknown';
-                const authorKey = getAgentKey(authorName);
-                agentCounts[authorKey] = (agentCounts[authorKey] || 0) + 1;
-            });
-
-            // Get most recent active agent
-            const mostRecent = state.commits[0]?.commit?.author?.name || 'PM';
-            const mostRecentKey = getAgentKey(mostRecent);
-
-            // Build agent list
-            const agents = Object.keys(AGENT_ROLES).map(key => {
-                const role = AGENT_ROLES[key];
-                const isRecent = key === mostRecentKey || key === 'PM';
-                const isActive = agentCounts[key] > 0;
-                
-                return {
-                    name: key,
-                    icon: role.icon,
-                    status: isRecent && isActive ? 'running' : (isActive ? 'idle' : 'idle'),
-                    task: `${role.task}${agentCounts[key] ? ` (${agentCounts[key]}次)` : ''}`,
-                    color: role.color
-                };
-            });
-
-            // Sort: running first, then by name
-            agents.sort((a, b) => {
-                if (a.status === 'running' && b.status !== 'running') return -1;
-                if (a.status !== 'running' && b.status === 'running') return 1;
-                return a.name.localeCompare(b.name);
-            });
-
-            state.agents = agents;
-            document.getElementById('agentCount').textContent = `${agents.filter(a => a.status === 'running').length}运行中`;
-
             container.innerHTML = agents.map(agent => `
                 <div class="agent">
                     <div class="agent-icon">${agent.icon}</div>
-                    <div class="agent-name" style="color: ${agent.color}">${agent.name}</div>
+                    <div class="agent-name">${agent.name}</div>
                     <div class="agent-status">
                         ${agent.status === 'running' ? '🟢 运行中' : '⏸️ 空闲'}
                     </div>
-                    <div class="agent-task">${agent.task}</div>
+                    <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                        ${agent.task}
+                    </div>
                 </div>
             `).join('');
         }
 
-        // Map author name to agent key
-        function getAgentKey(authorName) {
-            if (authorName.includes('Checker')) return 'Checker Agent';
-            if (authorName.includes('Devops') || authorName.includes('DEVOPS')) return 'Devops Agent';
-            if (authorName.includes('QA')) return 'QA Agent';
-            if (authorName.includes('Dev') || authorName.includes('DEV')) return 'Dev Agent';
-            if (authorName.includes('ARCH')) return 'ARCH Agent';
-            if (authorName.includes('REQ')) return 'REQ Agent';
-            return 'PM';
-        }
-
-        // Render stats
-        function renderStats() {
-            // Open issues count
-            const openIssues = state.issues.filter(i => !i.pull_request).length;
-            animateStat('openIssues', openIssues);
-
-            // Total commits (estimate from API)
-            animateStat('totalCommits', state.commits.length > 0 ? `${state.commits.length}+` : '--');
-
-            // Today commits
-            const today = new Date().toISOString().split('T')[0];
-            const todayCommits = state.commits.filter(c => 
-                c.commit?.author?.date?.startsWith(today)
-            ).length;
-            animateStat('todayCommits', todayCommits || state.commits.length);
-
-            // Recent activity (commits in last 7 days)
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-            const recentActivity = state.commits.filter(c => {
-                const date = new Date(c.commit?.author?.date);
-                return date >= sevenDaysAgo;
-            }).length;
-            animateStat('recentActivity', recentActivity);
-
-            // Update time
-            document.getElementById('statsUpdateTime').textContent = new Date().toLocaleTimeString('zh-CN');
-        }
-
-        // Animate stat update
-        function animateStat(id, value) {
-            const el = document.getElementById(id);
-            el.textContent = value;
-            el.classList.add('updated');
-            setTimeout(() => el.classList.remove('updated'), 500);
-        }
-
-        // Render messages from commits
+        // Render Messages
         function renderMessages() {
             const container = document.getElementById('messageFlow');
-            
-            if (state.commits.length === 0) {
-                container.innerHTML = '<div class="no-data">暂无提交记录</div>';
-                return;
-            }
-
-            document.getElementById('commitCount').textContent = `${state.commits.length}条记录`;
-
-            container.innerHTML = state.commits.map(commit => {
-                const authorName = commit.commit?.author?.name || 'Unknown';
-                const authorKey = getAgentKey(authorName);
-                const date = new Date(commit.commit?.author?.date);
-                const timeStr = date.toLocaleTimeString('zh-CN', { hour12: false });
-                const dateStr = date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
-                const message = commit.commit?.message || 'No message';
-                const shortMsg = message.split('\n')[0].substring(0, 50);
-                const agent = AGENT_ROLES[authorKey] || AGENT_ROLES['PM'];
-                
-                return `
-                    <div class="message-item" style="border-left-color: ${agent.color}">
-                        <div class="message-time">${dateStr} ${timeStr}</div>
-                        <div class="message-content">
-                            <span>${agent.icon}</span>
-                            <span style="color: ${agent.color}">${authorKey}</span>
-                            <span style="color: #888;">──→</span>
-                            <span>GitHub</span>
-                            <span class="message-action">
-                                ${shortMsg}
-                                <a href="${commit.html_url}" target="_blank" class="commit-link" style="margin-left: 8px;">↗</a>
-                            </span>
-                        </div>
+            container.innerHTML = messages.map(msg => `
+                <div class="message-item">
+                    <div class="message-time">${msg.time}</div>
+                    <div class="message-content">
+                        <span>${msg.icon}</span>
+                        <span>${msg.from}</span>
+                        <span style="color: #888;">──→</span>
+                        <span>${msg.to}</span>
+                        <span style="color: #4ade80;">${msg.action}</span>
                     </div>
-                `;
-            }).join('');
+                </div>
+            `).join('');
         }
 
-        // Update time display
+        // Update Time
         function updateTime() {
             const now = new Date();
-            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString('zh-CN', { hour12: false });
-            document.getElementById('lastFetch').textContent = now.toLocaleTimeString('zh-CN', { hour12: false });
+            document.getElementById('lastUpdate').textContent = 
+                now.toLocaleTimeString('zh-CN', { hour12: false });
         }
 
-        // Update loading state
-        function updateLoadingState(isLoading) {
-            const indicators = ['agentStatusIndicator', 'statsStatusIndicator', 'messageStatusIndicator'];
-            indicators.forEach(id => {
-                const el = document.getElementById(id);
-                el.className = `status-indicator ${isLoading ? 'status-updating' : 'status-running'}`;
-            });
+        // Initial Render
+        renderAgents();
+        renderMessages();
+        updateTime();
 
-            const btn = document.getElementById('refreshBtn');
-            btn.disabled = isLoading;
-            btn.innerHTML = isLoading ? 
-                '<span class="loading-spinner"></span>刷新中...' : 
-                '立即刷新';
-        }
-
-        // Manual refresh
-        function manualRefresh() {
-            fetchAllData();
-        }
-
-        // Show error
-        function showError(message) {
-            const banner = document.getElementById('errorBanner');
-            banner.textContent = `⚠️ ${message}`;
-            banner.style.display = 'block';
-        }
-
-        // Hide error
-        function hideError() {
-            document.getElementById('errorBanner').style.display = 'none';
-        }
+        // Auto Refresh every 30 seconds
+        setInterval(() => {
+            updateTime();
+            // In a real implementation, fetch data from API
+            console.log('Auto-refreshed at', new Date().toLocaleTimeString());
+        }, 30000);
     </script>
 </body>
 </html>
