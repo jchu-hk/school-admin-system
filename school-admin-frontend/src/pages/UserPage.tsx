@@ -262,8 +262,20 @@ export default function UserPage() {
     try {
       const token = getToken()
       const updateData = { ...data }
+      
+      // Remove empty optional fields to avoid validation errors
+      // Only send fields that have actual values
       if (!updateData.password) {
         delete (updateData as Partial<UserFormData>).password
+      }
+      if (!updateData.phone) {
+        delete (updateData as Partial<UserFormData>).phone
+      }
+      if (!updateData.email) {
+        delete (updateData as Partial<UserFormData>).email
+      }
+      if (!updateData.department) {
+        delete (updateData as Partial<UserFormData>).department
       }
       
       await apiClient.patch(`/api/users/${selectedUser.id}`, updateData, {
