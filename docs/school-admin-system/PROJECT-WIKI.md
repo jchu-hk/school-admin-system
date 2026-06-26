@@ -12,6 +12,32 @@
 | 🐛 Issues | [github.com/.../issues](https://github.com/jchu-hk/school-admin-system/issues) |
 | 📖 API文档 | Swagger UI (测试环境) |
 | 📋 PM流程 | [PM-WORKFLOW.md](./PM-WORKFLOW.md) |
+| 📊 实时看板 | [Multi-Agent Dashboard](../../multi-agent-dashboard.html) |
+
+---
+
+## 📊 Multi-Agent 实时看板
+
+### 🌐 访问地址
+
+**GitHub实时更新版**: 
+https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
+
+**自动更新**: 每5分钟同步一次数据
+
+### 🎭 看板功能
+
+- AI团队状态 (PM, DEV, QA, DEVOPS, CHECKER, ARCH, REQ)
+- 今日统计 (缺陷修复, Git提交, 效率提升)
+- 系统健康状态
+- 消息流活动记录
+
+### 🔄 更新机制
+
+- **自动更新**: PM每5分钟自动同步数据到GitHub
+- **手动更新**: 运行 `/tmp/update-dashboard.sh`
+
+---
 
 ---
 
