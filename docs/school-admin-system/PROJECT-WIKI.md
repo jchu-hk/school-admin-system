@@ -241,3 +241,47 @@ chore:    杂项
 | #42 | 学生成绩管理 | 2026-06-25 | PR合并 |
 
 *此页面在版本发布或重大变更时更新*
+
+---
+
+## 🤖 Multi-Agent Dashboard
+
+**实时监控**: AI团队状态、提交记录、消息流
+
+### 访问方式
+
+**推荐 (实时预览)**:
+```
+https://htmlpreview.github.io/?https://raw.githubusercontent.com/jchu-hk/school-admin-system/main/multi-agent-dashboard.html
+```
+
+**GitHub Raw (直接下载)**:
+```
+https://raw.githubusercontent.com/jchu-hk/school-admin-system/main/multi-agent-dashboard.html
+```
+
+**GitHub Blob (查看源码)**:
+```
+https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
+```
+
+### 更新频率
+
+每5分钟自动更新 (由Project Admin Agent管理)
+
+### 状态说明
+
+| 状态 | 图标 | 说明 |
+|------|------|------|
+| 运行中 | 🟢 | Agent正在工作 |
+| 空闲 | ⏸️ | Agent未分配任务或已完成 |
+
+### Agent列表
+
+- 🧑‍💼 PM - 调度中枢
+- 🤖 DEV - 开发实现
+- 🔍 QA - 质量验收
+- 🔧 DEVOPS - 运维部署
+- ✓ CHECKER - 代码审查
+- 🏗️ ARCH - 架构设计
+- 📝 REQ - 需求分析
