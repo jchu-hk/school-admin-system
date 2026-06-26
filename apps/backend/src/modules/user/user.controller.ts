@@ -131,8 +131,9 @@ export class UserController {
     UserRole.SCHOOL_STAFF,
     UserRole.TEACHER,
   )
-  getClasses() {
-    return this.userService.getClasses();
+  async getClasses() {
+    const classes = await this.userService.getClasses();
+    return { data: classes };
   }
 
   @Get('students')
