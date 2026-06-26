@@ -204,7 +204,7 @@ export default function UserPage() {
       if (departmentFilter) params.append('department', departmentFilter)
       if (searchTerm) params.append('search', searchTerm)
 
-      const response = await apiClient.get<{ users: User[]; total: number; page?: number; limit?: number; totalPages?: number }>(`/api/users?${params.toString()}`, {
+      const response = await apiClient.get<{ data: User[]; total: number }>(`/api/users?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
