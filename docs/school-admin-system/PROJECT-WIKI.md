@@ -47,7 +47,7 @@ https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.h
 |------|-----|------|
 | 前端 (用户登录) |  | ✅ |
 | 后端API |  | ✅ |
-| Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | ✅ |
+| Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | ✅ 已配置 |
 
 > ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化
 
@@ -65,11 +65,14 @@ https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.h
 ### 监控Dashboard
 | 资源 | URL | 说明 |
 |------|-----|------|
-| Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | 系统监控、性能指标 (admin/admin123) |
+| Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | 系统监控、性能指标 (admin/admin123) | ✅ PostgreSQL + Prometheus数据源 |
+| Dashboard 1 | [System Health Overview](/d/system-health-overview/system-health-overview---school-admin) | 数据库状态、表统计、索引使用 |
+| Dashboard 2 | [Container Resources](/d/container-resources/container-resources---school-admin) | 容器资源监控 |
+| Dashboard 3 | [API Monitoring](/d/api-monitoring/api-monitoring---school-admin) | API性能监控 |
 | Prometheus | http://localhost:9091 (仅内网) | 指标数据采集 |
 | Swagger UI | http://localhost:3000/api/docs (仅内网) | API文档 |
 
-> ⚠️ Grafana需要配置账户密码登录
+> ✅ Grafana已配置PostgreSQL和Prometheus数据源，创建了3个监控Dashboard
 
 ---
 

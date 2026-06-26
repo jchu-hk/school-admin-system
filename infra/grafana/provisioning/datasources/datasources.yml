@@ -6,3 +6,18 @@ datasources:
     url: http://prometheus:9090
     isDefault: true
     editable: true
+  - name: PostgreSQL
+    type: postgres
+    access: proxy
+    url: school-admin-postgres:5432
+    database: school_admin
+    user: school_admin
+    secureJsonData:
+      password: school_admin123
+    isDefault: false
+    editable: true
+    jsonData:
+      sslmode: disable
+      connMaxLifetime: 14400
+      maxIdleConns: 100
+      maxOpenConns: 100
