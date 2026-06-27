@@ -1,0 +1,20 @@
+{
+  "agents": [
+    {"icon": "🧑💼", "name": "PM", "status": "running", "task": "调度中枢 - 协调DEV#41和QA学生管理测试", "color": "#fbbf24"},
+    {"icon": "🤖", "name": "DEV", "status": "running", "task": "处理 #41 学生档案管理", "color": "#60a5fa"},
+    {"icon": "🔍", "name": "QA", "status": "running", "task": "学生管理测试用例准备中", "color": "#4ade80"},
+    {"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "运维部署 - 上次: Grafana配置", "color": "#f97316"},
+    {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "代码审查 - 等待分配", "color": "#a855f7"},
+    {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "架构设计 - 等待分配", "color": "#6b7280"},
+    {"icon": "📝", "name": "REQ", "status": "idle", "task": "需求分析 - 等待分配", "color": "#ec4899"}
+  ],
+  "stats": {
+    "openIssues": 16,
+    "commits": 20,
+    "todayCommits": 3,
+    "recentActivity": 8
+  },
+  "messages": [],
+  "lastUpdate": "2026-06-27 08:30:00",
+  "generatedAt": "2026-06-27T00:30:00.000Z"
+}
