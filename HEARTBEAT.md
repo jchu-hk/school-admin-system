@@ -40,8 +40,7 @@
 
 | Issue | 描述 | 负责人 | 标签 | 状态 |
 |-------|------|--------|------|------|
-| #152 | 配置Grafana公网访问 | agent-DEVOPS | `in-progress`, `p2` | 🔄 进行中 |
-| #45 | 成绩发布管理 | agent-ARCH | `in-progress`, `p2` | 🔄 进行中 |
+| #41 | 学生档案管理 | agent-DEV | `in-progress`, `p2` | 🔄 DEV进行中 |
 
 > 所有正在处理的工作都已标记 `in-progress` 标签
 

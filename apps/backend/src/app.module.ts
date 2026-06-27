@@ -27,6 +27,8 @@ import { LunchModule } from './modules/lunch/lunch.module';
 import { GradesModule } from './modules/grades/grades.module';
 import { AiModule } from './modules/ai/ai.module';
 import { BusModule } from './modules/bus/bus.module';
+import { StudentProfileModule } from './modules/student-profile/student-profile.module';
+import { MetricsModule } from './modules/metrics/metrics.module';
 
 @Module({
   imports: [
@@ -74,6 +76,8 @@ import { BusModule } from './modules/bus/bus.module';
     GradesModule,
     AiModule,
     BusModule,
+    StudentProfileModule,
+    MetricsModule,
   ],
   controllers: [],
   providers: [],
