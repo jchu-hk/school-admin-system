@@ -54,16 +54,24 @@ def get_open_count() -> int:
 
 
 def infer_status(issues: List[Dict], commits: List[Dict]) -> Dict[str, Dict]:
+    """从 issue labels 推断 Agent 状态"""
     default_tasks = {"PM": "调度中枢", "DEV": "开发实现", "QA": "质量验收",
                      "DEVOPS": "运维部署", "CHECKER": "代码审查",
                      "ARCH": "架构设计", "REQ": "需求分析"}
     status = {a: {"status": "idle", "task": default_tasks[a]} for a in AGENT_CONFIG}
 
+    # Label 映射：label name -> Agent
+    label_to_agent = {
+        "dev": "DEV", "qa": "QA", "arch": "ARCH",
+        "req": "REQ", "devops": "DEVOPS", "checker": "CHECKER"
+    }
+
     for issue in issues:
-        title = issue.get("title", "").lower()
-        for agent, cfg in AGENT_CONFIG.items():
-            if any(kw.lower() in title for kw in cfg["keywords"]):
-                status[agent] = {"status": "running", "task": f"处理 #{issue.get('number')}"}
+        labels = [l.get("name", "") for l in issue.get("labels", [])]
+        for label in labels:
+            if label in label_to_agent:
+                agent = label_to_agent[label]
+                status[agent] = {"status": "running", "task": f"处理 #{issue.get('number')} - {issue.get('title', '')[:30]}"}
                 break
 
     now = datetime.now(timezone.utc)
