@@ -4,7 +4,7 @@
       "icon": "🧑💼",
       "name": "PM",
       "status": "idle",
-      "task": "上次: 182d153",
+      "task": "调度中枢",
       "color": "#fbbf24"
     },
     {
@@ -53,10 +53,10 @@
   "stats": {
     "openIssues": 16,
     "commits": 20,
-    "todayCommits": 5,
+    "todayCommits": 6,
     "recentActivity": 20
   },
   "messages": [],
-  "lastUpdate": "2026-06-27 09:00:04",
-  "generatedAt": "2026-06-27T01:00:04.257059+00:00"
+  "lastUpdate": "2026-06-27 09:05:03",
+  "generatedAt": "2026-06-27T01:05:03.981301+00:00"
 }
