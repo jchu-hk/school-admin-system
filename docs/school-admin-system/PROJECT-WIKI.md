@@ -63,6 +63,8 @@ https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.h
 **最新Tag**: v1.5.4
 
 ### 监控Dashboard
+
+**Grafana 登录信息**: Username=`admin`, Password=`admin123`
 | 资源 | URL | 说明 |
 |------|-----|------|
 | Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | 系统监控、性能指标 (admin/admin123) | ✅ PostgreSQL + Prometheus数据源 |
