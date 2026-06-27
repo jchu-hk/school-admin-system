@@ -1,24 +1,62 @@
 {
   "agents": [
-    {"icon": "🧑💼", "name": "PM", "status": "idle", "task": "调度中枢", "color": "#fbbf24"},
-    {"icon": "🤖", "name": "DEV", "status": "idle", "task": "已完成 #41 学生档案管理", "color": "#60a5fa"},
-    {"icon": "🔍", "name": "QA", "status": "idle", "task": "等待 #41 QA验收", "color": "#4ade80"},
-    {"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "运维部署 - 上次: Grafana配置", "color": "#f97316"},
-    {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "代码审查 - 等待分配", "color": "#a855f7"},
-    {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "架构设计 - 等待分配", "color": "#6b7280"},
-    {"icon": "📝", "name": "REQ", "status": "idle", "task": "需求分析 - 等待分配", "color": "#ec4899"}
+    {
+      "icon": "🧑💼",
+      "name": "PM",
+      "status": "idle",
+      "task": "上次: 182d153",
+      "color": "#fbbf24"
+    },
+    {
+      "icon": "🤖",
+      "name": "DEV",
+      "status": "idle",
+      "task": "上次: 7ac2012",
+      "color": "#60a5fa"
+    },
+    {
+      "icon": "🔍",
+      "name": "QA",
+      "status": "idle",
+      "task": "质量验收",
+      "color": "#4ade80"
+    },
+    {
+      "icon": "🔧",
+      "name": "DEVOPS",
+      "status": "idle",
+      "task": "运维部署",
+      "color": "#f97316"
+    },
+    {
+      "icon": "✓",
+      "name": "CHECKER",
+      "status": "idle",
+      "task": "代码审查",
+      "color": "#a855f7"
+    },
+    {
+      "icon": "🏗️",
+      "name": "ARCH",
+      "status": "idle",
+      "task": "架构设计",
+      "color": "#6b7280"
+    },
+    {
+      "icon": "📝",
+      "name": "REQ",
+      "status": "idle",
+      "task": "需求分析",
+      "color": "#ec4899"
+    }
   ],
   "stats": {
     "openIssues": 16,
     "commits": 20,
-    "todayCommits": 6,
-    "recentActivity": 10
+    "todayCommits": 4,
+    "recentActivity": 20
   },
-  "messages": [
-    {"time": "08:09", "from": "PM", "to": "Project Admin", "action": "修复Dashboard推断逻辑", "icon": "🔧"},
-    {"time": "08:30", "from": "PM", "to": "GitHub", "action": "完成#41学生档案管理", "icon": "✅"},
-    {"time": "08:30", "from": "PM", "to": "Dashboard", "action": "重写Dashboard读取dashboard-state.json", "icon": "📊"}
-  ],
-  "lastUpdate": "2026-06-27 08:35:00",
-  "generatedAt": "2026-06-27T00:35:00.000Z"
+  "messages": [],
+  "lastUpdate": "2026-06-27 08:39:15",
+  "generatedAt": "2026-06-27T00:39:15.299273+00:00"
 }

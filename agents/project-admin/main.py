@@ -58,8 +58,7 @@ class GitHubAPI:
     def get_recent_commits(limit: int = 20) -> List[Dict]:
         """获取最近commits"""
         output = GitHubAPI.run_gh_command([
-            "gh", "api", f"repos/{GITHUB_REPO}/commits",
-            "--field", f"per_page={limit}"
+            "gh", "api", "repos/{}/commits?per_page={}".format(GITHUB_REPO, limit)
         ])
         if output:
             commits = json.loads(output)
