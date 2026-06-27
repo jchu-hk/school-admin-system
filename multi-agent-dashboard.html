@@ -46,7 +46,7 @@
         </div>
     </div>
     <script>
-        const STATE = [{"icon": "🧑💼", "name": "PM", "status": "idle", "task": "调度中枢", "color": "#fbbf24"}, {"icon": "🤖", "name": "DEV", "status": "idle", "task": "上次: 44679c9", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "idle", "task": "质量验收", "color": "#4ade80"}, {"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "运维部署", "color": "#f97316"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "代码审查", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "架构设计", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "idle", "task": "需求分析", "color": "#ec4899"}];
+        const STATE = [{"icon": "🧑💼", "name": "PM", "status": "idle", "task": "调度中枢", "color": "#fbbf24"}, {"icon": "🤖", "name": "DEV", "status": "running", "task": "处理 #50 - [F-ASSET-001] 资产管理", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "running", "task": "处理 #140 - [WARNING] TypeORM实体元数据警告", "color": "#4ade80"}, {"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "运维部署", "color": "#f97316"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "代码审查", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "running", "task": "处理 #45 - [F-NEW-05] 成绩发布管理", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "running", "task": "处理 #51 - [F-ASSET-002] 资产租借管理", "color": "#ec4899"}];
         const STATS = {
             "openIssues": 14,
             "commits": 20,
@@ -70,7 +70,7 @@
             ['🕐 7天活跃', STATS.recentActivity]
         ].map(([label, val]) => `<div class="stat-item"><span>${label}</span><span>${val}</span></div>`).join('');
 
-        document.getElementById('lastUpdate').textContent = '2026-06-27 16:47:09';
+        document.getElementById('lastUpdate').textContent = '2026-06-27 16:48:34';
     </script>
 </body>
 </html>
