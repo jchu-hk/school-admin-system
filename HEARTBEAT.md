@@ -167,7 +167,7 @@ agent-PM (调度中枢)
 | 前端 | ✅ 已部署 | v1.5.0 |
 | 数据库 | ✅ 运行中 | - |
 
-**URL**: https://yang-wanna-dramatically-given.trycloudflare.com
+**URL**: https://until-diamonds-disclosure-needle.trycloudflare.com
 
 **Frontend: 
 **Backend API**: 
@@ -333,7 +333,7 @@ agent-PM (调度中枢)
 
 ### 当前测试URL
 
-**https://yang-wanna-dramatically-given.trycloudflare.com**
+**https://until-diamonds-disclosure-needle.trycloudflare.com**
 
 ### 测试账号
 
