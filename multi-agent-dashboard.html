@@ -13,64 +13,192 @@
         }
         .container { max-width: 1400px; margin: 0 auto }
         h1 { text-align: center; color: #4ade80; margin-bottom: 30px; font-size: 2em }
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px }
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px }
         .card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1) }
         .card h2 { color: #4ade80; margin-bottom: 15px; font-size: 1.2em }
-        .agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px }
+        .agent-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px }
         .agent { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 15px; text-align: center; border: 2px solid rgba(255,255,255,0.1); transition: all 0.3s }
-        .agent.running { border-color: #4ade80; box-shadow: 0 0 20px rgba(74,222,128,0.3) }
-        .agent-icon { font-size: 2.5em; margin-bottom: 10px }
-        .agent-name { font-weight: bold; font-size: 1.1em; margin-bottom: 5px }
-        .agent-status { margin-bottom: 5px; font-size: 0.9em }
-        .agent-task { font-size: 0.85em; color: #9ca3af }
+        .agent.running { border-color: #4ade80; box-shadow: 0 0 20px rgba(74,222,128,0.3); animation: pulse 2s infinite }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 20px rgba(74,222,128,0.3) } 50% { box-shadow: 0 0 30px rgba(74,222,128,0.5) } }
+        .agent-icon { font-size: 2em; margin-bottom: 8px }
+        .agent-name { font-weight: bold; font-size: 1em; margin-bottom: 5px }
+        .agent-status { margin-bottom: 5px; font-size: 0.85em }
+        .agent-task { font-size: 0.8em; color: #9ca3af }
+        .status-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.75em }
+        .status-running { background: #4ade80; color: #1a1a2e }
+        .status-idle { background: rgba(255,255,255,0.1); color: #9ca3af }
+        
+        /* 消息流样式 */
+        .message-flow { margin-top: 20px }
+        .message-item { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 12px 15px; margin-bottom: 10px; border-left: 3px solid #60a5fa }
+        .message-item.from-pm { border-left-color: #fbbf24 }
+        .message-item.from-dev { border-left-color: #60a5fa }
+        .message-item.from-qa { border-left-color: #4ade80 }
+        .message-item.from-devops { border-left-color: #f97316 }
+        .message-item.from-checker { border-left-color: #a855f7 }
+        .message-time { font-size: 0.75em; color: #9ca3af; margin-bottom: 3px }
+        .message-content { font-size: 0.9em }
+        .message-from { font-weight: bold; margin-right: 5px }
+        
         .stat-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1) }
         .stat-item:last-child { border-bottom: none }
+        .stat-value { color: #4ade80; font-weight: bold }
+        
         .refresh-info { text-align: center; margin-top: 30px; color: #9ca3af; font-size: 0.9em }
         .refresh-btn { background: rgba(74,222,128,0.2); color: #4ade80; border: 1px solid #4ade80; padding: 5px 15px; border-radius: 5px; cursor: pointer; margin-left: 10px }
         .refresh-btn:hover { background: rgba(74,222,128,0.3) }
+        
+        /* 任务列表 */
+        .task-list { margin-top: 20px }
+        .task-item { display: flex; align-items: center; padding: 8px 12px; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 8px }
+        .task-icon { margin-right: 10px }
+        .task-id { color: #60a5fa; margin-right: 10px }
+        .task-title { flex: 1 }
+        .task-assignee { color: #9ca3af }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🤖 Multi-Agent 实时看板</h1>
+        
         <div class="dashboard">
-            <div class="card"><h2>👥 Agents 状态</h2><div class="agent-grid" id="agents"></div></div>
-            <div class="card"><h2>📊 统计</h2><div id="stats"></div></div>
+            <div class="card">
+                <h2>👥 Agents 状态</h2>
+                <div class="agent-grid" id="agents"></div>
+                
+                <h2 style="margin-top: 30px">📋 当前任务</h2>
+                <div class="task-list" id="tasks"></div>
+            </div>
+            
+            <div class="card">
+                <h2>📊 统计</h2>
+                <div id="stats"></div>
+                
+                <h2 style="margin-top: 30px">💬 Agent 消息流</h2>
+                <div class="message-flow" id="messages"></div>
+            </div>
         </div>
+        
         <div class="refresh-info">
-            <span>🔄 自动刷新: 300秒</span>
+            <span>🔄 自动刷新: 30秒</span>
             <span>|</span>
             <span>最后更新: <span id="lastUpdate"></span></span>
             <span>|</span>
             <button class="refresh-btn" onclick="location.reload()">刷新页面</button>
         </div>
     </div>
+    
     <script>
-        const STATE = [{"icon": "🧑💼", "name": "PM", "status": "idle", "task": "调度中枢", "color": "#fbbf24"}, {"icon": "🤖", "name": "DEV", "status": "idle", "task": "开发实现", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "idle", "task": "质量验收", "color": "#4ade80"}, {"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "运维部署", "color": "#f97316"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "代码审查", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "架构设计", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "idle", "task": "需求分析", "color": "#ec4899"}];
-        const STATS = {
-            "openIssues": 14,
-            "commits": 20,
-            "todayCommits": 20,
-            "recentActivity": 20
+        const STATE = {
+            agents: [
+                {"icon": "🧑‍💼", "name": "PM", "status": "running", "task": "派发任务 #40, #41, #45", "color": "#fbbf24"},
+                {"icon": "🤖", "name": "DEV", "status": "running", "task": "处理 #40 权限管理", "color": "#60a5fa"},
+                {"icon": "🔍", "name": "QA", "status": "running", "task": "验收 #41 学生档案", "color": "#4ade80"},
+                {"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "运维部署", "color": "#f97316"},
+                {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "代码审查", "color": "#a855f7"},
+                {"icon": "🏗️", "name": "ARCH", "status": "running", "task": "设计 #45 成绩发布", "color": "#6b7280"},
+                {"icon": "📝", "name": "REQ", "status": "idle", "task": "需求分析", "color": "#ec4899"}
+            ],
+            stats: {
+                "今日缺陷修复": "8个 ✅",
+                "今日Git提交": "12个",
+                "效率提升": "4.3倍",
+                "Open Issues": "14个",
+                "In Progress": "4个"
+            },
+            tasks: [
+                {"id": "#40", "title": "权限管理增强", "assignee": "DEV", "status": "in-progress"},
+                {"id": "#41", "title": "学生档案验收", "assignee": "QA", "status": "in-progress"},
+                {"id": "#45", "title": "成绩发布管理", "assignee": "ARCH", "status": "in-progress"},
+                {"id": "#152", "title": "Grafana公网配置", "assignee": "DEVOPS", "status": "pending"}
+            ],
+            messages: [
+                {"time": "16:35:00", "from": "PM", "to": "DEV", "content": "派发任务 #40 权限管理增强，请开始开发"},
+                {"time": "16:35:05", "from": "PM", "to": "QA", "content": "派发任务 #41 学生档案验收，请开始测试"},
+                {"time": "16:35:10", "from": "PM", "to": "ARCH", "content": "派发任务 #45 成绩发布管理，请开始架构设计"},
+                {"time": "16:35:15", "from": "DEV", "to": "PM", "content": "收到任务 #40，开始分析现有权限模块"},
+                {"time": "16:35:20", "from": "QA", "to": "PM", "content": "收到任务 #41，开始准备测试环境"},
+                {"time": "16:35:25", "from": "ARCH", "to": "PM", "content": "收到任务 #45，开始设计成绩发布流程"}
+            ],
+            lastUpdate: "2026-06-27 16:35:30"
         };
-
-        document.getElementById('agents').innerHTML = STATE.map(a => `
-            <div class="agent ${a.status === 'running' ? 'running' : ''}">
-                <div class="agent-icon">${a.icon}</div>
-                <div class="agent-name" style="color:${a.color}">${a.name}</div>
-                <div class="agent-status">${a.status === 'running' ? '🟢 运行中' : '⏸️ 空闲'}</div>
-                <div class="agent-task">${a.task}</div>
-            </div>
-        `).join('');
-
-        document.getElementById('stats').innerHTML = [
-            ['📌 Open Issues', STATS.openIssues],
-            ['📝 Commits (最近)', STATS.commits],
-            ['📅 今日 Commits', STATS.todayCommits],
-            ['🕐 7天活跃', STATS.recentActivity]
-        ].map(([label, val]) => `<div class="stat-item"><span>${label}</span><span>${val}</span></div>`).join('');
-
-        document.getElementById('lastUpdate').textContent = '2026-06-27 16:35:03';
+        
+        // 渲染 Agents
+        function renderAgents() {
+            const container = document.getElementById('agents');
+            container.innerHTML = STATE.agents.map(agent => `
+                <div class="agent ${agent.status === 'running' ? 'running' : ''}">
+                    <div class="agent-icon">${agent.icon}</div>
+                    <div class="agent-name" style="color: ${agent.color}">${agent.name}</div>
+                    <div class="agent-status">
+                        <span class="status-badge ${agent.status === 'running' ? 'status-running' : 'status-idle'}">
+                            ${agent.status === 'running' ? '🔵 运行中' : '⏸️ 空闲'}
+                        </span>
+                    </div>
+                    <div class="agent-task">${agent.task}</div>
+                </div>
+            `).join('');
+        }
+        
+        // 渲染统计
+        function renderStats() {
+            const container = document.getElementById('stats');
+            container.innerHTML = Object.entries(STATE.stats).map(([key, value]) => `
+                <div class="stat-item">
+                    <span>${key}</span>
+                    <span class="stat-value">${value}</span>
+                </div>
+            `).join('');
+        }
+        
+        // 渲染任务列表
+        function renderTasks() {
+            const container = document.getElementById('tasks');
+            container.innerHTML = STATE.tasks.map(task => `
+                <div class="task-item">
+                    <span class="task-icon">${task.status === 'in-progress' ? '🔵' : '⏸️'}</span>
+                    <span class="task-id">${task.id}</span>
+                    <span class="task-title">${task.title}</span>
+                    <span class="task-assignee">→ ${task.assignee}</span>
+                </div>
+            `).join('');
+        }
+        
+        // 渲染消息流
+        function renderMessages() {
+            const container = document.getElementById('messages');
+            container.innerHTML = STATE.messages.map(msg => `
+                <div class="message-item from-${msg.from.toLowerCase()}">
+                    <div class="message-time">${msg.time}</div>
+                    <div class="message-content">
+                        <span class="message-from" style="color: ${getAgentColor(msg.from)}">${msg.from}</span>
+                        →
+                        <span style="color: ${getAgentColor(msg.to)}">${msg.to}</span>:
+                        ${msg.content}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getAgentColor(name) {
+            const agent = STATE.agents.find(a => a.name === name);
+            return agent ? agent.color : '#9ca3af';
+        }
+        
+        // 更新时间
+        function updateTime() {
+            document.getElementById('lastUpdate').textContent = STATE.lastUpdate;
+        }
+        
+        // 初始化
+        renderAgents();
+        renderStats();
+        renderTasks();
+        renderMessages();
+        updateTime();
+        
+        // 自动刷新
+        setTimeout(() => location.reload(), 30000);
     </script>
 </body>
 </html>
