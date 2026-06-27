@@ -7,8 +7,8 @@ export class AddInquiryIntentAndEscalationHistory20250612130000 implements Migra
     // 添加意图分类字段到 inquiries 表
     await queryRunner.query(`
       ALTER TABLE "inquiries"
-      ADD COLUMN IF NOT EXISTS "intent_type" varchar(50)
-      ADD COLUMN IF NOT EXISTS "intent_confidence" decimal(3,2)
+      ADD COLUMN IF NOT EXISTS "intent_type" varchar(50),
+      ADD COLUMN IF NOT EXISTS "intent_confidence" decimal(3,2),
       ADD COLUMN IF NOT EXISTS "intent_keywords" text
     `);
 
