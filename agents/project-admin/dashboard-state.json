@@ -11,14 +11,14 @@
       "icon": "🤖",
       "name": "DEV",
       "status": "running",
-      "task": "处理 #40",
+      "task": "修复 #41",
       "color": "#60a5fa"
     },
     {
       "icon": "🔍",
       "name": "QA",
-      "status": "running",
-      "task": "处理 #41",
+      "status": "idle",
+      "task": "验收失败 #41",
       "color": "#4ade80"
     },
     {
@@ -57,6 +57,6 @@
     "recentActivity": 20
   },
   "messages": [],
-  "lastUpdate": "2026-06-27 11:13:02",
-  "generatedAt": "2026-06-27T03:13:02.000Z"
+  "lastUpdate": "2026-06-27 11:17:10",
+  "generatedAt": "2026-06-27T03:17:10.000Z"
 }
