@@ -126,6 +126,50 @@ export class AbacController {
     };
   }
 
+  @Get('permission-audit-logs')
+  @UseGuards(AbacGuard)
+  @AbacResource('permission_audit_log')
+  @AbacAction('read')
+  @ApiOperation({ summary: '查询权限变更审计日志' })
+  @ApiResponse({ status: 200, description: '权限变更日志列表' })
+  async getPermissionAuditLogs(
+    @Query('page') page = '1',
+    @Query('limit') limit = '20',
+    @Query('targetUserId') targetUserId?: string,
+    @Query('operatorId') operatorId?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    const result = await this.abacService.getAuditLogs(
+      parseInt(page, 10),
+      parseInt(limit, 10),
+      targetUserId,
+      operatorId,
+      startDate ? new Date(startDate) : undefined,
+      endDate ? new Date(endDate) : undefined,
+    );
+    return {
+      logs: result.logs,
+      total: result.total,
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  @Get('permission-templates')
+  @UseGuards(AbacGuard)
+  @AbacResource('permission_template')
+  @AbacAction('read')
+  @ApiOperation({ summary: '获取预设权限模板列表' })
+  @ApiResponse({ status: 200, description: '预设权限模板' })
+  async getPermissionTemplates() {
+    return {
+      templates: this.abacService.getPermissionTemplates(),
+      timestamp: new Date().toISOString(),
+    };
+  }
+
   // ============================================================
   // 决策测试接口（仅开发环境）
   // ============================================================

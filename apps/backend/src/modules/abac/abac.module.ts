@@ -27,17 +27,20 @@
  */
 
 import { Module, Global } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AbacService } from './abac.service';
 import { AbacController } from './abac.controller';
+import { PermissionAuditLog } from './entities/permission-audit-log.entity';
 
 @Global()
 @Module({
+  imports: [TypeOrmModule.forFeature([PermissionAuditLog])],
   controllers: [AbacController],
   providers: [
     AbacService,
     // 注册为全局守卫（可选，全局启用 ABAC）
   ],
-  exports: [AbacService],
+  exports: [AbacService, TypeOrmModule],
 })
 export class AbacModule {}
