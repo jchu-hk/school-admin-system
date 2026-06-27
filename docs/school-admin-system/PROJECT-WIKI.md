@@ -45,8 +45,8 @@ https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.h
 
 | 服务 | URL | 状态 |
 |------|-----|------|
-| 前端 (用户登录) |  | ✅ |
-| 后端API |  | ✅ |
+| 前端 (用户登录) | [https://yang-wanna-dramatically-given.trycloudflare.com](https://yang-wanna-dramatically-given.trycloudflare.com) | ✅ |
+| 后端API | [https://yang-wanna-dramatically-given.trycloudflare.com/api](https://yang-wanna-dramatically-given.trycloudflare.com/api) | ✅ |
 | Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | ✅ 已配置 |
 
 > ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化
