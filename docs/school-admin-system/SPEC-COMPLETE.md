@@ -5180,7 +5180,211 @@ Step 5: 提醒状态记录 (Reminder Status Logging)
 | MOD-MEET-001 | 任务分派 | F-MEET-003 | 任务分派（从会议生成任务）| P2 |
 | MOD-MEET-001 | 提醒管理 | F-MEET-004 | 到期提醒（自动提醒负责人）| P2 |
 
-**总计：69个功能函数，涵盖13大模块**（v1.8.0新增Module 13：4项功能）
+## 第十五部分：Module 14 — 教师招聘管理模块 (v1.8.1 新增)
+
+### 模块概述
+
+| 属性 | 描述 |
+|------|------|
+| 模块名称 | 教师招聘管理 (Teacher Recruitment Management) |
+| 模块ID | MOD-RECRUIT-001 |
+| 优先级 | P2 |
+| 用户 | 校务主任、人事管理员 |
+| 使用频率 | 按需（每学期招聘季） |
+
+---
+
+### Function F-RECRUIT-001: 职位发布与管理
+
+**函数ID：** F-RECRUIT-001
+**函数名称：** 职位发布与管理
+**模块：** MOD-RECRUIT-001 (Module 14)
+**子模块：** 职位管理
+**优先级：** P2
+**责任人：** 校务主任
+
+#### 功能描述
+
+支持学校发布教师招聘职位，管理职位信息（职位名称、学科、薪资范围、工作地点、要求条件等），并支持职位的编辑、暂停、关闭等生命周期管理。
+
+#### 职位信息
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| title | String | ✅ | 职位名称，如"中文科教师" |
+| subject | String | ✅ | 教授学科 |
+| employment_type | Enum | ✅ | FULL_TIME/PART_TIME/CONTRACT |
+| salary_range | Object | ✅ | {min, max, currency} |
+| location | String | ✅ | 工作地点 |
+| requirements | Text[] | ✅ | 任职要求列表 |
+| responsibilities | Text[] | ✅ | 工作职责列表 |
+| benefits | Text[] | ❌ | 福利待遇 |
+| application_deadline | Date | ✅ | 申请截止日期 |
+| status | Enum | ✅ | DRAFT/PUBLISHED/CLOSED |
+
+#### 职位状态
+
+| 状态 | 说明 | 可执行操作 |
+|------|------|-----------|
+| DRAFT | 草稿 | 编辑、发布 |
+| PUBLISHED | 已发布 | 暂停、关闭 |
+| PAUSED | 已暂停 | 重新发布、关闭 |
+| CLOSED | 已关闭 | 仅查看 |
+
+---
+
+### Function F-RECRUIT-002: 简历收集与筛选
+
+**函数ID：** F-RECRUIT-002
+**函数名称：** 简历收集与筛选
+**模块：** MOD-RECRUIT-001 (Module 14)
+**子模块：** 简历管理
+**优先级：** P2
+**责任人：** 人事管理员
+
+#### 功能描述
+
+收集求职者的申请资料，支持简历上传、在线申请表格填写，并对收到的申请进行筛选、分类、标记等管理操作。
+
+#### 申请信息
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| applicant_name | String | ✅ | 申请人姓名 |
+| email | String | ✅ | 邮箱（登录账号） |
+| phone | String | ✅ | 联系电话 |
+| position_id | UUID | ✅ | 申请职位 |
+| cv_url | String | ✅ | 简历文件URL |
+| cover_letter | Text | ❌ | 求职信 |
+| education | Object[] | ✅ | 教育背景 [{degree, school, major, year}] |
+| experience | Object[] | ❌ | 工作经历 [{company, position, duration, description}] |
+| status | Enum | ✅ | NEW/SCREENING/SHORTLISTED/INTERVIEW/REJECTED/OFFER |
+
+#### 筛选状态
+
+| 状态 | 说明 | 可执行操作 |
+|------|------|-----------|
+| NEW | 新申请 | 标记为筛选中 |
+| SCREENING | 筛选中 | 进入候选、淘汰 |
+| SHORTLISTED | 候选 | 安排面试 |
+| INTERVIEW | 面试中 | 录用、淘汰 |
+| REJECTED | 已淘汰 | 查看记录 |
+| OFFER | 已发Offer | 入职 |
+
+---
+
+### Function F-RECRUIT-003: 面试安排
+
+**函数ID：** F-RECRUIT-003
+**函数名称：** 面试安排
+**模块：** MOD-RECRUIT-001 (Module 14)
+**子模块：** 面试管理
+**优先级：** P2
+**责任人：** 人事管理员
+
+#### 功能描述
+
+管理面试流程，包括面试时间安排、面试官指派、面试形式设定（线上/线下）、面试评分及面试结果记录。
+
+#### 面试信息
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| application_id | UUID | ✅ | 关联申请 |
+| interview_date | DateTime | ✅ | 面试时间 |
+| interviewers | UUID[] | ✅ | 面试官列表 |
+| interview_type | Enum | ✅ | ONLINE/ONSITE |
+| meeting_link | String | ❌ | 线上会议链接 |
+| location | String | ❌ | 线下地点 |
+| duration_minutes | Number | ✅ | 面试时长 |
+| notes | Text | ❌ | 备注 |
+| status | Enum | ✅ | SCHEDULED/COMPLETED/CANCELLED |
+
+#### 面试评分
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| criterion | String | 评分维度（如"教学能力"、"沟通表达"） |
+| score | Number(1-5) | 评分 |
+| comment | String | 评语 |
+| interviewer_id | UUID | 评分人 |
+
+---
+
+### Function F-RECRUIT-004: 录用审批流程
+
+**函数ID：** F-RECRUIT-004
+**函数名称：** 录用审批流程
+**模块：** MOD-RECRUIT-001 (Module 14)
+**子模块：** 审批管理
+**优先级：** P2
+**责任人：** 校务主任
+
+#### 功能描述
+
+支持录用决定的审批流程，包括Offer发送、Offer接受/拒绝、签约确认等环节的管理。
+
+#### Offer信息
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| application_id | UUID | ✅ | 关联申请 |
+| salary | Number | ✅ | 薪资 |
+| start_date | Date | ✅ | 预计到职日期 |
+| position | String | ✅ | 录用职位 |
+| benefits_package | Object | ❌ | 福利套餐 |
+| status | Enum | ✅ | PENDING/ACCEPTED/DECLINED/SIGNED |
+| sent_at | DateTime | ✅ | 发送时间 |
+| responded_at | DateTime | ❌ | 回应时间 |
+
+#### 审批状态
+
+| 状态 | 说明 |
+|------|------|
+| PENDING | 待回应 |
+| ACCEPTED | 已接受 |
+| DECLINED | 已拒绝 |
+| SIGNED | 已签约 |
+
+---
+
+### Function F-RECRUIT-005: 入职手续办理
+
+**函数ID：** F-RECRUIT-005
+**函数名称：** 入职手续办理
+**模块：** MOD-RECRUIT-001 (Module 14)
+**子模块：** 入职管理
+**优先级：** P2
+**责任人：** 人事管理员
+
+#### 功能描述
+
+管理新教师的入职流程，包括入职清单、资料收集、账户开通、系统权限分配等。
+
+#### 入职清单
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| item | String | 清单项目 |
+| required | Boolean | 是否必填 |
+| status | Enum | PENDING/COMPLETED |
+| completed_at | DateTime | 完成时间 |
+| document_url | String | 文档URL |
+
+#### 系统账户
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| teacher_profile_id | UUID | 教师档案ID |
+| user_account | Object | 系统账户信息 |
+| role | Enum | TEACHER |
+| default_permissions | String[] | 默认权限 |
+| onboarding_status | Enum | PENDING/IN_PROGRESS/COMPLETED |
+
+---
+
+
+**总计：74个功能函数，涵盖14大模块**（v1.8.1新增Module 14：5项功能）
 
 ---
 
@@ -5255,6 +5459,7 @@ MOD-MEET-001 (会议管理/v1.8.0)
 
 | 版本 | 发布日期 | 发布者 | 变更类型 | 变更摘要 | 审批人 |
 |------|----------|--------|----------|----------|--------|
+| **v1.8.1** | 2026-06-28 | PM | Minor | **新增 Module 14 — 教师招聘管理模块**：Issue #175；新增5项P2优先级功能（F-RECRUIT-001至F-RECRUIT-005）：职位发布与管理、简历收集与筛选、面试安排、录用审批流程、入职手续办理；功能函数总数69→74，模块13→14 |
 | **v1.8.0** | 2026-06-28 | 系统架构团队 | Minor | **新增 Module 13 — 会议管理模块**：Issue #171；新增4项P2优先级功能（F-MEET-001至F-MEET-004）：会议安排（时间、地点、参与者、时间冲突检测、周期性会议）、会议记录（纪要、决策事项、AI辅助生成、审批流程）、任务分派（从会议生成任务、关联决策事项、状态追踪）、到期提醒（多级提醒机制、升级通知、免打扰时段）；功能函数总数65→69，模块12→13 |
 | **v1.7.1** | 2026-06-09 | 系统架构团队 | Minor | **需求文档补充**：依据GitHub Issues优先级清单（P0/P1/P2共8项缺失）全面补充：① **UI文档补充（SPEC-UI-PROTO.md v1.3.0）**：新增家长门户完整UI设计（10个页面）、午膳管理独立页面（4个页面）、财务报销管理页面、灾难恢复操作界面、运维仪表板详细设计、家长自助变更微信端页面；② **SPEC-COMPLETE.md AC补充**：F-INQ-001新增8条Given/When/Then格式AC验收标准、F-FIN-002新增10条完整AC验收标准+8条测试用例+6类异常处理、F-USER-003新增ABAC规则详细示例（7个OPA/Rego代码示例+11条测试用例）；③ 新增MOD-PARENT-001/MOD-LUNCH-001功能编号对照；④ 文档版本同步更新 | （待填）|
 
