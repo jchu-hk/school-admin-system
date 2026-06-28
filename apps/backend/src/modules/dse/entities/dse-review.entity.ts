@@ -7,6 +7,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { DseResult } from './dse-result.entity';
+import { User } from '../../user/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum DseReviewStatus {
@@ -35,17 +37,17 @@ export class DseReview {
   @Column({ type: 'uuid', name: 'dse_result_id' })
   dseResultId: string;
 
-  @ManyToOne(() => null)
+  @ManyToOne(() => DseResult)
   @JoinColumn({ name: 'dse_result_id' })
-  dseResult: any;
+  dseResult: DseResult;
 
   @ApiProperty({ description: '申请人ID（教师/教务）' })
   @Column({ type: 'uuid', name: 'applicant_id' })
   applicantId: string;
 
-  @ManyToOne(() => null)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'applicant_id' })
-  applicant: any;
+  applicant: User;
 
   @ApiProperty({ description: '覆核类型', enum: DseReviewType })
   @Column({

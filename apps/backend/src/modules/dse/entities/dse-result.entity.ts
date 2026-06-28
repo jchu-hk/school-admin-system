@@ -7,6 +7,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { DseRelease } from './dse-release.entity';
+import { User } from '../../user/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum DseSubjectLevel {
@@ -57,17 +59,17 @@ export class DseResult {
   @Column({ type: 'uuid', name: 'release_id' })
   releaseId: string;
 
-  @ManyToOne(() => null, { eager: false })
+  @ManyToOne(() => DseRelease, { eager: false })
   @JoinColumn({ name: 'release_id' })
-  release: any;
+  release: DseRelease;
 
   @ApiProperty({ description: '学生ID（关联users表）' })
   @Column({ type: 'uuid', name: 'student_id' })
   studentId: string;
 
-  @ManyToOne(() => null)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'student_id' })
-  student: any;
+  student: User;
 
   @ApiProperty({ description: '中文姓名' })
   @Column({ length: 100, name: 'student_name' })

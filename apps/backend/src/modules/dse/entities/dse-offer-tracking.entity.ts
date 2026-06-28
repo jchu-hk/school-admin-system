@@ -7,6 +7,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { DseResult } from './dse-result.entity';
+import { User } from '../../user/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum JupasStatus {
@@ -33,17 +35,17 @@ export class DseOfferTracking {
   @Column({ type: 'uuid', name: 'dse_result_id' })
   dseResultId: string;
 
-  @ManyToOne(() => null)
+  @ManyToOne(() => DseResult)
   @JoinColumn({ name: 'dse_result_id' })
-  dseResult: any;
+  dseResult: DseResult;
 
   @ApiProperty({ description: '学生ID' })
   @Column({ type: 'uuid', name: 'student_id' })
   studentId: string;
 
-  @ManyToOne(() => null)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'student_id' })
-  student: any;
+  student: User;
 
   @ApiProperty({ description: '学生姓名（匿名化显示：姓+同学）' })
   @Column({ length: 50, name: 'student_name_anonymized' })

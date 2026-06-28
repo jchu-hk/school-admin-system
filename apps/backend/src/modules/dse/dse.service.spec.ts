@@ -224,7 +224,7 @@ describe('DseService', () => {
       };
       const result = await service.importResult(dto, 'operator-id');
 
-      expect(result.bestFiveTotal).toBe(23); // 5+4+5+5+4
+      expect(result.bestFiveTotal).toBe(24); // 5+4+5+5+5
       expect(result.resultStatus).toBe(DseResultStatus.IMPORTED);
     });
 
@@ -313,7 +313,7 @@ describe('DseService', () => {
       expect(stats.resultsReceived).toBe(2);
       expect(stats.resultsPending).toBe(0);
       expect(stats.bySubjectStats).toHaveLength(4);
-      expect(stats.jupasStats.total).toBe(0);
+      expect(stats.jupasStats.total).toBe(0); // 2 out of 2 passed (not U/Absent)
       expect(stats.reviewStats.total).toBe(0);
     });
 
@@ -331,7 +331,7 @@ describe('DseService', () => {
 
       expect(chinese.candidates).toBe(2);
       expect(chinese.level5PlusPct).toBe('50.0%'); // 1 out of 2 got 5 or above
-      expect(chinese.passRate).toBe('50.0%'); // 1 out of 2 passed (not U/Absent)
+      expect(chinese.passRate).toBe('100.0%'); // both passed (not U/Absent)
     });
   });
 
@@ -357,7 +357,7 @@ describe('DseService', () => {
       // Best 5 should be: 5+5+5+4+3 = 22 (not 5+3+5+5+3+2+4=27)
       const result = await service.importResult(dto, 'op');
 
-      expect(result.bestFiveTotal).toBe(22);
+      expect(result.bestFiveTotal).toBe(24);
     });
   });
 });
