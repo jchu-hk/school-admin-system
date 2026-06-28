@@ -295,7 +295,7 @@ chore:    杂项
 
 **推荐 (实时预览)**:
 ```
-https://htmlpreview.github.io/?https://raw.githubusercontent.com/jchu-hk/school-admin-system/main/multi-agent-dashboard.html
+https://htmlpreview.github.io/?https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
 ```
 
 **GitHub Raw (直接下载)**:

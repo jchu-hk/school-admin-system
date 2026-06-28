@@ -365,4 +365,5 @@ agent-PM (调度中枢)
 - Agent状态动态显示
 
 ### Dashboard地址
-https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
+**GitHub:** https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
+**Preview:** https://htmlpreview.github.io/?https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
