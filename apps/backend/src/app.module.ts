@@ -29,6 +29,7 @@ import { AiModule } from './modules/ai/ai.module';
 import { BusModule } from './modules/bus/bus.module';
 import { StudentProfileModule } from './modules/student-profile/student-profile.module';
 import { MetricsModule } from './modules/metrics/metrics.module';
+import { DseModule } from './modules/dse/dse.module';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { MetricsModule } from './modules/metrics/metrics.module';
     BusModule,
     StudentProfileModule,
     MetricsModule,
+    DseModule,
   ],
   controllers: [],
   providers: [],
