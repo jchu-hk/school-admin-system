@@ -58,6 +58,7 @@ export class ScholarshipController {
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
     UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
     UserRole.STUDENT,
   )
   findAll(@Query() query: ScholarshipQueryDto) {
@@ -87,6 +88,7 @@ export class ScholarshipController {
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
     UserRole.SCHOOL_STAFF,
+    UserRole.TEACHER,
     UserRole.STUDENT,
   )
   findOne(@Param('id', ParseUUIDPipe) id: string) {

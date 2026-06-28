@@ -9,6 +9,7 @@ import {
   UseGuards,
   Request,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -124,6 +125,36 @@ export class InquiryController {
     return result;
   }
 
+  // ==========================================
+  // 队列管理 API (AC-04, AC-05, AC-06)
+  // 注意: 所有静态路由必须在 @Get(':id') 之前定义，否则会被 :id 匹配
+  // ==========================================
+
+  @Get('queue')
+  @ApiOperation({ summary: '获取家长查询队列（队列管理视图）' })
+  @ApiResponse({ status: 200, description: '队列数据' })
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  getQueue(@Query() query: QueueQueryDto, @Request() req) {
+    return this.inquiryService.getQueue(
+      query,
+      req.user.schoolId,
+      req.user.id,
+      req.user.role,
+    );
+  }
+
+  @Get('timeout-warnings')
+  @ApiOperation({ summary: '获取超时警告查询（AC-04）' })
+  @ApiResponse({ status: 200, description: '超时警告列表' })
+  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  getTimeoutWarnings(@Request() req) {
+    return this.inquiryService.checkTimeoutWarnings(req.user.schoolId);
+  }
+
+  // ==========================================
+  // 带ID的路由 (必须在静态路由之后)
+  // ==========================================
+
   @Get(':id')
   @ApiOperation({ summary: '获取查询详情' })
   @ApiResponse({ status: 200, description: '查询详情' })
@@ -133,7 +164,7 @@ export class InquiryController {
     UserRole.TEACHER,
     UserRole.PARENT,
   )
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.inquiryService.findOne(id);
   }
 
@@ -265,31 +296,6 @@ export class InquiryController {
       HttpStatus.OK,
     );
     return result;
-  }
-
-  // ==========================================
-  // 队列管理 API (AC-04, AC-05, AC-06)
-  // ==========================================
-
-  @Get('queue')
-  @ApiOperation({ summary: '获取家长查询队列（队列管理视图）' })
-  @ApiResponse({ status: 200, description: '队列数据' })
-  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  getQueue(@Query() query: QueueQueryDto, @Request() req) {
-    return this.inquiryService.getQueue(
-      query,
-      req.user.schoolId,
-      req.user.id,
-      req.user.role,
-    );
-  }
-
-  @Get('timeout-warnings')
-  @ApiOperation({ summary: '获取超时警告查询（AC-04）' })
-  @ApiResponse({ status: 200, description: '超时警告列表' })
-  @Roles(UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  getTimeoutWarnings(@Request() req) {
-    return this.inquiryService.checkTimeoutWarnings(req.user.schoolId);
   }
 
   @Post(':id/quick-reply')

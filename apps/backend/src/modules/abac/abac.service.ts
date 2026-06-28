@@ -217,11 +217,12 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
       return true;
     }
 
-    // === 规则1: 教师只能查看本班学生数据 ===
+    // === 规则1: 教师权限 ===
     if (role === 'TEACHER') {
       const teacherClassIds = user?.classIds || [];
       const targetClassId = resourceData?.classId;
 
+      // 教师可查看本班学生数据
       if (
         action === 'read' &&
         ['student', 'score', 'attendance'].includes(resource)
@@ -231,9 +232,20 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
         return true;
       }
 
+      // 教师可为本班学生提交请假申请
       if (action === 'create' && resource === 'leave') {
         if (!targetClassId) return false;
         if (!teacherClassIds.includes(targetClassId)) return false;
+        return true;
+      }
+
+      // 教师可查看请假申请（本班或全部）
+      if (action === 'read' && resource === 'leave') {
+        return true;
+      }
+
+      // 教师可查看奖学金/资助信息
+      if (action === 'read' && resource === 'scholarship') {
         return true;
       }
     }

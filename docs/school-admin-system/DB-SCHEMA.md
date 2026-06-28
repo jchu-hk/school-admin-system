@@ -682,6 +682,109 @@ inquiries (id)
 
 | 版本 | 日期 | 变更 |
 |------|------|------|
+| v1.6.0 | 2026-06-28 | 新增 DSE 放榜成绩追踪模块：dse_releases、dse_results、dse_reviews、dse_offer_tracking 四张表；支持 HKEAA 数据对接、成绩覆核申请、JUPAS 追踪、升学去向统计分析 |
 | v1.5.1 | 2026-06-22 | 基于生产环境数据库实际审查重建；更新 leaves 表字段名 (ai_verify_result→ai_verify_result, certificateUrl→certificate_url 等)；添加 AI 核验相关字段文档 |
 | v1.5.0 | 2026-06-20 | 添加午膳管理、奖学金、家长查询队列模块 |
 | v1.4.0 | 2026-06-03 | 初始版本（设计文档） |
+
+---
+
+## 表: dse_releases — DSE放榜记录
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 放榜记录ID |
+| academic_year | VARCHAR(20) | NOT NULL | 学年，如 2025-2026 |
+| release_date | DATE | NOT NULL | DSE放榜日期 |
+| release_year | INT | NOT NULL | 放榜年份，如 2026 |
+| release_status | ENUM(pending,importing,imported,reviewed,published) | DEFAULT pending | 放榜状态 |
+| import_deadline | DATE | NULL | HKEAA数据导入截止日期 |
+| review_deadline | DATE | NULL | 成绩覆核申请截止日期 |
+| remark | TEXT | NULL | 备注 |
+| created_at | TIMESTAMP | DEFAULT NOW() | 创建时间 |
+| updated_at | TIMESTAMP | DEFAULT NOW() | 更新时间 |
+
+**索引**: (academic_year), (release_year), (release_status)
+
+---
+
+## 表: dse_results — DSE考试成绩
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 成绩记录ID |
+| release_id | UUID | FK → dse_releases | 关联放榜记录 |
+| student_id | UUID | FK → users | 学生ID |
+| student_name | VARCHAR(100) | NOT NULL | 学生姓名 |
+| class_name | VARCHAR(20) | NULL | 班级 |
+| hkeaa_candidate_no | VARCHAR(30) | NULL | HKEAA考生编号 |
+| chinese_level | VARCHAR(10) | NULL | 中國語文等级 |
+| english_level | VARCHAR(10) | NULL | 英國語文等级 |
+| math_compulsory_level | VARCHAR(10) | NULL | 數學必修等级 |
+| math_extended_level | VARCHAR(10) | NULL | 數學延伸等级 |
+| liberal_studies_level | VARCHAR(10) | NULL | 通識等级 |
+| elective_1_code | VARCHAR(50) | NULL | 选修科目1代码 |
+| elective_1_name | VARCHAR(100) | NULL | 选修科目1名称 |
+| elective_1_level | VARCHAR(10) | NULL | 选修科目1等级 |
+| elective_2_code | VARCHAR(50) | NULL | 选修科目2代码 |
+| elective_2_name | VARCHAR(100) | NULL | 选修科目2名称 |
+| elective_2_level | VARCHAR(10) | NULL | 选修科目2等级 |
+| elective_3_code | VARCHAR(50) | NULL | 选修科目3代码 |
+| elective_3_name | VARCHAR(100) | NULL | 选修科目3名称 |
+| elective_3_level | VARCHAR(10) | NULL | 选修科目3等级 |
+| best_five_total | INT | NULL | 最佳5科总分（统计用） |
+| raw_data | JSONB | NULL | HKEAA原始数据备份 |
+| result_status | ENUM | DEFAULT pending | 成绩状态 |
+| published_to_parent | BOOLEAN | DEFAULT false | 是否已向家长公布 |
+| remark | TEXT | NULL | 备注 |
+| created_at | TIMESTAMP | | |
+| updated_at | TIMESTAMP | | |
+
+**索引**: (release_id), (student_id), (class_name), (result_status), UNIQUE(release_id, student_id)
+
+---
+
+## 表: dse_reviews — DSE成绩覆核申请
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 覆核申请ID |
+| dse_result_id | UUID | FK → dse_results | 关联DSE成绩 |
+| applicant_id | UUID | FK → users | 申请人 |
+| review_type | ENUM(mark_recheck, scrutiny) | NOT NULL | 覆核类型 |
+| subject_name | VARCHAR(100) | NOT NULL | 申请科目 |
+| reason | TEXT | NOT NULL | 申请理由 |
+| status | ENUM | DEFAULT pending | 覆核状态 |
+| hkeaa_fee | DECIMAL(10,2) | NULL | HKEAA覆核费用 |
+| hkeaa_new_level | VARCHAR(10) | NULL | HKEAA更正后等级 |
+| hkeaa_result_remark | TEXT | NULL | HKEAA结果说明 |
+| approver_id | UUID | NULL | 审批人 |
+| approval_remark | TEXT | NULL | 审批备注 |
+| created_at | TIMESTAMP | | |
+| updated_at | TIMESTAMP | | |
+
+**索引**: (dse_result_id), (status), (review_type)
+
+---
+
+## 表: dse_offer_tracking — 升学去向追踪
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 记录ID |
+| dse_result_id | UUID | FK → dse_results | 关联DSE成绩 |
+| student_id | UUID | FK → users | 学生ID |
+| student_name_anonymized | VARCHAR(50) | NOT NULL | 匿名姓名（如：陈同学）|
+| class_name | VARCHAR(20) | NULL | 班级 |
+| jupas_status | ENUM | DEFAULT not_applied | JUPAS申请状态 |
+| jupas_application_no | VARCHAR(30) | NULL | JUPAS申请编号 |
+| institution_anonymized | VARCHAR(100) | NULL | 就读大学（匿名）|
+| program_anonymized | VARCHAR(200) | NULL | 就读课程（匿名）|
+| enrollment_year | INT | NULL | 入学年份 |
+| offer_date | DATE | NULL | Offer确认日期 |
+| remark | TEXT | NULL | 备注 |
+| created_at | TIMESTAMP | | |
+| updated_at | TIMESTAMP | | |
+
+**索引**: (dse_result_id), (jupas_status), UNIQUE(dse_result_id)
+
