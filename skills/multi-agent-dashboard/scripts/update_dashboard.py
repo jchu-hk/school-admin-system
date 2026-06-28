@@ -44,8 +44,8 @@ def get_recent_commits(repo: str, limit=10) -> List[Dict]:
         return [{"sha": c["sha"][:7], "message": c["commit"]["message"].split("\n")[0], "date": c["commit"]["author"]["date"]} for c in out]
     return []
 
-def build_messages(repo: str, hours=24) -> List[Dict]:
-    events = gh_api("issues/events?per_page=30", repo)
+def build_messages(repo: str, hours=48) -> List[Dict]:
+    events = gh_api("issues/events?per_page=100", repo)
     if not events: return []
     
     messages = []
@@ -58,16 +58,22 @@ def build_messages(repo: str, hours=24) -> List[Dict]:
         etype = event.get("event", "")
         issue = event.get("issue", {})
         num = issue.get("number", "")
+        labels = [l.get("name","") for l in issue.get("labels",[])]
         
         if etype == "closed":
-            messages.append({"timestamp": event["created_at"], "from": "PM", "to": "system", "message": f"#{num} 已关闭", "type": "done"})
+            messages.append({"timestamp": event["created_at"], "from": "PM", "to": "system", "message": f"#{num} closed", "type": "done"})
         elif etype == "assigned":
-            messages.append({"timestamp": event["created_at"], "from": "PM", "to": "DEV", "message": f"派发 #{num}", "type": "assign"})
-        elif etype == "labeled" and "in-progress" in [l.get("name","") for l in issue.get("labels",[])]:
-            messages.append({"timestamp": event["created_at"], "from": "DEV", "to": "PM", "message": f"接收 #{num}", "type": "received"})
+            assignee = event.get("assignee", {}).get("login", "DEV")
+            messages.append({"timestamp": event["created_at"], "from": "PM", "to": assignee, "message": f"assign #{num}", "type": "assign"})
+        elif etype == "labeled":
+            label = event.get("label", {}).get("name", "")
+            if "in-progress" in label:
+                messages.append({"timestamp": event["created_at"], "from": "system", "to": "PM", "message": f"#{num} in-progress", "type": "received"})
+            elif "qa" in label.lower():
+                messages.append({"timestamp": event["created_at"], "from": "PM", "to": "QA", "message": f"PM→QA assign #{num}", "type": "assign"})
     
     messages.sort(key=lambda m: m["timestamp"], reverse=True)
-    return messages[:15]
+    return messages[:20]
 
 def build_html(status: Dict, messages: List, commits: List, stats: Dict) -> str:
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
