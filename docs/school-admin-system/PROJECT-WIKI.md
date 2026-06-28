@@ -73,14 +73,14 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 ## 🧪 测试环境
 
-> ⚠️ **最后更新**: 2026-06-28 18:59 (GMT+8)
-> ✅ Named Tunnel已配置，DNS记录已添加，等待传播生效
+> ⚠️ **最后更新**: 2026-06-28 23:42 (GMT+8)
+> ⚠️ Named Tunnel待域名NS传播完成后再配置
 
 | 服务 | URL | 状态 | 变更记录 |
 |------|-----|------|----------|
-| 前端 (用户登录) | [https://school.zhumuai.cn](https://school.zhumuai.cn) | ⏳ DNS传播中 | 2026-06-28: Named Tunnel配置完成 |
-| 后端API | [https://api.zhumuai.cn/api](https://api.zhumuai.cn/api) | ⏳ DNS传播中 | 2026-06-28: Named Tunnel配置完成 |
-| **临时备用URL** | [https://cartridges-laundry-clinic-subject.trycloudflare.com](https://cartridges-laundry-clinic-subject.trycloudflare.com) | ✅ 可用 | Quick Tunnel (随时可能失效) |
+| 前端 (用户登录) | [https://pentium-klein-transportation-adoption.trycloudflare.com](https://pentium-klein-transportation-adoption.trycloudflare.com) | ✅ 可用 | 2026-06-28: Quick Tunnel重启 |
+| 后端API | [https://pentium-klein-transportation-adoption.trycloudflare.com/api](https://pentium-klein-transportation-adoption.trycloudflare.com/api) | ✅ 可用 | 2026-06-28: Quick Tunnel重启 |
+| **固定域名(待配置)** | https://zhumuai4all.cn | ⏳ NS传播中 | 域名已购买，需等待NS传播 |
 
 **DNS传播进度**: 通常需要5-10分钟生效
 | Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | ✅ 已配置 |
