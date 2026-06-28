@@ -449,6 +449,70 @@ sessions_send(
 **每次有任何更新时，PM必须执行以下检查：**
 
 ### 11.1 Issue状态检查
+
+---
+
+## 12. Multi-Agent Dashboard Skill (2026-06-28新增)
+
+**架构**: Project-Admin重构为可复用Skill
+
+### 12.1 Skill位置
+```
+skills/multi-agent-dashboard/
+  SKILL.md                    # Skill定义
+  scripts/
+    write_heartbeat.py       # 写心跳文件
+    infer_status.py           # 从GitHub推断状态
+    update_dashboard.py       # 更新Dashboard
+```
+
+### 12.2 PM必须规则 (强制)
+
+**任何工作开始前，必须写心跳：**
+```bash
+# 开始修复
+python scripts/write_heartbeat.py --agent PM --issue 164 --status running --message "修复数据库表"
+
+# 完成后
+python scripts/write_heartbeat.py --agent PM --issue 164 --status done --message "修复完成"
+```
+
+**或者使用Skill更新Dashboard：**
+```bash
+python scripts/update_dashboard.py --repo jchu-hk/school-admin-system
+```
+
+### 12.3 状态推断机制
+
+即使不写心跳，Skill也会从GitHub Events自动推断状态：
+
+| 触发 | 推断状态 |
+|------|----------|
+| Commit消息 | 对应Agent正在工作 |
+| Issue closed | PM完成任务 |
+| in-progress label | DEV/QA开始处理 |
+
+### 12.4 验收标准 (3天Review)
+
+- [ ] Dashboard实时反映PM工作状态
+- [ ] 无需手动心跳也能正确追踪
+- [ ] 消息流自动从GitHub Events生成
+- [ ] 所有Agent活动都能在Dashboard看到
+
+### 12.5 关键改进
+
+| 问题 | 旧方案 | 新方案 |
+|------|--------|--------|
+| PM忘记心跳 | Dashboard显示idle (错误) | 自动从GitHub推断 (正确) |
+| 消息流静态 | agent-messages.json手动维护 | 自动从GitHub Events生成 |
+| 只看心跳文件 | 5分钟延迟 | 实时 + GitHub兜底 |
+| 项目专属 | 只适用当前项目 | 可复用到任何项目 |
+
+---
+
+## 11. PM工作流程检查清单 (续)
+
+### 11.1 Issue状态检查
 - [ ] Issue是否需要更新状态？
 - [ ] 是否需要补充信息/注释？
 - [ ] Label是否需要变更 (in-progress/ready-for-review/passed/failed)？
