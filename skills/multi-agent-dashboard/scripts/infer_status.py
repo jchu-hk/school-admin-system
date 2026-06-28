@@ -71,52 +71,51 @@ def infer_from_commits(repo: str, hours: int = 1) -> Dict[str, Dict]:
     return status
 
 def infer_from_issues(repo: str) -> Dict[str, Dict]:
-    """Infer status from Issue events"""
+    """Infer status from Issue labels and events"""
     
-    events = gh_api("issues/events?per_page=30", repo)
+    # Method 1: Check open issues with labels (current state)
+    label_to_agent = {
+        "dev": "DEV", "qa": "QA", "devops": "DEVOPS",
+        "checker": "CHECKER", "arch": "ARCH", "req": "REQ"
+    }
+    
+    status = {}
+    
+    # Get open issues with in-progress label
+    events = gh_api("issues/events?per_page=50", repo)
     if not events:
         return {}
     
-    status = {}
-    label_to_agent = {
-        "dev": "DEV", "qa": "QA", "devops": "DEVOPS",
-        "checker": "CHECKER", "arch": "ARCH", "req": "REQ", "in-progress": None
-    }
+    # Track which agents are active from recent events
+    recent_cutoff = datetime.now(timezone.utc) - timedelta(hours=2)
     
-    recent_events = [e for e in events if 
-        datetime.fromisoformat(e["created_at"].replace("Z", "+00:00")) > 
-        datetime.now(timezone.utc) - timedelta(hours=1)
-    ]
-    
-    for event in recent_events:
+    for event in events:
+        created = datetime.fromisoformat(event["created_at"].replace("Z", "+00:00"))
+        if created < recent_cutoff:
+            continue
+        
         event_type = event.get("event", "")
         issue = event.get("issue", {})
+        labels = [l.get("name", "") for l in issue.get("labels", [])]
         
-        # Issue closed = someone finished work
+        # Issue closed
         if event_type == "closed":
-            # Check who closed it (from actor)
-            actor = event.get("actor", {}).get("login", "")
-            if actor:
-                # Assume PM closed issues
-                status["PM"] = {
-                    "status": "done",
-                    "task": f"#{issue.get('number')} 已关闭",
-                    "evidence": f"Closed by {actor}"
-                }
+            status["PM"] = {
+                "status": "done",
+                "task": f"#{issue.get('number')} 已关闭",
+                "evidence": f"Closed: {created.strftime('%H:%M')}"
+            }
         
-        # Issue labeled in-progress = DEV/QA working
-        if event_type == "labeled":
-            labels = [l.get("name", "") for l in issue.get("labels", [])]
+        # in-progress label = agent running
+        if "in-progress" in labels:
             for label in labels:
-                if label == "in-progress":
-                    # Check for agent-specific label
-                    for l in labels:
-                        if l in label_to_agent and label_to_agent[l]:
-                            status[label_to_agent[l]] = {
-                                "status": "running",
-                                "task": f"#{issue.get('number')} {issue.get('title', '')[:30]}",
-                                "evidence": f"Label: {l}"
-                            }
+                if label in label_to_agent:
+                    agent = label_to_agent[label]
+                    status[agent] = {
+                        "status": "running",
+                        "task": f"#{issue.get('number')} {issue.get('title', '')[:25]}",
+                        "evidence": f"in-progress since {created.strftime('%H:%M')}"
+                    }
     
     return status
 
