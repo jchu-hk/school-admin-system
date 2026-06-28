@@ -23,19 +23,49 @@
 **GitHub实时更新版**: 
 https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
 
-**自动更新**: 每5分钟同步一次数据
+**Raw文件**: https://raw.githubusercontent.com/jchu-hk/school-admin-system/main/multi-agent-dashboard.html
+
+**自动更新**: 由Multi-Agent Dashboard Skill驱动
 
 ### 🎭 看板功能
 
 - AI团队状态 (PM, DEV, QA, DEVOPS, CHECKER, ARCH, REQ)
-- 今日统计 (缺陷修复, Git提交, 效率提升)
-- 系统健康状态
-- 消息流活动记录
+- 今日统计 (Open Issues, In Progress, Commits)
+- 消息流活动记录 (从GitHub Events自动生成)
 
 ### 🔄 更新机制
 
-- **自动更新**: PM每5分钟自动同步数据到GitHub
-- **手动更新**: 运行 `/tmp/update-dashboard.sh`
+**双Skill架构**:
+1. **github-status Skill**: Agent调用，更新GitHub Issue labels/assignee/close
+2. **multi-agent-dashboard Skill**: Dashboard读取GitHub，生成展示
+
+**工作流程**:
+```
+Agent工作 → github-status Skill → GitHub更新
+                              ↓
+Dashboard Skill ← 自动读取GitHub Events
+```
+
+**Agent调用示例**:
+```bash
+# DEV开始工作
+python skills/github-status/scripts/github_status.py --action start --issue 165 --agent DEV
+
+# DEV完成
+python skills/github-status/scripts/github_status.py --action done --issue 165 --agent DEV --comment "修复完成"
+```
+
+### 📁 相关Skills
+
+| Skill | 位置 | 功能 |
+|-------|------|------|
+| **github-status** | `skills/github-status/` | 更新Issue状态 |
+| **multi-agent-dashboard** | `skills/multi-agent-dashboard/` | Dashboard生成 |
+
+**更新Dashboard**:
+```bash
+python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/school-admin-system
+```
 
 ---
 
