@@ -73,13 +73,13 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 ## 🧪 测试环境
 
-> ⚠️ **最后更新**: 2026-06-28 08:46 (GMT+8)
+> ⚠️ **最后更新**: 2026-06-28 17:28 (GMT+8)
 > ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化
 
-| 服务 | URL | 状态 |
-|------|-----|------|
-| 前端 (用户登录) | [https://grad-filters-grown-trends.trycloudflare.com](https://grad-filters-grown-trends.trycloudflare.com) | ✅ |
-| 后端API | [https://grad-filters-grown-trends.trycloudflare.com/api](https://grad-filters-grown-trends.trycloudflare.com/api) | ✅ |
+| 服务 | URL | 状态 | 变更记录 |
+|------|-----|------|----------|
+| 前端 (用户登录) | [https://cartridges-laundry-clinic-subject.trycloudflare.com](https://cartridges-laundry-clinic-subject.trycloudflare.com) | ✅ | 2026-06-28: URL变更 (旧: grad-filters-grown-trends) |
+| 后端API | [https://cartridges-laundry-clinic-subject.trycloudflare.com/api](https://cartridges-laundry-clinic-subject.trycloudflare.com/api) | ✅ | 2026-06-28: URL变更 |
 | Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | ✅ 已配置 |
 
 ### 系统版本信息
