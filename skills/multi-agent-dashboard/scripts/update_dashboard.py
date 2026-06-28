@@ -182,6 +182,10 @@ def update_dashboard(repo: str, branch: str = "main"):
     print("✅ Dashboard written")
     
     try:
+        # 确保在main分支
+        subprocess.run(["git", "checkout", branch], cwd=REPO_PATH, check=True, capture_output=True)
+        
+        # 提交并推送
         subprocess.run(["git", "add", "multi-agent-dashboard.html"], cwd=REPO_PATH, check=True, capture_output=True)
         subprocess.run(["git", "commit", "-m", f"skill: dashboard update {datetime.now().strftime('%H:%M')}"], cwd=REPO_PATH, check=True, capture_output=True)
         subprocess.run(["git", "push", "origin", branch], cwd=REPO_PATH, check=True, capture_output=True)
