@@ -43,13 +43,14 @@ https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.h
 
 ## 🧪 测试环境
 
+> ⚠️ **最后更新**: 2026-06-28 08:46 (GMT+8)
+> ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化
+
 | 服务 | URL | 状态 |
 |------|-----|------|
-| 前端 (用户登录) | [https://until-diamonds-disclosure-needle.trycloudflare.com](https://until-diamonds-disclosure-needle.trycloudflare.com) | ✅ |
-| 后端API | [https://until-diamonds-disclosure-needle.trycloudflare.com/api](https://until-diamonds-disclosure-needle.trycloudflare.com/api) | ✅ |
+| 前端 (用户登录) | [https://grad-filters-grown-trends.trycloudflare.com](https://grad-filters-grown-trends.trycloudflare.com) | ✅ |
+| 后端API | [https://grad-filters-grown-trends.trycloudflare.com/api](https://grad-filters-grown-trends.trycloudflare.com/api) | ✅ |
 | Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | ✅ 已配置 |
-
-> ⚠️ Cloudflare Quick Tunnel不稳定，URL可能变化
 
 ### 系统版本信息
 
