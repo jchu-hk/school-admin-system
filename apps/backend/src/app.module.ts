@@ -29,6 +29,10 @@ import { AiModule } from './modules/ai/ai.module';
 import { BusModule } from './modules/bus/bus.module';
 import { StudentProfileModule } from './modules/student-profile/student-profile.module';
 import { MetricsModule } from './modules/metrics/metrics.module';
+import { AssetModule } from './modules/asset/asset.module';
+import { SchoolInfoModule } from './modules/school-info/school-info.module';
+import { AddressBookModule } from './modules/address-book/address-book.module';
+import { ExamModule } from './modules/exam/exam.module';
 
 @Module({
   imports: [
@@ -78,6 +82,10 @@ import { MetricsModule } from './modules/metrics/metrics.module';
     BusModule,
     StudentProfileModule,
     MetricsModule,
+    AssetModule,
+    SchoolInfoModule,
+    AddressBookModule,
+    ExamModule,
   ],
   controllers: [],
   providers: [],

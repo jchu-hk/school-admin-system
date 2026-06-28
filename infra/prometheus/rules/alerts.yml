@@ -1,0 +1,35 @@
+groups:
+- name: school-admin-alerts
+  rules:
+  # 数据库CPU使用率超过80%
+  - alert: DatabaseCPUHigh
+    expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Database CPU usage is high"
+      description: "Database CPU usage is {{ $value }}% for more than 2 minutes"
+      actionable_steps: "Check database queries, optimize slow queries, scale database resources"
+
+  # API错误率超过5%
+  - alert: APIErrorRateHigh
+    expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100 > 5
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "API error rate is high"
+      description: "API error rate is {{ $value }}% for more than 1 minute"
+      actionable_steps: "Check backend logs, identify failed requests, rollback recent deploy if needed"
+
+  # 服务宕机告警
+  - alert: ServiceDown
+    expr: up == 0
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: "Service {{ $labels.job }} is down"
+      description: "Service {{ $labels.job }} has been down for more than 30 seconds"
+      actionable_steps: "Check service logs, restart service if needed"

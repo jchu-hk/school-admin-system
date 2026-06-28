@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, BookOpen, Settings, LogOut, Info, GraduationCap, Calendar, MessageCircle, Bell, UserCog, DollarSign, ChevronDown, ClipboardCheck, Link2, Clock } from 'lucide-react'
+import { LayoutDashboard, Users, BookOpen, Settings, LogOut, Info, GraduationCap, Calendar, MessageCircle, Bell, UserCog, DollarSign, ChevronDown, ClipboardCheck, Link2, Clock, FileText, Package } from 'lucide-react'
 import LanguageSelector from './LanguageSelector'
 import { useI18n } from '../i18n'
 import { getToken, removeToken } from '../utils/tokenService'
@@ -22,12 +22,15 @@ export default function Layout() {
     { label: t.nav.dashboard, icon: LayoutDashboard, path: '/dashboard' },
     { label: t.nav.studentManagement, icon: Users, path: '/students' },
     { label: t.nav.attendance, icon: ClipboardCheck, path: '/attendance' },
+    { label: t.nav.assetManagement, icon: Package, path: '/assets' },
+    { label: t.nav.assetRentalManagement, icon: Package, path: '/asset-rentals' },
     { label: t.nav.userManagement, icon: UserCog, path: '/users' },
     { label: t.nav.leaveManagement, icon: Calendar, path: '/leaves' },
     { label: t.nav.parentInquiry, icon: MessageCircle, path: '/inquiries' },
     { label: t.nav.inquiryQueue, icon: Clock, path: '/inquiries/queue' }, // AC-04 队列管理
     { label: t.nav.notificationManagement, icon: Bell, path: '/notifications' },
     { label: t.nav.courseManagement, icon: BookOpen, path: '/courses' },
+    { label: t.nav.examManagement, icon: FileText, path: '/exams' },
     { label: t.nav.linkStudent, icon: Link2, path: '/link-student' },
   ]
 

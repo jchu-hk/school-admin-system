@@ -11,14 +11,14 @@
       "icon": "🤖",
       "name": "DEV",
       "status": "running",
-      "task": "修复 #41",
+      "task": "处理 #50",
       "color": "#60a5fa"
     },
     {
       "icon": "🔍",
       "name": "QA",
-      "status": "idle",
-      "task": "验收失败 #41",
+      "status": "running",
+      "task": "处理 #140",
       "color": "#4ade80"
     },
     {
@@ -38,15 +38,15 @@
     {
       "icon": "🏗️",
       "name": "ARCH",
-      "status": "idle",
-      "task": "架构设计",
+      "status": "running",
+      "task": "处理 #45",
       "color": "#6b7280"
     },
     {
       "icon": "📝",
       "name": "REQ",
-      "status": "idle",
-      "task": "需求分析",
+      "status": "running",
+      "task": "处理 #51",
       "color": "#ec4899"
     }
   ],
@@ -57,6 +57,6 @@
     "recentActivity": 20
   },
   "messages": [],
-  "lastUpdate": "2026-06-27 13:05:32",
-  "generatedAt": "2026-06-27T05:05:32.000Z"
+  "lastUpdate": "2026-06-27 23:02:32",
+  "generatedAt": "2026-06-27T15:02:32.000Z"
 }

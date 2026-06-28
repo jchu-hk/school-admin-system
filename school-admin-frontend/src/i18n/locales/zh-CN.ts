@@ -22,6 +22,7 @@ export const zhCN = {
     inquiryQueue: '查询队列管理',
     notificationManagement: '通知管理',
     courseManagement: '课程管理',
+    examManagement: '考试管理',
     systemSettings: '系统设置',
     about: '关于系统',
     financeTuition: '学费管理',
@@ -32,6 +33,8 @@ export const zhCN = {
     logout: '退出登录',
     linkStudent: '关联子女账号',
     financeManagement: '财政管理',
+    assetManagement: '资产管理',
+    assetRentalManagement: '资产租借',
   },
   // 仪表盘
   dashboard: {

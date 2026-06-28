@@ -22,6 +22,7 @@ export const zhTW = {
     inquiryQueue: '查詢隊列管理',
     notificationManagement: '通知管理',
     courseManagement: '課程管理',
+    examManagement: '考試管理',
     systemSettings: '系統設定',
     about: '關於系統',
     financeTuition: '學費管理',

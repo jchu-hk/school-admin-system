@@ -6,6 +6,8 @@ export interface Course {
   grade: string;
   subject: string;
   teacher: string;
+  classId?: string;
+  className?: string;
   classroom: string;
   schedule: string;
   capacity: number;
@@ -22,6 +24,8 @@ export interface CourseFormData {
   grade: string;
   subject: string;
   teacher: string;
+  classId?: string;
+  className?: string;
   classroom: string;
   schedule: string;
   capacity: number;

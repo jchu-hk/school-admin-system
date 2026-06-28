@@ -44,6 +44,10 @@ export enum AuditAction {
   USER_EXPIRY_WARNING_SENT = 'user_expiry_warning_sent',
   USER_DEPARTURE = 'user_departure',
   USER_GRADUATION = 'user_graduation',
+  // 学生档案模块
+  STUDENT_PROFILE_CREATE = 'student_profile_create',
+  STUDENT_PROFILE_UPDATE = 'student_profile_update',
+  STUDENT_PROFILE_ARCHIVE = 'student_profile_archive',
   // 权限审批模块
   PERMISSION_APPROVAL_REQUEST_CREATED = 'permission_approval_request_created',
   PERMISSION_APPROVAL_REQUEST_APPROVED = 'permission_approval_request_approved',

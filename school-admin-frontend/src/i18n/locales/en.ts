@@ -22,6 +22,7 @@ export const en = {
     inquiryQueue: 'Inquiry Queue',
     notificationManagement: 'Notifications',
     courseManagement: 'Course Management',
+    examManagement: 'Exam Management',
     systemSettings: 'System Settings',
     about: 'About',
     financeTuition: 'Tuition',

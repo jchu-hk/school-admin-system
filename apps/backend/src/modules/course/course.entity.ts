@@ -27,6 +27,12 @@ export class Course {
   @Column({ length: 50 })
   subject: string;
 
+  @Column({ name: 'class_id', type: 'uuid', nullable: true })
+  classId: string;
+
+  @Column({ name: 'class_name', length: 100, nullable: true })
+  className: string;
+
   @Column({ length: 100 })
   teacher: string;
 

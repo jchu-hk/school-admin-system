@@ -35,6 +35,23 @@ export class CreateCourseDto {
   @MaxLength(50)
   subject: string;
 
+  @ApiPropertyOptional({ description: '科目', example: '数学' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  subject?: string;
+
+  @ApiPropertyOptional({ description: '班级ID' })
+  @IsOptional()
+  @IsString()
+  classId?: string;
+
+  @ApiPropertyOptional({ description: '班级名称', example: '中四A班' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  className?: string;
+
   @ApiProperty({ description: '授课教师', example: '张老师' })
   @IsString()
   @MinLength(1)
@@ -109,6 +126,17 @@ export class UpdateCourseDto {
   @IsString()
   @MaxLength(100)
   teacher?: string;
+
+  @ApiPropertyOptional({ description: '班级ID' })
+  @IsOptional()
+  @IsString()
+  classId?: string;
+
+  @ApiPropertyOptional({ description: '班级名称' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  className?: string;
 
   @ApiPropertyOptional({ description: '教室' })
   @IsOptional()

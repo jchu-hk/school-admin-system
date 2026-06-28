@@ -4,10 +4,15 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 
+# Alertmanager configuration
 alerting:
   alertmanagers:
     - static_configs:
-        - targets: []
+        - targets: ['alertmanager:9093']
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "rules/*.yml"
 
 scrape_configs:
   # Prometheus 自身
@@ -19,5 +24,11 @@ scrape_configs:
   - job_name: 'school-backend'
     metrics_path: '/api/metrics'
     static_configs:
-      - targets: ['172.19.0.4:3000']
+      - targets: ['backend:3000']
+    scrape_interval: 10s
+
+  # PostgreSQL Database Metrics
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
     scrape_interval: 10s

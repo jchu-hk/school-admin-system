@@ -1,0 +1,168 @@
+{
+  "dashboard": {
+    "title": "Database Monitoring - Direct SQL",
+    "uid": "database-monitoring-v2",
+    "tags": ["database", "postgresql"],
+    "timezone": "browser",
+    "refresh": "30s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "title": "数据库连接状态",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 0, "w": 4, "h": 4},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT 1 as status",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {"type": "value", "options": {"1": {"text": "✅ 正常", "color": "green"}}}
+            ]
+          }
+        }
+      },
+      {
+        "title": "活跃连接数",
+        "type": "gauge",
+        "gridPos": {"x": 4, "y": 0, "w": 4, "h": 4},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT count(*) as active_connections FROM pg_stat_activity WHERE state = 'active'",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {"defaults": {"min": 0, "max": 100, "unit": "short"}}
+      },
+      {
+        "title": "总连接数",
+        "type": "stat",
+        "gridPos": {"x": 8, "y": 0, "w": 4, "h": 4},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT count(*) FROM pg_stat_activity",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "title": "数据库大小 (MB)",
+        "type": "stat",
+        "gridPos": {"x": 12, "y": 0, "w": 4, "h": 4},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT pg_database_size(current_database()) / 1024 / 1024 as size_mb",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {"defaults": {"unit": "MB", "decimals": 2}}
+      },
+      {
+        "title": "表数量",
+        "type": "stat",
+        "gridPos": {"x": 16, "y": 0, "w": 4, "h": 4},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public'",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "title": "用户总数",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 4, "w": 4, "h": 4},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT count(*) FROM users",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "title": "学生总数",
+        "type": "stat",
+        "gridPos": {"x": 4, "y": 4, "w": 4, "h": 4},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT count(*) FROM users WHERE role = 'student'",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "title": "班级数量",
+        "type": "stat",
+        "gridPos": {"x": 8, "y": 4, "w": 4, "h": 4},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT count(*) FROM classes",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "title": "缓存命中率 (%)",
+        "type": "gauge",
+        "gridPos": {"x": 12, "y": 4, "w": 4, "h": 4},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT round(blks_hit::float / (blks_hit + blks_read) * 100, 2) as cache_ratio FROM pg_stat_database WHERE datname = current_database()",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {"defaults": {"min": 0, "max": 100, "unit": "percent"}}
+      },
+      {
+        "title": "事务提交率",
+        "type": "stat",
+        "gridPos": {"x": 16, "y": 4, "w": 4, "h": 4},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT xact_commit, xact_rollback FROM pg_stat_database WHERE datname = current_database()",
+            "refId": "A"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "calculateField",
+            "options": {
+              "mode": "reduceRow",
+              "reduce": {"reducer": "sum"},
+              "alias": "Total Transactions"
+            }
+          }
+        ]
+      },
+      {
+        "title": "各表行数统计",
+        "type": "table",
+        "gridPos": {"x": 0, "y": 8, "w": 24, "h": 6},
+        "datasource": {"type": "postgres", "uid": "postgres"},
+        "targets": [
+          {
+            "rawSql": "SELECT schemaname, relname as table_name, n_live_tup as row_count, n_dead_tup as dead_rows FROM pg_stat_user_tables ORDER BY n_live_tup DESC LIMIT 20",
+            "refId": "A"
+          }
+        ]
+      }
+    ]
+  },
+  "overwrite": true
+}

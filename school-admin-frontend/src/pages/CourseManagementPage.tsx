@@ -32,6 +32,7 @@ const CourseManagementPage: React.FC = () => {
     grade: '',
     subject: '',
     teacher: '',
+    className: '',
     classroom: '',
     schedule: '',
     capacity: 30,
@@ -90,6 +91,7 @@ const CourseManagementPage: React.FC = () => {
         grade: course.grade,
         subject: course.subject,
         teacher: course.teacher,
+        className: course.className || '',
         classroom: course.classroom,
         schedule: course.schedule,
         capacity: course.capacity,
@@ -103,7 +105,9 @@ const CourseManagementPage: React.FC = () => {
         name: '',
         grade: '',
         subject: '',
+        subject: '',
         teacher: '',
+        className: '',
         classroom: '',
         schedule: '',
         capacity: 30,
@@ -289,6 +293,7 @@ const CourseManagementPage: React.FC = () => {
                     <th className="text-left py-4 px-4 font-semibold text-slate-700">课程名称</th>
                     <th className="text-left py-4 px-4 font-semibold text-slate-700">年级</th>
                     <th className="text-left py-4 px-4 font-semibold text-slate-700">科目</th>
+                    <th className="text-left py-4 px-4 font-semibold text-slate-700">班级</th>
                     <th className="text-left py-4 px-4 font-semibold text-slate-700">教师</th>
                     <th className="text-left py-4 px-4 font-semibold text-slate-700">教室</th>
                     <th className="text-left py-4 px-4 font-semibold text-slate-700">上课时间</th>
@@ -304,6 +309,7 @@ const CourseManagementPage: React.FC = () => {
                       <td className="py-4 px-4 text-slate-700">{course.name}</td>
                       <td className="py-4 px-4 text-slate-700">{course.grade}</td>
                       <td className="py-4 px-4 text-slate-700">{course.subject}</td>
+                      <td className="py-4 px-4 text-slate-700">{course.className || '-'}</td>
                       <td className="py-4 px-4 text-slate-700">{course.teacher}</td>
                       <td className="py-4 px-4 text-slate-700">
                         <div className="flex items-center gap-2">
@@ -467,6 +473,19 @@ const CourseManagementPage: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, teacher: e.target.value })}
                       className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="如：张老师"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      班级
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.className || ''}
+                      onChange={(e) => setFormData({ ...formData, className: e.target.value })}
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="如：中四A班"
                     />
                   </div>
 

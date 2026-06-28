@@ -1,0 +1,15 @@
+[Unit]
+Description=Cloudflare Tunnel for School Admin Backend
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/cloudflared tunnel run --token eyJhIjoiOTcxMTI0NDhhNTI2MDQxMThlZjZiYTY5NDQwOWQ4MmEiLCJ0IjoiZjY5ZjYwNDYtYTQ0ZC00NDQ0LWI0MDAtOTIyZWQxZjVhZWY0IiwicyI6Ik1EY3habVkwWWpndFlUZ3pPUzAwT0dOaExUbGtZalV0WkRZMFpXSm1NR0V6WVRFeCJ9
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

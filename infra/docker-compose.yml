@@ -265,16 +265,51 @@ services:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin123}
       GF_USERS_ALLOW_SIGN_UP: "false"
-      GF_SERVER_ROOT_URL: "${GRAFANA_ROOT_URL:-}"
+      GF_SERVER_ROOT_URL: "https://school-admin-monitor.trycloudflare.com"
+      GF_SERVER_PROTOCOL: "http"
+      GF_SECURITY_COOKIE_SECURE: "true"
+      GF_SECURITY_COOKIE_SAMESITE: "strict"
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
     depends_on:
       - prometheus
     restart: unless-stopped
     networks:
       - school-network
+
+  # ------------------------------------------------------------
+  # Alertmanager for Prometheus Alerts
+  # ------------------------------------------------------------
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: school-admin-alertmanager
+    ports:
+      - "${ALERTMANAGER_PORT:-9093}:9093"
+    volumes:
+      - ./prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    restart: unless-stopped
+    networks:
+      - school-network
+
+  # ------------------------------------------------------------
+  # Cloudflare Tunnel (Persistent)
+  # ------------------------------------------------------------
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: school-admin-cloudflared
+    command: tunnel --config /etc/cloudflared/config.yml run
+    volumes:
+      - /root/.cloudflared:/etc/cloudflared/credentials
+      - ../cloudflared-config.yml:/etc/cloudflared/config.yml:ro
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      - backend
+      - grafana
 
 # ============================================================
 # Networks

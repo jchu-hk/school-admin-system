@@ -10,6 +10,7 @@ import LeavePage from './pages/LeavePage'
 import InquiryPage from './pages/InquiryPage'
 import InquiryQueuePage from './pages/InquiryQueuePage'
 import NotificationPage from './pages/NotificationPage'
+import ExamManagementPage from './pages/ExamManagementPage'
 import CourseManagementPage from './pages/CourseManagementPage'
 import SystemSettingsPage from './pages/SystemSettingsPage'
 import FinanceTuitionPage from './pages/FinanceTuitionPage'
@@ -21,6 +22,8 @@ import AttendancePage from './pages/AttendancePage'
 import AttendanceMobilePage from './pages/AttendanceMobilePage'
 import AboutPage from './pages/AboutPage'
 import StudentProfilePage from './pages/StudentProfilePage'
+import AssetManagementPage from './pages/AssetManagementPage'
+import AssetRentalPage from './pages/AssetRentalPage'
 import Layout from './components/Layout'
 import ErrorBoundary from './components/ErrorBoundary'
 import { getToken } from './utils/tokenService'
@@ -63,8 +66,11 @@ export default function App() {
             <Route path="inquiries/queue" element={<InquiryQueuePage />} />
             <Route path="notifications" element={<NotificationPage />} />
             <Route path="courses" element={<CourseManagementPage />} />
+            <Route path="exams" element={<ExamManagementPage />} />
             <Route path="settings" element={<SystemSettingsPage />} />
             <Route path="student-profiles" element={<StudentProfilePage />} />
+            <Route path="assets" element={<AssetManagementPage />} />
+            <Route path="asset-rentals" element={<AssetRentalPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="finance/tuition" element={<FinanceTuitionPage />} />
             <Route path="finance/installment" element={<FinanceInstallmentPage />} />
