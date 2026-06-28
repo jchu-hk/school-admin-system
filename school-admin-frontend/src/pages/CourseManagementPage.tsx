@@ -127,6 +127,7 @@ const CourseManagementPage: React.FC = () => {
       grade: '',
       subject: '',
       teacher: '',
+      className: '',
       classroom: '',
       schedule: '',
       capacity: 30,
