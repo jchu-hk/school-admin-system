@@ -142,17 +142,34 @@ def build_html(status: Dict, messages: List, commits: List, stats: Dict) -> str:
             <span class="status-badge {('status-running' if running else 'status-idle')}">{s['status']}</span>
         </div>'''
     
+    # Filter: only show Agent-to-Agent (skip system)
+    agent_to_agent = [m for m in messages if m['to'] not in ['system', 'SYSTEM'] and m['from'] not in ['system', 'SYSTEM']]
+    
     messages_html = ""
-    for m in messages:
+    for m in agent_to_agent:
         mtype = m.get("type", "default")
+        # Convert UTC to GMT+8
+        utc_time = datetime.fromisoformat(m['timestamp'].replace('Z', '+00:00'))
+        gmt8_time = utc_time + timedelta(hours=8)
+        time_str = gmt8_time.strftime('%H:%M')  # Just show hour:minute
         messages_html += f'''<div class="message-item msg-{mtype}">
-            <div class="message-time">{m['timestamp'][:16]}</div>
+            <div class="message-time">{time_str}</div>
             <div class="message-content">{m['from']} → {m['to']}: {m['message']}</div>
         </div>'''
     
-    # 生成JSON供JavaScript使用
-    import json
-    messages_json = json.dumps(messages, ensure_ascii=False)
+    # 生成JSON供JavaScript使用 (已过滤，GMT+8时间)
+    messages_for_js = []
+    for m in agent_to_agent:
+        utc_time = datetime.fromisoformat(m['timestamp'].replace('Z', '+00:00'))
+        gmt8_time = utc_time + timedelta(hours=8)
+        messages_for_js.append({
+            "timestamp": gmt8_time.strftime('%Y-%m-%dT%H:%M:%S'),
+            "from": m['from'],
+            "to": m['to'],
+            "message": m['message'],
+            "type": m.get('type', 'default')
+        })
+    messages_json = json.dumps(messages_for_js, ensure_ascii=False)
     
     commits_html = ""
     for c in commits[:8]:
@@ -199,7 +216,7 @@ def build_html(status: Dict, messages: List, commits: List, stats: Dict) -> str:
 </head>
 <body>
     <div class="container">
-        <h1>🤖 Multi-Agent Dashboard</h1>
+        <h1>🤖 Multi-Agent Dashboard <span style="font-size:0.6em;color:#6b7280">(GMT+8)</span></h1>
         
         <div class="card">
             <h2 style="color:#4ade80;margin-bottom:15px">👥 Agents</h2>
