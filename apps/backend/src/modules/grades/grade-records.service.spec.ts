@@ -46,24 +46,23 @@ describe('GradeRecordsService', () => {
     save: jest.fn(),
   };
 
+  // Hoisted so Jest can track calls across transaction invocations
+  const mockManagerSave = jest.fn((entity) => {
+    if (!entity.id) {
+      entity.id = `mock-id-${Date.now()}`;
+    }
+    return Promise.resolve(entity);
+  });
+  const mockManagerCreate = jest.fn((entityClass: any, attrs: any) => ({
+    ...attrs,
+  }));
+
   const mockDataSource = {
     transaction: jest.fn((callback) => {
-      const mockEntities: any[] = [];
       const queryRunner = {
         manager: {
-          save: jest.fn((entity) => {
-            // Assign id if not present
-            if (!entity.id) {
-              const id = `mock-id-${mockEntities.length + 1}`;
-              entity.id = id;
-            }
-            mockEntities.push(entity);
-            return Promise.resolve(entity);
-          }),
-          create: jest.fn((entityClass: any, attrs: any) => ({
-            // Spread attributes to simulate TypeORM entity behavior
-            ...attrs,
-          })),
+          save: mockManagerSave,
+          create: mockManagerCreate,
         },
       };
       return callback(queryRunner.manager);
@@ -224,18 +223,13 @@ describe('GradeRecordsService', () => {
 
       mockGradeRecordRepository.findOne.mockResolvedValue(mockRecord);
 
-      // Capture the manager instance from the transaction call
-      let capturedManager: any = null;
+      // Use the hoisted mocks so Jest can track calls
       (mockDataSource.transaction as jest.Mock).mockImplementationOnce(
         async (callback: (manager: any) => Promise<any>) => {
-          capturedManager = {
-            save: jest.fn((entity) => {
-              if (!entity.id) entity.id = `mock-id-${Date.now()}`;
-              return Promise.resolve(entity);
-            }),
-            create: jest.fn((_entityClass: any, attrs: any) => ({ ...attrs })),
-          };
-          return callback(capturedManager);
+          return callback({
+            save: mockManagerSave,
+            create: mockManagerCreate,
+          });
         },
       );
 
@@ -249,8 +243,8 @@ describe('GradeRecordsService', () => {
       expect(result.revokedBy).toBe('teacher-1');
       expect(result.revokedReason).toBe('Need correction');
 
-      // Assert that alert was created with correct attributes
-      const alertCreateCall = capturedManager?.create.mock.calls.find(
+      // Assert that alert was created with correct attributes using the hoisted mock
+      const alertCreateCall = mockManagerCreate.mock.calls.find(
         (call: any[]) =>
           call[1]?.type === AlertType.GRADE_REVOKED,
       );
