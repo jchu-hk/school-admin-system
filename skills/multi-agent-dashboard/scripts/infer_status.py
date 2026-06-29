@@ -147,16 +147,19 @@ def infer_from_heartbeat_files() -> Dict[str, Dict]:
     return status
 
 def infer_status(repo: str) -> Dict[str, Dict]:
-    """Combine all inference methods"""
+    """Combine all inference methods
     
-    # Priority: heartbeat files > agent-messages.json status > GitHub events > commits
+    Priority: heartbeat files > agent-messages.json > GitHub Issues
+    NOTE: Removed commit inference - use agent-communication skill instead
+    """
+    
     status = {}
     
     # 1. Heartbeat files (most reliable if present)
     heartbeat_status = infer_from_heartbeat_files()
     status.update(heartbeat_status)
     
-    # 2. Agent-messages.json status field (for explicit agent state)
+    # 2. Agent-messages.json status field (from agent-communication skill)
     agent_msg_file = Path("/workspace/projects/workspace/agents/project-admin/logs/agent-messages.json")
     if agent_msg_file.exists():
         agent_messages = json.loads(agent_msg_file.read_text())
@@ -166,27 +169,21 @@ def infer_status(repo: str) -> Dict[str, Dict]:
                 agent_name = agent_info.get("agent", "")
                 if agent_name and agent_name not in status:
                     status[agent_name] = {
-                        "status": agent_info.get("status", "running"),
+                        "status": agent_info.get("status", "idle"),
                         "task": agent_info.get("task", ""),
                         "evidence": f"From message: {m.get('message', '')[:30]}"
                     }
     
-    # 3. GitHub Issue events
+    # 3. GitHub Issue events (in-progress labels)
     issue_status = infer_from_issues(repo)
     for agent, s in issue_status.items():
         if agent not in status:
             status[agent] = s
     
-    # 4. GitHub commits (fallback - lowest priority)
-    commit_status = infer_from_commits(repo, hours=2)
-    for agent, s in commit_status.items():
-        if agent not in status:
-            status[agent] = s
-    
-    # 5. Default: idle
+    # 4. Default: idle (only for agents with no status at all)
     for agent in AGENT_CONFIG:
         if agent not in status:
-            status[agent] = {"status": "idle", "task": "等待任务", "evidence": ""}
+            status[agent] = {"status": "idle", "task": "等待任务", "evidence": "No activity recorded"}
     
     return status
 
