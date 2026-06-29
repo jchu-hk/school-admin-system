@@ -1,13 +1,13 @@
-import { NamingStrategyInterface, DefaultNamingStrategy } from 'typeorm';
+import { DefaultNamingStrategy } from 'typeorm';
 
 /**
  * TypeORM CamelCaseNamingStrategy
- * 
+ *
  * Problem: Entities use camelCase field names but database uses snake_case columns.
- * 
+ *
  * Strategy: When @Column has explicit `name: 'xxx'`, use that.
  * When no explicit name: use property name converted to snake_case.
- * 
+ *
  * This ensures all queries map camelCase fields -> snake_case columns automatically.
  */
 export class CamelCaseNamingStrategy extends DefaultNamingStrategy {

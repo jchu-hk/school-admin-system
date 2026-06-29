@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { UserService } from './user.service';
 import { User, UserRole, UserStatus } from './user.entity';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
@@ -8,7 +7,6 @@ import * as bcrypt from 'bcryptjs';
 
 describe('UserService', () => {
   let service: UserService;
-  let repository: Repository<User>;
 
   const mockUserRepository = {
     create: jest.fn(),
@@ -58,7 +56,6 @@ describe('UserService', () => {
     }).compile();
 
     service = module.get<UserService>(UserService);
-    repository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
   afterEach(() => {
@@ -187,7 +184,10 @@ describe('UserService', () => {
     it('should validate correct password', async () => {
       const hashedPassword = await bcrypt.hash('Password123!', 10);
 
-      const result = await service.validatePassword('Password123!', hashedPassword);
+      const result = await service.validatePassword(
+        'Password123!',
+        hashedPassword,
+      );
 
       expect(result).toBe(true);
     });
@@ -195,7 +195,10 @@ describe('UserService', () => {
     it('should reject incorrect password', async () => {
       const hashedPassword = await bcrypt.hash('Password123!', 10);
 
-      const result = await service.validatePassword('WrongPassword123!', hashedPassword);
+      const result = await service.validatePassword(
+        'WrongPassword123!',
+        hashedPassword,
+      );
 
       expect(result).toBe(false);
     });

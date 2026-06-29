@@ -2,13 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AttendanceService } from './attendance.service';
 import { Attendance, AttendanceStatus } from './attendance.entity';
-import { User } from '../user/user.entity';
+import { User, UserRole } from '../user/user.entity';
 import { Class } from '../user/class.entity';
 import { NotificationService } from '../notification/notification.service';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 // Mock QRCode module
 jest.mock('qrcode');
+import * as QRCode from 'qrcode';
 
 describe('AttendanceService', () => {
   let service: AttendanceService;

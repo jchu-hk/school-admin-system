@@ -9,7 +9,6 @@ dotenv.config({ path: resolve(__dirname, '../.env.development') });
 
 // Use .js files for compiled code, .ts for development
 const extension = __filename.endsWith('.js') ? '.js' : '.ts';
-const distPath = __filename.endsWith('.js') ? 'dist' : 'src';
 
 export default new DataSource({
   type: 'postgres',
