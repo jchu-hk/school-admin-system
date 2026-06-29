@@ -73,6 +73,27 @@ agent-PM (调度中枢) → DEV/QA/DEVOPS/CHECKER
 
 ---
 
+## 2026-06-29 — CI/CD Pipeline问题发现
+
+**问题**: GitHub Actions CI/CD Pipeline在每次Dashboard自动更新commit时失败
+
+**根因分析**:
+1. **GitHub Pages Workflow**: Repository Pages未启用，导致deploy job失败
+2. **CI Pipeline**: `pnpm install` 步骤在0秒内失败，可能是lockfile格式或pnpm版本问题
+
+**影响**:
+- 每次Dashboard自动更新都会触发失败的CI run
+- 测试、lint、build步骤全部被阻塞
+- Regression test无法运行
+
+**解决方案**:
+1. 用户需在GitHub Settings → Pages → 选择"Source: GitHub Actions"
+2. 调查pnpm install失败原因（可能是lockfileVersion: '9.0'与CI中pnpm版本不匹配）
+
+**教训**: CI配置需要在修改pnpm版本后重新验证
+
+---
+
 ## 2026-06-14 — AI团队7x24工作原则（核心）
 
 **用户指令**: AI团队可以7x24，没有须要定工作的开始时间
