@@ -3,305 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Agent Dashboard</title>
+    <title>Multi-Agent 实时看板</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #e0e0e0; padding: 20px }
-        .container { max-width: 1400px; margin: 0 auto }
-        h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
-        .card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0; padding: 20px; min-height: 100vh
+        }
+        .container { max-width: 1600px; margin: 0 auto }
+        h1 { text-align: center; color: #4ade80; margin-bottom: 20px; font-size: 2em }
+        
+        .main-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px }
+        
+        .card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1) }
+        .card h2 { color: #4ade80; margin-bottom: 15px; font-size: 1.1em; display: flex; align-items: center; gap: 8px }
+        
         .agent-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px }
-        .agent { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 12px; text-align: center; border: 2px solid rgba(255,255,255,0.1) }
-        .agent.running { border-color: #4ade80; box-shadow: 0 0 15px rgba(74,222,128,0.3) }
-        .agent-icon { font-size: 1.6em }
-        .agent-name { font-weight: bold; font-size: 0.9em }
-        .agent-task { font-size: 0.75em; color: #9ca3af }
-        .status-badge { padding: 2px 6px; border-radius: 3px; font-size: 0.7em }
-        .status-running { background: #4ade80; color: #1a1a2e }
+        .agent { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 12px; text-align: center; border: 2px solid rgba(255,255,255,0.1); transition: all 0.3s }
+        .agent.running { border-color: #4ade80; box-shadow: 0 0 15px rgba(74,222,128,0.3); animation: pulse 2s infinite }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 15px rgba(74,222,128,0.3) } 50% { box-shadow: 0 0 25px rgba(74,222,128,0.5) } }
+        .agent-icon { font-size: 1.6em; margin-bottom: 6px }
+        .agent-name { font-weight: bold; font-size: 0.9em; margin-bottom: 4px }
+        .agent-task { font-size: 0.75em; color: #9ca3af; line-height: 1.3 }
+        
+        .status-badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 0.7em }
+        .status-running { background: #4ade80; color: #1a1a2e; font-weight: bold }
         .status-idle { background: rgba(255,255,255,0.1); color: #9ca3af }
-        .message-filters { display: flex; gap: 8px; margin-bottom: 15px }
-        .filter-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #9ca3af; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85em; transition: all 0.2s }
+        
+        .message-filters { display: flex; gap: 8px; margin-bottom: 15px; align-items: center; flex-wrap: wrap }
+        .filter-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #9ca3af; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8em; transition: all 0.2s }
         .filter-btn:hover, .filter-btn.active { background: rgba(74,222,128,0.2); border-color: #4ade80; color: #4ade80 }
-        .message-list { max-height: 400px; overflow-y: auto }
-        .message-item { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px; margin-bottom: 8px; border-left: 3px solid }
-        .msg-done { border-left-color: #4ade80 }
+        
+        .message-list { max-height: 350px; overflow-y: auto; padding-right: 5px }
+        .message-list::-webkit-scrollbar { width: 5px }
+        .message-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px }
+        
+        .message-item { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; border-left: 3px solid }
+        .message-item:hover { background: rgba(0,0,0,0.3) }
+        .message-time { font-size: 0.7em; color: #6b7280; margin-bottom: 4px }
+        .message-direction { font-size: 0.8em; margin-bottom: 3px }
+        .message-from { font-weight: bold; color: #60a5fa }
+        .message-to { color: #9ca3af }
+        .message-arrow { margin: 0 4px; color: #6b7280 }
+        .message-content { font-size: 0.85em; color: #d1d5db; line-height: 1.3 }
+        
         .msg-assign { border-left-color: #fbbf24 }
         .msg-received { border-left-color: #60a5fa }
-        .msg-info { border-left-color: #a855f7 }
-        .msg-default { border-left-color: #6b7280 }
-        .stat-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1) }
-        .stat-value { color: #4ade80 }
-        .commit-item { padding: 6px 0; font-size: 0.85em }
-        .refresh { text-align: center; color: #6b7280; font-size: 0.8em }
+        .msg-done { border-left-color: #4ade80 }
+        .msg-failed { border-left-color: #ef4444 }
+        .msg-passed { border-left-color: #34d399 }
+        .msg-default { border-left-color: #9ca3af }
+        
+        .msg-badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 0.65em; margin-right: 5px }
+        .msg-badge.assign { background: rgba(251,191,36,0.2); color: #fbbf24 }
+        .msg-badge.received { background: rgba(96,165,250,0.2); color: #60a5fa }
+        .msg-badge.done { background: rgba(74,222,128,0.2); color: #4ade80 }
+        .msg-badge.failed { background: rgba(239,68,68,0.2); color: #ef4444 }
+        .msg-badge.passed { background: rgba(52,211,153,0.2); color: #34d399 }
+        
+        .stat-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9em }
+        .stat-item:last-child { border-bottom: none }
+        .stat-value { color: #4ade80; font-weight: bold }
+        
+        .task-list { margin-top: 10px }
+        .task-item { display: flex; align-items: center; padding: 7px 10px; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 6px; font-size: 0.85em }
+        .task-icon { margin-right: 8px }
+        .task-id { color: #60a5fa; margin-right: 8px }
+        .task-title { flex: 1; color: #d1d5db }
+        .task-assignee { color: #9ca3af }
+        
+        .commit-list { margin-top: 10px }
+        .commit-item { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8em }
+        .commit-item:last-child { border-bottom: none }
+        .commit-sha { color: #60a5fa; font-family: monospace }
+        .commit-msg { color: #9ca3af; margin-top: 2px }
+        
+        .refresh-info { text-align: center; margin-top: 20px; color: #6b7280; font-size: 0.8em }
+        .refresh-btn { background: rgba(74,222,128,0.2); color: #4ade80; border: 1px solid #4ade80; padding: 4px 12px; border-radius: 5px; cursor: pointer; margin-left: 10px }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🤖 Multi-Agent Dashboard</h1>
+        <h1>🤖 Multi-Agent 实时看板</h1>
         
-        <div class="card">
-            <h2 style="color:#4ade80;margin-bottom:15px">👥 Agents</h2>
-            <div class="agent-grid"><div class="agent running">
-            <div class="agent-icon">🧑💼</div>
-            <div class="agent-name">PM</div>
-            <div class="agent-task">Dashboard同步</div>
-            <span class="status-badge status-running">running</span>
-        </div><div class="agent running">
-            <div class="agent-icon">🤖</div>
-            <div class="agent-name">DEV</div>
-            <div class="agent-task">Commit: 2fb648d</div>
-            <span class="status-badge status-running">running</span>
-        </div><div class="agent">
-            <div class="agent-icon">🔍</div>
-            <div class="agent-name">QA</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent">
-            <div class="agent-icon">🔧</div>
-            <div class="agent-name">DEVOPS</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent">
-            <div class="agent-icon">✓</div>
-            <div class="agent-name">CHECKER</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent">
-            <div class="agent-icon">🏗️</div>
-            <div class="agent-name">ARCH</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent">
-            <div class="agent-icon">📝</div>
-            <div class="agent-name">REQ</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div></div>
-        </div>
-        
-        <div class="card">
-            <h2 style="color:#4ade80;margin-bottom:15px">💬 Messages <span id="msgCount"></span></h2>
-            <div class="message-filters">
-                <button class="filter-btn active" onclick="setPeriod('today')">今天</button>
-                <button class="filter-btn" onclick="setPeriod('yesterday')">昨天</button>
-                <button class="filter-btn" onclick="setPeriod('2days')">过去2天</button>
-                <button class="filter-btn" onclick="setPeriod('all')">全部</button>
+        <div class="main-layout">
+            <div>
+                <div class="card">
+                    <h2>👥 Agents 状态</h2>
+                    <div class="agent-grid" id="agents"></div>
+                    
+                    <h2 style="margin-top: 20px">📋 当前任务</h2>
+                    <div class="task-list" id="tasks"></div>
+                    
+                    <h2 style="margin-top: 20px">💬 Agent 消息流</h2>
+                    <div class="message-filters">
+                        <button class="filter-btn active" data-period="today">今天</button>
+                        <button class="filter-btn" data-period="yesterday">昨天</button>
+                        <button class="filter-btn" data-period="2days">过去2天</button>
+                        <span id="msgCount" style="margin-left: auto; color: #6b7280; font-size: 0.8em"></span>
+                    </div>
+                    <div class="message-list" id="messages"></div>
+                </div>
             </div>
-            <div class="message-list" id="messageList"><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T01:06</div>
-            <div class="message-content">DEV → system: 1e7c242: skill: dashboard update 09:06</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T01:05</div>
-            <div class="message-content">PM → system: aa9202c: chore: update multi-agent-dashboard.html (09:05)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T01:00</div>
-            <div class="message-content">PM → system: 7205b57: chore: update multi-agent-dashboard.html (09:00)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:59</div>
-            <div class="message-content">DEV → system: 2fb648d: feat: add test-env-healthcheck skill (token-free a</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:55</div>
-            <div class="message-content">PM → system: 6398b7a: chore: update multi-agent-dashboard.html (08:55)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:50</div>
-            <div class="message-content">PM → system: 4763058: chore: update multi-agent-dashboard.html (08:50)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:45</div>
-            <div class="message-content">PM → system: 9bab253: chore: update multi-agent-dashboard.html (08:45)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:40</div>
-            <div class="message-content">DEV → system: c670e17: skill: dashboard update 08:40</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:40</div>
-            <div class="message-content">PM → system: 240030c: chore: update multi-agent-dashboard.html (08:40)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:35</div>
-            <div class="message-content">PM → system: faa50fd: chore: update multi-agent-dashboard.html (08:35)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:30</div>
-            <div class="message-content">PM → system: ad14fc3: chore: update multi-agent-dashboard.html (08:30)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:25</div>
-            <div class="message-content">PM → system: fe2eb30: chore: update multi-agent-dashboard.html (08:25)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:20</div>
-            <div class="message-content">PM → system: dd9b392: chore: update multi-agent-dashboard.html (08:20)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:15</div>
-            <div class="message-content">PM → system: 39cafb4: chore: update multi-agent-dashboard.html (08:15)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:10</div>
-            <div class="message-content">PM → system: 9f7d4f0: chore: update multi-agent-dashboard.html (08:10)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:09</div>
-            <div class="message-content">DEV → system: 72952c7: skill: dashboard update 08:09</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:08</div>
-            <div class="message-content">DEV → system: 04f706a: feat(dashboard): enhance message capture from comm</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:05</div>
-            <div class="message-content">PM → system: edf760f: chore: update multi-agent-dashboard.html (08:05)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:02</div>
-            <div class="message-content">DEV → system: d196952: skill: dashboard update 08:02</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-29T00:00</div>
-            <div class="message-content">PM → system: 9dd805a: chore: update multi-agent-dashboard.html (08:00)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:59</div>
-            <div class="message-content">DEV → system: 668b657: docs(wiki): update timestamp to 2026-06-29 07:59</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:55</div>
-            <div class="message-content">PM → system: 572fd99: docs: fix htmlpreview URL in PROJECT-WIKI.md and H</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:55</div>
-            <div class="message-content">PM → system: 611a428: chore: update multi-agent-dashboard.html (07:55)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:50</div>
-            <div class="message-content">PM → system: e9d0852: chore: update multi-agent-dashboard.html (07:50)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:45</div>
-            <div class="message-content">PM → system: 0b3bfea: chore: update multi-agent-dashboard.html (07:45)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:40</div>
-            <div class="message-content">PM → system: 591d7ba: chore: update multi-agent-dashboard.html (07:40)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:35</div>
-            <div class="message-content">PM → system: 6779269: chore: update multi-agent-dashboard.html (07:35)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:30</div>
-            <div class="message-content">PM → system: e6a02c3: chore: update multi-agent-dashboard.html (07:30)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:25</div>
-            <div class="message-content">PM → system: 5a212c0: chore: update multi-agent-dashboard.html (07:25)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:20</div>
-            <div class="message-content">PM → system: f02a5db: chore: update multi-agent-dashboard.html (07:20)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:15</div>
-            <div class="message-content">PM → system: 649ec54: chore: update multi-agent-dashboard.html (07:15)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:10</div>
-            <div class="message-content">PM → system: a863735: chore: update multi-agent-dashboard.html (07:10)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:05</div>
-            <div class="message-content">PM → system: b9140bc: chore: update multi-agent-dashboard.html (07:05)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T23:00</div>
-            <div class="message-content">PM → system: 956f24f: chore: update multi-agent-dashboard.html (07:00)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:55</div>
-            <div class="message-content">PM → system: 6948c41: chore: update multi-agent-dashboard.html (06:55)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:50</div>
-            <div class="message-content">PM → system: a45d1a0: chore: update multi-agent-dashboard.html (06:50)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:45</div>
-            <div class="message-content">PM → system: fdad9a7: chore: update multi-agent-dashboard.html (06:45)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:40</div>
-            <div class="message-content">PM → system: 4845661: chore: update multi-agent-dashboard.html (06:40)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:35</div>
-            <div class="message-content">PM → system: a72ef22: chore: update multi-agent-dashboard.html (06:35)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:30</div>
-            <div class="message-content">PM → system: bb11cf5: chore: update multi-agent-dashboard.html (06:30)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:25</div>
-            <div class="message-content">PM → system: 2bfb5e2: chore: update multi-agent-dashboard.html (06:25)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:20</div>
-            <div class="message-content">PM → system: f11be10: chore: update multi-agent-dashboard.html (06:20)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:15</div>
-            <div class="message-content">PM → system: 5f9b5e5: chore: update multi-agent-dashboard.html (06:15)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:10</div>
-            <div class="message-content">PM → system: dd4e0ab: chore: update multi-agent-dashboard.html (06:10)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:05</div>
-            <div class="message-content">PM → system: c1dbc94: chore: update multi-agent-dashboard.html (06:05)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T22:00</div>
-            <div class="message-content">PM → system: b0c71f3: chore: update multi-agent-dashboard.html (06:00)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T21:55</div>
-            <div class="message-content">PM → system: 06401ce: chore: update multi-agent-dashboard.html (05:55)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T21:50</div>
-            <div class="message-content">PM → system: 067e615: chore: update multi-agent-dashboard.html (05:50)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T21:45</div>
-            <div class="message-content">PM → system: 7811803: chore: update multi-agent-dashboard.html (05:45)</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">2026-06-28T21:40</div>
-            <div class="message-content">PM → system: e94f98f: chore: update multi-agent-dashboard.html (05:40)</div>
-        </div></div>
-        </div>
-        
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-            <div class="card">
-                <h2 style="color:#4ade80;margin-bottom:15px">📊 Stats</h2>
-                <div class="stat-item"><span>Open</span><span class="stat-value">16</span></div>
-                <div class="stat-item"><span>In Progress</span><span class="stat-value">0</span></div>
-                <div class="stat-item"><span>Today Commits</span><span class="stat-value">50</span></div>
-            </div>
-            <div class="card">
-                <h2 style="color:#4ade80;margin-bottom:15px">📝 Commits</h2>
-                <div class="commit-item">
-            <span style="color:#60a5fa">1e7c242</span> skill: dashboard update 09:06
-        </div><div class="commit-item">
-            <span style="color:#60a5fa">aa9202c</span> chore: update multi-agent-dashboard.html
-        </div><div class="commit-item">
-            <span style="color:#60a5fa">7205b57</span> chore: update multi-agent-dashboard.html
-        </div><div class="commit-item">
-            <span style="color:#60a5fa">2fb648d</span> feat: add test-env-healthcheck skill (to
-        </div><div class="commit-item">
-            <span style="color:#60a5fa">6398b7a</span> chore: update multi-agent-dashboard.html
-        </div><div class="commit-item">
-            <span style="color:#60a5fa">4763058</span> chore: update multi-agent-dashboard.html
-        </div><div class="commit-item">
-            <span style="color:#60a5fa">9bab253</span> chore: update multi-agent-dashboard.html
-        </div><div class="commit-item">
-            <span style="color:#60a5fa">c670e17</span> skill: dashboard update 08:40
-        </div>
+            
+            <div>
+                <div class="card">
+                    <h2>📊 系统统计</h2>
+                    <div id="stats"></div>
+                </div>
+                
+                <div class="card" style="margin-top: 20px">
+                    <h2>🔄 最新 Commits</h2>
+                    <div class="commit-list" id="commits"></div>
+                </div>
             </div>
         </div>
         
-        <div class="refresh">Refreshed: 2026-06-29 09:07:56 | Source: GitHub Events</div>
+        <div class="refresh-info">
+            <span>🔄 自动刷新: 30秒</span>
+            <span>|</span>
+            <span>最后更新: <span id="lastUpdate"></span></span>
+            <button class="refresh-btn" onclick="location.reload()">刷新</button>
+        </div>
     </div>
+    
     <script>
-    const ALL_MESSAGES = [{"timestamp": "2026-06-29T01:06:38Z", "from": "DEV", "to": "system", "message": "1e7c242: skill: dashboard update 09:06", "type": "done"}, {"timestamp": "2026-06-29T01:05:05Z", "from": "PM", "to": "system", "message": "aa9202c: chore: update multi-agent-dashboard.html (09:05)", "type": "done"}, {"timestamp": "2026-06-29T01:00:05Z", "from": "PM", "to": "system", "message": "7205b57: chore: update multi-agent-dashboard.html (09:00)", "type": "done"}, {"timestamp": "2026-06-29T00:59:04Z", "from": "DEV", "to": "system", "message": "2fb648d: feat: add test-env-healthcheck skill (token-free a", "type": "done"}, {"timestamp": "2026-06-29T00:55:06Z", "from": "PM", "to": "system", "message": "6398b7a: chore: update multi-agent-dashboard.html (08:55)", "type": "done"}, {"timestamp": "2026-06-29T00:50:04Z", "from": "PM", "to": "system", "message": "4763058: chore: update multi-agent-dashboard.html (08:50)", "type": "done"}, {"timestamp": "2026-06-29T00:45:05Z", "from": "PM", "to": "system", "message": "9bab253: chore: update multi-agent-dashboard.html (08:45)", "type": "done"}, {"timestamp": "2026-06-29T00:40:17Z", "from": "DEV", "to": "system", "message": "c670e17: skill: dashboard update 08:40", "type": "done"}, {"timestamp": "2026-06-29T00:40:04Z", "from": "PM", "to": "system", "message": "240030c: chore: update multi-agent-dashboard.html (08:40)", "type": "done"}, {"timestamp": "2026-06-29T00:35:05Z", "from": "PM", "to": "system", "message": "faa50fd: chore: update multi-agent-dashboard.html (08:35)", "type": "done"}, {"timestamp": "2026-06-29T00:30:05Z", "from": "PM", "to": "system", "message": "ad14fc3: chore: update multi-agent-dashboard.html (08:30)", "type": "done"}, {"timestamp": "2026-06-29T00:25:04Z", "from": "PM", "to": "system", "message": "fe2eb30: chore: update multi-agent-dashboard.html (08:25)", "type": "done"}, {"timestamp": "2026-06-29T00:20:05Z", "from": "PM", "to": "system", "message": "dd9b392: chore: update multi-agent-dashboard.html (08:20)", "type": "done"}, {"timestamp": "2026-06-29T00:15:04Z", "from": "PM", "to": "system", "message": "39cafb4: chore: update multi-agent-dashboard.html (08:15)", "type": "done"}, {"timestamp": "2026-06-29T00:10:06Z", "from": "PM", "to": "system", "message": "9f7d4f0: chore: update multi-agent-dashboard.html (08:10)", "type": "done"}, {"timestamp": "2026-06-29T00:09:21Z", "from": "DEV", "to": "system", "message": "72952c7: skill: dashboard update 08:09", "type": "done"}, {"timestamp": "2026-06-29T00:08:44Z", "from": "DEV", "to": "system", "message": "04f706a: feat(dashboard): enhance message capture from comm", "type": "done"}, {"timestamp": "2026-06-29T00:05:04Z", "from": "PM", "to": "system", "message": "edf760f: chore: update multi-agent-dashboard.html (08:05)", "type": "done"}, {"timestamp": "2026-06-29T00:02:29Z", "from": "DEV", "to": "system", "message": "d196952: skill: dashboard update 08:02", "type": "done"}, {"timestamp": "2026-06-29T00:00:05Z", "from": "PM", "to": "system", "message": "9dd805a: chore: update multi-agent-dashboard.html (08:00)", "type": "done"}, {"timestamp": "2026-06-28T23:59:16Z", "from": "DEV", "to": "system", "message": "668b657: docs(wiki): update timestamp to 2026-06-29 07:59", "type": "done"}, {"timestamp": "2026-06-28T23:55:06Z", "from": "PM", "to": "system", "message": "572fd99: docs: fix htmlpreview URL in PROJECT-WIKI.md and H", "type": "done"}, {"timestamp": "2026-06-28T23:55:05Z", "from": "PM", "to": "system", "message": "611a428: chore: update multi-agent-dashboard.html (07:55)", "type": "done"}, {"timestamp": "2026-06-28T23:50:04Z", "from": "PM", "to": "system", "message": "e9d0852: chore: update multi-agent-dashboard.html (07:50)", "type": "done"}, {"timestamp": "2026-06-28T23:45:05Z", "from": "PM", "to": "system", "message": "0b3bfea: chore: update multi-agent-dashboard.html (07:45)", "type": "done"}, {"timestamp": "2026-06-28T23:40:05Z", "from": "PM", "to": "system", "message": "591d7ba: chore: update multi-agent-dashboard.html (07:40)", "type": "done"}, {"timestamp": "2026-06-28T23:35:05Z", "from": "PM", "to": "system", "message": "6779269: chore: update multi-agent-dashboard.html (07:35)", "type": "done"}, {"timestamp": "2026-06-28T23:30:05Z", "from": "PM", "to": "system", "message": "e6a02c3: chore: update multi-agent-dashboard.html (07:30)", "type": "done"}, {"timestamp": "2026-06-28T23:25:05Z", "from": "PM", "to": "system", "message": "5a212c0: chore: update multi-agent-dashboard.html (07:25)", "type": "done"}, {"timestamp": "2026-06-28T23:20:05Z", "from": "PM", "to": "system", "message": "f02a5db: chore: update multi-agent-dashboard.html (07:20)", "type": "done"}, {"timestamp": "2026-06-28T23:15:06Z", "from": "PM", "to": "system", "message": "649ec54: chore: update multi-agent-dashboard.html (07:15)", "type": "done"}, {"timestamp": "2026-06-28T23:10:05Z", "from": "PM", "to": "system", "message": "a863735: chore: update multi-agent-dashboard.html (07:10)", "type": "done"}, {"timestamp": "2026-06-28T23:05:06Z", "from": "PM", "to": "system", "message": "b9140bc: chore: update multi-agent-dashboard.html (07:05)", "type": "done"}, {"timestamp": "2026-06-28T23:00:04Z", "from": "PM", "to": "system", "message": "956f24f: chore: update multi-agent-dashboard.html (07:00)", "type": "done"}, {"timestamp": "2026-06-28T22:55:06Z", "from": "PM", "to": "system", "message": "6948c41: chore: update multi-agent-dashboard.html (06:55)", "type": "done"}, {"timestamp": "2026-06-28T22:50:04Z", "from": "PM", "to": "system", "message": "a45d1a0: chore: update multi-agent-dashboard.html (06:50)", "type": "done"}, {"timestamp": "2026-06-28T22:45:05Z", "from": "PM", "to": "system", "message": "fdad9a7: chore: update multi-agent-dashboard.html (06:45)", "type": "done"}, {"timestamp": "2026-06-28T22:40:05Z", "from": "PM", "to": "system", "message": "4845661: chore: update multi-agent-dashboard.html (06:40)", "type": "done"}, {"timestamp": "2026-06-28T22:35:04Z", "from": "PM", "to": "system", "message": "a72ef22: chore: update multi-agent-dashboard.html (06:35)", "type": "done"}, {"timestamp": "2026-06-28T22:30:05Z", "from": "PM", "to": "system", "message": "bb11cf5: chore: update multi-agent-dashboard.html (06:30)", "type": "done"}, {"timestamp": "2026-06-28T22:25:05Z", "from": "PM", "to": "system", "message": "2bfb5e2: chore: update multi-agent-dashboard.html (06:25)", "type": "done"}, {"timestamp": "2026-06-28T22:20:05Z", "from": "PM", "to": "system", "message": "f11be10: chore: update multi-agent-dashboard.html (06:20)", "type": "done"}, {"timestamp": "2026-06-28T22:15:05Z", "from": "PM", "to": "system", "message": "5f9b5e5: chore: update multi-agent-dashboard.html (06:15)", "type": "done"}, {"timestamp": "2026-06-28T22:10:05Z", "from": "PM", "to": "system", "message": "dd4e0ab: chore: update multi-agent-dashboard.html (06:10)", "type": "done"}, {"timestamp": "2026-06-28T22:05:05Z", "from": "PM", "to": "system", "message": "c1dbc94: chore: update multi-agent-dashboard.html (06:05)", "type": "done"}, {"timestamp": "2026-06-28T22:00:05Z", "from": "PM", "to": "system", "message": "b0c71f3: chore: update multi-agent-dashboard.html (06:00)", "type": "done"}, {"timestamp": "2026-06-28T21:55:05Z", "from": "PM", "to": "system", "message": "06401ce: chore: update multi-agent-dashboard.html (05:55)", "type": "done"}, {"timestamp": "2026-06-28T21:50:05Z", "from": "PM", "to": "system", "message": "067e615: chore: update multi-agent-dashboard.html (05:50)", "type": "done"}, {"timestamp": "2026-06-28T21:45:05Z", "from": "PM", "to": "system", "message": "7811803: chore: update multi-agent-dashboard.html (05:45)", "type": "done"}, {"timestamp": "2026-06-28T21:40:05Z", "from": "PM", "to": "system", "message": "e94f98f: chore: update multi-agent-dashboard.html (05:40)", "type": "done"}];
-    let currentPeriod = 'today';
-    
-    function setPeriod(period) {
-        currentPeriod = period;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        renderMessages();
-    }
-    
-    function renderMessages() {
-        const now = new Date();
-        const filtered = ALL_MESSAGES.filter(m => {
-            const d = new Date(m.timestamp);
-            const days = (now - d) / 86400000;
-            if (currentPeriod === 'today') return days < 1;
-            if (currentPeriod === 'yesterday') return days >= 1 && days < 2;
-            if (currentPeriod === '2days') return days < 2;
-            return true;
+        const STATE = [{"icon": "🧑‍💼", "name": "PM", "status": "idle", "task": "调度中枢", "color": "#fbbf24"}, {"icon": "🤖", "name": "DEV", "status": "idle", "task": "开发实现", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "idle", "task": "质量验收", "color": "#4ade80"}, {"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "运维部署", "color": "#f97316"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "代码审查", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "架构设计", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "idle", "task": "需求分析", "color": "#ec4899"}];
+        const TASKS = [];
+        const MESSAGES = [{"timestamp": "2026-06-28T02:23:32Z", "from": "PM", "to": "DEV", "message": "派发任务 #164 P0 数据库表缺失", "type": "assign"}, {"timestamp": "2026-06-28T02:23:33Z", "from": "PM", "to": "DEV", "message": "派发任务 #165 P0 inquiries/queue UUID错误", "type": "assign"}, {"timestamp": "2026-06-28T02:23:35Z", "from": "PM", "to": "DEV", "message": "派发任务 #166 P1 教师权限问题", "type": "assign"}, {"timestamp": "2026-06-28T02:29:44Z", "from": "PM", "to": "DEV", "message": "Issue #164 assigned to DEV", "type": "assign"}, {"timestamp": "2026-06-28T02:29:46Z", "from": "PM", "to": "DEV", "message": "Issue #165 assigned to DEV, labeled", "type": "assign"}, {"timestamp": "2026-06-28T02:37:21Z", "from": "PM", "to": "DEV", "message": "Issue #166 labeled p1", "type": "assign"}, {"timestamp": "2026-06-28T02:46:01Z", "from": "DEV", "to": "PM", "message": "Commit b65cd1a: fix inquiries queue API", "type": "done"}, {"timestamp": "2026-06-28T02:46:28Z", "from": "PM", "to": "DEV", "message": "Issue #164 closed", "type": "done"}, {"timestamp": "2026-06-28T02:46:43Z", "from": "PM", "to": "DEV", "message": "Issue #165 closed", "type": "done"}, {"timestamp": "2026-06-28T02:47:08Z", "from": "PM", "to": "DEV", "message": "Issue #166 closed", "type": "done"}, {"timestamp": "2026-06-28T02:48:00Z", "from": "PM", "to": "system", "message": "3 P0 issues fixed, skill analysis started", "type": "done"}, {"timestamp": "2026-06-28T02:50:00Z", "from": "PM", "to": "system", "message": "Project-Admin skill architecture analysis", "type": "done"}, {"timestamp": "2026-06-28T03:00:00Z", "from": "system", "to": "PM", "message": "Dashboard updated from GitHub Events", "type": "received"}, {"timestamp": "2026-06-28T03:25:00Z", "from": "PM", "to": "system", "message": "GitHub Status Skill created", "type": "done"}, {"timestamp": "2026-06-28T03:30:00Z", "from": "system", "to": "PM", "message": "Multi-Agent Dashboard Skill updated", "type": "received"}, {"timestamp": "2026-06-28T03:45:00Z", "from": "system", "to": "PM", "message": "Skills committed: c4c66b8, 8382fc6", "type": "done"}, {"timestamp": "2026-06-28T03:52:05Z", "from": "PM", "to": "DEV", "message": "派发任务 #168 skill验证测试", "type": "assign"}, {"timestamp": "2026-06-28T03:52:07Z", "from": "DEV", "to": "PM", "message": "Issue #168 开始处理", "type": "received"}, {"timestamp": "2026-06-28T03:52:14Z", "from": "DEV", "to": "PM", "message": "Issue #168 修复完成，skill验证通过", "type": "done"}];
+        const COMMITS = [{"sha": "36bcb6b", "message": "skill: dashboard update 09:07", "date": "2026-06-29T01:07:56Z"}, {"sha": "1e7c242", "message": "skill: dashboard update 09:06", "date": "2026-06-29T01:06:38Z"}, {"sha": "aa9202c", "message": "chore: update multi-agent-dashboard.html (09:05)", "date": "2026-06-29T01:05:05Z"}, {"sha": "7205b57", "message": "chore: update multi-agent-dashboard.html (09:00)", "date": "2026-06-29T01:00:05Z"}, {"sha": "2fb648d", "message": "feat: add test-env-healthcheck skill (token-free automated monitoring)", "date": "2026-06-29T00:59:04Z"}, {"sha": "6398b7a", "message": "chore: update multi-agent-dashboard.html (08:55)", "date": "2026-06-29T00:55:06Z"}, {"sha": "4763058", "message": "chore: update multi-agent-dashboard.html (08:50)", "date": "2026-06-29T00:50:04Z"}, {"sha": "9bab253", "message": "chore: update multi-agent-dashboard.html (08:45)", "date": "2026-06-29T00:45:05Z"}, {"sha": "c670e17", "message": "skill: dashboard update 08:40", "date": "2026-06-29T00:40:17Z"}, {"sha": "240030c", "message": "chore: update multi-agent-dashboard.html (08:40)", "date": "2026-06-29T00:40:04Z"}];
+        const STATS = {
+            "Open Issues": "16",
+            "In Progress": "0",
+            "Git Commits (7天)": "20",
+            "活跃 Agents": "0/7"
+        };
+        
+        let currentPeriod = 'today';
+        
+        function renderAgents() {
+            document.getElementById('agents').innerHTML = STATE.map(a => `
+                <div class="agent ${a.status === 'running' ? 'running' : ''}">
+                    <div class="agent-icon">${a.icon}</div>
+                    <div class="agent-name" style="color:${a.color}">${a.name}</div>
+                    <div class="agent-task">
+                        <span class="status-badge ${a.status === 'running' ? 'status-running' : 'status-idle'}">
+                            ${a.status === 'running' ? '🔵' : '⏸️'} ${a.status === 'running' ? '运行' : '空闲'}
+                        </span>
+                    </div>
+                    <div class="agent-task" style="margin-top:5px">${a.task}</div>
+                </div>
+            `).join('');
+        }
+        
+        function renderStats() {
+            document.getElementById('stats').innerHTML = Object.entries(STATS).map(([k,v]) => `
+                <div class="stat-item"><span>${k}</span><span class="stat-value">${v}</span></div>
+            `).join('');
+        }
+        
+        function renderTasks() {
+            document.getElementById('tasks').innerHTML = TASKS.map(t => `
+                <div class="task-item">
+                    <span class="task-icon">🔵</span>
+                    <span class="task-id">${t.id}</span>
+                    <span class="task-title">${t.title}</span>
+                    <span class="task-assignee">→ ${t.assignee}</span>
+                </div>
+            `).join('') || '<div style="color:#6b7280;font-size:0.9em">暂无进行中的任务</div>';
+        }
+        
+        function renderMessages() {
+            const now = new Date();
+            const filtered = MESSAGES.filter(m => {
+                const d = new Date(m.timestamp);
+                const days = (now - d) / 86400000;
+                if (currentPeriod === 'today') return days < 1;
+                if (currentPeriod === 'yesterday') return days >= 1 && days < 2;
+                if (currentPeriod === '2days') return days < 2;
+                return true;
+            }).reverse();
+            
+            document.getElementById('msgCount').textContent = `${filtered.length} 条`;
+            
+            document.getElementById('messages').innerHTML = filtered.map(m => {
+                const dt = new Date(m.timestamp);
+                const date = dt.toLocaleDateString('zh-CN', {month:'short', day:'numeric'});
+                const time = dt.toLocaleTimeString('zh-CN', {hour:'2-digit', minute:'2-digit'});
+                const typeClass = m.type || 'default';
+                return `
+                    <div class="message-item msg-${typeClass}">
+                        <div class="message-time">${date} ${time}</div>
+                        <div class="message-direction">
+                            <span class="msg-badge ${typeClass}">${typeClass}</span>
+                            <span class="message-from">${m.from}</span>
+                            <span class="message-arrow">→</span>
+                            <span class="message-to">${m.to}</span>
+                        </div>
+                        <div class="message-content">${m.message}</div>
+                    </div>
+                `;
+            }).join('') || '<div style="color:#6b7280;font-size:0.9em;padding:20px;text-align:center">暂无消息记录</div>';
+        }
+        
+        function renderCommits() {
+            document.getElementById('commits').innerHTML = COMMITS.map(c => `
+                <div class="commit-item">
+                    <span class="commit-sha">${c.sha}</span>
+                    <div class="commit-msg">${c.message.split('\n')[0].substring(0, 60)}</div>
+                </div>
+            `).join('');
+        }
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentPeriod = btn.dataset.period;
+                renderMessages();
+            });
         });
-        document.getElementById('msgCount').textContent = `(${filtered.length} 条)`;
-        document.getElementById('messageList').innerHTML = filtered.map(m => `
-            <div class="message-item msg-${m.type || 'default'}">
-                <div class="message-time">${m.timestamp.substring(0,16)}</div>
-                <div class="message-content">${m.from} → ${m.to}: ${m.message}</div>
-            </div>
-        `).join('') || '<div style="color:#6b7280;text-align:center;padding:20px">暂无消息</div>';
-    }
-    
-    renderMessages();
+        
+        renderAgents();
+        renderStats();
+        renderTasks();
+        renderMessages();
+        renderCommits();
+        document.getElementById('lastUpdate').textContent = "2026-06-29 09:10:03";
+        
+        setTimeout(() => location.reload(), 30000);
     </script>
 </body>
 </html>
