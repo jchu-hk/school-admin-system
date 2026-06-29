@@ -79,7 +79,7 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 ## 🧪 测试环境
 
-> ⚠️ **最后更新**: 2026-06-28 23:57 (GMT+8)
+> ⚠️ **最后更新**: 2026-06-30 07:30 (GMT+8)
 > ⚠️ Cloudflare Quick Tunnel外部访问有问题，临时方案：本地访问
 
 | 服务 | 本地URL (本机) | 外部URL | 状态 |
