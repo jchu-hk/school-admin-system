@@ -527,18 +527,31 @@ describe('AttendanceService', () => {
     });
 
     it('should alert teacher when student is absent for 3+ consecutive days', async () => {
-      // Build dates in HK timezone (matching server environment)
+      // Build dates using real current date so consecutive school-day calculation works
+      // The service skips weekends when counting consecutive absences
       const now = new Date();
-      const toHKDate = (offsetDays) => {
-        const d = new Date(now);
-        d.setDate(d.getDate() - offsetDays);
-        d.setHours(0, 0, 0, 0);
+      const today = new Date(now);
+      today.setHours(0, 0, 0, 0);
+
+      // Helper to get a date N days back, at midnight
+      const daysBack = (n: number) => {
+        const d = new Date(today);
+        d.setDate(today.getDate() - n);
         return d;
       };
-      // 3 consecutive school days ending today
-      const d1 = toHKDate(0); // today
-      const d2 = toHKDate(1); // yesterday
-      const d3 = toHKDate(2); // 2 days ago
+
+      // Find 3 consecutive school days (Mon-Fri) going back from today
+      // The service skips weekends when counting, so we must provide real school days
+      const schoolDays: Date[] = [];
+      for (let offset = 0; schoolDays.length < 3 && offset < 20; offset++) {
+        const d = daysBack(offset);
+        const dow = d.getDay(); // 0=Sun, 6=Sat
+        if (dow !== 0 && dow !== 6) {
+          schoolDays.push(d);
+        }
+      }
+
+      const [schoolDay1, schoolDay2, schoolDay3] = schoolDays;
 
       // Mock absences: 3 consecutive school days
       mockQueryBuilder.getMany.mockResolvedValue([
@@ -547,24 +560,27 @@ describe('AttendanceService', () => {
           studentId: 'student-1',
           student: { id: 'student-1', name: '王小明', role: UserRole.STUDENT },
           classId: 'class-1',
+          cls: { id: 'class-1', name: '1A班', homeroomTeacherId: 'teacher-1' },
           status: AttendanceStatus.ABSENT,
-          attendanceDate: d1,
+          attendanceDate: schoolDay1,
         },
         {
           id: 'att-2',
           studentId: 'student-1',
           student: { id: 'student-1', name: '王小明', role: UserRole.STUDENT },
           classId: 'class-1',
+          cls: { id: 'class-1', name: '1A班', homeroomTeacherId: 'teacher-1' },
           status: AttendanceStatus.ABSENT,
-          attendanceDate: d2,
+          attendanceDate: schoolDay2,
         },
         {
           id: 'att-3',
           studentId: 'student-1',
           student: { id: 'student-1', name: '王小明', role: UserRole.STUDENT },
           classId: 'class-1',
+          cls: { id: 'class-1', name: '1A班', homeroomTeacherId: 'teacher-1' },
           status: AttendanceStatus.ABSENT,
-          attendanceDate: d3,
+          attendanceDate: schoolDay3,
         },
       ]);
 

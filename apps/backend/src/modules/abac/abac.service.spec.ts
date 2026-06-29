@@ -7,8 +7,17 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { AbacService } from './abac.service';
 import { AbacInput } from './interfaces/abac.interfaces';
+import { PermissionAuditLog } from './entities/permission-audit-log.entity';
+
+const mockAuditLogRepository = () => ({
+  create: jest.fn(),
+  save: jest.fn(),
+  find: jest.fn(),
+  findOne: jest.fn(),
+});
 
 describe('AbacService', () => {
   let service: AbacService;
@@ -29,6 +38,10 @@ describe('AbacService', () => {
       providers: [
         AbacService,
         { provide: ConfigService, useValue: mockConfigService },
+        {
+          provide: getRepositoryToken(PermissionAuditLog),
+          useFactory: mockAuditLogRepository,
+        },
       ],
     }).compile();
 
@@ -37,7 +50,10 @@ describe('AbacService', () => {
   });
 
   afterEach(async () => {
-    await service.onModuleDestroy();
+    // Only call onModuleDestroy if service was successfully initialized
+    if (service) {
+      await service.onModuleDestroy();
+    }
   });
 
   // ============================================================
@@ -728,6 +744,10 @@ describe('AbacService', () => {
         providers: [
           AbacService,
           { provide: ConfigService, useValue: opaConfigService },
+          {
+            provide: getRepositoryToken(PermissionAuditLog),
+            useFactory: mockAuditLogRepository,
+          },
         ],
       }).compile();
 
@@ -757,6 +777,10 @@ describe('AbacService', () => {
         providers: [
           AbacService,
           { provide: ConfigService, useValue: failingConfigService },
+          {
+            provide: getRepositoryToken(PermissionAuditLog),
+            useFactory: mockAuditLogRepository,
+          },
         ],
       }).compile();
 

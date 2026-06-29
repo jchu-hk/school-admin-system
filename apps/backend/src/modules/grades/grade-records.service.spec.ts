@@ -7,12 +7,14 @@ import {
 } from '@nestjs/common';
 import { GradeRecordsService } from './grade-records.service';
 import { GradeRecord, RecordStatus } from './grade-record.entity';
+import { GradeReview } from './grade-review.entity';
 import {
   GradeAuditAlert,
   AlertType,
   AlertSeverity,
+  AlertStatus,
 } from './grade-audit-alert.entity';
-import { DataSource } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import {
   CreateGradeRecordDto,
   UpdateGradeRecordDto,
@@ -36,7 +38,7 @@ describe('GradeRecordsService', () => {
 
   const mockGradeReviewRepository = {
     create: jest.fn(),
-    save: jest.fn(),
+    save: jest.fn((entity) => Promise.resolve({ id: 'review-1', ...entity })),
   };
 
   const mockAlertRepository = {
@@ -46,10 +48,22 @@ describe('GradeRecordsService', () => {
 
   const mockDataSource = {
     transaction: jest.fn((callback) => {
+      const mockEntities: any[] = [];
       const queryRunner = {
         manager: {
-          save: jest.fn(),
-          create: jest.fn(),
+          save: jest.fn((entity) => {
+            // Assign id if not present
+            if (!entity.id) {
+              const id = `mock-id-${mockEntities.length + 1}`;
+              entity.id = id;
+            }
+            mockEntities.push(entity);
+            return Promise.resolve(entity);
+          }),
+          create: jest.fn((entityClass: any, attrs: any) => ({
+            // Spread attributes to simulate TypeORM entity behavior
+            ...attrs,
+          })),
         },
       };
       return callback(queryRunner.manager);
@@ -204,15 +218,26 @@ describe('GradeRecordsService', () => {
         studentId: 'student-1',
         overallScore: 78.5,
         canRevokeUntil: new Date(Date.now() + 48 * 60 * 60 * 1000),
-        teacher: { name: 'Test Teacher' },
+        teacher: { id: 'teacher-1', name: 'Test Teacher' },
+        student: { id: 'student-1', name: 'Test Student' },
       };
 
-      const mockReview = { id: 'review-1' };
-      const mockAlert = { id: 'alert-1' };
-
       mockGradeRecordRepository.findOne.mockResolvedValue(mockRecord);
-      mockGradeReviewRepository.create.mockReturnValue(mockReview);
-      mockAlertRepository.create.mockReturnValue(mockAlert);
+
+      // Capture the manager instance from the transaction call
+      let capturedManager: any = null;
+      (mockDataSource.transaction as jest.Mock).mockImplementationOnce(
+        async (callback: (manager: any) => Promise<any>) => {
+          capturedManager = {
+            save: jest.fn((entity) => {
+              if (!entity.id) entity.id = `mock-id-${Date.now()}`;
+              return Promise.resolve(entity);
+            }),
+            create: jest.fn((_entityClass: any, attrs: any) => ({ ...attrs })),
+          };
+          return callback(capturedManager);
+        },
+      );
 
       const result = await service.revoke(
         'record-1',
@@ -223,12 +248,18 @@ describe('GradeRecordsService', () => {
       expect(result.status).toBe(RecordStatus.DRAFT);
       expect(result.revokedBy).toBe('teacher-1');
       expect(result.revokedReason).toBe('Need correction');
-      expect(mockAlertRepository.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: AlertType.GRADE_REVOKED,
-          severity: AlertSeverity.HIGH,
-        }),
+
+      // Assert that alert was created with correct attributes
+      const alertCreateCall = capturedManager?.create.mock.calls.find(
+        (call: any[]) =>
+          call[1]?.type === AlertType.GRADE_REVOKED,
       );
+      expect(alertCreateCall).toBeDefined();
+      expect(alertCreateCall[1]).toMatchObject({
+        type: AlertType.GRADE_REVOKED,
+        severity: AlertSeverity.HIGH,
+        status: AlertStatus.OPEN,
+      });
     });
 
     it('should throw BadRequestException if revoke period expired', async () => {
