@@ -1,397 +1,298 @@
 #!/usr/bin/env python3
 """
-Project Admin - 生成自包含的 multi-agent-dashboard.html
-包含 Agent 消息流功能
+增强版 Project Admin - 从 GitHub Issues + Commits 推断 Agent 状态
+不依赖心跳文件
 """
 
 import json
+import os
 import subprocess
+import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
+import re
 
+# 配置
+DASHBOARD_FILE = "/workspace/projects/workspace/multi-agent-dashboard.html"
 REPO_PATH = "/workspace/projects/workspace"
 GITHUB_REPO = "jchu-hk/school-admin-system"
-
-AGENT_CONFIG = {
-    "PM": {"icon": "🧑‍💼", "color": "#fbbf24"},
-    "DEV": {"icon": "🤖", "color": "#60a5fa"},
-    "QA": {"icon": "🔍", "color": "#4ade80"},
-    "DEVOPS": {"icon": "🔧", "color": "#f97316"},
-    "CHECKER": {"icon": "✓", "color": "#a855f7"},
-    "ARCH": {"icon": "🏗️", "color": "#6b7280"},
-    "REQ": {"icon": "📝", "color": "#ec4899"},
+# Agent 分配关键词
+AGENT_KEYWORDS = {
+    "PM": ["pm:", "PM:", "pm", "PM"],
+    "DEV": ["dev:", "DEV:", "feat(", "fix(", "refactor(", "chore("],
+    "QA": ["qa:", "QA:", "test", "测试", "验收"],
+    "DEVOPS": ["devops:", "DEVOPS:", "ops:", "OPS:", "deploy", "deployed", "部署"],
+    "CHECKER": ["checker:", "CHECKER:", "review", "审查"],
+    "ARCH": ["arch:", "ARCH:", "design", "设计"],
+    "REQ": ["req:", "REQ:", "spec", "需求"],
 }
 
-def gh(cmd: List[str]) -> Optional[str]:
-    try:
-        r = subprocess.run(cmd, cwd=REPO_PATH, capture_output=True, text=True, timeout=30)
-        return r.stdout if r.returncode == 0 else None
-    except:
-        return None
 
-def get_in_progress_issues() -> List[Dict]:
-    out = gh(["gh", "issue", "list", "--repo", GITHUB_REPO, "--state", "open",
-              "--label", "in-progress", "--json", "number,title,labels,author,createdAt", "--limit", "50"])
-    return json.loads(out) if out else []
+class GitHubAPI:
+    """GitHub API调用"""
 
-def get_recent_commits(limit=20) -> List[Dict]:
-    out = gh(["gh", "api", f"repos/{GITHUB_REPO}/commits?per_page={limit}"])
-    if out:
-        raw = json.loads(out)
-        return [{"sha": c["sha"][:7], "message": c["commit"]["message"],
-                 "date": c["commit"]["author"]["date"]} for c in raw]
-    return []
-
-def get_open_count() -> int:
-    out = gh(["gh", "issue", "list", "--repo", GITHUB_REPO, "--state", "open",
-              "--json", "number", "--limit", "100"])
-    return len(json.loads(out)) if out else 0
-
-def load_messages() -> List[Dict]:
-    """加载 Agent 消息日志（过去48小时）"""
-    log_path = Path(REPO_PATH) / "agents" / "project-admin" / "logs" / "agent-messages.json"
-    if log_path.exists():
+    @staticmethod
+    def run_gh_command(cmd: List[str]) -> Optional[str]:
+        """运行gh命令"""
         try:
-            with open(log_path) as f:
-                all_msgs = json.load(f)
-            # 过滤过去48小时
-            cutoff = datetime.now(timezone.utc) - timedelta(hours=48)
-            return [m for m in all_msgs 
-                   if datetime.fromisoformat(m["timestamp"].replace("Z", "+00:00")) > cutoff]
+            result = subprocess.run(
+                cmd,
+                cwd=REPO_PATH,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            if result.returncode == 0:
+                return result.stdout
+            return None
+        except subprocess.TimeoutExpired:
+            return None
+
+    @staticmethod
+    def get_in_progress_issues() -> List[Dict]:
+        """获取所有 in-progress Issues"""
+        output = GitHubAPI.run_gh_command([
+            "gh", "issue", "list",
+            "--repo", GITHUB_REPO,
+            "--state", "open",
+            "--search", "label:in-progress",
+            "--json", "number,title,labels,author,createdAt,assignees",
+            "--limit", "50"
+        ])
+        if output:
+            try:
+                return json.loads(output)
+            except:
+                pass
+        return []
+
+    @staticmethod
+    def get_recent_commits(limit: int = 20) -> List[Dict]:
+        """获取最近commits"""
+        output = GitHubAPI.run_gh_command([
+            "gh", "api", f"repos/{GITHUB_REPO}/commits",
+            "--paginate=false",
+            "--field", f"per_page={limit}"
+        ])
+        if output:
+            try:
+                commits = json.loads(output)
+                return [{"sha": c["sha"][:7], "message": c["commit"]["message"], "date": c["commit"]["author"]["date"]} for c in commits]
+            except:
+                pass
+        return []
+
+    @staticmethod
+    def get_open_issues() -> List[Dict]:
+        """获取所有 open Issues"""
+        output = GitHubAPI.run_gh_command([
+            "gh", "issue", "list",
+            "--repo", GITHUB_REPO,
+            "--state", "open",
+            "--json", "number,title,labels,author,createdAt",
+            "--limit", "100"
+        ])
+        if output:
+            try:
+                return json.loads(output)
+            except:
+                pass
+        return []
+
+
+class DashboardUpdater:
+    """Dashboard 更新器"""
+
+    @staticmethod
+    def get_current_dashboard() -> str:
+        """读取当前 Dashboard"""
+        try:
+            return Path(DASHBOARD_FILE).read_text(encoding='utf-8')
         except:
-            pass
-    return []
+            return ""
 
-def infer_status(issues: List[Dict], commits: List[Dict]) -> Dict[str, Dict]:
-    """从 issue labels 推断 Agent 状态"""
-    default_tasks = {"PM": "调度中枢", "DEV": "开发实现", "QA": "质量验收",
-                     "DEVOPS": "运维部署", "CHECKER": "代码审查",
-                     "ARCH": "架构设计", "REQ": "需求分析"}
-    status = {a: {"status": "idle", "task": default_tasks[a]} for a in AGENT_CONFIG}
+    @staticmethod
+    def infer_agent_status_from_issues_and_commits(issues: List[Dict], commits: List[Dict]) -> Dict[str, Dict]:
+        """从 Issues 和 Commits 推断 Agent 状态"""
+        agent_status = {
+            "PM": {"status": "idle", "task": "调度中枢", "last_activity": None},
+            "DEV": {"status": "idle", "task": "开发实现", "last_activity": None},
+            "QA": {"status": "idle", "task": "质量验收", "last_activity": None},
+            "DEVOPS": {"status": "idle", "task": "运维部署", "last_activity": None},
+            "CHECKER": {"status": "idle", "task": "代码审查", "last_activity": None},
+            "ARCH": {"status": "idle", "task": "架构设计", "last_activity": None},
+            "REQ": {"status": "idle", "task": "需求分析", "last_activity": None},
+        }
 
-    label_to_agent = {"dev": "DEV", "qa": "QA", "arch": "ARCH",
-                     "req": "REQ", "devops": "DEVOPS", "checker": "CHECKER"}
+        # 从 Issues 推断
+        for issue in issues:
+            labels = [l["name"] for l in issue["labels"]]
+            title = issue["title"].lower()
 
-    for issue in issues:
-        labels = [l.get("name", "") for l in issue.get("labels", [])]
-        for label in labels:
-            if label in label_to_agent:
-                agent = label_to_agent[label]
-                title = issue.get("title", "")[:40]
-                status[agent] = {"status": "running", "task": f"#{issue.get('number')} {title}"}
-                break
+            # 判断负责的 Agent
+            agent = None
+            for a, keywords in AGENT_KEYWORDS.items():
+                if any(kw.lower() in title for kw in keywords):
+                    agent = a
+                    break
 
-    return status
+            if agent:
+                agent_status[agent]["status"] = "running"
+                agent_status[agent]["task"] = f"处理 #{issue['number']}"
+                agent_status[agent]["last_activity"] = issue["createdAt"]
 
-def build_html(agent_status: Dict, stats: Dict, messages: List[Dict], commits: List[Dict]) -> str:
-    agents_json = json.dumps([
-        {"icon": AGENT_CONFIG[a]["icon"], "name": a,
-         "status": s["status"], "task": s["task"],
-         "color": AGENT_CONFIG[a]["color"]}
-        for a, s in agent_status.items()
-    ], ensure_ascii=False)
+        # 从最近 Commits 推断（补充）
+        now = datetime.now(timezone.utc)
+        for commit in commits:
+            msg = commit["message"]
+            for agent, keywords in AGENT_KEYWORDS.items():
+                if any(kw in msg for kw in keywords):
+                    commit_date = datetime.fromisoformat(commit["date"].replace('Z', '+00:00'))
+                    if commit_date > now - timedelta(minutes=30):
+                        if agent_status[agent]["status"] != "running":
+                            agent_status[agent]["status"] = "idle"
+                            agent_status[agent]["task"] = f"上次: {commit['sha']}"
+                            agent_status[agent]["last_activity"] = commit_date
+                    break
 
-    messages_json = json.dumps(messages[-20:], ensure_ascii=False)  # 最近20条
-    commits_json = json.dumps(commits[:10], ensure_ascii=False)  # 最近10条
+        return agent_status
 
-    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    # 构建任务列表
-    tasks = []
-    for issue in get_in_progress_issues()[:6]:
-        labels = [l.get("name", "") for l in issue.get("labels", [])]
-        label_to_agent = {"dev": "DEV", "qa": "QA", "arch": "ARCH",
-                         "req": "REQ", "devops": "DEVOPS", "checker": "CHECKER"}
-        for label in labels:
-            if label in label_to_agent:
-                tasks.append({
-                    "id": f"#{issue['number']}",
-                    "title": issue.get("title", "")[:45],
-                    "assignee": label_to_agent[label]
-                })
-                break
+    @staticmethod
+    def update_agent_status(html: str, agent_status: Dict[str, Dict]) -> str:
+        """更新 Agent 状态部分"""
+        now = datetime.now(timezone.utc)
 
-    tasks_json = json.dumps(tasks, ensure_ascii=False)
+        # 生成 agents JSON
+        agents_json = []
+        agent_icons = {
+            "PM": {"icon": "🧑💼", "color": "#fbbf24"},
+            "DEV": {"icon": "🤖", "color": "#60a5fa"},
+            "QA": {"icon": "🔍", "color": "#4ade80"},
+            "DEVOPS": {"icon": "🔧", "color": "#f97316"},
+            "CHECKER": {"icon": "✓", "color": "#a855f7"},
+            "ARCH": {"icon": "🏗️", "color": "#6b7280"},
+            "REQ": {"icon": "📝", "color": "#ec4899"},
+        }
 
-    return f"""<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Agent 实时看板</title>
-    <style>
-        * {{ margin: 0; padding: 0; box-sizing: border-box }}
-        body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            color: #e0e0e0; padding: 20px; min-height: 100vh
-        }}
-        .container {{ max-width: 1600px; margin: 0 auto }}
-        h1 {{ text-align: center; color: #4ade80; margin-bottom: 20px; font-size: 2em }}
-        
-        .main-layout {{ display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px }}
-        
-        .card {{ background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1) }}
-        .card h2 {{ color: #4ade80; margin-bottom: 15px; font-size: 1.1em; display: flex; align-items: center; gap: 8px }}
-        
-        .agent-grid {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px }}
-        .agent {{ background: rgba(0,0,0,0.3); border-radius: 10px; padding: 12px; text-align: center; border: 2px solid rgba(255,255,255,0.1); transition: all 0.3s }}
-        .agent.running {{ border-color: #4ade80; box-shadow: 0 0 15px rgba(74,222,128,0.3); animation: pulse 2s infinite }}
-        @keyframes pulse {{ 0%, 100% {{ box-shadow: 0 0 15px rgba(74,222,128,0.3) }} 50% {{ box-shadow: 0 0 25px rgba(74,222,128,0.5) }} }}
-        .agent-icon {{ font-size: 1.6em; margin-bottom: 6px }}
-        .agent-name {{ font-weight: bold; font-size: 0.9em; margin-bottom: 4px }}
-        .agent-task {{ font-size: 0.75em; color: #9ca3af; line-height: 1.3 }}
-        
-        .status-badge {{ display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 0.7em }}
-        .status-running {{ background: #4ade80; color: #1a1a2e; font-weight: bold }}
-        .status-idle {{ background: rgba(255,255,255,0.1); color: #9ca3af }}
-        
-        .message-filters {{ display: flex; gap: 8px; margin-bottom: 15px; align-items: center; flex-wrap: wrap }}
-        .filter-btn {{ background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #9ca3af; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8em; transition: all 0.2s }}
-        .filter-btn:hover, .filter-btn.active {{ background: rgba(74,222,128,0.2); border-color: #4ade80; color: #4ade80 }}
-        
-        .message-list {{ max-height: 350px; overflow-y: auto; padding-right: 5px }}
-        .message-list::-webkit-scrollbar {{ width: 5px }}
-        .message-list::-webkit-scrollbar-thumb {{ background: rgba(255,255,255,0.2); border-radius: 3px }}
-        
-        .message-item {{ background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; border-left: 3px solid }}
-        .message-item:hover {{ background: rgba(0,0,0,0.3) }}
-        .message-time {{ font-size: 0.7em; color: #6b7280; margin-bottom: 4px }}
-        .message-direction {{ font-size: 0.8em; margin-bottom: 3px }}
-        .message-from {{ font-weight: bold; color: #60a5fa }}
-        .message-to {{ color: #9ca3af }}
-        .message-arrow {{ margin: 0 4px; color: #6b7280 }}
-        .message-content {{ font-size: 0.85em; color: #d1d5db; line-height: 1.3 }}
-        
-        .msg-assign {{ border-left-color: #fbbf24 }}
-        .msg-received {{ border-left-color: #60a5fa }}
-        .msg-done {{ border-left-color: #4ade80 }}
-        .msg-failed {{ border-left-color: #ef4444 }}
-        .msg-passed {{ border-left-color: #34d399 }}
-        .msg-default {{ border-left-color: #9ca3af }}
-        
-        .msg-badge {{ display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 0.65em; margin-right: 5px }}
-        .msg-badge.assign {{ background: rgba(251,191,36,0.2); color: #fbbf24 }}
-        .msg-badge.received {{ background: rgba(96,165,250,0.2); color: #60a5fa }}
-        .msg-badge.done {{ background: rgba(74,222,128,0.2); color: #4ade80 }}
-        .msg-badge.failed {{ background: rgba(239,68,68,0.2); color: #ef4444 }}
-        .msg-badge.passed {{ background: rgba(52,211,153,0.2); color: #34d399 }}
-        
-        .stat-item {{ display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9em }}
-        .stat-item:last-child {{ border-bottom: none }}
-        .stat-value {{ color: #4ade80; font-weight: bold }}
-        
-        .task-list {{ margin-top: 10px }}
-        .task-item {{ display: flex; align-items: center; padding: 7px 10px; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 6px; font-size: 0.85em }}
-        .task-icon {{ margin-right: 8px }}
-        .task-id {{ color: #60a5fa; margin-right: 8px }}
-        .task-title {{ flex: 1; color: #d1d5db }}
-        .task-assignee {{ color: #9ca3af }}
-        
-        .commit-list {{ margin-top: 10px }}
-        .commit-item {{ padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8em }}
-        .commit-item:last-child {{ border-bottom: none }}
-        .commit-sha {{ color: #60a5fa; font-family: monospace }}
-        .commit-msg {{ color: #9ca3af; margin-top: 2px }}
-        
-        .refresh-info {{ text-align: center; margin-top: 20px; color: #6b7280; font-size: 0.8em }}
-        .refresh-btn {{ background: rgba(74,222,128,0.2); color: #4ade80; border: 1px solid #4ade80; padding: 4px 12px; border-radius: 5px; cursor: pointer; margin-left: 10px }}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🤖 Multi-Agent 实时看板</h1>
-        
-        <div class="main-layout">
-            <div>
-                <div class="card">
-                    <h2>👥 Agents 状态</h2>
-                    <div class="agent-grid" id="agents"></div>
-                    
-                    <h2 style="margin-top: 20px">📋 当前任务</h2>
-                    <div class="task-list" id="tasks"></div>
-                    
-                    <h2 style="margin-top: 20px">💬 Agent 消息流</h2>
-                    <div class="message-filters">
-                        <button class="filter-btn active" data-period="today">今天</button>
-                        <button class="filter-btn" data-period="yesterday">昨天</button>
-                        <button class="filter-btn" data-period="2days">过去2天</button>
-                        <span id="msgCount" style="margin-left: auto; color: #6b7280; font-size: 0.8em"></span>
-                    </div>
-                    <div class="message-list" id="messages"></div>
-                </div>
-            </div>
-            
-            <div>
-                <div class="card">
-                    <h2>📊 系统统计</h2>
-                    <div id="stats"></div>
-                </div>
-                
-                <div class="card" style="margin-top: 20px">
-                    <h2>🔄 最新 Commits</h2>
-                    <div class="commit-list" id="commits"></div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="refresh-info">
-            <span>🔄 自动刷新: 30秒</span>
-            <span>|</span>
-            <span>最后更新: <span id="lastUpdate"></span></span>
-            <button class="refresh-btn" onclick="location.reload()">刷新</button>
-        </div>
-    </div>
-    
-    <script>
-        const STATE = {agents_json};
-        const TASKS = {tasks_json};
-        const MESSAGES = {messages_json};
-        const COMMITS = {commits_json};
-        const STATS = {{
-            "Open Issues": "{stats['openIssues']}",
-            "In Progress": "{len([i for i in get_in_progress_issues()])}",
-            "Git Commits (7天)": "{stats['recentActivity']}",
-            "活跃 Agents": "{len([s for s in agent_status.values() if s['status']=='running'])}/7"
-        }};
-        
-        let currentPeriod = 'today';
-        
-        function renderAgents() {{
-            document.getElementById('agents').innerHTML = STATE.map(a => `
-                <div class="agent ${{a.status === 'running' ? 'running' : ''}}">
-                    <div class="agent-icon">${{a.icon}}</div>
-                    <div class="agent-name" style="color:${{a.color}}">${{a.name}}</div>
-                    <div class="agent-task">
-                        <span class="status-badge ${{a.status === 'running' ? 'status-running' : 'status-idle'}}">
-                            ${{a.status === 'running' ? '🔵' : '⏸️'}} ${{a.status === 'running' ? '运行' : '空闲'}}
-                        </span>
-                    </div>
-                    <div class="agent-task" style="margin-top:5px">${{a.task}}</div>
-                </div>
-            `).join('');
-        }}
-        
-        function renderStats() {{
-            document.getElementById('stats').innerHTML = Object.entries(STATS).map(([k,v]) => `
-                <div class="stat-item"><span>${{k}}</span><span class="stat-value">${{v}}</span></div>
-            `).join('');
-        }}
-        
-        function renderTasks() {{
-            document.getElementById('tasks').innerHTML = TASKS.map(t => `
-                <div class="task-item">
-                    <span class="task-icon">🔵</span>
-                    <span class="task-id">${{t.id}}</span>
-                    <span class="task-title">${{t.title}}</span>
-                    <span class="task-assignee">→ ${{t.assignee}}</span>
-                </div>
-            `).join('') || '<div style="color:#6b7280;font-size:0.9em">暂无进行中的任务</div>';
-        }}
-        
-        function renderMessages() {{
-            const now = new Date();
-            const filtered = MESSAGES.filter(m => {{
-                const d = new Date(m.timestamp);
-                const days = (now - d) / 86400000;
-                if (currentPeriod === 'today') return days < 1;
-                if (currentPeriod === 'yesterday') return days >= 1 && days < 2;
-                if (currentPeriod === '2days') return days < 2;
-                return true;
-            }}).reverse();
-            
-            document.getElementById('msgCount').textContent = `${{filtered.length}} 条`;
-            
-            document.getElementById('messages').innerHTML = filtered.map(m => {{
-                const dt = new Date(m.timestamp);
-                const date = dt.toLocaleDateString('zh-CN', {{month:'short', day:'numeric'}});
-                const time = dt.toLocaleTimeString('zh-CN', {{hour:'2-digit', minute:'2-digit'}});
-                const typeClass = m.type || 'default';
-                return `
-                    <div class="message-item msg-${{typeClass}}">
-                        <div class="message-time">${{date}} ${{time}}</div>
-                        <div class="message-direction">
-                            <span class="msg-badge ${{typeClass}}">${{typeClass}}</span>
-                            <span class="message-from">${{m.from}}</span>
-                            <span class="message-arrow">→</span>
-                            <span class="message-to">${{m.to}}</span>
-                        </div>
-                        <div class="message-content">${{m.message}}</div>
-                    </div>
-                `;
-            }}).join('') || '<div style="color:#6b7280;font-size:0.9em;padding:20px;text-align:center">暂无消息记录</div>';
-        }}
-        
-        function renderCommits() {{
-            document.getElementById('commits').innerHTML = COMMITS.map(c => `
-                <div class="commit-item">
-                    <span class="commit-sha">${{c.sha}}</span>
-                    <div class="commit-msg">${{c.message.split('\\n')[0].substring(0, 60)}}</div>
-                </div>
-            `).join('');
-        }}
-        
-        document.querySelectorAll('.filter-btn').forEach(btn => {{
-            btn.addEventListener('click', () => {{
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentPeriod = btn.dataset.period;
-                renderMessages();
-            }});
-        }});
-        
-        renderAgents();
-        renderStats();
-        renderTasks();
-        renderMessages();
-        renderCommits();
-        document.getElementById('lastUpdate').textContent = "{now_str}";
-        
-        setTimeout(() => location.reload(), 30000);
-    </script>
-</body>
-</html>"""
+        for agent, data in agent_status.items():
+            icon_data = agent_icons.get(agent, {"icon": "❓", "color": "#6b7280"})
+            agents_json.append({
+                "icon": icon_data["icon"],
+                "name": agent,
+                "status": data["status"],
+                "task": data["task"],
+                "color": icon_data["color"]
+            })
+
+        # 替换 agents 数组
+        import re
+        pattern = r'"agents":\s*\[.*?\]'
+        new_agents = f'"agents": {json.dumps(agents_json, ensure_ascii=False)}'
+        html = re.sub(pattern, new_agents, html, flags=re.DOTALL)
+
+        return html
+
+    @staticmethod
+    def update_timestamp(html: str) -> str:
+        """更新时间戳"""
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        html = re.sub(r'"lastUpdate":\s*"\$\(date.*?\)"', f'"lastUpdate": "{now}"', html)
+        return html
+
+    @staticmethod
+    def save_dashboard(html: str):
+        """保存 Dashboard"""
+        Path(DASHBOARD_FILE).write_text(html, encoding='utf-8')
+
+    @staticmethod
+    def commit_and_push():
+        """提交并推送到 GitHub"""
+        try:
+            subprocess.run(
+                ["git", "add", "multi-agent-dashboard.html"],
+                cwd=REPO_PATH,
+                check=True,
+                timeout=30
+            )
+            subprocess.run(
+                ["git", "commit", "-m", "chore: update multi-agent-dashboard (auto)"],
+                cwd=REPO_PATH,
+                check=True,
+                timeout=30
+            )
+            subprocess.run(
+                ["git", "push"],
+                cwd=REPO_PATH,
+                check=True,
+                timeout=60
+            )
+            return True
+        except:
+            return False
+
+    @staticmethod
+    def is_dashboard_changed(new_html: str) -> bool:
+        """检查 Dashboard 是否有变化"""
+        try:
+            old_html = Path(DASHBOARD_FILE).read_text(encoding='utf-8')
+            return old_html != new_html
+        except:
+            return True
+
 
 def main():
-    print(f"=== Project Admin === {datetime.now().isoformat()}")
-    
-    issues = get_in_progress_issues()
-    commits = get_recent_commits()
-    open_count = get_open_count()
-    messages = load_messages()
-    
-    print(f"📊 Open: {open_count}, In-progress: {len(issues)}, Messages: {len(messages)}")
-    
-    status = infer_status(issues, commits)
+    """主流程"""
+    print(f"=== Project Admin Starting ===")
+    print(f"Time: {datetime.now(timezone.utc).isoformat()}")
+
+    # 1. 获取 GitHub 数据
+    issues = GitHubAPI.get_in_progress_issues()
+    print(f"📊 Found {len(issues)} in-progress issues")
+
+    commits = GitHubAPI.get_recent_commits(limit=20)
+    print(f"📊 Commits: {len(commits)}")
+
+    open_issues = GitHubAPI.get_open_issues()
+    print(f"📊 Open issues: {len(open_issues)}")
+
+    # 2. 推断 Agent 状态
+    agent_status = DashboardUpdater.infer_agent_status_from_issues_and_commits(issues, commits)
+
+    # 3. 更新 Dashboard
+    print("\n=== Updating Dashboard ===")
+    html = DashboardUpdater.get_current_dashboard()
+    if not html:
+        print("❌ Dashboard file not found")
+        return
+
+    html = DashboardUpdater.update_agent_status(html, agent_status)
+    html = DashboardUpdater.update_timestamp(html)
+
+    if DashboardUpdater.is_dashboard_changed(html):
+        DashboardUpdater.save_dashboard(html)
+        print("✅ Dashboard updated")
+
+        # 自动提交（仅在上午或晚上，避免频繁提交）
+        hour = datetime.now().hour
+        if hour in [9, 18]:
+            if DashboardUpdater.commit_and_push():
+                print("✅ Committed and pushed")
+            else:
+                print("⚠️ Failed to commit/push")
+        else:
+            print("ℹ️ Dashboard updated, waiting for scheduled commit")
+    else:
+        print("ℹ️ Dashboard unchanged")
+
+    print("\n=== Project Admin Completed ===")
+
+    # 输出状态摘要
     print("\n🤖 Agent Status:")
-    for a, s in status.items():
-        icon = "🔄" if s["status"] == "running" else "💤"
-        print(f"  {icon} {a}: {s['status']} - {s['task'][:50]}")
-    
-    now_utc = datetime.now(timezone.utc)
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    stats = {
-        "openIssues": open_count,
-        "commits": len(commits),
-        "todayCommits": len([c for c in commits if c["date"].startswith(today_str)]),
-        "recentActivity": len([c for c in commits if datetime.fromisoformat(c["date"].replace('Z', '+00:00')) > now_utc - timedelta(days=7)])
-    }
-    
-    html = build_html(status, stats, messages, commits)
-    Path(f"{REPO_PATH}/multi-agent-dashboard.html").write_text(html, encoding='utf-8')
-    print(f"\n✅ Dashboard HTML written")
-    
-    try:
-        subprocess.run(["git", "add", "multi-agent-dashboard.html"], cwd=REPO_PATH, check=True, timeout=30)
-        subprocess.run(["git", "commit", "-m", f"chore: update multi-agent-dashboard.html ({datetime.now().strftime('%H:%M')})"],
-                       cwd=REPO_PATH, check=True, timeout=30)
-        subprocess.run(["git", "push"], cwd=REPO_PATH, check=True, timeout=60)
-        print("✅ Pushed to GitHub")
-    except Exception as e:
-        print(f"⚠️ Push failed: {e}")
-    
-    print("=== Done ===")
+    for agent, data in agent_status.items():
+        status_icon = "🔄" if data["status"] == "running" else "💤"
+        print(f"  {status_icon} {agent}: {data['status']} - {data['task']}")
+
 
 if __name__ == "__main__":
     main()
