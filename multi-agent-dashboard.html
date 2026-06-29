@@ -51,11 +51,11 @@
             <div class="agent-name">PM</div>
             <div class="agent-task">DEVOPS 检查 tunnel 状态并优化 watchdo</div>
             <span class="status-badge status-running">running</span>
-        </div><div class="agent running">
+        </div><div class="agent">
             <div class="agent-icon">🤖</div>
             <div class="agent-name">DEV</div>
-            <div class="agent-task">Commit: 9581a07</div>
-            <span class="status-badge status-running">running</span>
+            <div class="agent-task">等待任务</div>
+            <span class="status-badge status-idle">idle</span>
         </div><div class="agent">
             <div class="agent-icon">🔍</div>
             <div class="agent-name">QA</div>
@@ -106,6 +106,8 @@
             <div class="card">
                 <h2 style="color:#4ade80;margin-bottom:15px">📝 Commits</h2>
                 <div class="commit-item">
+            <span style="color:#60a5fa">c28ab3b</span> skill: dashboard update 20:03
+        </div><div class="commit-item">
             <span style="color:#60a5fa">45a1659</span> feat: add agent-communication skill with
         </div><div class="commit-item">
             <span style="color:#60a5fa">c5ced52</span> feat: auto-update dashboard after each w
@@ -119,16 +121,14 @@
             <span style="color:#60a5fa">f959288</span> feat: patrol.py - focus on pending/block
         </div><div class="commit-item">
             <span style="color:#60a5fa">9581a07</span> fix(ci): add pnpm to PATH after global i
-        </div><div class="commit-item">
-            <span style="color:#60a5fa">fce7609</span> fix(ci): resolve remaining 14 lint error
         </div>
             </div>
         </div>
         
-        <div class="refresh">Refreshed: 2026-06-29 20:03:38 | Source: GitHub Events</div>
+        <div class="refresh">Refreshed: 2026-06-29 20:06:00 | Source: GitHub Events</div>
     </div>
     <script>
-    const STATE = [{"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "环境检查完成 - Cloudflare Quick Tunn", "color": "#f97316"}, {"icon": "🧑💼", "name": "PM", "status": "running", "task": "DEVOPS 检查 tunnel 状态并优化 watchdo", "color": "#fbbf24"}, {"icon": "🤖", "name": "DEV", "status": "running", "task": "Commit: 9581a07", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "idle", "task": "等待任务", "color": "#4ade80"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "等待任务", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "等待任务", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "idle", "task": "等待任务", "color": "#ec4899"}];
+    const STATE = [{"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "环境检查完成 - Cloudflare Quick Tunn", "color": "#f97316"}, {"icon": "🧑💼", "name": "PM", "status": "running", "task": "DEVOPS 检查 tunnel 状态并优化 watchdo", "color": "#fbbf24"}, {"icon": "🤖", "name": "DEV", "status": "idle", "task": "等待任务", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "idle", "task": "等待任务", "color": "#4ade80"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "等待任务", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "等待任务", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "idle", "task": "等待任务", "color": "#ec4899"}];
     const ALL_MESSAGES = [{"timestamp": "2026-06-29T19:41:50", "from": "PM", "to": "DEVOPS", "message": "DEVOPS 检查 tunnel 状态并优化 watchdog", "type": "assign"}, {"timestamp": "2026-06-29T19:32:43", "from": "DEVOPS", "to": "PM", "message": "环境检查完成 - Cloudflare Quick Tunnel 数据平面不稳定，建议迁移到 Named Tunnel", "type": "done"}];
     let currentPeriod = 'today';
     
