@@ -1,6 +1,6 @@
 # 智慧校园管理系统 - 项目Wiki
 
-> 静态常查阅资料集成页 | **版本**: v1.5.5 | **最后更新**: 2026-06-29 09:25 (GMT+8)
+> 静态常查阅资料集成页 | **版本**: v1.5.5 | **最后更新**: 2026-06-29 14:15 (GMT+8)
 
 ---
 
@@ -84,9 +84,9 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 | 服务 | 本地URL (本机) | 外部URL | 状态 |
 |------|----------------|---------|------|
-| **后端API** | http://localhost:3000/api | ❌ Quick Tunnel不可达 | 需用户本地测试 |
-| **前端** | http://localhost:8080 | ❌ Quick Tunnel不可达 | 需用户本地测试 |
-| **健康检查** | http://localhost:3000/api/health | - | ✅ 正常 |
+| **后端API** | https://caution-mouth-voting-injection.trycloudflare.com/api | ⚠️ Quick Tunnel（临时） | DNS传播需2-5分钟 |
+| **前端** | https://drainage-pipe-anderson-wiki.trycloudflare.com | ⚠️ Quick Tunnel（临时） | DNS传播需2-5分钟 |
+| **健康检查** | https://caution-mouth-voting-injection.trycloudflare.com/api/health | ⚠️ Quick Tunnel | 验证服务状态 |
 
 **临时解决方案**: 请使用您本地的浏览器访问测试环境
 - 后端: https://school.zhumuai.cn/api (Named Tunnel待配置)
