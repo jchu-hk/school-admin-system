@@ -20,10 +20,16 @@
 
 ### 🌐 访问地址
 
-**GitHub实时更新版**: 
+**GitHub Pages (推荐，无缓存)**: 
+https://jchu-hk.github.io/school-admin-system/multi-agent-dashboard.html
+
+> ℹ️ 需先在 GitHub Settings → Pages 中启用（详见 docs/GITHUB-PAGES-SETUP.md）
+
+**GitHub Blob (仅代码)**:
 https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
 
-**Raw文件**: https://raw.githubusercontent.com/jchu-hk/school-admin-system/main/multi-agent-dashboard.html
+**临时方案 (htmlpreview)**:
+https://jchu-hk.github.io/school-admin-system/multi-agent-dashboard.html
 
 **自动更新**: 由Multi-Agent Dashboard Skill驱动
 
@@ -295,7 +301,7 @@ chore:    杂项
 
 **推荐 (实时预览)**:
 ```
-https://htmlpreview.github.io/?https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
+https://jchu-hk.github.io/school-admin-system/multi-agent-dashboard.html
 ```
 
 **GitHub Raw (直接下载)**:
