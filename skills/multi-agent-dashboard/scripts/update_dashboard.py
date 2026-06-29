@@ -48,7 +48,16 @@ def build_messages(repo: str, hours=48) -> List[Dict]:
     messages = []
     cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
     
-    # 1. Issue events (closed, assigned, labeled)
+    # 1. Read from agent-messages.json (direct agent communication)
+    agent_msg_file = Path(REPO_PATH) / "agents/project-admin/logs/agent-messages.json"
+    if agent_msg_file.exists():
+        agent_messages = json.loads(agent_msg_file.read_text())
+        for m in agent_messages:
+            created = datetime.fromisoformat(m["timestamp"].replace("Z", "+00:00"))
+            if created >= cutoff:
+                messages.append(m)
+    
+    # 2. Issue events (closed, assigned, labeled)
     events = gh_api("issues/events?per_page=100", repo)
     if events:
         for event in events:
