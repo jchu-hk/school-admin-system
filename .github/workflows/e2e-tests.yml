@@ -48,7 +48,9 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        run: npm install -g pnpm@8
+        run: |
+          npm install -g pnpm@8
+          echo "$(npm root -g)/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -101,7 +103,9 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        run: npm install -g pnpm@8
+        run: |
+          npm install -g pnpm@8
+          echo "$(npm root -g)/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -171,7 +175,9 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        run: npm install -g pnpm@8
+        run: |
+          npm install -g pnpm@8
+          echo "$(npm root -g)/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -232,7 +238,9 @@ jobs:
           cache: 'pnpm'
 
       - name: Install pnpm
-        run: npm install -g pnpm@8
+        run: |
+          npm install -g pnpm@8
+          echo "$(npm root -g)/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
