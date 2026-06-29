@@ -366,4 +366,4 @@ agent-PM (调度中枢)
 
 ### Dashboard地址
 **GitHub:** https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
-**Preview:** https://htmlpreview.github.io/?https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.html
+**Preview (GitHub Pages, 推荐):** https://jchu-hk.github.io/school-admin-system/multi-agent-dashboard.html
