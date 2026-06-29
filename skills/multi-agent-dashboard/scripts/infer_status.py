@@ -149,26 +149,41 @@ def infer_from_heartbeat_files() -> Dict[str, Dict]:
 def infer_status(repo: str) -> Dict[str, Dict]:
     """Combine all inference methods"""
     
-    # Priority: heartbeat files > GitHub events > commits
+    # Priority: heartbeat files > agent-messages.json status > GitHub events > commits
     status = {}
     
     # 1. Heartbeat files (most reliable if present)
     heartbeat_status = infer_from_heartbeat_files()
     status.update(heartbeat_status)
     
-    # 2. GitHub Issue events
+    # 2. Agent-messages.json status field (for explicit agent state)
+    agent_msg_file = Path("/workspace/projects/workspace/agents/project-admin/logs/agent-messages.json")
+    if agent_msg_file.exists():
+        agent_messages = json.loads(agent_msg_file.read_text())
+        for m in agent_messages:
+            if "agent_status" in m:
+                agent_info = m["agent_status"]
+                agent_name = agent_info.get("agent", "")
+                if agent_name and agent_name not in status:
+                    status[agent_name] = {
+                        "status": agent_info.get("status", "running"),
+                        "task": agent_info.get("task", ""),
+                        "evidence": f"From message: {m.get('message', '')[:30]}"
+                    }
+    
+    # 3. GitHub Issue events
     issue_status = infer_from_issues(repo)
     for agent, s in issue_status.items():
         if agent not in status:
             status[agent] = s
     
-    # 3. GitHub commits (fallback)
+    # 4. GitHub commits (fallback - lowest priority)
     commit_status = infer_from_commits(repo, hours=2)
     for agent, s in commit_status.items():
         if agent not in status:
             status[agent] = s
     
-    # 4. Default: idle
+    # 5. Default: idle
     for agent in AGENT_CONFIG:
         if agent not in status:
             status[agent] = {"status": "idle", "task": "等待任务", "evidence": ""}

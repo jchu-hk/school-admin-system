@@ -177,6 +177,18 @@ def build_html(status: Dict, messages: List, commits: List, stats: Dict) -> str:
             <span style="color:#60a5fa">{c['sha']}</span> {c['message'][:40]}
         </div>'''
     
+    # Generate STATE array for JavaScript (dynamic from infer_status)
+    state_js = []
+    for agent, s in status.items():
+        state_js.append({
+            "icon": AGENT_CONFIG[agent]["icon"],
+            "name": agent,
+            "status": s["status"],
+            "task": s["task"][:30],
+            "color": AGENT_CONFIG[agent]["color"]
+        })
+    state_json = json.dumps(state_js, ensure_ascii=False)
+    
     return f'''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -250,6 +262,7 @@ def build_html(status: Dict, messages: List, commits: List, stats: Dict) -> str:
         <div class="refresh">Refreshed: {now} | Source: GitHub Events</div>
     </div>
     <script>
+    const STATE = {state_json};
     const ALL_MESSAGES = {messages_json};
     let currentPeriod = 'today';
     

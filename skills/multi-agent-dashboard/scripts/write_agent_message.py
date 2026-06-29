@@ -14,7 +14,7 @@ from pathlib import Path
 
 MESSAGE_FILE = Path("/workspace/projects/workspace/agents/project-admin/logs/agent-messages.json")
 
-def write_message(from_agent: str, to_agent: str, message: str, msg_type: str = "default"):
+def write_message(from_agent: str, to_agent: str, message: str, msg_type: str = "default", status: str = None):
     """Write message to unified log"""
     
     # Read existing messages
@@ -31,6 +31,14 @@ def write_message(from_agent: str, to_agent: str, message: str, msg_type: str = 
         "message": message,
         "type": msg_type
     }
+    
+    # Add status if provided (for agent state tracking)
+    if status:
+        new_msg["agent_status"] = {
+            "agent": from_agent,
+            "status": status,
+            "task": message[:50]
+        }
     
     messages.append(new_msg)
     
@@ -51,10 +59,13 @@ def main():
     parser.add_argument("--type", dest="msg_type", default="default", 
                         choices=["assign", "received", "done", "failed", "passed", "info", "default"],
                         help="Message type")
+    parser.add_argument("--status", dest="agent_status", default=None,
+                        choices=["running", "idle", "done", "failed"],
+                        help="Agent status (optional, for state tracking)")
     
     args = parser.parse_args()
     
-    msg = write_message(args.from_agent, args.to_agent, args.message, args.msg_type)
+    msg = write_message(args.from_agent, args.to_agent, args.message, args.msg_type, args.agent_status)
     
     # Also print for visibility
     print(f"Timestamp: {msg['timestamp']}")
