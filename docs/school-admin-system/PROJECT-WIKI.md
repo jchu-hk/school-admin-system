@@ -84,9 +84,9 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 | 服务 | 本地URL (本机) | 外部URL | 状态 |
 |------|----------------|---------|------|
-| **后端API** | https://caution-mouth-voting-injection.trycloudflare.com/api | ⚠️ Quick Tunnel（临时） | DNS传播需2-5分钟 |
-| **前端** | https://drainage-pipe-anderson-wiki.trycloudflare.com | ⚠️ Quick Tunnel（临时） | DNS传播需2-5分钟 |
-| **健康检查** | https://caution-mouth-voting-injection.trycloudflare.com/api/health | ⚠️ Quick Tunnel | 验证服务状态 |
+| **后端API** | https://elizabeth-recreational-led-dot.trycloudflare.com/api | ⚠️ Quick Tunnel（临时） | 需重新启动时更新 |
+| **前端** | https://consumers-lions-aaa-million.trycloudflare.com | ⚠️ Quick Tunnel（临时） | 需重新启动时更新 |
+| **健康检查** | https://elizabeth-recreational-led-dot.trycloudflare.com/api/health | ⚠️ Quick Tunnel | 验证服务状态 |
 
 **临时解决方案**: 请使用您本地的浏览器访问测试环境
 - 后端: https://school.zhumuai.cn/api (Named Tunnel待配置)
