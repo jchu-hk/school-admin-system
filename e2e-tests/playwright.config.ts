@@ -12,7 +12,7 @@ export default defineConfig({
   ],
   
   use: {
-    baseURL: process.env.BASE_URL || 'https://hockey-deviant-brooks-litigation.trycloudflare.com',
+    baseURL: process.env.BASE_URL || 'https://yang-wanna-dramatically-given.trycloudflare.com',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
