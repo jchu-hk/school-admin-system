@@ -1,0 +1,54 @@
+{
+  "checks": [
+    {
+      "timestamp": "2026-06-29T00:58:02.412753+00:00",
+      "results": {
+        "backend_health": {
+          "name": "Backend Health",
+          "url": "http://localhost:3000/api/health",
+          "status": "ok",
+          "response_time_ms": 8,
+          "status_code": 200,
+          "error": null,
+          "critical": true,
+          "checked_at": "2026-06-29T00:58:02.281308+00:00"
+        },
+        "api_users": {
+          "name": "API Access (Users)",
+          "url": "http://localhost:3000/api/users",
+          "status": "warning",
+          "response_time_ms": 13,
+          "status_code": 401,
+          "error": "Unexpected status code: 401 (expected 200)",
+          "critical": false,
+          "checked_at": "2026-06-29T00:58:02.290163+00:00"
+        },
+        "frontend": {
+          "name": "Frontend",
+          "url": "http://localhost:8080",
+          "status": "ok",
+          "response_time_ms": 23,
+          "status_code": 200,
+          "error": null,
+          "critical": false,
+          "checked_at": "2026-06-29T00:58:02.303440+00:00"
+        },
+        "cloudflare_tunnel": {
+          "name": "Cloudflare Tunnel (External)",
+          "url": "https://school.zhumuai.cn/api/health",
+          "status": "warning",
+          "response_time_ms": 85,
+          "status_code": 0,
+          "error": "Unexpected status code: 0 (expected 200)",
+          "critical": false,
+          "checked_at": "2026-06-29T00:58:02.327196+00:00"
+        }
+      },
+      "stats": {
+        "ok": 2,
+        "warning": 2,
+        "critical": 0
+      }
+    }
+  ]
+}

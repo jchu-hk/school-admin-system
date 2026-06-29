@@ -1,0 +1,42 @@
+{
+  "endpoints": {
+    "backend_health": {
+      "name": "Backend Health",
+      "url": "http://localhost:3000/api/health",
+      "timeout": 5,
+      "expected_status": 200,
+      "critical": true
+    },
+    "api_users": {
+      "name": "API Access (Users)",
+      "url": "http://localhost:3000/api/users",
+      "timeout": 5,
+      "expected_status": 200,
+      "critical": false
+    },
+    "frontend": {
+      "name": "Frontend",
+      "url": "http://localhost:8080",
+      "timeout": 5,
+      "expected_status": 200,
+      "critical": false
+    },
+    "cloudflare_tunnel": {
+      "name": "Cloudflare Tunnel (External)",
+      "url": "https://school.zhumuai.cn/api/health",
+      "timeout": 10,
+      "expected_status": 200,
+      "critical": false
+    }
+  },
+  "thresholds": {
+    "response_time_warning_ms": 3000,
+    "response_time_critical_ms": 10000,
+    "consecutive_failures_for_alert": 3,
+    "history_retention_days": 7
+  },
+  "alert": {
+    "enabled": true,
+    "critical_only": true
+  }
+}
