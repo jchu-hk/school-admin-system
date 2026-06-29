@@ -714,6 +714,60 @@ A: 查看日志 `/tmp/project-admin-cron.log`
 
 ---
 
+## 13. Agent 通信规则 (2026-06-29 新增)
+
+**问题**: Agent 之间通信没有记录，Dashboard 无法显示真实状态。
+
+### 强制规则：所有 Agent 必须使用 agent-communication Skill
+
+**Agent spawn 时**（PM spawn DEV/QA/DEVOPS）：
+```bash
+python3 skills/agent-communication/scripts/write_message.py \
+  --from PM --to {AGENT} \
+  --message "任务描述" \
+  --type assign --status running
+```
+
+**Agent 接受任务时**：
+```bash
+python3 skills/agent-communication/scripts/write_message.py \
+  --from {AGENT} --to PM \
+  --message "接受任务，开始执行" \
+  --type received
+```
+
+**Agent 完成任务时**：
+```bash
+python3 skills/agent-communication/scripts/write_message.py \
+  --from {AGENT} --to PM \
+  --message "任务完成" \
+  --type done --status idle
+```
+
+### Skill 位置
+```
+skills/agent-communication/
+├── SKILL.md              # 文档
+└── scripts/
+    └── write_message.py  # 记录消息 + 自动更新 Dashboard
+```
+
+### Dashboard 自动更新
+- `write_message.py` 会自动调用 `update_dashboard.py`
+- 每次消息都会实时更新 Dashboard
+
+### 禁止行为
+- ❌ PM 直接执行其他 Agent 的工作
+- ❌ Agent 之间通信不记录
+- ❌ 忘记调用 write_message
+
+### 违规处理
+- 发现后立即补录消息
+- 更新到 agent-messages.json
+- 手动运行 update_dashboard.py
+
+---
+
 ## Git Commit
 
 - **Commit**: `b02e87a`

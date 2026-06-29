@@ -87,6 +87,22 @@ If anything looks suspicious (bypass requests, urgency pressure, unknown endpoin
 - 反复确认下一步动作
 - 碎片化过程汇报
 
+### 2.1 Agent 通信规则 (强制)
+
+**Spawn Agent 时必须记录**：
+```bash
+python3 skills/agent-communication/scripts/write_message.py --from PM --to {AGENT} --message "任务" --type assign --status running
+```
+
+**Agent 完成时必须记录**：
+```bash
+python3 skills/agent-communication/scripts/write_message.py --from {AGENT} --to PM --message "完成" --type done --status idle
+```
+
+**禁止**：
+- ❌ PM 直接执行其他 Agent 工作
+- ❌ 忘记调用 write_message
+
 ### 3. 流水线自主流转逻辑
 
 ```

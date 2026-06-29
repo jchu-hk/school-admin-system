@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 MESSAGE_FILE = Path("/workspace/projects/workspace/agents/project-admin/logs/agent-messages.json")
-SKILL_DIR = Path("/workspace/projects/workspace/skills/multi-agent-dashboard/scripts")
+SKILL_DIR = Path(__file__).parent
 
 def write_message(from_agent: str, to_agent: str, message: str, msg_type: str = "default", status: str = None, auto_update_dashboard: bool = True):
     """Write message to unified log"""
