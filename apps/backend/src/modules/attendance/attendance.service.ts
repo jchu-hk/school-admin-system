@@ -879,7 +879,7 @@ export class AttendanceService {
    */
   async mobileScan(
     dto: MobileScanDto,
-    teacherId: string,
+    _teacherId: string, // used
   ): Promise<{
     student: {
       id: string;
@@ -899,7 +899,7 @@ export class AttendanceService {
       throw new BadRequestException('无效的二维码格式');
     }
 
-    const { studentId, name } = parsed;
+    const { studentId } = parsed;
 
     // 查找学生
     const student = await this.userRepository.findOne({
@@ -1055,7 +1055,7 @@ export class AttendanceService {
    */
   async mobileBatchSubmit(
     dto: MobileBatchSubmitDto,
-    teacherId: string,
+    teacherId: string, // used
   ): Promise<{
     batchId: string;
     count: number;

@@ -1,5 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm'
-import { User } from '../user/user.entity'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
+import { User } from '../user/user.entity';
 
 export enum GradeType {
   QUIZ = 'quiz',
@@ -19,49 +26,49 @@ export enum GradeScale {
 @Entity('grades')
 export class Grade {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id: string;
 
   @Column({ name: 'student_id' })
-  studentId: string
+  studentId: string;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'student_id' })
-  student: User
+  student: User;
 
   @Column({ name: 'course_id' })
-  courseId: string
+  courseId: string;
 
   @Column({ name: 'term' })
-  term: string
+  term: string;
 
   @Column({ type: 'enum', enum: GradeType })
-  type: GradeType
+  type: GradeType;
 
   @Column({ name: 'title' })
-  title: string
+  title: string;
 
   @Column({ type: 'decimal', precision: 5, scale: 2 })
-  score: number
+  score: number;
 
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
-  maxScore: number
+  maxScore: number;
 
   @Column({ type: 'enum', enum: GradeScale, nullable: true })
-  grade: GradeScale
+  grade: GradeScale;
 
   @Column({ name: 'teacher_id' })
-  teacherId: string
+  teacherId: string;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'teacher_id' })
-  teacher: User
+  teacher: User;
 
   @Column({ name: 'remarks', type: 'text', nullable: true })
-  remarks: string
+  remarks: string;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date
+  createdAt: Date;
 
   @Column({ name: 'graded_at', type: 'timestamp', nullable: true })
-  gradedAt: Date
+  gradedAt: Date;
 }

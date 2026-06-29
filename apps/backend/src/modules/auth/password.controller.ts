@@ -11,7 +11,13 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { PasswordService } from './password.service';
 import { SetPasswordDto } from './dto/set-password.dto';
@@ -55,10 +61,7 @@ export class PasswordController {
       },
     },
   })
-  async setPassword(
-    @Request() req,
-    @Body() dto: SetPasswordDto,
-  ) {
+  async setPassword(@Request() req, @Body() dto: SetPasswordDto) {
     return this.passwordService.setPassword(req.user.id, dto);
   }
 
@@ -193,8 +196,18 @@ export class PasswordController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '获取已关联学生列表' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: '页码（从1开始）' })
-  @ApiQuery({ name: 'pageSize', required: false, type: Number, description: '每页条数（最大100）' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: '页码（从1开始）',
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    required: false,
+    type: Number,
+    description: '每页条数（最大100）',
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: '关联学生列表',
@@ -231,6 +244,10 @@ export class PasswordController {
   ) {
     const pageNum = parseInt(page || '1', 10);
     const pageSizeNum = Math.min(parseInt(pageSize || '20', 10), 100);
-    return this.passwordService.getLinkedStudents(req.user.id, pageNum, pageSizeNum);
+    return this.passwordService.getLinkedStudents(
+      req.user.id,
+      pageNum,
+      pageSizeNum,
+    );
   }
 }

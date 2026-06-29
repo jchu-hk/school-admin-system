@@ -30,7 +30,9 @@ export class UserLifecycleService {
 
     const expiringUsers = await this.userRepository
       .createQueryBuilder('user')
-      .where('user.passwordExpiresAt <= :expiryDate', { expiryDate: thirtyDaysFromNow })
+      .where('user.passwordExpiresAt <= :expiryDate', {
+        expiryDate: thirtyDaysFromNow,
+      })
       .andWhere('user.passwordExpiresAt > :now', { now: new Date() })
       .andWhere('user.status = :status', { status: UserStatus.ACTIVE })
       .getMany();

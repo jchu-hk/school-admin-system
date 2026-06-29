@@ -1,27 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { AttendanceService } from './attendance.service';
-import {
-  Attendance,
-  AttendanceStatus,
-  SyncSource,
-  SyncStatus,
-} from './attendance.entity';
-import { User, UserRole } from '../user/user.entity';
+import { Attendance, AttendanceStatus } from './attendance.entity';
+import { User } from '../user/user.entity';
 import { Class } from '../user/class.entity';
 import { NotificationService } from '../notification/notification.service';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
-import * as QRCode from 'qrcode';
 
 // Mock QRCode module
 jest.mock('qrcode');
 
 describe('AttendanceService', () => {
   let service: AttendanceService;
-  let attendanceRepository: Repository<Attendance>;
-  let userRepository: Repository<User>;
-  let classRepository: Repository<Class>;
 
   const mockQueryBuilder = {
     leftJoinAndSelect: jest.fn().mockReturnThis(),
@@ -90,11 +80,6 @@ describe('AttendanceService', () => {
     }).compile();
 
     service = module.get<AttendanceService>(AttendanceService);
-    attendanceRepository = module.get<Repository<Attendance>>(
-      getRepositoryToken(Attendance),
-    );
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
-    classRepository = module.get<Repository<Class>>(getRepositoryToken(Class));
 
     jest.clearAllMocks();
   });
@@ -108,7 +93,9 @@ describe('AttendanceService', () => {
       };
 
       mockUserRepository.findOne.mockResolvedValue(mockStudent);
-      (QRCode.toDataURL as jest.Mock).mockResolvedValue('data:image/png;base64,test');
+      (QRCode.toDataURL as jest.Mock).mockResolvedValue(
+        'data:image/png;base64,test',
+      );
 
       const result = await service.generateQrCode({
         studentId: 'student-123',
@@ -148,7 +135,9 @@ describe('AttendanceService', () => {
       };
 
       mockUserRepository.findOne.mockResolvedValue(mockStudent);
-      (QRCode.toDataURL as jest.Mock).mockResolvedValue('data:image/png;base64,test');
+      (QRCode.toDataURL as jest.Mock).mockResolvedValue(
+        'data:image/png;base64,test',
+      );
 
       const result = await service.generateQrCode({
         studentId: 'student-123',
@@ -232,7 +221,10 @@ describe('AttendanceService', () => {
       mockUserRepository.findOne.mockResolvedValue(null);
 
       await expect(
-        service.mobileScan({ qrcode: 'STUDENT:non-existent:张三' }, 'teacher-123'),
+        service.mobileScan(
+          { qrcode: 'STUDENT:non-existent:张三' },
+          'teacher-123',
+        ),
       ).rejects.toThrow(NotFoundException);
     });
   });
@@ -289,7 +281,9 @@ describe('AttendanceService', () => {
       };
 
       mockAttendanceRepository.save.mockImplementation((records) =>
-        Promise.resolve(records.map((r, i) => ({ ...r, id: `attendance-${i}` }))),
+        Promise.resolve(
+          records.map((r, i) => ({ ...r, id: `attendance-${i}` })),
+        ),
       );
 
       const result = await service.mobileBatchSubmit(dto, 'teacher-123');
@@ -311,8 +305,18 @@ describe('AttendanceService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(mockTeacher);
       mockQueryBuilder.getRawMany.mockResolvedValue([
-        { id: 'class-1', name: '一年级1班', grade: '一年级', studentCount: '25' },
-        { id: 'class-2', name: '一年级2班', grade: '一年级', studentCount: '30' },
+        {
+          id: 'class-1',
+          name: '一年级1班',
+          grade: '一年级',
+          studentCount: '25',
+        },
+        {
+          id: 'class-2',
+          name: '一年级2班',
+          grade: '一年级',
+          studentCount: '30',
+        },
       ]);
 
       const result = await service.getTeacherClasses('teacher-123');
@@ -330,7 +334,12 @@ describe('AttendanceService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(mockDirector);
       mockQueryBuilder.getRawMany.mockResolvedValue([
-        { id: 'class-1', name: '一年级1班', grade: '一年级', studentCount: '25' },
+        {
+          id: 'class-1',
+          name: '一年级1班',
+          grade: '一年级',
+          studentCount: '25',
+        },
       ]);
 
       const result = await service.getTeacherClasses('director-123');
@@ -415,7 +424,11 @@ describe('AttendanceService', () => {
         personalLeave: '0',
       });
 
-      const result = await service.getStats('class-1', '2024-01-01', '2024-01-31');
+      const result = await service.getStats(
+        'class-1',
+        '2024-01-01',
+        '2024-01-31',
+      );
 
       expect(result.total).toBe(100);
       expect(result.present).toBe(80);
@@ -484,7 +497,11 @@ describe('AttendanceService', () => {
         personalLeave: '0',
       });
 
-      const result = await service.getClassStats('class-1', '2024-01-01', '2024-01-31');
+      const result = await service.getClassStats(
+        'class-1',
+        '2024-01-01',
+        '2024-01-31',
+      );
 
       expect(result.classId).toBe('class-1');
       expect(result.totalRecords).toBe(100);
@@ -498,7 +515,10 @@ describe('AttendanceService', () => {
     it('should return empty result when no absences found', async () => {
       mockQueryBuilder.getMany.mockResolvedValue([]);
 
-      const result = await service.checkConsecutiveAbsencesAndAlert('school-1', 'system');
+      const result = await service.checkConsecutiveAbsencesAndAlert(
+        'school-1',
+        'system',
+      );
 
       expect(result.checkedStudents).toBe(0);
       expect(result.alertedStudents).toBe(0);
@@ -555,9 +575,14 @@ describe('AttendanceService', () => {
         { id: 'teacher-1', name: '李老师', role: UserRole.TEACHER },
       ]);
 
-      mockNotificationService.sendNotification.mockResolvedValue({ id: 'notif-1' });
+      mockNotificationService.sendNotification.mockResolvedValue({
+        id: 'notif-1',
+      });
 
-      const result = await service.checkConsecutiveAbsencesAndAlert('school-1', 'system');
+      const result = await service.checkConsecutiveAbsencesAndAlert(
+        'school-1',
+        'system',
+      );
 
       expect(result.checkedStudents).toBe(1);
       expect(result.alertedStudents).toBe(1);
@@ -600,7 +625,10 @@ describe('AttendanceService', () => {
         { id: 'teacher-1', name: '李老师', role: UserRole.TEACHER },
       ]);
 
-      const result = await service.checkConsecutiveAbsencesAndAlert('school-1', 'system');
+      const result = await service.checkConsecutiveAbsencesAndAlert(
+        'school-1',
+        'system',
+      );
 
       expect(result.checkedStudents).toBe(1);
       expect(result.alertedStudents).toBe(0);

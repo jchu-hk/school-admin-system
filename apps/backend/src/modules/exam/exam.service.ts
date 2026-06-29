@@ -1,15 +1,8 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, Between, FindOptionsWhere } from 'typeorm';
 import { Exam } from './exam.entity';
-import {
-  CreateExamDto,
-  UpdateExamDto,
-  ExamQueryDto,
-} from './dto/exam.dto';
+import { CreateExamDto, UpdateExamDto, ExamQueryDto } from './dto/exam.dto';
 
 @Injectable()
 export class ExamService {
@@ -125,14 +118,15 @@ export class ExamService {
     completed: number;
     cancelled: number;
   }> {
-    const [total, scheduled, ongoing, completed, cancelled] =
-      await Promise.all([
+    const [total, scheduled, ongoing, completed, cancelled] = await Promise.all(
+      [
         this.examRepository.count(),
         this.examRepository.count({ where: { status: 'scheduled' as any } }),
         this.examRepository.count({ where: { status: 'ongoing' as any } }),
         this.examRepository.count({ where: { status: 'completed' as any } }),
         this.examRepository.count({ where: { status: 'cancelled' as any } }),
-      ]);
+      ],
+    );
     return { total, scheduled, ongoing, completed, cancelled };
   }
 }

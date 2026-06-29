@@ -8,7 +8,6 @@ import {
   Query,
   UseGuards,
   Request,
-  HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import {
@@ -44,7 +43,11 @@ export class StudentProfileController {
 
   @Post()
   @ApiOperation({ summary: '创建学生档案' })
-  @ApiResponse({ status: 201, description: '档案创建成功', type: StudentProfile })
+  @ApiResponse({
+    status: 201,
+    description: '档案创建成功',
+    type: StudentProfile,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   async create(@Body() dto: CreateStudentProfileDto, @Request() req) {
     try {
@@ -82,10 +85,7 @@ export class StudentProfileController {
     UserRole.SCHOOL_STAFF,
     UserRole.TEACHER,
   )
-  async findAll(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-  ) {
+  async findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
     return this.studentProfileService.findAll(
       parseInt(page || '1'),
       parseInt(limit || '20'),
@@ -94,7 +94,11 @@ export class StudentProfileController {
 
   @Get(':id')
   @ApiOperation({ summary: '获取学生档案详情' })
-  @ApiResponse({ status: 200, description: '获取档案详情成功', type: StudentProfile })
+  @ApiResponse({
+    status: 200,
+    description: '获取档案详情成功',
+    type: StudentProfile,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -149,7 +153,11 @@ export class StudentProfileController {
 
   @Get('student/:studentId')
   @ApiOperation({ summary: '按学生ID获取档案' })
-  @ApiResponse({ status: 200, description: '获取档案成功', type: StudentProfile })
+  @ApiResponse({
+    status: 200,
+    description: '获取档案成功',
+    type: StudentProfile,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -184,7 +192,11 @@ export class StudentProfileController {
     @Request() req,
   ) {
     try {
-      const profile = await this.studentProfileService.update(id, dto, req.user.id);
+      const profile = await this.studentProfileService.update(
+        id,
+        dto,
+        req.user.id,
+      );
       await this.auditService.log(
         AuditAction.STUDENT_PROFILE_UPDATE,
         req.user.id,
@@ -217,7 +229,11 @@ export class StudentProfileController {
     @Request() req,
   ) {
     try {
-      const profile = await this.studentProfileService.archive(id, dto.archiveReason, req.user.id);
+      const profile = await this.studentProfileService.archive(
+        id,
+        dto.archiveReason,
+        req.user.id,
+      );
       await this.auditService.log(
         AuditAction.STUDENT_PROFILE_ARCHIVE,
         req.user.id,
@@ -242,7 +258,11 @@ export class StudentProfileController {
 
   @Post(':id/unarchive')
   @ApiOperation({ summary: '取消归档学生档案' })
-  @ApiResponse({ status: 200, description: '取消归档成功', type: StudentProfile })
+  @ApiResponse({
+    status: 200,
+    description: '取消归档成功',
+    type: StudentProfile,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   async unarchive(@Param('id') id: string, @Request() req) {
     const profile = await this.studentProfileService.unarchive(id, req.user.id);

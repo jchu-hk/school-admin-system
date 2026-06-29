@@ -15,7 +15,6 @@ import {
   ApplyScholarshipDto,
   ReviewScholarshipApplicationDto,
   ScholarshipApplicationQueryDto,
-  APPLICATION_STATUSES,
 } from './dto/scholarship.dto';
 
 @Injectable()
@@ -31,7 +30,10 @@ export class ScholarshipService {
 
   // ============ Scholarship Methods ============
 
-  async create(createDto: CreateScholarshipDto, userId: string): Promise<Scholarship> {
+  async create(
+    createDto: CreateScholarshipDto,
+    userId: string,
+  ): Promise<Scholarship> {
     const scholarship = this.scholarshipRepository.create({
       ...createDto,
       applicationStartDate: new Date(createDto.applicationStartDate),
@@ -98,13 +100,17 @@ export class ScholarshipService {
 
     Object.assign(scholarship, updateDto);
     if (updateDto.applicationStartDate) {
-      scholarship.applicationStartDate = new Date(updateDto.applicationStartDate);
+      scholarship.applicationStartDate = new Date(
+        updateDto.applicationStartDate,
+      );
     }
     if (updateDto.applicationEndDate) {
       scholarship.applicationEndDate = new Date(updateDto.applicationEndDate);
     }
     if (updateDto.disbursementStartDate) {
-      scholarship.disbursementStartDate = new Date(updateDto.disbursementStartDate);
+      scholarship.disbursementStartDate = new Date(
+        updateDto.disbursementStartDate,
+      );
     }
     if (updateDto.disbursementEndDate) {
       scholarship.disbursementEndDate = new Date(updateDto.disbursementEndDate);
@@ -210,7 +216,8 @@ export class ScholarshipService {
       filtered = enriched.filter(
         (a) =>
           a.studentName.toLowerCase().includes(keyword.toLowerCase()) ||
-          (a.studentUsername && a.studentUsername.toLowerCase().includes(keyword.toLowerCase())),
+          (a.studentUsername &&
+            a.studentUsername.toLowerCase().includes(keyword.toLowerCase())),
       );
     }
 
@@ -262,7 +269,10 @@ export class ScholarshipService {
       application.reviewComment = reviewDto.reviewComment;
     }
 
-    if (reviewDto.approvedAmount !== undefined && reviewDto.approvedAmount !== null) {
+    if (
+      reviewDto.approvedAmount !== undefined &&
+      reviewDto.approvedAmount !== null
+    ) {
       application.approvedAmount = reviewDto.approvedAmount;
     }
 

@@ -1,11 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { DseService } from './dse.service';
-import { DseRelease, DseReleaseStatus } from './entities/dse-release.entity';
+import { DseRelease } from './entities/dse-release.entity';
 import { DseResult, DseResultStatus } from './entities/dse-result.entity';
-import { DseReview, DseReviewStatus, DseReviewType } from './entities/dse-review.entity';
-import { DseOfferTracking, JupasStatus } from './entities/dse-offer-tracking.entity';
+import {
+  DseReview,
+  DseReviewStatus,
+  DseReviewType,
+} from './entities/dse-review.entity';
+import { DseOfferTracking } from './entities/dse-offer-tracking.entity';
 import { User } from '../user/user.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
@@ -133,10 +136,16 @@ describe('DseService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DseService,
-        { provide: getRepositoryToken(DseRelease), useFactory: mockReleaseRepo },
+        {
+          provide: getRepositoryToken(DseRelease),
+          useFactory: mockReleaseRepo,
+        },
         { provide: getRepositoryToken(DseResult), useFactory: mockResultRepo },
         { provide: getRepositoryToken(DseReview), useFactory: mockReviewRepo },
-        { provide: getRepositoryToken(DseOfferTracking), useFactory: mockOfferRepo },
+        {
+          provide: getRepositoryToken(DseOfferTracking),
+          useFactory: mockOfferRepo,
+        },
         { provide: getRepositoryToken(User), useFactory: mockUserRepo },
       ],
     }).compile();
@@ -167,7 +176,10 @@ describe('DseService', () => {
       const result = await service.createRelease(dto);
 
       expect(releaseRepo.create).toHaveBeenCalledWith(
-        expect.objectContaining({ academicYear: '2025-2026', releaseYear: 2026 }),
+        expect.objectContaining({
+          academicYear: '2025-2026',
+          releaseYear: 2026,
+        }),
       );
       expect(result).toEqual(mockRelease);
     });
@@ -176,26 +188,37 @@ describe('DseService', () => {
       releaseRepo.findOne.mockResolvedValue(mockRelease);
 
       await expect(
-        service.createRelease({ academicYear: '2025-2026', releaseDate: '2026-08-12' }),
+        service.createRelease({
+          academicYear: '2025-2026',
+          releaseDate: '2026-08-12',
+        }),
       ).rejects.toThrow(BadRequestException);
     });
 
     it('findOneRelease - 记录不存在抛出NotFoundException', async () => {
       releaseRepo.findOne.mockResolvedValue(null);
 
-      await expect(service.findOneRelease('non-existent')).rejects.toThrow(NotFoundException);
+      await expect(service.findOneRelease('non-existent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('updateRelease - 成功更新状态', async () => {
       releaseRepo.findOne.mockResolvedValue(mockRelease);
-      releaseRepo.save.mockResolvedValue({ ...mockRelease, releaseStatus: DseReleaseStatus.IMPORTED });
+      releaseRepo.save.mockResolvedValue({
+        ...mockRelease,
+        releaseStatus: DseReleaseStatus.IMPORTED,
+      });
 
       const result = await service.updateRelease('release-uuid-1', {
         releaseStatus: DseReleaseStatus.IMPORTED,
       });
 
       expect(releaseRepo.save).toHaveBeenCalledWith(
-        expect.objectContaining({ id: 'release-uuid-1', releaseStatus: DseReleaseStatus.IMPORTED }),
+        expect.objectContaining({
+          id: 'release-uuid-1',
+          releaseStatus: DseReleaseStatus.IMPORTED,
+        }),
       );
       expect(result.releaseStatus).toBe(DseReleaseStatus.IMPORTED);
     });
@@ -210,7 +233,9 @@ describe('DseService', () => {
       (service as any).userRepo = userRepo;
       resultRepo.findOne.mockResolvedValue(null);
       resultRepo.create.mockReturnValue(mockResult);
-      resultRepo.save.mockImplementation((e) => Promise.resolve({ ...mockResult, ...e }));
+      resultRepo.save.mockImplementation((e) =>
+        Promise.resolve({ ...mockResult, ...e }),
+      );
 
       const dto = {
         releaseId: 'release-uuid-1',
@@ -234,12 +259,18 @@ describe('DseService', () => {
       (service as any).userRepo = userRepo;
 
       await expect(
-        service.importResult({
-          releaseId: 'release-uuid-1',
-          studentId: 'non-existent',
-          hkeaaCandidateNo: 'DSE20260001',
-          chineseLevel: '5', englishLevel: '4', mathCompulsoryLevel: '5', liberalStudiesLevel: '4',
-        }, 'operator'),
+        service.importResult(
+          {
+            releaseId: 'release-uuid-1',
+            studentId: 'non-existent',
+            hkeaaCandidateNo: 'DSE20260001',
+            chineseLevel: '5',
+            englishLevel: '4',
+            mathCompulsoryLevel: '5',
+            liberalStudiesLevel: '4',
+          },
+          'operator',
+        ),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -250,12 +281,18 @@ describe('DseService', () => {
       resultRepo.findOne.mockResolvedValue(mockResult);
 
       await expect(
-        service.importResult({
-          releaseId: 'release-uuid-1',
-          studentId: 'student-uuid-1',
-          hkeaaCandidateNo: 'DSE20260001',
-          chineseLevel: '5', englishLevel: '4', mathCompulsoryLevel: '5', liberalStudiesLevel: '4',
-        }, 'operator'),
+        service.importResult(
+          {
+            releaseId: 'release-uuid-1',
+            studentId: 'student-uuid-1',
+            hkeaaCandidateNo: 'DSE20260001',
+            chineseLevel: '5',
+            englishLevel: '4',
+            mathCompulsoryLevel: '5',
+            liberalStudiesLevel: '4',
+          },
+          'operator',
+        ),
       ).rejects.toThrow(BadRequestException);
     });
   });
@@ -264,19 +301,25 @@ describe('DseService', () => {
 
   describe('DSE Review', () => {
     it('createReview - 超过截止日期抛出BadRequestException', async () => {
-      const expiredRelease = { ...mockRelease, reviewDeadline: new Date('2020-01-01') };
+      const expiredRelease = {
+        ...mockRelease,
+        reviewDeadline: new Date('2020-01-01'),
+      };
       const dseResult = { ...mockResult, releaseId: 'release-uuid-1' };
 
       releaseRepo.findOne.mockResolvedValue(expiredRelease);
       resultRepo.findOne.mockResolvedValue(dseResult);
 
       await expect(
-        service.createReview({
-          dseResultId: 'result-uuid-1',
-          reviewType: DseReviewType.MARK_RECHECK,
-          subjectName: '中國語文',
-          reason: '成绩与预期不符，申请覆核',
-        }, 'applicant-id'),
+        service.createReview(
+          {
+            dseResultId: 'result-uuid-1',
+            reviewType: DseReviewType.MARK_RECHECK,
+            subjectName: '中國語文',
+            reason: '成绩与预期不符，申请覆核',
+          },
+          'applicant-id',
+        ),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -289,7 +332,11 @@ describe('DseService', () => {
       reviewRepo.findOne.mockResolvedValue(approvedReview);
 
       await expect(
-        service.approveReview('review-uuid-1', { approvalRemark: 'ok' }, 'approver-id'),
+        service.approveReview(
+          'review-uuid-1',
+          { approvalRemark: 'ok' },
+          'approver-id',
+        ),
       ).rejects.toThrow(BadRequestException);
     });
   });
@@ -300,8 +347,25 @@ describe('DseService', () => {
     it('getStats - 返回完整的统计分析报告', async () => {
       releaseRepo.findOne.mockResolvedValue(mockRelease);
       resultRepo.find.mockResolvedValue([
-        { ...mockResult, chineseLevel: '5', englishLevel: '4', mathCompulsoryLevel: '5', liberalStudiesLevel: '4', className: '6A', bestFiveTotal: 23 },
-        { ...mockResult, id: 'result-uuid-2', chineseLevel: '3', englishLevel: '5', mathCompulsoryLevel: '4', liberalStudiesLevel: '3', className: '6B', bestFiveTotal: 19 },
+        {
+          ...mockResult,
+          chineseLevel: '5',
+          englishLevel: '4',
+          mathCompulsoryLevel: '5',
+          liberalStudiesLevel: '4',
+          className: '6A',
+          bestFiveTotal: 23,
+        },
+        {
+          ...mockResult,
+          id: 'result-uuid-2',
+          chineseLevel: '3',
+          englishLevel: '5',
+          mathCompulsoryLevel: '4',
+          liberalStudiesLevel: '3',
+          className: '6B',
+          bestFiveTotal: 19,
+        },
       ]);
       reviewRepo.find.mockResolvedValue([]);
       offerRepo.find.mockResolvedValue([]);
@@ -320,14 +384,28 @@ describe('DseService', () => {
     it('getStats - 正确计算各科目5**比例', async () => {
       releaseRepo.findOne.mockResolvedValue(mockRelease);
       resultRepo.find.mockResolvedValue([
-        { ...mockResult, chineseLevel: '5', englishLevel: '5', mathCompulsoryLevel: '5', liberalStudiesLevel: '5' },
-        { ...mockResult, chineseLevel: '3', englishLevel: '4', mathCompulsoryLevel: '3', liberalStudiesLevel: '2' },
+        {
+          ...mockResult,
+          chineseLevel: '5',
+          englishLevel: '5',
+          mathCompulsoryLevel: '5',
+          liberalStudiesLevel: '5',
+        },
+        {
+          ...mockResult,
+          chineseLevel: '3',
+          englishLevel: '4',
+          mathCompulsoryLevel: '3',
+          liberalStudiesLevel: '2',
+        },
       ]);
       reviewRepo.find.mockResolvedValue([]);
       offerRepo.find.mockResolvedValue([]);
 
       const stats = await service.getStats('release-uuid-1');
-      const chinese = stats.bySubjectStats.find(s => s.subject === '中國語文');
+      const chinese = stats.bySubjectStats.find(
+        (s) => s.subject === '中國語文',
+      );
 
       expect(chinese.candidates).toBe(2);
       expect(chinese.level5PlusPct).toBe('50.0%'); // 1 out of 2 got 5 or above
@@ -343,14 +421,19 @@ describe('DseService', () => {
       const userRepo = { findOne: jest.fn().mockResolvedValue(mockStudent) };
       (service as any).userRepo = userRepo;
       resultRepo.findOne.mockResolvedValue(null);
-      resultRepo.save.mockImplementation((e) => Promise.resolve({ ...mockResult, ...e }));
+      resultRepo.save.mockImplementation((e) =>
+        Promise.resolve({ ...mockResult, ...e }),
+      );
 
       const dto = {
         releaseId: 'release-uuid-1',
         studentId: 'student-uuid-1',
         hkeaaCandidateNo: 'DSE20260001',
-        chineseLevel: '5', englishLevel: '3', mathCompulsoryLevel: '5',
-        mathExtendedLevel: '5', liberalStudiesLevel: '3',
+        chineseLevel: '5',
+        englishLevel: '3',
+        mathCompulsoryLevel: '5',
+        mathExtendedLevel: '5',
+        liberalStudiesLevel: '3',
         elective1: { subjectCode: 'BAFS', subjectName: '企業會計', level: '2' },
         elective2: { subjectCode: 'ECON', subjectName: '經濟', level: '4' },
       };

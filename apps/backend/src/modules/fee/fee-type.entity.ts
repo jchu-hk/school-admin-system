@@ -22,7 +22,13 @@ export class FeeType {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ name: 'default_amount', type: 'decimal', precision: 12, scale: 2, default: 0 })
+  @Column({
+    name: 'default_amount',
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    default: 0,
+  })
   defaultAmount: number;
 
   @Column({ length: 10, default: 'HKD' })

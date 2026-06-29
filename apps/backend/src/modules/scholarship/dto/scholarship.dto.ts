@@ -14,14 +14,26 @@ import { Type } from 'class-transformer';
 
 // ============ Scholarship DTOs ============
 
-export const SCHOLARSHIP_TYPES = ['merit', 'need-based', 'book', 'transport', 'boarding'] as const;
-export type ScholarshipType = typeof SCHOLARSHIP_TYPES[number];
+export const SCHOLARSHIP_TYPES = [
+  'merit',
+  'need-based',
+  'book',
+  'transport',
+  'boarding',
+] as const;
+export type ScholarshipType = (typeof SCHOLARSHIP_TYPES)[number];
 
 export const SCHOLARSHIP_STATUSES = ['active', 'inactive', 'closed'] as const;
-export type ScholarshipStatus = typeof SCHOLARSHIP_STATUSES[number];
+export type ScholarshipStatus = (typeof SCHOLARSHIP_STATUSES)[number];
 
-export const APPLICATION_STATUSES = ['draft', 'pending', 'under_review', 'approved', 'rejected'] as const;
-export type ApplicationStatus = typeof APPLICATION_STATUSES[number];
+export const APPLICATION_STATUSES = [
+  'draft',
+  'pending',
+  'under_review',
+  'approved',
+  'rejected',
+] as const;
+export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
 
 export class CreateScholarshipDto {
   @ApiProperty({ description: '奖学金名称', example: '优秀学生奖学金' })
@@ -35,7 +47,11 @@ export class CreateScholarshipDto {
   @IsString()
   description?: string;
 
-  @ApiProperty({ description: '类型', enum: SCHOLARSHIP_TYPES, example: 'merit' })
+  @ApiProperty({
+    description: '类型',
+    enum: SCHOLARSHIP_TYPES,
+    example: 'merit',
+  })
   @IsString()
   @IsEnum(SCHOLARSHIP_TYPES)
   scholarshipType: ScholarshipType;
@@ -69,12 +85,19 @@ export class CreateScholarshipDto {
   @IsDateString()
   disbursementEndDate?: string;
 
-  @ApiPropertyOptional({ description: '状态', enum: SCHOLARSHIP_STATUSES, default: 'active' })
+  @ApiPropertyOptional({
+    description: '状态',
+    enum: SCHOLARSHIP_STATUSES,
+    default: 'active',
+  })
   @IsOptional()
   @IsEnum(SCHOLARSHIP_STATUSES)
   status?: ScholarshipStatus;
 
-  @ApiPropertyOptional({ description: '符合年级（逗号分隔）', example: '中一,中二,中三' })
+  @ApiPropertyOptional({
+    description: '符合年级（逗号分隔）',
+    example: '中一,中二,中三',
+  })
   @IsOptional()
   @IsString()
   eligibleGrades?: string;

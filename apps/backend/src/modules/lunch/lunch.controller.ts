@@ -195,7 +195,11 @@ export class LunchController {
 
   @Post('changes')
   @ApiOperation({ summary: '提交午膳变更申请' })
-  @ApiResponse({ status: 201, description: '变更申请提交成功', type: LunchChange })
+  @ApiResponse({
+    status: 201,
+    description: '变更申请提交成功',
+    type: LunchChange,
+  })
   @Roles(UserRole.PARENT, UserRole.TEACHER, UserRole.SCHOOL_STAFF)
   createChange(@Body() createDto: CreateLunchChangeDto): Promise<LunchChange> {
     return this.lunchService.createChange(createDto);
@@ -215,9 +219,7 @@ export class LunchController {
   @ApiOperation({ summary: '获取变更申请详情' })
   @ApiResponse({ status: 200, description: '获取成功', type: LunchChange })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  findOneChange(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<LunchChange> {
+  findOneChange(@Param('id', ParseUUIDPipe) id: string): Promise<LunchChange> {
     return this.lunchService.findOneChange(id);
   }
 

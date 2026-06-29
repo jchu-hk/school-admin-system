@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindOptionsWhere, Between } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 import { Asset, AssetRental, AssetStatus } from './asset.entity';
 import {
   CreateAssetDto,
@@ -56,8 +56,16 @@ export class AssetService {
     page: number;
     pageSize: number;
   }> {
-    const { page = 1, pageSize = 10, schoolId, category, status, location, keyword, isActive } =
-      query;
+    const {
+      page = 1,
+      pageSize = 10,
+      schoolId,
+      category,
+      status,
+      location,
+      keyword,
+      isActive,
+    } = query;
 
     const where: FindOptionsWhere<Asset> = {};
 
@@ -136,7 +144,10 @@ export class AssetService {
     const assets = await this.assetRepository.find({ where: { schoolId } });
 
     const totalAssets = assets.length;
-    const totalValue = assets.reduce((sum, asset) => sum + Number(asset.value), 0);
+    const totalValue = assets.reduce(
+      (sum, asset) => sum + Number(asset.value),
+      0,
+    );
 
     const byStatus: Record<string, number> = {};
     const byCategory: Record<string, number> = {};
@@ -151,7 +162,11 @@ export class AssetService {
 
   // ============ Asset Rental Methods ============
 
-  async createRental(createDto: CreateAssetRentalDto, renterId: string, renterName: string): Promise<AssetRental> {
+  async createRental(
+    createDto: CreateAssetRentalDto,
+    renterId: string,
+    renterName: string,
+  ): Promise<AssetRental> {
     // Check if asset exists and is available
     const asset = await this.findOneAsset(createDto.assetId);
 
@@ -184,19 +199,22 @@ export class AssetService {
     page: number;
     pageSize: number;
   }> {
-    const { page = 1, pageSize = 10, assetId, borrowerId, status, keyword, startDate, endDate } =
-      query;
+    const {
+      page = 1,
+      pageSize = 10,
+      assetId,
+      borrowerId,
+      status,
+      keyword,
+      startDate: _startDate,
+      endDate: _endDate,
+    } = query;
 
     const where: FindOptionsWhere<AssetRental> = {};
 
     if (assetId) where.assetId = assetId;
     if (borrowerId) where.borrowerId = borrowerId;
     if (status) where.status = status;
-
-    let dateCondition: any = undefined;
-    if (startDate && endDate) {
-      dateCondition = Between(new Date(startDate), new Date(endDate));
-    }
 
     const [data, total] = await this.rentalRepository.findAndCount({
       where,
@@ -338,7 +356,10 @@ export class AssetService {
     await this.rentalRepository.remove(rental);
   }
 
-  async updateRental(id: string, updateDto: UpdateAssetRentalDto): Promise<AssetRental> {
+  async updateRental(
+    id: string,
+    updateDto: UpdateAssetRentalDto,
+  ): Promise<AssetRental> {
     const rental = await this.findOneRental(id);
 
     Object.assign(rental, updateDto);
@@ -357,7 +378,9 @@ export class AssetService {
     const now = new Date();
     return this.rentalRepository
       .createQueryBuilder('rental')
-      .where('rental.status IN (:...statuses)', { statuses: ['lent', 'approved'] })
+      .where('rental.status IN (:...statuses)', {
+        statuses: ['lent', 'approved'],
+      })
       .andWhere('rental.dueDate < :now', { now })
       .getMany();
   }

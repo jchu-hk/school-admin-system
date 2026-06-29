@@ -20,11 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { ExamService } from './exam.service';
 import { Exam, ExamStatus } from './exam.entity';
-import {
-  CreateExamDto,
-  UpdateExamDto,
-  ExamQueryDto,
-} from './dto/exam.dto';
+import { CreateExamDto, UpdateExamDto, ExamQueryDto } from './dto/exam.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -40,11 +36,7 @@ export class ExamController {
   @Post()
   @ApiOperation({ summary: '创建考试' })
   @ApiResponse({ status: 201, description: '考试创建成功', type: Exam })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   create(@Body() createDto: CreateExamDto) {
     return this.examService.create(createDto);
   }
@@ -65,11 +57,7 @@ export class ExamController {
   @Get('stats')
   @ApiOperation({ summary: '获取考试统计' })
   @ApiResponse({ status: 200, description: '获取统计成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   getStats() {
     return this.examService.getStats();
   }
@@ -131,11 +119,7 @@ export class ExamController {
   @ApiOperation({ summary: '更新考试' })
   @ApiResponse({ status: 200, description: '考试更新成功', type: Exam })
   @ApiResponse({ status: 404, description: '考试不存在' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateDto: UpdateExamDto,
@@ -146,11 +130,7 @@ export class ExamController {
   @Patch(':id/status')
   @ApiOperation({ summary: '更新考试状态' })
   @ApiResponse({ status: 200, description: '状态更新成功', type: Exam })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updateStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body('status') status: ExamStatus,

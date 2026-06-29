@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, FindOptionsWhere } from 'typeorm';
 import { AddressBook } from './address-book.entity';
@@ -18,7 +15,10 @@ export class AddressBookService {
     private readonly addressBookRepository: Repository<AddressBook>,
   ) {}
 
-  async create(createDto: CreateAddressBookDto, userId?: string): Promise<AddressBook> {
+  async create(
+    createDto: CreateAddressBookDto,
+    userId?: string,
+  ): Promise<AddressBook> {
     const contact = this.addressBookRepository.create({
       ...createDto,
       createdBy: userId,

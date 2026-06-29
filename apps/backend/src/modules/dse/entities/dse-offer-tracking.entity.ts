@@ -12,17 +12,17 @@ import { User } from '../../user/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum JupasStatus {
-  NOT_APPLIED = 'not_applied',           // 未申请
+  NOT_APPLIED = 'not_applied', // 未申请
   APPLICATION_SUBMITTED = 'application_submitted', // 已提交申请
-  BAND_A_OFFERED = 'band_a_offered',     // 获得Band A录取
-  BAND_B_OFFERED = 'band_b_offered',     // 获得Band B录取
-  BAND_C_OFFERED = 'band_c_offered',     // 获得Band C录取
-  CONFIRMED = 'confirmed',               // 已确认录取
+  BAND_A_OFFERED = 'band_a_offered', // 获得Band A录取
+  BAND_B_OFFERED = 'band_b_offered', // 获得Band B录取
+  BAND_C_OFFERED = 'band_c_offered', // 获得Band C录取
+  CONFIRMED = 'confirmed', // 已确认录取
   CONDITIONAL_OFFER = 'conditional_offer', // 有条件录取
-  REJECTED = 'rejected',                 // 未获录取
-  DEFERRED = 'deferred',                 // 延迟入学
-  WITHDRAWN = 'withdrawn',               // 已撤销申请
-  AWAITING_RESULT = 'awaiting_result',   // 等待结果
+  REJECTED = 'rejected', // 未获录取
+  DEFERRED = 'deferred', // 延迟入学
+  WITHDRAWN = 'withdrawn', // 已撤销申请
+  AWAITING_RESULT = 'awaiting_result', // 等待结果
 }
 
 @Entity('dse_offer_tracking')

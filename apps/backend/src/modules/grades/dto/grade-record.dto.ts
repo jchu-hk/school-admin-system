@@ -1,101 +1,110 @@
-import { IsString, IsNumber, IsEnum, IsArray, IsUUID, IsOptional, Min, Max, IsDateString, ValidateNested } from 'class-validator'
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { Type } from 'class-transformer'
-import { RecordStatus } from '../grade-record.entity'
+import {
+  IsString,
+  IsNumber,
+  IsEnum,
+  IsArray,
+  IsUUID,
+  IsOptional,
+  Min,
+  Max,
+} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { RecordStatus } from '../grade-record.entity';
 
 export class SubjectGradeDto {
   @ApiProperty({ description: '科目名称' })
   @IsString()
-  subject: string
+  subject: string;
 
   @ApiProperty({ description: '分数' })
   @IsNumber()
   @Min(0)
   @Max(100)
-  score: number
+  score: number;
 
   @ApiProperty({ description: '等级' })
   @IsString()
-  grade: string
+  grade: string;
 
   @ApiProperty({ description: '班级排名' })
   @IsNumber()
   @Min(1)
-  classRank: number
+  classRank: number;
 
   @ApiProperty({ description: '班级平均分' })
   @IsNumber()
-  classAvg: number
+  classAvg: number;
 
   @ApiPropertyOptional({ description: '教师评语' })
   @IsOptional()
   @IsString()
-  teacherComment?: string
+  teacherComment?: string;
 
   @ApiPropertyOptional({ description: '权重' })
   @IsOptional()
   @IsNumber()
-  weight?: number
+  weight?: number;
 }
 
 export class CreateGradeRecordDto {
   @ApiProperty({ description: '学生ID' })
   @IsUUID()
-  studentId: string
+  studentId: string;
 
   @ApiProperty({ description: '教师ID' })
   @IsUUID()
-  teacherId: string
+  teacherId: string;
 
   @ApiProperty({ description: '班级ID' })
   @IsUUID()
-  classId: string
+  classId: string;
 
   @ApiProperty({ description: '学年', example: '2025-2026' })
   @IsString()
-  academicYear: string
+  academicYear: string;
 
   @ApiProperty({ description: '学期', example: '1' })
   @IsString()
-  term: string
+  term: string;
 
   @ApiProperty({ description: '考试名称', example: '期中考试' })
   @IsString()
-  examName: string
+  examName: string;
 
   @ApiProperty({ type: [SubjectGradeDto], description: '各科成绩' })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => SubjectGradeDto)
-  subjects: SubjectGradeDto[]
+  subjects: SubjectGradeDto[];
 
   @ApiProperty({ description: '总分' })
   @IsNumber()
   @Min(0)
-  overallScore: number
+  overallScore: number;
 
   @ApiProperty({ description: '班级排名' })
   @IsNumber()
   @Min(1)
-  classRank: number
+  classRank: number;
 
   @ApiProperty({ description: '年级排名' })
   @IsNumber()
   @Min(1)
-  gradeRank: number
+  gradeRank: number;
 
   @ApiProperty({ description: '操行等级', example: 'B+' })
   @IsString()
-  conductGrade: string
+  conductGrade: string;
 
   @ApiProperty({ description: '出勤率', example: '95%' })
   @IsString()
-  attendanceRate: string
+  attendanceRate: string;
 
   @ApiPropertyOptional({ enum: RecordStatus, description: '状态' })
   @IsOptional()
   @IsEnum(RecordStatus)
-  status?: RecordStatus
+  status?: RecordStatus;
 }
 
 export class UpdateGradeRecordDto {
@@ -104,142 +113,142 @@ export class UpdateGradeRecordDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => SubjectGradeDto)
-  subjects?: SubjectGradeDto[]
+  subjects?: SubjectGradeDto[];
 
   @ApiPropertyOptional({ description: '总分' })
   @IsOptional()
   @IsNumber()
   @Min(0)
-  overallScore?: number
+  overallScore?: number;
 
   @ApiPropertyOptional({ description: '班级排名' })
   @IsOptional()
   @IsNumber()
   @Min(1)
-  classRank?: number
+  classRank?: number;
 
   @ApiPropertyOptional({ description: '年级排名' })
   @IsOptional()
   @IsNumber()
   @Min(1)
-  gradeRank?: number
+  gradeRank?: number;
 
   @ApiPropertyOptional({ description: '操行等级' })
   @IsOptional()
   @IsString()
-  conductGrade?: string
+  conductGrade?: string;
 
   @ApiPropertyOptional({ description: '出勤率' })
   @IsOptional()
   @IsString()
-  attendanceRate?: string
+  attendanceRate?: string;
 
   @ApiPropertyOptional({ enum: RecordStatus, description: '状态' })
   @IsOptional()
   @IsEnum(RecordStatus)
-  status?: RecordStatus
+  status?: RecordStatus;
 }
 
 export class SubmitGradeRecordDto {
   @ApiProperty({ description: '提交理由（可选）' })
   @IsOptional()
   @IsString()
-  reason?: string
+  reason?: string;
 }
 
 export class RevokeGradeRecordDto {
   @ApiProperty({ description: '撤回理由（必填）' })
   @IsString()
-  reason: string
+  reason: string;
 }
 
 export class ApproveGradeRecordDto {
   @ApiProperty({ description: '审批意见' })
   @IsString()
-  comment: string
+  comment: string;
 }
 
 export class QueryGradeRecordsDto {
   @ApiPropertyOptional({ description: '页码' })
   @IsOptional()
   @IsString()
-  page?: string
+  page?: string;
 
   @ApiPropertyOptional({ description: '每页数量' })
   @IsOptional()
   @IsString()
-  pageSize?: string
+  pageSize?: string;
 
   @ApiPropertyOptional({ description: '学生ID' })
   @IsOptional()
   @IsUUID()
-  studentId?: string
+  studentId?: string;
 
   @ApiPropertyOptional({ description: '教师ID' })
   @IsOptional()
   @IsUUID()
-  teacherId?: string
+  teacherId?: string;
 
   @ApiPropertyOptional({ description: '班级ID' })
   @IsOptional()
   @IsUUID()
-  classId?: string
+  classId?: string;
 
   @ApiPropertyOptional({ description: '学年' })
   @IsOptional()
   @IsString()
-  academicYear?: string
+  academicYear?: string;
 
   @ApiPropertyOptional({ description: '学期' })
   @IsOptional()
   @IsString()
-  term?: string
+  term?: string;
 
   @ApiPropertyOptional({ enum: RecordStatus, description: '状态' })
   @IsOptional()
   @IsEnum(RecordStatus)
-  status?: RecordStatus
+  status?: RecordStatus;
 
   @ApiPropertyOptional({ description: '考试名称' })
   @IsOptional()
   @IsString()
-  examName?: string
+  examName?: string;
 }
 
 export class ClassStatsDto {
   @ApiProperty({ description: '班级ID' })
   @IsUUID()
-  classId: string
+  classId: string;
 
   @ApiProperty({ description: '学年' })
   @IsString()
-  academicYear: string
+  academicYear: string;
 
   @ApiProperty({ description: '学期' })
   @IsString()
-  term: string
+  term: string;
 
   @ApiProperty({ description: '考试名称' })
   @IsString()
-  examName: string
+  examName: string;
 
   @ApiPropertyOptional({ description: '科目名称（可选，不填则返回全科目）' })
   @IsOptional()
   @IsString()
-  subject?: string
+  subject?: string;
 }
 
 export class GeneratePdfDto {
   @ApiProperty({ description: '成绩记录ID' })
   @IsUUID()
-  gradeRecordId: string
+  gradeRecordId: string;
 
   @ApiPropertyOptional({ description: '是否添加水印', default: false })
   @IsOptional()
-  addWatermark?: boolean
+  addWatermark?: boolean;
 
   @ApiPropertyOptional({ description: '水印文字', default: '仅供家长个人使用' })
   @IsOptional()
   @IsString()
-  watermarkText?: string
+  watermarkText?: string;
 }

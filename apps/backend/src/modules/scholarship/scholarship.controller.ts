@@ -45,7 +45,11 @@ export class ScholarshipController {
 
   @Post()
   @ApiOperation({ summary: '创建奖学金' })
-  @ApiResponse({ status: 201, description: '奖学金创建成功', type: Scholarship })
+  @ApiResponse({
+    status: 201,
+    description: '奖学金创建成功',
+    type: Scholarship,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   create(@Body() createDto: CreateScholarshipDto, @Request() req: any) {
     return this.scholarshipService.create(createDto, req.user?.sub);
@@ -83,7 +87,11 @@ export class ScholarshipController {
 
   @Get(':id')
   @ApiOperation({ summary: '获取奖学金详情' })
-  @ApiResponse({ status: 200, description: '获取奖学金详情成功', type: Scholarship })
+  @ApiResponse({
+    status: 200,
+    description: '获取奖学金详情成功',
+    type: Scholarship,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -97,7 +105,11 @@ export class ScholarshipController {
 
   @Put(':id')
   @ApiOperation({ summary: '更新奖学金' })
-  @ApiResponse({ status: 200, description: '奖学金更新成功', type: Scholarship })
+  @ApiResponse({
+    status: 200,
+    description: '奖学金更新成功',
+    type: Scholarship,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -137,6 +149,10 @@ export class ScholarshipController {
     @Body() reviewDto: ReviewScholarshipApplicationDto,
     @Request() req: any,
   ) {
-    return this.scholarshipService.reviewApplication(id, reviewDto, req.user?.sub);
+    return this.scholarshipService.reviewApplication(
+      id,
+      reviewDto,
+      req.user?.sub,
+    );
   }
 }

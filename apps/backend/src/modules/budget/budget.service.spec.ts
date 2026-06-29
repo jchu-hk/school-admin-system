@@ -1,15 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { BudgetService } from './budget.service';
 import {
   Budget,
   BudgetStatus,
   BudgetExpense,
   BudgetAdjustment,
-  ExpenseStatus,
-  BudgetAdjustType,
   AnnualBudget,
   BudgetAllocation,
   FiscalBudgetCategory,
@@ -61,7 +58,9 @@ const mockAdjustmentRepo = () => ({
 
 // ==================== Fixtures ====================
 
-const mockAnnualBudget = (overrides: Partial<AnnualBudget> = {}): AnnualBudget =>
+const mockAnnualBudget = (
+  overrides: Partial<AnnualBudget> = {},
+): AnnualBudget =>
   ({
     id: 'annual-uuid-1',
     fiscalYear: 2026,
@@ -97,9 +96,11 @@ const mockAnnualBudget = (overrides: Partial<AnnualBudget> = {}): AnnualBudget =
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,
-  } as AnnualBudget);
+  }) as AnnualBudget;
 
-const mockBudgetAllocation = (overrides: Partial<BudgetAllocation> = {}): BudgetAllocation =>
+const mockBudgetAllocation = (
+  overrides: Partial<BudgetAllocation> = {},
+): BudgetAllocation =>
   ({
     id: 'alloc-uuid-1',
     annualBudgetId: 'annual-uuid-1',
@@ -119,27 +120,34 @@ const mockBudgetAllocation = (overrides: Partial<BudgetAllocation> = {}): Budget
     createdBy: 'user-uuid-1',
     annualBudget: null,
     ...overrides,
-  } as BudgetAllocation);
+  }) as BudgetAllocation;
 
 // ==================== Test Suite ====================
 
 describe('BudgetService F-NEW-004', () => {
-  let annualBudgetRepo: ReturnType<typeof mockAnnualBudgetRepo>;
-  let allocationRepo: ReturnType<typeof mockAllocationRepo>;
-  let budgetRepo: ReturnType<typeof mockBudgetRepo>;
-  let expenseRepo: ReturnType<typeof mockExpenseRepo>;
-  let adjustmentRepo: ReturnType<typeof mockAdjustmentRepo>;
   let service: BudgetService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BudgetService,
-        { provide: getRepositoryToken(AnnualBudget), useFactory: mockAnnualBudgetRepo },
-        { provide: getRepositoryToken(BudgetAllocation), useFactory: mockAllocationRepo },
+        {
+          provide: getRepositoryToken(AnnualBudget),
+          useFactory: mockAnnualBudgetRepo,
+        },
+        {
+          provide: getRepositoryToken(BudgetAllocation),
+          useFactory: mockAllocationRepo,
+        },
         { provide: getRepositoryToken(Budget), useFactory: mockBudgetRepo },
-        { provide: getRepositoryToken(BudgetExpense), useFactory: mockExpenseRepo },
-        { provide: getRepositoryToken(BudgetAdjustment), useFactory: mockAdjustmentRepo },
+        {
+          provide: getRepositoryToken(BudgetExpense),
+          useFactory: mockExpenseRepo,
+        },
+        {
+          provide: getRepositoryToken(BudgetAdjustment),
+          useFactory: mockAdjustmentRepo,
+        },
       ],
     }).compile();
 
@@ -212,7 +220,17 @@ describe('BudgetService F-NEW-004', () => {
       annualBudgetRepo.findOne.mockResolvedValue({
         ...annual,
         status: BudgetStatus.PENDING_APPROVAL,
-        categoryBreakdown: { IT: { allocated: 300000, spent: 0, remaining: 300000, executionRate: '0.00%', monthlyForecast: 25000, variance: -300000, status: BudgetExecutionStatus.ON_TRACK } },
+        categoryBreakdown: {
+          IT: {
+            allocated: 300000,
+            spent: 0,
+            remaining: 300000,
+            executionRate: '0.00%',
+            monthlyForecast: 25000,
+            variance: -300000,
+            status: BudgetExecutionStatus.ON_TRACK,
+          },
+        },
         totalAllocated: 300000,
         totalSpent: 0,
         totalRemaining: 300000,
@@ -251,12 +269,20 @@ describe('BudgetService F-NEW-004', () => {
       });
       allocationRepo.findOne.mockResolvedValue(allocation);
       allocationRepo.save.mockImplementation((a) => Promise.resolve(a));
-      expenseRepo.create.mockReturnValue({ id: 'exp-uuid-1', amount: 280000 } as BudgetExpense);
+      expenseRepo.create.mockReturnValue({
+        id: 'exp-uuid-1',
+        amount: 280000,
+      } as BudgetExpense);
       expenseRepo.save.mockResolvedValue({ id: 'exp-uuid-1', amount: 280000 });
 
       annualBudgetRepo.findOne.mockResolvedValue(mockAnnualBudget());
       allocationRepo.find.mockResolvedValue([
-        { ...allocation, actualSpent: 280000, remainingAmount: 20000, warningTriggered: true },
+        {
+          ...allocation,
+          actualSpent: 280000,
+          remainingAmount: 20000,
+          warningTriggered: true,
+        },
       ]);
       annualBudgetRepo.save.mockImplementation((a) => Promise.resolve(a));
 
@@ -364,8 +390,12 @@ describe('BudgetService F-NEW-004', () => {
       );
 
       // 验证科目金额已更新
-      expect(result.categoryBreakdown[FiscalBudgetCategory.ACTIVITY].allocated).toBe(450000);
-      expect(result.categoryBreakdown[FiscalBudgetCategory.IT].allocated).toBe(350000);
+      expect(
+        result.categoryBreakdown[FiscalBudgetCategory.ACTIVITY].allocated,
+      ).toBe(450000);
+      expect(result.categoryBreakdown[FiscalBudgetCategory.IT].allocated).toBe(
+        350000,
+      );
       expect(result.status).toBe(BudgetStatus.ADJUSTED);
     });
 

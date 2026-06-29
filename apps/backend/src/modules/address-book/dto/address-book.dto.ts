@@ -1,4 +1,10 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+  MaxLength,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateAddressBookDto {
@@ -7,7 +13,10 @@ export class CreateAddressBookDto {
   @MaxLength(100)
   name: string;
 
-  @ApiProperty({ description: '联系人类型', enum: ['teacher', 'staff', 'parent', 'student', 'other'] })
+  @ApiProperty({
+    description: '联系人类型',
+    enum: ['teacher', 'staff', 'parent', 'student', 'other'],
+  })
   @IsEnum(['teacher', 'staff', 'parent', 'student', 'other'])
   contactType: 'teacher' | 'staff' | 'parent' | 'student' | 'other';
 
@@ -104,7 +113,10 @@ export class UpdateAddressBookDto {
   @MaxLength(100)
   name?: string;
 
-  @ApiPropertyOptional({ description: '联系人类型', enum: ['teacher', 'staff', 'parent', 'student', 'other'] })
+  @ApiPropertyOptional({
+    description: '联系人类型',
+    enum: ['teacher', 'staff', 'parent', 'student', 'other'],
+  })
   @IsOptional()
   @IsEnum(['teacher', 'staff', 'parent', 'student', 'other'])
   contactType?: 'teacher' | 'staff' | 'parent' | 'student' | 'other';

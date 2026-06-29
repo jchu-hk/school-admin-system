@@ -19,7 +19,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { BudgetService } from './budget.service';
-import { Budget, BudgetExpense, BudgetAdjustment } from './entities/budget.entity';
+import { Budget, BudgetExpense } from './entities/budget.entity';
 import {
   CreateBudgetDto,
   UpdateBudgetDto,
@@ -33,12 +33,6 @@ import {
   CreateAdjustmentDto,
   ApproveAdjustmentDto,
   QueryAdjustmentDto,
-  BudgetStatsDto,
-  BudgetComparisonDto,
-  CreateAnnualBudgetDto,
-  CreateBudgetAllocationDto,
-  UpdateBudgetAllocationDto,
-  QueryBudgetAllocationDto,
   RecordFiscalExpenseDto,
   InterCategoryTransferDto,
 } from './dto/budget.dto';
@@ -59,11 +53,7 @@ export class BudgetController {
   @Post()
   @ApiOperation({ summary: '创建预算' })
   @ApiResponse({ status: 201, description: '预算创建成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createBudget(@Body() dto: CreateBudgetDto) {
     // TODO: 获取当前用户ID
     return this.budgetService.createBudget(dto, '');
@@ -72,11 +62,7 @@ export class BudgetController {
   @Get()
   @ApiOperation({ summary: '获取预算列表' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findAllBudgets(@Query() query: QueryBudgetDto) {
     return this.budgetService.findAllBudgets(query);
   }
@@ -84,10 +70,7 @@ export class BudgetController {
   @Get('stats')
   @ApiOperation({ summary: '获取预算统计' })
   @ApiResponse({ status: 200, description: '获取成功', type: BudgetStatsDto })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   getStats(@Query('fiscalYear') fiscalYear: number) {
     return this.budgetService.getStats(fiscalYear || new Date().getFullYear());
   }
@@ -95,44 +78,37 @@ export class BudgetController {
   @Get('comparison')
   @ApiOperation({ summary: '预算执行对比' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   getComparison(@Query('fiscalYear') fiscalYear: number) {
-    return this.budgetService.getComparison(fiscalYear || new Date().getFullYear());
+    return this.budgetService.getComparison(
+      fiscalYear || new Date().getFullYear(),
+    );
   }
 
   @Get('department-summary')
   @ApiOperation({ summary: '部门预算汇总' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   getDepartmentSummary(@Query('fiscalYear') fiscalYear: number) {
-    return this.budgetService.getDepartmentSummary(fiscalYear || new Date().getFullYear());
+    return this.budgetService.getDepartmentSummary(
+      fiscalYear || new Date().getFullYear(),
+    );
   }
 
   @Get('monthly-trend')
   @ApiOperation({ summary: '月度趋势' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   getMonthlyTrend(@Query('fiscalYear') fiscalYear: number) {
-    return this.budgetService.getMonthlyTrend(fiscalYear || new Date().getFullYear());
+    return this.budgetService.getMonthlyTrend(
+      fiscalYear || new Date().getFullYear(),
+    );
   }
 
   @Get(':id')
   @ApiOperation({ summary: '获取预算详情' })
   @ApiResponse({ status: 200, description: '获取成功', type: Budget })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findOneBudget(@Param('id', ParseUUIDPipe) id: string) {
     return this.budgetService.findOneBudget(id);
   }
@@ -140,11 +116,7 @@ export class BudgetController {
   @Patch(':id')
   @ApiOperation({ summary: '更新预算' })
   @ApiResponse({ status: 200, description: '更新成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updateBudget(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateBudgetDto,
@@ -164,11 +136,7 @@ export class BudgetController {
   @Post(':id/submit')
   @ApiOperation({ summary: '提交预算审批' })
   @ApiResponse({ status: 200, description: '提交成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   submitBudget(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: SubmitBudgetDto,
@@ -204,11 +172,7 @@ export class BudgetController {
   @Post('expenses')
   @ApiOperation({ summary: '创建支出记录' })
   @ApiResponse({ status: 201, description: '创建成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createExpense(@Body() dto: CreateExpenseDto) {
     return this.budgetService.createExpense(dto, '');
   }
@@ -216,11 +180,7 @@ export class BudgetController {
   @Get('expenses')
   @ApiOperation({ summary: '获取支出列表' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findAllExpenses(@Query() query: QueryExpenseDto) {
     return this.budgetService.findAllExpenses(query);
   }
@@ -228,11 +188,7 @@ export class BudgetController {
   @Get('expenses/:id')
   @ApiOperation({ summary: '获取支出详情' })
   @ApiResponse({ status: 200, description: '获取成功', type: BudgetExpense })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findOneExpense(@Param('id', ParseUUIDPipe) id: string) {
     return this.budgetService.findOneExpense(id);
   }
@@ -240,11 +196,7 @@ export class BudgetController {
   @Patch('expenses/:id')
   @ApiOperation({ summary: '更新支出' })
   @ApiResponse({ status: 200, description: '更新成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updateExpense(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateExpenseDto,
@@ -275,11 +227,7 @@ export class BudgetController {
   @Post('expenses/:id/pay')
   @ApiOperation({ summary: '标记已付款' })
   @ApiResponse({ status: 200, description: '标记成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   payExpense(@Param('id', ParseUUIDPipe) id: string) {
     return this.budgetService.payExpense(id);
   }
@@ -300,11 +248,7 @@ export class BudgetController {
   @Post('adjustments')
   @ApiOperation({ summary: '创建预算调整' })
   @ApiResponse({ status: 201, description: '创建成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createAdjustment(@Body() dto: CreateAdjustmentDto) {
     return this.budgetService.createAdjustment(dto, '');
   }
@@ -312,10 +256,7 @@ export class BudgetController {
   @Get('adjustments')
   @ApiOperation({ summary: '获取调整列表' })
   @ApiResponse({ status: 200, description: '获取成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   findAllAdjustments(@Query() query: QueryAdjustmentDto) {
     return this.budgetService.findAllAdjustments(query);
   }
@@ -334,8 +275,14 @@ export class BudgetController {
   // ==================== F-NEW-004: Annual Budget Endpoints ====================
 
   @Post('annual')
-  @ApiOperation({ summary: '[F-NEW-004] Create annual budget framework with 8 categories (AC-01)' })
-  @ApiResponse({ status: 201, description: 'Annual budget created with 8 category templates' })
+  @ApiOperation({
+    summary:
+      '[F-NEW-004] Create annual budget framework with 8 categories (AC-01)',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Annual budget created with 8 category templates',
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   createAnnualBudget(@Body() dto: CreateAnnualBudgetDto) {
     return this.budgetService.createAnnualBudget(dto, '');
@@ -344,23 +291,20 @@ export class BudgetController {
   @Get('annual')
   @ApiOperation({ summary: '[F-NEW-004] List annual budgets' })
   @ApiResponse({ status: 200, description: 'Success' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findAllAnnualBudgets(@Query('fiscalYear') fiscalYear?: number) {
     return this.budgetService.findAllAnnualBudgets(fiscalYear);
   }
 
   @Get('annual/:fiscalYear')
-  @ApiOperation({ summary: '[F-NEW-004] Get annual budget execution report (AC-03)' })
-  @ApiResponse({ status: 200, description: 'Returns real-time execution rates per category' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiOperation({
+    summary: '[F-NEW-004] Get annual budget execution report (AC-03)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns real-time execution rates per category',
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   getAnnualBudgetReport(@Param('fiscalYear') fiscalYear: number) {
     return this.budgetService.getExecutionReport(fiscalYear);
   }
@@ -376,7 +320,9 @@ export class BudgetController {
   // ==================== F-NEW-004: Allocation Endpoints ====================
 
   @Post('allocations')
-  @ApiOperation({ summary: '[F-NEW-004] Create department/category budget allocation (AC-02)' })
+  @ApiOperation({
+    summary: '[F-NEW-004] Create department/category budget allocation (AC-02)',
+  })
   @ApiResponse({ status: 201, description: 'Allocation created' })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createAllocation(@Body() dto: CreateBudgetAllocationDto) {
@@ -386,11 +332,7 @@ export class BudgetController {
   @Get('allocations')
   @ApiOperation({ summary: '[F-NEW-004] List budget allocations' })
   @ApiResponse({ status: 200, description: 'Success' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   findAllAllocations(@Query() query: QueryBudgetAllocationDto) {
     return this.budgetService.findAllAllocations(query);
   }
@@ -417,7 +359,9 @@ export class BudgetController {
   // ==================== F-NEW-004: Fiscal Expense & Warning ====================
 
   @Post('fiscal-expenses')
-  @ApiOperation({ summary: '[F-NEW-004] Record actual expenditure by 8-category' })
+  @ApiOperation({
+    summary: '[F-NEW-004] Record actual expenditure by 8-category',
+  })
   @ApiResponse({ status: 201, description: 'Expense recorded' })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   recordFiscalExpense(@Body() dto: RecordFiscalExpenseDto) {
@@ -426,17 +370,28 @@ export class BudgetController {
 
   @Get('warnings')
   @ApiOperation({ summary: '[F-NEW-004] Get over-budget warning list (AC-04)' })
-  @ApiResponse({ status: 200, description: 'Returns categories with execution rate >= 80%' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns categories with execution rate >= 80%',
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   checkOverBudgetWarnings(@Query('fiscalYear') fiscalYear: number) {
-    return this.budgetService.checkOverBudgetWarnings(fiscalYear || new Date().getFullYear());
+    return this.budgetService.checkOverBudgetWarnings(
+      fiscalYear || new Date().getFullYear(),
+    );
   }
 
   // ==================== F-NEW-004: Inter-Category Transfer ====================
 
   @Post('transfer')
-  @ApiOperation({ summary: '[F-NEW-004] Inter-category budget transfer (AC-05: ACTIVITY -HK$50k -> IT)' })
-  @ApiResponse({ status: 200, description: 'Transfer completed, adjustment recorded' })
+  @ApiOperation({
+    summary:
+      '[F-NEW-004] Inter-category budget transfer (AC-05: ACTIVITY -HK$50k -> IT)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Transfer completed, adjustment recorded',
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   interCategoryTransfer(@Body() dto: InterCategoryTransferDto) {
     return this.budgetService.interCategoryTransfer(

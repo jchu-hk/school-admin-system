@@ -10,15 +10,15 @@ import {
 import { User } from '../user/user.entity';
 
 export enum LunchChangeType {
-  ADD = 'add',       // 加单
+  ADD = 'add', // 加单
   CANCEL = 'cancel', // 取消
   MODIFY = 'modify', // 更改款式
 }
 
 export enum LunchChangeStatus {
-  PENDING = 'pending',           // 待审核
-  APPROVED = 'approved',         // 已批准
-  REJECTED = 'rejected',         // 已拒绝
+  PENDING = 'pending', // 待审核
+  APPROVED = 'approved', // 已批准
+  REJECTED = 'rejected', // 已拒绝
   AUTO_REJECTED = 'auto_rejected', // 超时自动拒绝
 }
 
@@ -57,7 +57,13 @@ export class LunchChange {
   @Column({ name: 'new_quantity', type: 'int', nullable: true })
   newQuantity: number;
 
-  @Column({ name: 'new_price', type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({
+    name: 'new_price',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
   newPrice: number;
 
   @Column({ name: 'notes', type: 'text', nullable: true })

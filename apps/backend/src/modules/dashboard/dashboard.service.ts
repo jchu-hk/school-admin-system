@@ -202,9 +202,12 @@ export class DashboardService {
 
     // 获取待处理的家长查询 (使用原始查询，因为实体表名不匹配)
     const pendingInquiriesResult = await this.attendanceRepository.query(
-      `SELECT COUNT(*) as count FROM inquiries WHERE status = 'pending'`
+      `SELECT COUNT(*) as count FROM inquiries WHERE status = 'pending'`,
     );
-    const pendingInquiries = parseInt(pendingInquiriesResult[0]?.count || '0', 10);
+    const pendingInquiries = parseInt(
+      pendingInquiriesResult[0]?.count || '0',
+      10,
+    );
 
     return {
       studentCount,
@@ -308,9 +311,8 @@ export class DashboardService {
         total: monthlyLeaves.length,
         approved: approvedLeaves,
         pending: pendingLeaves,
-        rejected: monthlyLeaves.filter(
-          (l) => l.status === LeaveStatus.REJECTED,
-        ).length,
+        rejected: monthlyLeaves.filter((l) => l.status === LeaveStatus.REJECTED)
+          .length,
       },
       pendingInquiries: pendingLeaves,
       todayNotifications: 0,
@@ -387,13 +389,11 @@ export class DashboardService {
       },
       monthlyLeave: {
         total: studentLeaves.length,
-        approved: studentLeaves.filter(
-          (l) => l.status === LeaveStatus.APPROVED,
-        ).length,
+        approved: studentLeaves.filter((l) => l.status === LeaveStatus.APPROVED)
+          .length,
         pending: pendingLeaves,
-        rejected: studentLeaves.filter(
-          (l) => l.status === LeaveStatus.REJECTED,
-        ).length,
+        rejected: studentLeaves.filter((l) => l.status === LeaveStatus.REJECTED)
+          .length,
       },
       pendingInquiries: 0,
       todayNotifications: 0,
@@ -672,7 +672,11 @@ export class DashboardService {
     const activities: RecentActivity[] = [];
 
     // 只对管理员显示其他用户活动
-    if (user.role !== UserRole.SYSTEM_ADMIN && user.role !== UserRole.SCHOOL_DIRECTOR && user.role !== UserRole.SCHOOL_STAFF) {
+    if (
+      user.role !== UserRole.SYSTEM_ADMIN &&
+      user.role !== UserRole.SCHOOL_DIRECTOR &&
+      user.role !== UserRole.SCHOOL_STAFF
+    ) {
       return activities;
     }
 

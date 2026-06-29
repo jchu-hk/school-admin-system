@@ -12,19 +12,19 @@ import { User } from '../../user/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum DseReviewStatus {
-  PENDING = 'pending',           // 待审核
-  APPROVED = 'approved',         // 已批准（提交HKEAA）
-  REJECTED = 'rejected',         // 已拒绝
+  PENDING = 'pending', // 待审核
+  APPROVED = 'approved', // 已批准（提交HKEAA）
+  REJECTED = 'rejected', // 已拒绝
   SUBMITTED_TO_HKEAA = 'submitted_to_hkeaa', // 已提交HKEAA
-  HKEAA_REVIEWING = 'hkeaa_reviewing',        // HKEAA处理中
-  HKEAA_COMPLETED = 'hkeaa_completed',         // HKEAA处理完成
-  RESULT_UPDATED = 'result_updated',           // 成绩已更正
-  CANCELLED = 'cancelled',      // 已取消
+  HKEAA_REVIEWING = 'hkeaa_reviewing', // HKEAA处理中
+  HKEAA_COMPLETED = 'hkeaa_completed', // HKEAA处理完成
+  RESULT_UPDATED = 'result_updated', // 成绩已更正
+  CANCELLED = 'cancelled', // 已取消
 }
 
 export enum DseReviewType {
-  MARK_RECHECK = 'mark_recheck',     // 成绩覆核（重阅答卷）
-  SCRUTINY = 'scrutiny',            // 成绩覆核（检查分数相加）
+  MARK_RECHECK = 'mark_recheck', // 成绩覆核（重阅答卷）
+  SCRUTINY = 'scrutiny', // 成绩覆核（检查分数相加）
 }
 
 @Entity('dse_reviews')
@@ -74,11 +74,22 @@ export class DseReview {
   status: DseReviewStatus;
 
   @ApiProperty({ description: 'HKEAA覆核费用（HKD）' })
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true, name: 'hkeaa_fee' })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    name: 'hkeaa_fee',
+  })
   hkeaaFee: number;
 
   @ApiProperty({ description: 'HKEAA覆核结果' })
-  @Column({ type: 'varchar', length: 10, nullable: true, name: 'hkeaa_new_level' })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+    name: 'hkeaa_new_level',
+  })
   hkeaaNewLevel: string;
 
   @ApiProperty({ description: 'HKEAA结果说明' })

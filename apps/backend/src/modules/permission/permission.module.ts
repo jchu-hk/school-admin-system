@@ -11,11 +11,23 @@ import { PermissionTemplate } from './entities/permission-template.entity';
 @Module({
   imports: [
     forwardRef(() =>
-      TypeOrmModule.forFeature([Permission, PermissionAuditLog, PermissionTemplate]),
+      TypeOrmModule.forFeature([
+        Permission,
+        PermissionAuditLog,
+        PermissionTemplate,
+      ]),
     ),
   ],
   controllers: [PermissionController],
-  providers: [PermissionService, PermissionAuditService, PermissionTemplatesService],
-  exports: [PermissionService, PermissionAuditService, PermissionTemplatesService],
+  providers: [
+    PermissionService,
+    PermissionAuditService,
+    PermissionTemplatesService,
+  ],
+  exports: [
+    PermissionService,
+    PermissionAuditService,
+    PermissionTemplatesService,
+  ],
 })
 export class PermissionModule {}

@@ -1,6 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
-import { User } from '../user/user.entity'
-import { Class } from '../user/class.entity'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from '../user/user.entity';
+import { Class } from '../user/class.entity';
 
 export enum RecordStatus {
   DRAFT = 'draft',
@@ -12,117 +20,117 @@ export enum RecordStatus {
 @Entity('grade_records')
 export class GradeRecord {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id: string;
 
   @Column({ name: 'student_id' })
-  studentId: string
+  studentId: string;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'student_id' })
-  student: User
+  student: User;
 
   @Column({ name: 'teacher_id' })
-  teacherId: string
+  teacherId: string;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'teacher_id' })
-  teacher: User
+  teacher: User;
 
   @Column({ name: 'class_id' })
-  classId: string
+  classId: string;
 
   @ManyToOne(() => Class, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'class_id' })
-  class: Class
+  class: Class;
 
   @Column({ name: 'academic_year' })
-  academicYear: string
+  academicYear: string;
 
   @Column({ name: 'term' })
-  term: string
+  term: string;
 
   @Column({ name: 'exam_name' })
-  examName: string
+  examName: string;
 
   @Column({ type: 'jsonb', default: [] })
   subjects: Array<{
-    subject: string
-    score: number
-    grade: string
-    classRank: number
-    classAvg: number
-    teacherComment?: string
-    weight?: number
-  }>
+    subject: string;
+    score: number;
+    grade: string;
+    classRank: number;
+    classAvg: number;
+    teacherComment?: string;
+    weight?: number;
+  }>;
 
   @Column({ type: 'decimal', precision: 5, scale: 2 })
-  overallScore: number
+  overallScore: number;
 
   @Column({ name: 'class_rank' })
-  classRank: number
+  classRank: number;
 
   @Column({ name: 'grade_rank' })
-  gradeRank: number
+  gradeRank: number;
 
   @Column({ name: 'conduct_grade' })
-  conductGrade: string
+  conductGrade: string;
 
   @Column({ name: 'attendance_rate' })
-  attendanceRate: string
+  attendanceRate: string;
 
   @Column({ type: 'enum', enum: RecordStatus, default: RecordStatus.DRAFT })
-  status: RecordStatus
+  status: RecordStatus;
 
   @Column({ name: 'approval_level', type: 'integer', default: 0 })
-  approvalLevel: number
+  approvalLevel: number;
 
   @Column({ name: 'approved_by', nullable: true })
-  approvedBy: string
+  approvedBy: string;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'approved_by' })
-  approver: User
+  approver: User;
 
   @Column({ name: 'approved_at', type: 'timestamp', nullable: true })
-  approvedAt: Date
+  approvedAt: Date;
 
   @Column({ name: 'approval_comment', type: 'text', nullable: true })
-  approvalComment: string
+  approvalComment: string;
 
   @Column({ name: 'submitted_at', type: 'timestamp', nullable: true })
-  submittedAt: Date
+  submittedAt: Date;
 
   @Column({ name: 'can_revoke_until', type: 'timestamp', nullable: true })
-  canRevokeUntil: Date
+  canRevokeUntil: Date;
 
   @Column({ name: 'revoked_at', type: 'timestamp', nullable: true })
-  revokedAt: Date
+  revokedAt: Date;
 
   @Column({ name: 'revoked_by', nullable: true })
-  revokedBy: string
+  revokedBy: string;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'revoked_by' })
-  revoker: User
+  revoker: User;
 
   @Column({ name: 'revoked_reason', type: 'text', nullable: true })
-  revokedReason: string
+  revokedReason: string;
 
   @Column({ name: 'report_batch', nullable: true })
-  reportBatch: string
+  reportBatch: string;
 
   @Column({ type: 'jsonb', default: {} })
   metadata: {
-    websamsImported?: boolean
-    eclassImported?: boolean
-    importBatchId?: string
-    pdfGenerated?: boolean
-    pdfUrl?: string
-  }
+    websamsImported?: boolean;
+    eclassImported?: boolean;
+    importBatchId?: string;
+    pdfGenerated?: boolean;
+    pdfUrl?: string;
+  };
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date
+  createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date
+  updatedAt: Date;
 }

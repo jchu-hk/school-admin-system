@@ -145,7 +145,12 @@ export class User {
   lockoutUntil: Date;
 
   @ApiProperty({ description: '最近密码历史（bcrypt hash数组）' })
-  @Column({ name: 'password_history', type: 'text', array: true, nullable: true })
+  @Column({
+    name: 'password_history',
+    type: 'text',
+    array: true,
+    nullable: true,
+  })
   passwordHistory: string[];
 
   @ApiProperty({ description: '是否必须修改密码' })
@@ -154,7 +159,10 @@ export class User {
 
   /** ====== 学生资助资格相关字段 ====== */
 
-  @ApiProperty({ description: '资助资格状态', enum: ['full_subsidy', 'half_subsidy', 'none', 'pending'] })
+  @ApiProperty({
+    description: '资助资格状态',
+    enum: ['full_subsidy', 'half_subsidy', 'none', 'pending'],
+  })
   @Column({
     type: 'enum',
     enum: ['full_subsidy', 'half_subsidy', 'none', 'pending'],

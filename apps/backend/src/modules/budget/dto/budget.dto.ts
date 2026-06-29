@@ -9,10 +9,7 @@ import {
   Min,
   Max,
   MinLength,
-  IsArray,
-  ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 import {
   BudgetCategory,
   BudgetStatus,
@@ -354,12 +351,15 @@ export class BudgetStatsDto {
   totalRemaining: number;
   utilizationRate: string;
   overspendCount: number;
-  byCategory: Record<string, {
-    approved: number;
-    spent: number;
-    remaining: number;
-    utilizationRate: string;
-  }>;
+  byCategory: Record<
+    string,
+    {
+      approved: number;
+      spent: number;
+      remaining: number;
+      utilizationRate: string;
+    }
+  >;
 }
 
 export class BudgetComparisonDto {
@@ -383,7 +383,10 @@ export class MonthlyTrendDto {
 
 // ==================== F-NEW-004: Annual Budget DTOs ====================
 
-import { FiscalBudgetCategory, BudgetExecutionStatus } from '../entities/budget.entity';
+import {
+  FiscalBudgetCategory,
+  BudgetExecutionStatus,
+} from '../entities/budget.entity';
 
 export class CreateAnnualBudgetDto {
   @ApiProperty({ description: '财政年度', example: 2026 })
@@ -405,7 +408,10 @@ export class CreateBudgetAllocationDto {
   @Max(2100)
   fiscalYear: number;
 
-  @ApiProperty({ description: '预算科目（8大科目）', enum: FiscalBudgetCategory })
+  @ApiProperty({
+    description: '预算科目（8大科目）',
+    enum: FiscalBudgetCategory,
+  })
   @IsEnum(FiscalBudgetCategory)
   category: FiscalBudgetCategory;
 
@@ -479,7 +485,10 @@ export class RecordFiscalExpenseDto {
   @IsNumber()
   fiscalYear: number;
 
-  @ApiProperty({ description: '预算科目（8大科目）', enum: FiscalBudgetCategory })
+  @ApiProperty({
+    description: '预算科目（8大科目）',
+    enum: FiscalBudgetCategory,
+  })
   @IsEnum(FiscalBudgetCategory)
   fiscalCategory: FiscalBudgetCategory;
 

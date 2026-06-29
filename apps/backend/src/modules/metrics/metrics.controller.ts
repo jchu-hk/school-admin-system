@@ -27,7 +27,10 @@ export class MetricsController implements OnModuleInit {
       res.set('Content-Type', registry.contentType);
       res.end(await registry.metrics());
     } catch (error) {
-      MetricsController.logger.error(`Metrics error: ${error.message}`, error.stack);
+      MetricsController.logger.error(
+        `Metrics error: ${error.message}`,
+        error.stack,
+      );
       res.status(500).json({ error: error.message });
     }
   }

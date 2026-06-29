@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../user/user.entity';
 
 export enum InquiryCategory {
   ACADEMIC = 'academic', // 成绩相关
@@ -142,7 +141,13 @@ export class ParentInquiry {
   aiSentiment: string;
 
   @ApiProperty({ description: 'AI分析结果-置信度' })
-  @Column({ name: 'ai_confidence', type: 'decimal', precision: 3, scale: 2, nullable: true })
+  @Column({
+    name: 'ai_confidence',
+    type: 'decimal',
+    precision: 3,
+    scale: 2,
+    nullable: true,
+  })
   aiConfidence: number;
 
   @ApiProperty({ description: 'AI建议回复' })
@@ -196,7 +201,8 @@ export class ParentInquiry {
 
   // AC-04: 超时警告级别
   @ApiProperty({ description: '超时警告级别', enum: TimeoutWarningLevel })
-  @Column({ name: 'timeout_warning',
+  @Column({
+    name: 'timeout_warning',
     type: 'enum',
     enum: TimeoutWarningLevel,
     default: TimeoutWarningLevel.NONE,
@@ -212,7 +218,8 @@ export class ParentInquiry {
 
   // AC-06: 转交状态
   @ApiProperty({ description: '转交状态', enum: TransferStatus })
-  @Column({ name: 'transfer_status',
+  @Column({
+    name: 'transfer_status',
     type: 'enum',
     enum: TransferStatus,
     default: TransferStatus.NOT_TRANSFERRED,

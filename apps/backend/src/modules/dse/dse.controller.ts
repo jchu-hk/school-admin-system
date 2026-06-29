@@ -1,15 +1,38 @@
 import {
-  Controller, Get, Post, Put, Delete,
-  Param, Query, Body, UseGuards, Req, UsePipes, ValidationPipe,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Param,
+  Query,
+  Body,
+  UseGuards,
+  Req,
+  ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { DseService } from './dse.service';
 import {
-  CreateDseReleaseDto, UpdateDseReleaseDto, QueryDseReleaseDto,
-  ImportDseResultDto, BatchImportDseResultDto, QueryDseResultDto, UpdateDseResultDto,
-  CreateDseReviewDto, ApproveDseReviewDto, UpdateDseReviewResultDto, QueryDseReviewDto,
-  CreateDseOfferTrackingDto, UpdateDseOfferTrackingDto, QueryDseOfferTrackingDto,
+  CreateDseReleaseDto,
+  UpdateDseReleaseDto,
+  QueryDseReleaseDto,
+  ImportDseResultDto,
+  BatchImportDseResultDto,
+  QueryDseResultDto,
+  UpdateDseResultDto,
+  CreateDseReviewDto,
+  ApproveDseReviewDto,
+  UpdateDseReviewResultDto,
+  QueryDseReviewDto,
+  CreateDseOfferTrackingDto,
+  UpdateDseOfferTrackingDto,
+  QueryDseOfferTrackingDto,
   QueryDseStatsDto,
 } from './dto/dse.dto';
 
@@ -43,7 +66,10 @@ export class DseController {
 
   @Put('releases/:id')
   @ApiOperation({ summary: '更新放榜记录' })
-  updateRelease(@Param('id') id: string, @Body(ValidationPipe) dto: UpdateDseReleaseDto) {
+  updateRelease(
+    @Param('id') id: string,
+    @Body(ValidationPipe) dto: UpdateDseReleaseDto,
+  ) {
     return this.dseService.updateRelease(id, dto);
   }
 
@@ -77,7 +103,10 @@ export class DseController {
 
   @Put('results/:id')
   @ApiOperation({ summary: '更新DSE成绩（状态、公布设置等）' })
-  updateResult(@Param('id') id: string, @Body(ValidationPipe) dto: UpdateDseResultDto) {
+  updateResult(
+    @Param('id') id: string,
+    @Body(ValidationPipe) dto: UpdateDseResultDto,
+  ) {
     return this.dseService.updateResult(id, dto);
   }
 
@@ -104,13 +133,20 @@ export class DseController {
 
   @Put('reviews/:id/approve')
   @ApiOperation({ summary: '审批覆核申请（批准后提交HKEAA）' })
-  approveReview(@Param('id') id: string, @Body(ValidationPipe) dto: ApproveDseReviewDto, @Req() req: any) {
+  approveReview(
+    @Param('id') id: string,
+    @Body(ValidationPipe) dto: ApproveDseReviewDto,
+    @Req() req: any,
+  ) {
     return this.dseService.approveReview(id, dto, req.user.id);
   }
 
   @Put('reviews/:id/result')
   @ApiOperation({ summary: '录入HKEAA覆核结果（自动更正成绩）' })
-  updateReviewResult(@Param('id') id: string, @Body(ValidationPipe) dto: UpdateDseReviewResultDto) {
+  updateReviewResult(
+    @Param('id') id: string,
+    @Body(ValidationPipe) dto: UpdateDseReviewResultDto,
+  ) {
     return this.dseService.updateReviewResult(id, dto);
   }
 
@@ -137,7 +173,10 @@ export class DseController {
 
   @Put('offers/:id')
   @ApiOperation({ summary: '更新升学去向状态' })
-  updateOffer(@Param('id') id: string, @Body(ValidationPipe) dto: UpdateDseOfferTrackingDto) {
+  updateOffer(
+    @Param('id') id: string,
+    @Body(ValidationPipe) dto: UpdateDseOfferTrackingDto,
+  ) {
     return this.dseService.updateOffer(id, dto);
   }
 

@@ -19,7 +19,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { TuitionService, ReconciliationReport } from './tuition.service';
+import { TuitionService } from './tuition.service';
 import { TuitionStandard } from './tuition.entity';
 import { TuitionPayment } from './tuition.entity';
 import { SubsidyType } from './tuition.entity';
@@ -258,13 +258,12 @@ export class TuitionController {
   @ApiOperation({ summary: 'AC-04: 学费对账报表（学期末）' })
   @ApiResponse({ status: 200, description: '对账报表数据' })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  generateReconciliationReport(
-    @Query('academicYear') academicYear: string,
-  ) {
+  generateReconciliationReport(@Query('academicYear') academicYear: string) {
     if (!academicYear) {
       // Default to current academic year
       const now = new Date();
-      const year = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
+      const year =
+        now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
       academicYear = `${year}-${year + 1}`;
     }
     return this.tuitionService.generateReconciliationReport(academicYear);

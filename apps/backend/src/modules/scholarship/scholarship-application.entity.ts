@@ -38,7 +38,12 @@ export class ScholarshipApplication {
   @Column({ name: 'application_reason', type: 'text', nullable: true })
   applicationReason: string;
 
-  @Column({ name: 'attachment_url', type: 'varchar', length: 500, nullable: true })
+  @Column({
+    name: 'attachment_url',
+    type: 'varchar',
+    length: 500,
+    nullable: true,
+  })
   attachmentUrl: string;
 
   @Column({ name: 'reviewer_id', nullable: true })
@@ -50,7 +55,13 @@ export class ScholarshipApplication {
   @Column({ name: 'review_comment', type: 'text', nullable: true })
   reviewComment: string;
 
-  @Column({ name: 'approved_amount', type: 'decimal', precision: 12, scale: 2, nullable: true })
+  @Column({
+    name: 'approved_amount',
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    nullable: true,
+  })
   approvedAmount: number;
 
   @Column({ name: 'created_by', length: 100 })

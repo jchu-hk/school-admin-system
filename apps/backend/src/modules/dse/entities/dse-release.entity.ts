@@ -4,16 +4,15 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum DseReleaseStatus {
-  PENDING = 'pending',       // 放榜前，尚未导入
-  IMPORTING = 'importing',   // 正在导入中
-  IMPORTED = 'imported',     // 已导入
-  REVIEWED = 'reviewed',     // 已复核
-  PUBLISHED = 'published',   // 已向家长/学生公布
+  PENDING = 'pending', // 放榜前，尚未导入
+  IMPORTING = 'importing', // 正在导入中
+  IMPORTED = 'imported', // 已导入
+  REVIEWED = 'reviewed', // 已复核
+  PUBLISHED = 'published', // 已向家长/学生公布
 }
 
 export enum GradeLevel {

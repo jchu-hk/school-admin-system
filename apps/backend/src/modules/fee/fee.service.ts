@@ -4,7 +4,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindOptionsWhere, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
+import { Repository, Like, FindOptionsWhere } from 'typeorm';
 import { FeeType } from './fee-type.entity';
 import { FeeRecord } from './fee-record.entity';
 import { FeeItem, FeeCollection, FeeReduction, FeeStatus } from './fee.entity';
@@ -202,7 +202,17 @@ export class FeeService {
     page: number;
     pageSize: number;
   }> {
-    const { page = 1, pageSize = 10, schoolId, gradeId, category, schoolYear, semester, isActive, keyword } = query;
+    const {
+      page = 1,
+      pageSize = 10,
+      schoolId,
+      gradeId,
+      category,
+      schoolYear,
+      semester,
+      isActive,
+      keyword,
+    } = query;
 
     const where: FindOptionsWhere<FeeItem> = {};
 
@@ -234,7 +244,10 @@ export class FeeService {
     return item;
   }
 
-  async updateFeeItem(id: string, updateDto: UpdateFeeItemDto): Promise<FeeItem> {
+  async updateFeeItem(
+    id: string,
+    updateDto: UpdateFeeItemDto,
+  ): Promise<FeeItem> {
     const item = await this.findOneFeeItem(id);
     Object.assign(item, updateDto);
     if (updateDto.dueDate) {
@@ -250,7 +263,9 @@ export class FeeService {
 
   // ============ Fee Collection Methods ============
 
-  async createFeeCollection(createDto: CreateFeeCollectionDto): Promise<FeeCollection> {
+  async createFeeCollection(
+    createDto: CreateFeeCollectionDto,
+  ): Promise<FeeCollection> {
     const feeItem = await this.findOneFeeItem(createDto.feeItemId);
 
     const collection = this.feeCollectionRepository.create({
@@ -274,7 +289,15 @@ export class FeeService {
     page: number;
     pageSize: number;
   }> {
-    const { page = 1, pageSize = 10, studentId, feeItemId, status, schoolYear, semester } = query;
+    const {
+      page = 1,
+      pageSize = 10,
+      studentId,
+      feeItemId,
+      status,
+      schoolYear,
+      semester,
+    } = query;
 
     const where: FindOptionsWhere<FeeCollection> = {};
 
@@ -364,8 +387,12 @@ export class FeeService {
 
   // ============ Fee Reduction Methods ============
 
-  async createFeeReduction(createDto: CreateFeeReductionDto): Promise<FeeReduction> {
-    const collection = await this.findOneFeeCollection(createDto.feeCollectionId);
+  async createFeeReduction(
+    createDto: CreateFeeReductionDto,
+  ): Promise<FeeReduction> {
+    const collection = await this.findOneFeeCollection(
+      createDto.feeCollectionId,
+    );
 
     const reduction = this.feeReductionRepository.create({
       ...createDto,
@@ -393,7 +420,14 @@ export class FeeService {
     page: number;
     pageSize: number;
   }> {
-    const { page = 1, pageSize = 10, studentId, feeCollectionId, reductionType, isApproved } = query;
+    const {
+      page = 1,
+      pageSize = 10,
+      studentId,
+      feeCollectionId,
+      reductionType,
+      isApproved,
+    } = query;
 
     const where: FindOptionsWhere<FeeReduction> = {};
 
@@ -413,7 +447,9 @@ export class FeeService {
   }
 
   async findOneFeeReduction(id: string): Promise<FeeReduction> {
-    const reduction = await this.feeReductionRepository.findOne({ where: { id } });
+    const reduction = await this.feeReductionRepository.findOne({
+      where: { id },
+    });
     if (!reduction) {
       throw new NotFoundException(`费用减免记录 ID ${id} 不存在`);
     }
@@ -441,7 +477,9 @@ export class FeeService {
     const saved = await this.feeReductionRepository.save(reduction);
 
     // Update collection reduction amount
-    const collection = await this.findOneFeeCollection(reduction.feeCollectionId);
+    const collection = await this.findOneFeeCollection(
+      reduction.feeCollectionId,
+    );
     const reductions = await this.feeReductionRepository.find({
       where: { feeCollectionId: reduction.feeCollectionId, isApproved: true },
     });

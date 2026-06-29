@@ -1,7 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm'
-import { User } from '../user/user.entity'
-import { GradeRecord } from './grade-record.entity'
-import { GradeReview } from './grade-review.entity'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
+import { User } from '../user/user.entity';
+import { GradeRecord } from './grade-record.entity';
+import { GradeReview } from './grade-review.entity';
 
 export enum AlertType {
   GRADE_REVOKED = 'grade_revoked',
@@ -27,60 +34,60 @@ export enum AlertStatus {
 @Entity('grade_audit_alerts')
 export class GradeAuditAlert {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id: string;
 
   @Column({ name: 'grade_record_id', nullable: true })
-  gradeRecordId: string
+  gradeRecordId: string;
 
   @ManyToOne(() => GradeRecord, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'grade_record_id' })
-  gradeRecord: GradeRecord
+  gradeRecord: GradeRecord;
 
   @Column({ name: 'grade_review_id', nullable: true })
-  gradeReviewId: string
+  gradeReviewId: string;
 
   @ManyToOne(() => GradeReview, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'grade_review_id' })
-  gradeReview: GradeReview
+  gradeReview: GradeReview;
 
   @Column({ type: 'enum', enum: AlertType })
-  type: AlertType
+  type: AlertType;
 
   @Column({ type: 'enum', enum: AlertSeverity, default: AlertSeverity.MEDIUM })
-  severity: AlertSeverity
+  severity: AlertSeverity;
 
   @Column({ type: 'enum', enum: AlertStatus, default: AlertStatus.OPEN })
-  status: AlertStatus
+  status: AlertStatus;
 
   @Column({ type: 'text' })
-  message: string
+  message: string;
 
   @Column({ name: 'teacher_id' })
-  teacherId: string
+  teacherId: string;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'teacher_id' })
-  teacher: User
+  teacher: User;
 
   @Column({ name: 'notified_user_ids', type: 'jsonb', default: [] })
-  notifiedUserIds: string[]
+  notifiedUserIds: string[];
 
   @Column({ type: 'jsonb', default: {} })
-  metadata: Record<string, any>
+  metadata: Record<string, any>;
 
   @Column({ name: 'acknowledged_by', nullable: true })
-  acknowledgedBy: string
+  acknowledgedBy: string;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'acknowledged_by' })
-  acknowledgedByUser: User
+  acknowledgedByUser: User;
 
   @Column({ name: 'acknowledged_at', type: 'timestamp', nullable: true })
-  acknowledgedAt: Date
+  acknowledgedAt: Date;
 
   @Column({ name: 'acknowledgement_comment', type: 'text', nullable: true })
-  acknowledgementComment: string
+  acknowledgementComment: string;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date
+  createdAt: Date;
 }

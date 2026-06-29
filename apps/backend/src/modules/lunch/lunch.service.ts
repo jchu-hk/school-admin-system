@@ -2,16 +2,16 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan, LessThanOrEqual, In, Between, MoreThan } from 'typeorm';
+import { Repository } from 'typeorm';
+import { LunchOrder, LunchOrderStatus } from './lunch.entity';
 import {
-  LunchOrder,
-  LunchOrderStatus,
-} from './lunch.entity';
-import { LunchChange, LunchChangeType, LunchChangeStatus } from './lunch-change.entity';
-import { LunchMenu, LunchMenuStatus } from './lunch-menu.entity';
+  LunchChange,
+  LunchChangeType,
+  LunchChangeStatus,
+} from './lunch-change.entity';
+import { LunchMenu } from './lunch-menu.entity';
 import {
   CreateLunchOrderDto,
   UpdateLunchOrderDto,
@@ -187,7 +187,10 @@ export class LunchService {
   /**
    * 检查是否超过截止时间
    */
-  private isAfterCutoff(date: Date = new Date(), cutoffHour = DEFAULT_CUTOFF_HOUR): boolean {
+  private isAfterCutoff(
+    date: Date = new Date(),
+    cutoffHour = DEFAULT_CUTOFF_HOUR,
+  ): boolean {
     const hour = date.getHours();
     return hour >= cutoffHour;
   }
@@ -241,7 +244,9 @@ export class LunchService {
     }
 
     if (query.status) {
-      queryBuilder.andWhere('change.status = :status', { status: query.status });
+      queryBuilder.andWhere('change.status = :status', {
+        status: query.status,
+      });
     }
 
     if (query.startDate) {
@@ -256,8 +261,7 @@ export class LunchService {
       });
     }
 
-    queryBuilder
-      .orderBy('change.createdAt', 'DESC');
+    queryBuilder.orderBy('change.createdAt', 'DESC');
 
     const [changes, total] = await queryBuilder
       .skip((page - 1) * limit)
@@ -468,9 +472,7 @@ export class LunchService {
   /**
    * 供应商报表
    */
-  async getSupplierReport(
-    query: SupplierReportQueryDto,
-  ): Promise<{
+  async getSupplierReport(query: SupplierReportQueryDto): Promise<{
     suppliers: Array<{
       supplier: string;
       totalOrders: number;
@@ -501,7 +503,11 @@ export class LunchService {
     // 按供应商分组（从菜品名中提取供应商标签，或按menuName前缀分组）
     const supplierMap: Record<
       string,
-      { totalOrders: number; totalAmount: number; byStatus: Record<string, number> }
+      {
+        totalOrders: number;
+        totalAmount: number;
+        byStatus: Record<string, number>;
+      }
     > = {};
 
     orders.forEach((order) => {
@@ -509,7 +515,11 @@ export class LunchService {
       // 实际场景中建议在 lunch_orders 中增加 supplier 字段
       const supplier = this.extractSupplier(order.menuName);
       if (!supplierMap[supplier]) {
-        supplierMap[supplier] = { totalOrders: 0, totalAmount: 0, byStatus: {} };
+        supplierMap[supplier] = {
+          totalOrders: 0,
+          totalAmount: 0,
+          byStatus: {},
+        };
       }
       supplierMap[supplier].totalOrders += 1;
       supplierMap[supplier].totalAmount += Number(order.totalAmount);
@@ -560,11 +570,13 @@ export class LunchService {
     const historyDays = 28;
 
     const endDate = new Date();
-    const startDate = new Date(endDate.getTime() - historyDays * 24 * 60 * 60 * 1000);
+    const startDate = new Date(
+      endDate.getTime() - historyDays * 24 * 60 * 60 * 1000,
+    );
 
     const queryBuilder = this.lunchOrderRepository
       .createQueryBuilder('order')
-      .select("DATE(order.orderDate)", 'orderDate')
+      .select('DATE(order.orderDate)', 'orderDate')
       .addSelect('COUNT(*)', 'count')
       .addSelect('SUM(order.totalAmount)', 'amount')
       .where('order.orderDate >= :startDate', {
@@ -576,11 +588,14 @@ export class LunchService {
       .andWhere('order.status IN (:...statuses)', {
         statuses: [LunchOrderStatus.CONFIRMED, LunchOrderStatus.COMPLETED],
       })
-      .groupBy("DATE(order.orderDate)")
-      .orderBy("DATE(order.orderDate)", 'ASC');
+      .groupBy('DATE(order.orderDate)')
+      .orderBy('DATE(order.orderDate)', 'ASC');
 
-    const dailyData: Array<{ orderDate: string; count: string; amount: string }> =
-      await queryBuilder.getRawMany();
+    const dailyData: Array<{
+      orderDate: string;
+      count: string;
+      amount: string;
+    }> = await queryBuilder.getRawMany();
 
     if (dailyData.length < 7) {
       // 数据不足，返回默认值
@@ -605,8 +620,10 @@ export class LunchService {
       dailyData.reduce((sum, d, i) => sum + Number(d.count) * weights[i], 0) /
       totalWeight;
     const avgAmount =
-      dailyData.reduce((sum, d, i) => sum + Number(d.amount || 0) * weights[i], 0) /
-      totalWeight;
+      dailyData.reduce(
+        (sum, d, i) => sum + Number(d.amount || 0) * weights[i],
+        0,
+      ) / totalWeight;
 
     // 生成预测
     const predictions = [];
@@ -641,7 +658,6 @@ export class LunchService {
     pendingChangesCount: number;
   }> {
     const now = new Date();
-    const today = now.toISOString().split('T')[0];
 
     const pendingCount = await this.lunchChangeRepository.count({
       where: {

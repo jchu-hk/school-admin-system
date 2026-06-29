@@ -49,12 +49,13 @@ export class InstallmentController {
 
   @Post('apply')
   @ApiOperation({ summary: '申请分期付款' })
-  @ApiResponse({ status: 201, description: '分期申请成功', type: ApplyInstallmentResponseDto })
+  @ApiResponse({
+    status: 201,
+    description: '分期申请成功',
+    type: ApplyInstallmentResponseDto,
+  })
   @Roles(UserRole.PARENT, UserRole.STUDENT)
-  applyInstallment(
-    @Body() dto: ApplyInstallmentDto,
-    @Request() req: any,
-  ) {
+  applyInstallment(@Body() dto: ApplyInstallmentDto, @Request() req: any) {
     return this.installmentService.applyInstallment(dto, req.user.id);
   }
 
@@ -81,7 +82,11 @@ export class InstallmentController {
 
   @Get(':planId')
   @ApiOperation({ summary: '获取分期计划详情' })
-  @ApiResponse({ status: 200, description: '分期计划详情', type: InstallmentPlanResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: '分期计划详情',
+    type: InstallmentPlanResponseDto,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -110,7 +115,10 @@ export class InstallmentController {
     @Query() query: InstallmentPlanQueryDto,
     @Request() req: any,
   ) {
-    return this.installmentService.getParentInstallmentPlans(req.user.id, query);
+    return this.installmentService.getParentInstallmentPlans(
+      req.user.id,
+      query,
+    );
   }
 
   // ============ Get Pending Review Plans (FINANCE_STAFF) ============
@@ -118,11 +126,7 @@ export class InstallmentController {
   @Get('pending-review/list')
   @ApiOperation({ summary: '获取待审核分期列表' })
   @ApiResponse({ status: 200, description: '待审核分期列表' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   getPendingReviewPlans(@Query() query: InstallmentPlanQueryDto) {
     return this.installmentService.getPendingReviewPlans(query);
   }
@@ -131,12 +135,12 @@ export class InstallmentController {
 
   @Post(':planId/review')
   @ApiOperation({ summary: '审核分期申请' })
-  @ApiResponse({ status: 200, description: '审核结果', type: InstallmentPlanResponseDto })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 200,
+    description: '审核结果',
+    type: InstallmentPlanResponseDto,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   reviewInstallmentPlan(
     @Param('planId', ParseUUIDPipe) planId: string,
     @Body() dto: ReviewInstallmentDto,
@@ -153,12 +157,12 @@ export class InstallmentController {
 
   @Patch(':planId/status')
   @ApiOperation({ summary: '更新分期状态' })
-  @ApiResponse({ status: 200, description: '更新结果', type: InstallmentPlanResponseDto })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @ApiResponse({
+    status: 200,
+    description: '更新结果',
+    type: InstallmentPlanResponseDto,
+  })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updateInstallmentStatus(
     @Param('planId', ParseUUIDPipe) planId: string,
     @Body() dto: UpdateInstallmentStatusDto,
@@ -175,7 +179,11 @@ export class InstallmentController {
 
   @Post('schedule/:scheduleId/pay')
   @ApiOperation({ summary: '还款' })
-  @ApiResponse({ status: 200, description: '还款结果', type: InstallmentScheduleResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: '还款结果',
+    type: InstallmentScheduleResponseDto,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -194,22 +202,28 @@ export class InstallmentController {
 
   @Get(':planId/early-repayment')
   @ApiOperation({ summary: '获取提前还款金额' })
-  @ApiResponse({ status: 200, description: '提前还款信息', type: EarlyRepaymentResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: '提前还款信息',
+    type: EarlyRepaymentResponseDto,
+  })
   @Roles(
     UserRole.PARENT,
     UserRole.STUDENT,
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_STAFF,
   )
-  getEarlyRepaymentAmount(
-    @Param('planId', ParseUUIDPipe) planId: string,
-  ) {
+  getEarlyRepaymentAmount(@Param('planId', ParseUUIDPipe) planId: string) {
     return this.installmentService.getEarlyRepaymentAmount(planId);
   }
 
   @Post(':planId/early-repayment/confirm')
   @ApiOperation({ summary: '确认提前还款' })
-  @ApiResponse({ status: 200, description: '还款结果', type: InstallmentPlanResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: '还款结果',
+    type: InstallmentPlanResponseDto,
+  })
   @Roles(
     UserRole.PARENT,
     UserRole.STUDENT,
@@ -240,7 +254,11 @@ export class SubStatusController {
 
   @Get('sub-status')
   @ApiOperation({ summary: '获取欠费子状态统计' })
-  @ApiResponse({ status: 200, description: '子状态统计', type: SubStatusResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: '子状态统计',
+    type: SubStatusResponseDto,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,
@@ -248,14 +266,8 @@ export class SubStatusController {
     UserRole.PARENT,
     UserRole.STUDENT,
   )
-  getSubStatus(
-    @Query() query: SubStatusQueryDto,
-    @Request() req: any,
-  ) {
-    return this.installmentService.getSubStatus(
-      query,
-      req.user.id,
-    );
+  getSubStatus(@Query() query: SubStatusQueryDto, @Request() req: any) {
+    return this.installmentService.getSubStatus(query, req.user.id);
   }
 
   @Post(':paymentId/dispute')
@@ -267,30 +279,18 @@ export class SubStatusController {
     @Body() dto: CreateDisputeDto,
     @Request() req: any,
   ) {
-    return this.installmentService.createDispute(
-      paymentId,
-      dto,
-      req.user.id,
-    );
+    return this.installmentService.createDispute(paymentId, dto, req.user.id);
   }
 
   @Post(':paymentId/dispute/resolve')
   @ApiOperation({ summary: '解决争议' })
   @ApiResponse({ status: 200, description: '争议解决成功' })
-  @Roles(
-    UserRole.SYSTEM_ADMIN,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SCHOOL_STAFF,
-  )
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   resolveDispute(
     @Param('paymentId', ParseUUIDPipe) paymentId: string,
     @Body() dto: ResolveDisputeDto,
     @Request() req: any,
   ) {
-    return this.installmentService.resolveDispute(
-      paymentId,
-      dto,
-      req.user.id,
-    );
+    return this.installmentService.resolveDispute(paymentId, dto, req.user.id);
   }
 }

@@ -7,7 +7,9 @@ import { ScholarshipService } from './scholarship.service';
 import { User } from '../user/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Scholarship, ScholarshipApplication, User])],
+  imports: [
+    TypeOrmModule.forFeature([Scholarship, ScholarshipApplication, User]),
+  ],
   controllers: [ScholarshipController],
   providers: [ScholarshipService],
   exports: [ScholarshipService],

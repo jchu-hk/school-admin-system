@@ -41,12 +41,12 @@ export enum DseLevel {
 }
 
 export enum DseResultStatus {
-  PENDING = 'pending',          // 待导入
-  IMPORTED = 'imported',        // 已导入原始成绩
+  PENDING = 'pending', // 待导入
+  IMPORTED = 'imported', // 已导入原始成绩
   REVIEW_REQUESTED = 'review_requested', // 覆核申请中
   REVIEW_IN_PROGRESS = 'review_in_progress', // 覆核处理中
   REVIEW_COMPLETED = 'review_completed', // 覆核完成（可能有更正）
-  PUBLISHED = 'published',      // 已向家长/学生公布
+  PUBLISHED = 'published', // 已向家长/学生公布
 }
 
 @Entity('dse_results')
@@ -84,59 +84,129 @@ export class DseResult {
   hkeaaCandidateNo: string;
 
   @ApiProperty({ description: '中文科目成绩' })
-  @Column({ type: 'varchar', length: 10, nullable: true, name: 'chinese_level' })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+    name: 'chinese_level',
+  })
   chineseLevel: string;
 
   @ApiProperty({ description: '英文科目成绩' })
-  @Column({ type: 'varchar', length: 10, nullable: true, name: 'english_level' })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+    name: 'english_level',
+  })
   englishLevel: string;
 
   @ApiProperty({ description: '数学必修部分成绩' })
-  @Column({ type: 'varchar', length: 10, nullable: true, name: 'math_compulsory_level' })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+    name: 'math_compulsory_level',
+  })
   mathCompulsoryLevel: string;
 
   @ApiProperty({ description: '数学延伸部分成绩（M1/M2）' })
-  @Column({ type: 'varchar', length: 10, nullable: true, name: 'math_extended_level' })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+    name: 'math_extended_level',
+  })
   mathExtendedLevel: string;
 
   @ApiProperty({ description: '通识科目成绩' })
-  @Column({ type: 'varchar', length: 10, nullable: true, name: 'liberal_studies_level' })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+    name: 'liberal_studies_level',
+  })
   liberalStudiesLevel: string;
 
   /** 选修科目1代码 */
-  @Column({ type: 'varchar', length: 50, nullable: true, name: 'elective_1_code' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+    name: 'elective_1_code',
+  })
   elective1Code: string;
 
   /** 选修科目1名称 */
-  @Column({ type: 'varchar', length: 100, nullable: true, name: 'elective_1_name' })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+    name: 'elective_1_name',
+  })
   elective1Name: string;
 
   /** 选修科目1成绩 */
-  @Column({ type: 'varchar', length: 10, nullable: true, name: 'elective_1_level' })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+    name: 'elective_1_level',
+  })
   elective1Level: string;
 
   /** 选修科目2代码 */
-  @Column({ type: 'varchar', length: 50, nullable: true, name: 'elective_2_code' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+    name: 'elective_2_code',
+  })
   elective2Code: string;
 
   /** 选修科目2名称 */
-  @Column({ type: 'varchar', length: 100, nullable: true, name: 'elective_2_name' })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+    name: 'elective_2_name',
+  })
   elective2Name: string;
 
   /** 选修科目2成绩 */
-  @Column({ type: 'varchar', length: 10, nullable: true, name: 'elective_2_level' })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+    name: 'elective_2_level',
+  })
   elective2Level: string;
 
   /** 选修科目3代码 */
-  @Column({ type: 'varchar', length: 50, nullable: true, name: 'elective_3_code' })
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+    name: 'elective_3_code',
+  })
   elective3Code: string;
 
   /** 选修科目3名称 */
-  @Column({ type: 'varchar', length: 100, nullable: true, name: 'elective_3_name' })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+    name: 'elective_3_name',
+  })
   elective3Name: string;
 
   /** 选修科目3成绩 */
-  @Column({ type: 'varchar', length: 10, nullable: true, name: 'elective_3_level' })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+    name: 'elective_3_level',
+  })
   elective3Level: string;
 
   /** 最佳5科成绩（用于统计） */

@@ -14,9 +14,9 @@ import { InstallmentPlan } from './installment-plan.entity';
 export enum SubStatus {
   NONE = 'none',
   INSTALLMENT_PLAN = 'installment_plan', // 分期中
-  OVERDUE = 'overdue',                    // 逾期
-  DISPUTED = 'disputed',                  // 争议中
-  PAUSED = 'paused',                      // 暂停催款
+  OVERDUE = 'overdue', // 逾期
+  DISPUTED = 'disputed', // 争议中
+  PAUSED = 'paused', // 暂停催款
 }
 
 export enum TuitionPaymentStatus {
@@ -65,13 +65,31 @@ export class TuitionPayment {
   @Column({ name: 'totalAmount', type: 'decimal', precision: 12, scale: 2 })
   amount: number;
 
-  @Column({ name: 'paidAmount', type: 'decimal', precision: 12, scale: 2, default: 0 })
+  @Column({
+    name: 'paidAmount',
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    default: 0,
+  })
   paidAmount: number;
 
-  @Column({ name: 'arrearsAmount', type: 'decimal', precision: 12, scale: 2, nullable: true })
+  @Column({
+    name: 'arrearsAmount',
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    nullable: true,
+  })
   arrearsAmount: number;
 
-  @Column({ name: 'discountAmount', type: 'decimal', precision: 12, scale: 2, nullable: true })
+  @Column({
+    name: 'discountAmount',
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    nullable: true,
+  })
   discountAmount: number;
 
   @Column({ name: 'payment_method', length: 50, nullable: true })

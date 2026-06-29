@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
+import { Repository, LessThanOrEqual } from 'typeorm';
 import { PermissionAuditLog } from '../entities/permission-audit-log.entity';
 
 export interface PermissionAuditQuery {
@@ -68,7 +68,9 @@ export class PermissionAuditService {
       return await this.auditRepository.save(log);
     } catch (err) {
       // 记录失败不应阻塞主流程，仅打印警告
-      this.logger.warn(`[PermissionAudit] 日志记录失败: ${(err as Error).message}`);
+      this.logger.warn(
+        `[PermissionAudit] 日志记录失败: ${(err as Error).message}`,
+      );
       throw err;
     }
   }
@@ -129,7 +131,10 @@ export class PermissionAuditService {
   /**
    * 获取权限审计统计数据
    */
-  async getStats(startDate?: Date, endDate?: Date): Promise<PermissionAuditStats> {
+  async getStats(
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<PermissionAuditStats> {
     const qb = this.auditRepository.createQueryBuilder('log');
 
     if (startDate) {
@@ -158,7 +163,8 @@ export class PermissionAuditService {
 
     logs.forEach((l) => {
       if (l.decision === 'deny') {
-        resourceDenyCounts[l.resource] = (resourceDenyCounts[l.resource] || 0) + 1;
+        resourceDenyCounts[l.resource] =
+          (resourceDenyCounts[l.resource] || 0) + 1;
         actionDenyCounts[l.action] = (actionDenyCounts[l.action] || 0) + 1;
       }
       if (!roleStatsMap[l.userRole]) {
@@ -203,7 +209,10 @@ export class PermissionAuditService {
   /**
    * 获取用户权限检查历史
    */
-  async getUserPermissionHistory(userId: string, limit = 50): Promise<PermissionAuditLog[]> {
+  async getUserPermissionHistory(
+    userId: string,
+    limit = 50,
+  ): Promise<PermissionAuditLog[]> {
     return this.auditRepository.find({
       where: { userId },
       order: { createdAt: 'DESC' },
@@ -214,7 +223,10 @@ export class PermissionAuditService {
   /**
    * 获取特定资源的权限检查历史
    */
-  async getResourcePermissionHistory(resource: string, limit = 50): Promise<PermissionAuditLog[]> {
+  async getResourcePermissionHistory(
+    resource: string,
+    limit = 50,
+  ): Promise<PermissionAuditLog[]> {
     return this.auditRepository.find({
       where: { resource },
       order: { createdAt: 'DESC' },
@@ -233,7 +245,9 @@ export class PermissionAuditService {
       createdAt: LessThanOrEqual(cutoffDate),
     });
 
-    this.logger.log(`[PermissionAudit] 已清理 ${result.affected || 0} 条过期日志`);
+    this.logger.log(
+      `[PermissionAudit] 已清理 ${result.affected || 0} 条过期日志`,
+    );
     return result.affected || 0;
   }
 }

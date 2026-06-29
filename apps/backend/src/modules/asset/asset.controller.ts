@@ -102,12 +102,13 @@ export class AssetController {
 
   @Post('rentals')
   @ApiOperation({ summary: '创建租借申请' })
-  @ApiResponse({ status: 201, description: '租借申请创建成功', type: AssetRental })
+  @ApiResponse({
+    status: 201,
+    description: '租借申请创建成功',
+    type: AssetRental,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  createRental(
-    @Body() createDto: CreateAssetRentalDto,
-    @Req() req: Request,
-  ) {
+  createRental(@Body() createDto: CreateAssetRentalDto, @Req() req: Request) {
     const user = req.user as any;
     return this.assetService.createRental(
       createDto,

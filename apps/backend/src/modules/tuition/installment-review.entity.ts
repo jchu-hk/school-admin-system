@@ -46,7 +46,12 @@ export class InstallmentPlanReview {
   @Column({ type: 'text', nullable: true })
   reason: string;
 
-  @Column({ name: 'attachment_urls', type: 'text', array: true, nullable: true })
+  @Column({
+    name: 'attachment_urls',
+    type: 'text',
+    array: true,
+    nullable: true,
+  })
   attachmentUrls: string[];
 
   @CreateDateColumn({ name: 'created_at' })

@@ -1,12 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Index,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
 import { ScholarshipApplication } from './scholarship-application.entity';
 
 @Entity('scholarships')
@@ -61,7 +53,12 @@ export class Scholarship {
   @Column({ type: 'text', nullable: true })
   requirements: string;
 
-  @Column({ name: 'attachment_url', type: 'varchar', length: 500, nullable: true })
+  @Column({
+    name: 'attachment_url',
+    type: 'varchar',
+    length: 500,
+    nullable: true,
+  })
   attachmentUrl: string;
 
   @Column({ name: 'created_by', length: 100 })

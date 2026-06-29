@@ -129,13 +129,31 @@ export class TuitionPayment {
   @Column({ name: 'totalAmount', type: 'decimal', precision: 12, scale: 2 })
   amount: number;
 
-  @Column({ name: 'paidAmount', type: 'decimal', precision: 12, scale: 2, default: 0 })
+  @Column({
+    name: 'paidAmount',
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    default: 0,
+  })
   paidAmount: number;
 
-  @Column({ name: 'arrearsAmount', type: 'decimal', precision: 12, scale: 2, nullable: true })
+  @Column({
+    name: 'arrearsAmount',
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    nullable: true,
+  })
   arrearsAmount: number;
 
-  @Column({ name: 'discountAmount', type: 'decimal', precision: 12, scale: 2, nullable: true })
+  @Column({
+    name: 'discountAmount',
+    type: 'decimal',
+    precision: 12,
+    scale: 2,
+    nullable: true,
+  })
   discountAmount: number;
 
   @Column({
@@ -179,7 +197,13 @@ export class TuitionPayment {
   @Column({ name: 'subsidy_type', type: 'varchar', length: 50, nullable: true })
   subsidyType: string;
 
-  @Column({ name: 'subsidy_amount', type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({
+    name: 'subsidy_amount',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
   subsidyAmount: number;
 
   @Column({ name: 'subsidy_remark', type: 'text', nullable: true })
@@ -192,7 +216,12 @@ export class TuitionPayment {
   @Column({ name: 'dispute_resolved_at', type: 'timestamp', nullable: true })
   disputeResolvedAt: Date;
 
-  @Column({ name: 'dispute_resolution', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'dispute_resolution',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   disputeResolution: string;
 
   // Sub status fields

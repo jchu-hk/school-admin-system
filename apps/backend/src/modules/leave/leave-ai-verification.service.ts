@@ -296,7 +296,11 @@ export class LeaveAiVerificationService {
     if (type === LeaveType.PERSONAL_LEAVE && hasPersonalIndicator) {
       return { match: true, recognizedType: '事假' };
     }
-    if (type === LeaveType.SICK_LEAVE && hasPersonalIndicator && !hasSickIndicator) {
+    if (
+      type === LeaveType.SICK_LEAVE &&
+      hasPersonalIndicator &&
+      !hasSickIndicator
+    ) {
       return { match: false, recognizedType: '事假' };
     }
     if (

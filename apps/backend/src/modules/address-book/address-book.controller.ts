@@ -109,7 +109,11 @@ export class AddressBookController {
 
   @Post()
   @ApiOperation({ summary: '创建联系人' })
-  @ApiResponse({ status: 201, description: '联系人创建成功', type: AddressBook })
+  @ApiResponse({
+    status: 201,
+    description: '联系人创建成功',
+    type: AddressBook,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   create(@Body() createDto: CreateAddressBookDto, @Request() req: any) {
     return this.addressBookService.create(createDto, req.user?.id);
@@ -117,7 +121,11 @@ export class AddressBookController {
 
   @Patch(':id')
   @ApiOperation({ summary: '更新联系人' })
-  @ApiResponse({ status: 200, description: '联系人更新成功', type: AddressBook })
+  @ApiResponse({
+    status: 200,
+    description: '联系人更新成功',
+    type: AddressBook,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -129,7 +137,11 @@ export class AddressBookController {
 
   @Patch(':id/star')
   @ApiOperation({ summary: '切换星标状态' })
-  @ApiResponse({ status: 200, description: '星标状态更新成功', type: AddressBook })
+  @ApiResponse({
+    status: 200,
+    description: '星标状态更新成功',
+    type: AddressBook,
+  })
   @Roles(
     UserRole.SYSTEM_ADMIN,
     UserRole.SCHOOL_DIRECTOR,

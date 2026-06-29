@@ -1,5 +1,4 @@
 import { UpdateUserDto } from './update-user.dto';
-import { CreateUserDto } from './create-user.dto';
 import { UserStatus } from '../user.entity';
 
 describe('UpdateUserDto', () => {
@@ -41,7 +40,7 @@ describe('UpdateUserDto', () => {
   it('should allow all fields to be optional', () => {
     const dto = new UpdateUserDto();
     // All fields should be optional (undefined allowed)
-    
+
     expect(dto.username).toBeUndefined();
     expect(dto.phone).toBeUndefined();
     expect(dto.email).toBeUndefined();

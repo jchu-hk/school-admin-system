@@ -133,7 +133,11 @@ export class LeaveApplication {
   classTeacherApprovedBy: string;
 
   @ApiProperty({ description: '班主任审批时间' })
-  @Column({ type: 'timestamp', nullable: true, name: 'substitute_teacher_class_hours' })
+  @Column({
+    type: 'timestamp',
+    nullable: true,
+    name: 'substitute_teacher_class_hours',
+  })
   classTeacherApprovedAt: Date;
 
   @ApiProperty({ description: '班主任审批意见' })

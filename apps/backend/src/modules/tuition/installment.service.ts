@@ -15,7 +15,10 @@ import {
   InstallmentSchedule,
   InstallmentScheduleStatus,
 } from './installment-schedule.entity';
-import { InstallmentPlanReview, InstallmentReviewAction } from './installment-review.entity';
+import {
+  InstallmentPlanReview,
+  InstallmentReviewAction,
+} from './installment-review.entity';
 import { TuitionPayment } from './tuition.entity';
 import {
   ApplyInstallmentDto,
@@ -161,7 +164,8 @@ export class InstallmentService {
     startDate: Date,
   ): { amount: number; dueDate: Date }[] {
     const baseAmount = Math.floor((totalAmount * 100) / count) / 100;
-    const remainder = Math.round((totalAmount - baseAmount * count) * 100) / 100;
+    const remainder =
+      Math.round((totalAmount - baseAmount * count) * 100) / 100;
 
     const schedules: { amount: number; dueDate: Date }[] = [];
     const start = new Date(startDate);
@@ -218,7 +222,12 @@ export class InstallmentService {
   async getStudentInstallmentPlans(
     studentId: string,
     query: InstallmentPlanQueryDto,
-  ): Promise<{ data: InstallmentPlanResponseDto[]; total: number; page: number; pageSize: number }> {
+  ): Promise<{
+    data: InstallmentPlanResponseDto[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
     const where: FindOptionsWhere<InstallmentPlan> = { studentId };
     if (query.status) {
       where.status = query.status as InstallmentPlanStatus;
@@ -236,7 +245,12 @@ export class InstallmentService {
       this.toPlanResponse(plan, plan.schedules || []),
     );
 
-    return { data, total, page: query.page || 1, pageSize: query.pageSize || 10 };
+    return {
+      data,
+      total,
+      page: query.page || 1,
+      pageSize: query.pageSize || 10,
+    };
   }
 
   // ============ Get Parent Installment Plans ============
@@ -244,7 +258,12 @@ export class InstallmentService {
   async getParentInstallmentPlans(
     parentId: string,
     query: InstallmentPlanQueryDto,
-  ): Promise<{ data: InstallmentPlanResponseDto[]; total: number; page: number; pageSize: number }> {
+  ): Promise<{
+    data: InstallmentPlanResponseDto[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
     const where: FindOptionsWhere<InstallmentPlan> = { parentId };
     if (query.status) {
       where.status = query.status as InstallmentPlanStatus;
@@ -262,14 +281,22 @@ export class InstallmentService {
       this.toPlanResponse(plan, plan.schedules || []),
     );
 
-    return { data, total, page: query.page || 1, pageSize: query.pageSize || 10 };
+    return {
+      data,
+      total,
+      page: query.page || 1,
+      pageSize: query.pageSize || 10,
+    };
   }
 
   // ============ Get Pending Review Plans (FINANCE_STAFF) ============
 
-  async getPendingReviewPlans(
-    query: InstallmentPlanQueryDto,
-  ): Promise<{ data: InstallmentPlanResponseDto[]; total: number; page: number; pageSize: number }> {
+  async getPendingReviewPlans(query: InstallmentPlanQueryDto): Promise<{
+    data: InstallmentPlanResponseDto[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
     const [plans, total] = await this.planRepository.findAndCount({
       where: { status: InstallmentPlanStatus.PENDING_REVIEW },
       relations: ['schedules'],
@@ -282,7 +309,12 @@ export class InstallmentService {
       this.toPlanResponse(plan, plan.schedules || []),
     );
 
-    return { data, total, page: query.page || 1, pageSize: query.pageSize || 10 };
+    return {
+      data,
+      total,
+      page: query.page || 1,
+      pageSize: query.pageSize || 10,
+    };
   }
 
   // ============ Review Installment Plan (FINANCE_STAFF) ============
@@ -322,7 +354,10 @@ export class InstallmentService {
     const review = this.reviewRepository.create({
       planId,
       reviewerId,
-      action: dto.action === 'approve' ? InstallmentReviewAction.APPROVE : InstallmentReviewAction.REJECT,
+      action:
+        dto.action === 'approve'
+          ? InstallmentReviewAction.APPROVE
+          : InstallmentReviewAction.REJECT,
       reason: dto.action === 'reject' ? dto.reason : dto.notes,
     });
     await this.reviewRepository.save(review);
@@ -372,7 +407,10 @@ export class InstallmentService {
     }
 
     const validTransitions: Record<string, string[]> = {
-      [InstallmentPlanStatus.PENDING_REVIEW]: [InstallmentPlanStatus.ACTIVE, InstallmentPlanStatus.CANCELLED],
+      [InstallmentPlanStatus.PENDING_REVIEW]: [
+        InstallmentPlanStatus.ACTIVE,
+        InstallmentPlanStatus.CANCELLED,
+      ],
       [InstallmentPlanStatus.ACTIVE]: [
         InstallmentPlanStatus.COMPLETED,
         InstallmentPlanStatus.CANCELLED,
@@ -448,7 +486,10 @@ export class InstallmentService {
       throw new NotFoundException('分期记录不存在');
     }
 
-    if (schedule.plan.parentId !== userId && schedule.plan.studentId !== userId) {
+    if (
+      schedule.plan.parentId !== userId &&
+      schedule.plan.studentId !== userId
+    ) {
       throw new ForbiddenException('无权操作此分期计划');
     }
 
@@ -535,13 +576,16 @@ export class InstallmentService {
       (s) => s.status === InstallmentScheduleStatus.OVERDUE,
     );
     if (hasOverdue) {
-      throw new BadRequestException('存在逾期期次，需先处理逾期后再申请提前还款');
+      throw new BadRequestException(
+        '存在逾期期次，需先处理逾期后再申请提前还款',
+      );
     }
 
     // Calculate remaining principal
-    const remainingSchedules = plan.schedules?.filter(
-      (s) => s.status === InstallmentScheduleStatus.PENDING,
-    ) || [];
+    const remainingSchedules =
+      plan.schedules?.filter(
+        (s) => s.status === InstallmentScheduleStatus.PENDING,
+      ) || [];
 
     const remainingPrincipal = remainingSchedules.reduce(
       (sum, s) => sum + Number(s.amount),
@@ -574,9 +618,10 @@ export class InstallmentService {
     }
 
     // Mark all pending schedules as paid
-    const pendingSchedules = plan.schedules?.filter(
-      (s) => s.status === InstallmentScheduleStatus.PENDING,
-    ) || [];
+    const pendingSchedules =
+      plan.schedules?.filter(
+        (s) => s.status === InstallmentScheduleStatus.PENDING,
+      ) || [];
 
     if (pendingSchedules.length > 0) {
       await this.scheduleRepository.update(
@@ -646,7 +691,9 @@ export class InstallmentService {
             studentId: p.studentId,
             studentName: p.studentName,
             amount: nextPending ? Number(nextPending.amount) : Number(p.amount),
-            dueDate: nextPending ? this.formatDate(nextPending.dueDate) : undefined,
+            dueDate: nextPending
+              ? this.formatDate(nextPending.dueDate)
+              : undefined,
             paymentId: p.id,
           });
         }
@@ -725,8 +772,8 @@ export class InstallmentService {
 
   async createDispute(
     paymentId: string,
-    dto: CreateDisputeDto,
-    userId: string,
+    _dto: CreateDisputeDto,
+    _userId: string,
   ): Promise<{ message: string }> {
     const payment = await this.paymentRepository.findOne({
       where: { id: paymentId },
@@ -748,8 +795,8 @@ export class InstallmentService {
 
   async resolveDispute(
     paymentId: string,
-    dto: ResolveDisputeDto,
-    userId: string,
+    _dto: ResolveDisputeDto,
+    _userId: string,
   ): Promise<{ message: string }> {
     const payment = await this.paymentRepository.findOne({
       where: { id: paymentId },
@@ -827,7 +874,8 @@ export class InstallmentService {
       id: plan.id,
       tuitionPaymentId: plan.tuitionPaymentId,
       studentId: plan.studentId,
-      studentName: plan.studentName || (plan as any).tuitionPayment?.studentName || '',
+      studentName:
+        plan.studentName || (plan as any).tuitionPayment?.studentName || '',
       totalAmount: Number(plan.totalAmount),
       installmentCount: plan.installmentCount,
       installmentAmount: Number(plan.installmentAmount),

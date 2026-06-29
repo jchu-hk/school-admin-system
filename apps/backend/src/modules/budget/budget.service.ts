@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, In, Like, FindOptionsWhere } from 'typeorm';
+import { Repository, Like, FindOptionsWhere } from 'typeorm';
 import {
   Budget,
   BudgetStatus,
@@ -70,7 +75,9 @@ export class BudgetService {
     return this.budgetRepo.save(budget);
   }
 
-  async findAllBudgets(query: QueryBudgetDto): Promise<{ data: Budget[]; total: number }> {
+  async findAllBudgets(
+    query: QueryBudgetDto,
+  ): Promise<{ data: Budget[]; total: number }> {
     const where: FindOptionsWhere<Budget> = {};
 
     if (query.fiscalYear) where.fiscalYear = query.fiscalYear;
@@ -100,7 +107,8 @@ export class BudgetService {
 
     // 计算剩余金额
     if (dto.approvedAmount !== undefined) {
-      budget.remainingAmount = Number(dto.approvedAmount) - Number(budget.actualSpent);
+      budget.remainingAmount =
+        Number(dto.approvedAmount) - Number(budget.actualSpent);
     }
 
     Object.assign(budget, dto);
@@ -126,7 +134,11 @@ export class BudgetService {
     return this.budgetRepo.save(budget);
   }
 
-  async approveBudget(id: string, dto: ApproveBudgetDto, approverId: string): Promise<Budget> {
+  async approveBudget(
+    id: string,
+    dto: ApproveBudgetDto,
+    approverId: string,
+  ): Promise<Budget> {
     const budget = await this.findOneBudget(id);
     if (budget.status !== BudgetStatus.PENDING_APPROVAL) {
       throw new BadRequestException('只有待审批状态的预算才能批准');
@@ -140,7 +152,11 @@ export class BudgetService {
     return this.budgetRepo.save(budget);
   }
 
-  async rejectBudget(id: string, comment: string, approverId: string): Promise<Budget> {
+  async rejectBudget(
+    id: string,
+    comment: string,
+    approverId: string,
+  ): Promise<Budget> {
     const budget = await this.findOneBudget(id);
     if (budget.status !== BudgetStatus.PENDING_APPROVAL) {
       throw new BadRequestException('只有待审批状态的预算才能拒绝');
@@ -154,10 +170,16 @@ export class BudgetService {
 
   // ==================== Expense CRUD ====================
 
-  async createExpense(dto: CreateExpenseDto, userId: string): Promise<BudgetExpense> {
+  async createExpense(
+    dto: CreateExpenseDto,
+    userId: string,
+  ): Promise<BudgetExpense> {
     const budget = await this.findOneBudget(dto.budgetId);
 
-    if (budget.status === BudgetStatus.DRAFT || budget.status === BudgetStatus.REJECTED) {
+    if (
+      budget.status === BudgetStatus.DRAFT ||
+      budget.status === BudgetStatus.REJECTED
+    ) {
       throw new BadRequestException('预算尚未批准，不能支出');
     }
 
@@ -171,7 +193,9 @@ export class BudgetService {
     return this.expenseRepo.save(expense);
   }
 
-  async findAllExpenses(query: QueryExpenseDto): Promise<{ data: BudgetExpense[]; total: number }> {
+  async findAllExpenses(
+    query: QueryExpenseDto,
+  ): Promise<{ data: BudgetExpense[]; total: number }> {
     const where: FindOptionsWhere<BudgetExpense> = {};
 
     if (query.budgetId) where.budgetId = query.budgetId;
@@ -193,7 +217,10 @@ export class BudgetService {
     return expense;
   }
 
-  async updateExpense(id: string, dto: UpdateExpenseDto): Promise<BudgetExpense> {
+  async updateExpense(
+    id: string,
+    dto: UpdateExpenseDto,
+  ): Promise<BudgetExpense> {
     const expense = await this.findOneExpense(id);
     if (expense.status === ExpenseStatus.PAID) {
       throw new BadRequestException('已付款的支出不能修改');
@@ -210,7 +237,11 @@ export class BudgetService {
     await this.expenseRepo.remove(expense);
   }
 
-  async approveExpense(id: string, dto: ApproveExpenseDto, approverId: string): Promise<BudgetExpense> {
+  async approveExpense(
+    id: string,
+    dto: ApproveExpenseDto,
+    approverId: string,
+  ): Promise<BudgetExpense> {
     const expense = await this.findOneExpense(id);
     if (expense.status !== ExpenseStatus.PENDING) {
       throw new BadRequestException('只有待审批的支出才能批准');
@@ -225,11 +256,13 @@ export class BudgetService {
     // 更新预算实际支出
     const budget = await this.findOneBudget(expense.budgetId);
     budget.actualSpent = Number(budget.actualSpent) + Number(expense.amount);
-    budget.remainingAmount = Number(budget.approvedAmount) - Number(budget.actualSpent);
+    budget.remainingAmount =
+      Number(budget.approvedAmount) - Number(budget.actualSpent);
 
     // 检查超支预警
     const threshold = Number(budget.overspendThreshold || 90);
-    const utilizationRate = (Number(budget.actualSpent) / Number(budget.approvedAmount)) * 100;
+    const utilizationRate =
+      (Number(budget.actualSpent) / Number(budget.approvedAmount)) * 100;
     budget.overspendWarning = utilizationRate >= threshold;
 
     // 如果实际支出超过批准金额，标记为调整
@@ -264,9 +297,10 @@ export class BudgetService {
 
   // ==================== Adjustment CRUD ====================
 
-  async createAdjustment(dto: CreateAdjustmentDto, userId: string): Promise<BudgetAdjustment> {
-    const budget = await this.findOneBudget(dto.budgetId);
-
+  async createAdjustment(
+    dto: CreateAdjustmentDto,
+    userId: string,
+  ): Promise<BudgetAdjustment> {
     const adjustment = this.adjustmentRepo.create({
       ...dto,
       createdBy: userId,
@@ -276,7 +310,9 @@ export class BudgetService {
     return this.adjustmentRepo.save(adjustment);
   }
 
-  async findAllAdjustments(query: QueryAdjustmentDto): Promise<{ data: BudgetAdjustment[]; total: number }> {
+  async findAllAdjustments(
+    query: QueryAdjustmentDto,
+  ): Promise<{ data: BudgetAdjustment[]; total: number }> {
     const where: FindOptionsWhere<BudgetAdjustment> = {};
 
     if (query.budgetId) where.budgetId = query.budgetId;
@@ -291,7 +327,11 @@ export class BudgetService {
     return { data, total };
   }
 
-  async approveAdjustment(id: string, dto: ApproveAdjustmentDto, approverId: string): Promise<BudgetAdjustment> {
+  async approveAdjustment(
+    id: string,
+    dto: ApproveAdjustmentDto,
+    approverId: string,
+  ): Promise<BudgetAdjustment> {
     const adjustment = await this.adjustmentRepo.findOne({ where: { id } });
     if (!adjustment) throw new NotFoundException(`调整记录 #${id} 不存在`);
 
@@ -308,15 +348,19 @@ export class BudgetService {
     const budget = await this.findOneBudget(adjustment.budgetId);
 
     if (adjustment.adjustType === BudgetAdjustType.ADD) {
-      budget.approvedAmount = Number(budget.approvedAmount) + Number(adjustment.adjustAmount);
+      budget.approvedAmount =
+        Number(budget.approvedAmount) + Number(adjustment.adjustAmount);
     } else if (adjustment.adjustType === BudgetAdjustType.REDUCE) {
-      budget.approvedAmount = Number(budget.approvedAmount) - Number(adjustment.adjustAmount);
+      budget.approvedAmount =
+        Number(budget.approvedAmount) - Number(adjustment.adjustAmount);
     } else if (adjustment.adjustType === BudgetAdjustType.TRANSFER) {
       // 调拨处理，从当前预算削减
-      budget.approvedAmount = Number(budget.approvedAmount) - Number(adjustment.adjustAmount);
+      budget.approvedAmount =
+        Number(budget.approvedAmount) - Number(adjustment.adjustAmount);
     }
 
-    budget.remainingAmount = Number(budget.approvedAmount) - Number(budget.actualSpent);
+    budget.remainingAmount =
+      Number(budget.approvedAmount) - Number(budget.actualSpent);
 
     await this.adjustmentRepo.save(adjustment);
     await this.budgetRepo.save(budget);
@@ -329,21 +373,44 @@ export class BudgetService {
   async getStats(fiscalYear: number): Promise<BudgetStatsDto> {
     const budgets = await this.budgetRepo.find({ where: { fiscalYear } });
 
-    const totalApproved = budgets.reduce((sum, b) => sum + Number(b.approvedAmount), 0);
-    const totalAllocated = budgets.reduce((sum, b) => sum + Number(b.allocatedAmount), 0);
-    const totalSpent = budgets.reduce((sum, b) => sum + Number(b.actualSpent), 0);
-    const totalRemaining = budgets.reduce((sum, b) => sum + Number(b.remainingAmount), 0);
-    const overspendCount = budgets.filter(b => Number(b.actualSpent) > Number(b.approvedAmount)).length;
+    const totalApproved = budgets.reduce(
+      (sum, b) => sum + Number(b.approvedAmount),
+      0,
+    );
+    const totalAllocated = budgets.reduce(
+      (sum, b) => sum + Number(b.allocatedAmount),
+      0,
+    );
+    const totalSpent = budgets.reduce(
+      (sum, b) => sum + Number(b.actualSpent),
+      0,
+    );
+    const totalRemaining = budgets.reduce(
+      (sum, b) => sum + Number(b.remainingAmount),
+      0,
+    );
+    const overspendCount = budgets.filter(
+      (b) => Number(b.actualSpent) > Number(b.approvedAmount),
+    ).length;
 
     // 按类别统计
-    const byCategory: Record<string, { approved: number; spent: number; remaining: number; utilizationRate: string }> = {};
-    const categoryMap = new Map(budgets.map(b => [b.category, b]));
+    const byCategory: Record<
+      string,
+      {
+        approved: number;
+        spent: number;
+        remaining: number;
+        utilizationRate: string;
+      }
+    > = {};
+    const categoryMap = new Map(budgets.map((b) => [b.category, b]));
 
     for (const [category, budget] of categoryMap) {
       const approved = Number(budget.approvedAmount);
       const spent = Number(budget.actualSpent);
       const remaining = Number(budget.remainingAmount);
-      const utilizationRate = approved > 0 ? ((spent / approved) * 100).toFixed(2) + '%' : '0%';
+      const utilizationRate =
+        approved > 0 ? ((spent / approved) * 100).toFixed(2) + '%' : '0%';
       byCategory[category] = { approved, spent, remaining, utilizationRate };
     }
 
@@ -353,7 +420,10 @@ export class BudgetService {
       totalAllocated,
       totalSpent,
       totalRemaining,
-      utilizationRate: totalApproved > 0 ? ((totalSpent / totalApproved) * 100).toFixed(2) + '%' : '0%',
+      utilizationRate:
+        totalApproved > 0
+          ? ((totalSpent / totalApproved) * 100).toFixed(2) + '%'
+          : '0%',
       overspendCount,
       byCategory,
     };
@@ -362,11 +432,12 @@ export class BudgetService {
   async getComparison(fiscalYear: number): Promise<BudgetComparisonDto[]> {
     const budgets = await this.budgetRepo.find({ where: { fiscalYear } });
 
-    return budgets.map(budget => {
+    return budgets.map((budget) => {
       const approved = Number(budget.approvedAmount);
       const actual = Number(budget.actualSpent);
       const variance = actual - approved;
-      const variancePct = approved > 0 ? ((variance / approved) * 100).toFixed(2) + '%' : '0%';
+      const variancePct =
+        approved > 0 ? ((variance / approved) * 100).toFixed(2) + '%' : '0%';
 
       return {
         fiscalYear,
@@ -397,7 +468,8 @@ export class BudgetService {
       const date = new Date(expense.expenseDate);
       const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       if (!monthlyData[month]) monthlyData[month] = {};
-      if (!monthlyData[month][expense.category]) monthlyData[month][expense.category] = 0;
+      if (!monthlyData[month][expense.category])
+        monthlyData[month][expense.category] = 0;
       monthlyData[month][expense.category] += Number(expense.amount);
     }
 
@@ -417,7 +489,9 @@ export class BudgetService {
     return result;
   }
 
-  async getDepartmentSummary(fiscalYear: number): Promise<Record<string, any>[]> {
+  async getDepartmentSummary(
+    fiscalYear: number,
+  ): Promise<Record<string, any>[]> {
     const budgets = await this.budgetRepo.find({
       where: { fiscalYear },
       order: { departmentName: 'ASC' },
@@ -451,10 +525,17 @@ export class BudgetService {
   // ==================== F-NEW-004: Annual Budget ====================
   // 对应 SPEC-COMPLETE.md 第3619行，年度预算编制与执行追踪
 
-  async createAnnualBudget(dto: CreateAnnualBudgetDto, userId: string): Promise<AnnualBudget> {
-    const existing = await this.annualBudgetRepo.findOne({ where: { fiscalYear: dto.fiscalYear } });
+  async createAnnualBudget(
+    dto: CreateAnnualBudgetDto,
+    userId: string,
+  ): Promise<AnnualBudget> {
+    const existing = await this.annualBudgetRepo.findOne({
+      where: { fiscalYear: dto.fiscalYear },
+    });
     if (existing) {
-      throw new BadRequestException(`财政年度 ${dto.fiscalYear} 的年度预算已存在`);
+      throw new BadRequestException(
+        `财政年度 ${dto.fiscalYear} 的年度预算已存在`,
+      );
     }
 
     // 初始化8大科目（AC-01）
@@ -492,12 +573,17 @@ export class BudgetService {
   }
 
   async findOneAnnualBudget(fiscalYear: number): Promise<AnnualBudget> {
-    const annual = await this.annualBudgetRepo.findOne({ where: { fiscalYear } });
+    const annual = await this.annualBudgetRepo.findOne({
+      where: { fiscalYear },
+    });
     if (!annual) throw new NotFoundException(`年度预算 ${fiscalYear} 不存在`);
     return annual;
   }
 
-  async approveAnnualBudget(fiscalYear: number, approverId: string): Promise<AnnualBudget> {
+  async approveAnnualBudget(
+    fiscalYear: number,
+    approverId: string,
+  ): Promise<AnnualBudget> {
     const annual = await this.findOneAnnualBudget(fiscalYear);
     if (annual.status !== BudgetStatus.PENDING_APPROVAL) {
       throw new BadRequestException('只有待审批状态的年度预算才能批准');
@@ -511,7 +597,10 @@ export class BudgetService {
   // ==================== F-NEW-004: Budget Allocation (Dept × Category) ====================
   // 对应 AC-02：多部门预算分配
 
-  async createAllocation(dto: CreateBudgetAllocationDto, userId: string): Promise<BudgetAllocation> {
+  async createAllocation(
+    dto: CreateBudgetAllocationDto,
+    userId: string,
+  ): Promise<BudgetAllocation> {
     const annual = await this.findOneAnnualBudget(dto.fiscalYear);
     if (annual.status === BudgetStatus.DRAFT) {
       annual.status = BudgetStatus.PENDING_APPROVAL;
@@ -532,7 +621,9 @@ export class BudgetService {
     return saved;
   }
 
-  async findAllAllocations(query: QueryBudgetAllocationDto): Promise<{ data: BudgetAllocation[]; total: number }> {
+  async findAllAllocations(
+    query: QueryBudgetAllocationDto,
+  ): Promise<{ data: BudgetAllocation[]; total: number }> {
     const where: any = {};
     if (query.fiscalYear) where.fiscalYear = query.fiscalYear;
     if (query.category) where.category = query.category;
@@ -546,13 +637,17 @@ export class BudgetService {
     return { data, total };
   }
 
-  async updateAllocation(id: string, dto: UpdateBudgetAllocationDto): Promise<BudgetAllocation> {
+  async updateAllocation(
+    id: string,
+    dto: UpdateBudgetAllocationDto,
+  ): Promise<BudgetAllocation> {
     const allocation = await this.allocationRepo.findOne({ where: { id } });
     if (!allocation) throw new NotFoundException(`预算分配 #${id} 不存在`);
 
     if (dto.allocatedAmount !== undefined) {
       allocation.allocatedAmount = dto.allocatedAmount;
-      allocation.remainingAmount = Number(dto.allocatedAmount) - Number(allocation.actualSpent);
+      allocation.remainingAmount =
+        Number(dto.allocatedAmount) - Number(allocation.actualSpent);
     }
     Object.assign(allocation, dto);
     const saved = await this.allocationRepo.save(allocation);
@@ -560,7 +655,10 @@ export class BudgetService {
     return saved;
   }
 
-  async approveAllocation(id: string, approverId: string): Promise<BudgetAllocation> {
+  async approveAllocation(
+    id: string,
+    _approverId: string,
+  ): Promise<BudgetAllocation> {
     const allocation = await this.allocationRepo.findOne({ where: { id } });
     if (!allocation) throw new NotFoundException(`预算分配 #${id} 不存在`);
     if (allocation.status !== BudgetStatus.PENDING_APPROVAL) {
@@ -575,7 +673,10 @@ export class BudgetService {
   // ==================== F-NEW-004: Expense × FiscalBudgetCategory ====================
   // 支出记录使用8大科目（而非原有6大类）
 
-  async recordFiscalExpense(dto: RecordFiscalExpenseDto, userId: string): Promise<BudgetExpense> {
+  async recordFiscalExpense(
+    dto: RecordFiscalExpenseDto,
+    userId: string,
+  ): Promise<BudgetExpense> {
     // 找到对应 fiscalYear × category 的分配记录
     const allocation = await this.allocationRepo.findOne({
       where: {
@@ -604,8 +705,10 @@ export class BudgetService {
 
     // 更新分配实际支出（AC-03 执行率）
     if (allocation) {
-      allocation.actualSpent = Number(allocation.actualSpent) + Number(dto.amount);
-      allocation.remainingAmount = Number(allocation.allocatedAmount) - Number(allocation.actualSpent);
+      allocation.actualSpent =
+        Number(allocation.actualSpent) + Number(dto.amount);
+      allocation.remainingAmount =
+        Number(allocation.allocatedAmount) - Number(allocation.actualSpent);
       allocation.warningTriggered = this.checkWarning(allocation);
       await this.allocationRepo.save(allocation);
       await this.rebuildAnnualBreakdown(dto.fiscalYear);
@@ -615,9 +718,12 @@ export class BudgetService {
   }
 
   private checkWarning(allocation: BudgetAllocation): boolean {
-    const rate = Number(allocation.allocatedAmount) > 0
-      ? (Number(allocation.actualSpent) / Number(allocation.allocatedAmount)) * 100
-      : 0;
+    const rate =
+      Number(allocation.allocatedAmount) > 0
+        ? (Number(allocation.actualSpent) /
+            Number(allocation.allocatedAmount)) *
+          100
+        : 0;
     return rate >= Number(allocation.overspendThreshold);
   }
 
@@ -633,7 +739,9 @@ export class BudgetService {
     approverId: string,
   ): Promise<AnnualBudget> {
     const annual = await this.findOneAnnualBudget(fiscalYear);
-    if (Number(annual.categoryBreakdown[fromCategory]?.allocated || 0) < amount) {
+    if (
+      Number(annual.categoryBreakdown[fromCategory]?.allocated || 0) < amount
+    ) {
       throw new BadRequestException(`${fromCategory} 科目余额不足`);
     }
 
@@ -682,36 +790,57 @@ export class BudgetService {
   // 对应 AC-03/AC-04
 
   async getExecutionReport(fiscalYear: number): Promise<AnnualBudget> {
-    const annual = await this.findOneAnnualBudget(fiscalYear);
     await this.rebuildAnnualBreakdown(fiscalYear);
     return this.annualBudgetRepo.findOne({ where: { fiscalYear } });
   }
 
-  async checkOverBudgetWarnings(fiscalYear: number): Promise<Array<{ category: string; executionRate: string; status: string }>> {
+  async checkOverBudgetWarnings(
+    fiscalYear: number,
+  ): Promise<
+    Array<{ category: string; executionRate: string; status: string }>
+  > {
     const annual = await this.findOneAnnualBudget(fiscalYear);
-    const warnings: Array<{ category: string; executionRate: string; status: string }> = [];
+    const warnings: Array<{
+      category: string;
+      executionRate: string;
+      status: string;
+    }> = [];
 
     for (const [cat, data] of Object.entries(annual.categoryBreakdown)) {
-      if (data.status === BudgetExecutionStatus.WARNING || data.status === BudgetExecutionStatus.CRITICAL) {
-        warnings.push({ category: cat, executionRate: data.executionRate, status: data.status });
+      if (
+        data.status === BudgetExecutionStatus.WARNING ||
+        data.status === BudgetExecutionStatus.CRITICAL
+      ) {
+        warnings.push({
+          category: cat,
+          executionRate: data.executionRate,
+          status: data.status,
+        });
       }
     }
     return warnings;
   }
 
   private async rebuildAnnualBreakdown(fiscalYear: number): Promise<void> {
-    const annual = await this.annualBudgetRepo.findOne({ where: { fiscalYear } });
+    const annual = await this.annualBudgetRepo.findOne({
+      where: { fiscalYear },
+    });
     if (!annual) return;
 
-    const allocations = await this.allocationRepo.find({ where: { fiscalYear } });
+    const allocations = await this.allocationRepo.find({
+      where: { fiscalYear },
+    });
 
     const breakdown: AnnualBudget['categoryBreakdown'] = {};
     let totalAllocated = 0;
     let totalSpent = 0;
 
     for (const cat of Object.values(FiscalBudgetCategory)) {
-      const cats = allocations.filter(a => a.category === cat);
-      const allocated = cats.reduce((sum, a) => sum + Number(a.allocatedAmount), 0);
+      const cats = allocations.filter((a) => a.category === cat);
+      const allocated = cats.reduce(
+        (sum, a) => sum + Number(a.allocatedAmount),
+        0,
+      );
       const spent = cats.reduce((sum, a) => sum + Number(a.actualSpent), 0);
       const remaining = allocated - spent;
       const rate = allocated > 0 ? (spent / allocated) * 100 : 0;

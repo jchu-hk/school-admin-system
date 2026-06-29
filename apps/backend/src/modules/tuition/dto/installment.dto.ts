@@ -3,7 +3,6 @@ import {
   IsOptional,
   IsNumber,
   IsEnum,
-  IsDateString,
   IsUUID,
   Min,
   Max,
@@ -60,7 +59,10 @@ export class ReviewInstallmentDto {
 }
 
 export class UpdateInstallmentStatusDto {
-  @ApiProperty({ description: '目标状态', enum: ['active', 'cancelled', 'expired', 'completed'] })
+  @ApiProperty({
+    description: '目标状态',
+    enum: ['active', 'cancelled', 'expired', 'completed'],
+  })
   @IsEnum(['active', 'cancelled', 'expired', 'completed'])
   status: string;
 
@@ -92,7 +94,10 @@ export class CreateDisputeDto {
 }
 
 export class ResolveDisputeDto {
-  @ApiProperty({ description: '解决方案', enum: ['adjusted', 'maintained', 'waived'] })
+  @ApiProperty({
+    description: '解决方案',
+    enum: ['adjusted', 'maintained', 'waived'],
+  })
   @IsEnum(['adjusted', 'maintained', 'waived'])
   resolution: 'adjusted' | 'maintained' | 'waived';
 
@@ -132,7 +137,10 @@ export class InstallmentPlanQueryDto {
 }
 
 export class SubStatusQueryDto {
-  @ApiPropertyOptional({ description: '子状态类型', enum: ['installment_plan', 'overdue', 'disputed'] })
+  @ApiPropertyOptional({
+    description: '子状态类型',
+    enum: ['installment_plan', 'overdue', 'disputed'],
+  })
   @IsOptional()
   @IsEnum(['installment_plan', 'overdue', 'disputed'])
   type?: string;

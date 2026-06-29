@@ -44,7 +44,12 @@ export class LeaveController {
   @Post()
   @ApiOperation({ summary: '创建请假申请' })
   @ApiResponse({ status: 201, description: '创建成功' })
-  @Roles(UserRole.PARENT, UserRole.SCHOOL_STAFF, UserRole.SCHOOL_DIRECTOR, UserRole.TEACHER)
+  @Roles(
+    UserRole.PARENT,
+    UserRole.SCHOOL_STAFF,
+    UserRole.SCHOOL_DIRECTOR,
+    UserRole.TEACHER,
+  )
   async create(@Body() dto: CreateLeaveDto, @Request() req) {
     const result = await this.leaveService.create(
       dto,

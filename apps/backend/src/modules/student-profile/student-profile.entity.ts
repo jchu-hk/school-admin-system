@@ -9,7 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User, UserRole } from '../user/user.entity';
+import { User } from '../user/user.entity';
 
 export enum EnrollmentStatus {
   ACTIVE = 'active',
@@ -118,7 +118,13 @@ export class StudentProfile {
 
   // ====== 成绩摘要 (Grade Summary) ======
   @ApiProperty({ description: '最近一个学期的平均分' })
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true, name: 'latest_avg_score' })
+  @Column({
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+    name: 'latest_avg_score',
+  })
   latestAvgScore: number;
 
   @ApiProperty({ description: '成绩记录总数' })

@@ -1,4 +1,10 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, MaxLength, IsUUID } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+  MaxLength,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateSchoolInfoDto {
@@ -43,7 +49,10 @@ export class CreateSchoolInfoDto {
   @MaxLength(200)
   website?: string;
 
-  @ApiProperty({ description: '学校类型', enum: ['primary', 'secondary', 'kindergarten', 'international'] })
+  @ApiProperty({
+    description: '学校类型',
+    enum: ['primary', 'secondary', 'kindergarten', 'international'],
+  })
   @IsEnum(['primary', 'secondary', 'kindergarten', 'international'])
   schoolType: 'primary' | 'secondary' | 'kindergarten' | 'international';
 
@@ -152,7 +161,10 @@ export class UpdateSchoolInfoDto {
   @MaxLength(200)
   website?: string;
 
-  @ApiPropertyOptional({ description: '学校类型', enum: ['primary', 'secondary', 'kindergarten', 'international'] })
+  @ApiPropertyOptional({
+    description: '学校类型',
+    enum: ['primary', 'secondary', 'kindergarten', 'international'],
+  })
   @IsOptional()
   @IsEnum(['primary', 'secondary', 'kindergarten', 'international'])
   schoolType?: 'primary' | 'secondary' | 'kindergarten' | 'international';

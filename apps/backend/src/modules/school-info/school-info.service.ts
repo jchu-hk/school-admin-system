@@ -19,7 +19,10 @@ export class SchoolInfoService {
     private readonly schoolInfoRepository: Repository<SchoolInfo>,
   ) {}
 
-  async create(createDto: CreateSchoolInfoDto, userId?: string): Promise<SchoolInfo> {
+  async create(
+    createDto: CreateSchoolInfoDto,
+    userId?: string,
+  ): Promise<SchoolInfo> {
     if (createDto.schoolCode) {
       const existing = await this.schoolInfoRepository.findOne({
         where: { schoolCode: createDto.schoolCode },

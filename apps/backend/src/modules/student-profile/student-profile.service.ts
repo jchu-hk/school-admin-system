@@ -1,8 +1,15 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StudentProfile } from './student-profile.entity';
-import { CreateStudentProfileDto, UpdateStudentProfileDto } from './dto/student-profile.dto';
+import {
+  CreateStudentProfileDto,
+  UpdateStudentProfileDto,
+} from './dto/student-profile.dto';
 import { User, UserRole } from '../user/user.entity';
 import { Grade } from '../grades/grade.entity';
 
@@ -17,9 +24,14 @@ export class StudentProfileService {
     private readonly gradeRepository: Repository<Grade>,
   ) {}
 
-  async create(dto: CreateStudentProfileDto, createdBy?: string): Promise<StudentProfile> {
+  async create(
+    dto: CreateStudentProfileDto,
+    createdBy?: string,
+  ): Promise<StudentProfile> {
     // 验证学生用户存在且角色为学生
-    const student = await this.userRepository.findOne({ where: { id: dto.studentId } });
+    const student = await this.userRepository.findOne({
+      where: { id: dto.studentId },
+    });
     if (!student) {
       throw new NotFoundException('学生用户不存在');
     }
@@ -28,7 +40,9 @@ export class StudentProfileService {
     }
 
     // 检查是否已有档案
-    const existing = await this.profileRepository.findOne({ where: { studentId: dto.studentId } });
+    const existing = await this.profileRepository.findOne({
+      where: { studentId: dto.studentId },
+    });
     if (existing) {
       throw new ConflictException('该学生已存在档案');
     }
@@ -36,14 +50,21 @@ export class StudentProfileService {
     const profile = this.profileRepository.create({
       ...dto,
       createdBy,
-      enrollmentDate: dto.enrollmentDate ? new Date(dto.enrollmentDate) : undefined,
-      graduationDate: dto.graduationDate ? new Date(dto.graduationDate) : undefined,
+      enrollmentDate: dto.enrollmentDate
+        ? new Date(dto.enrollmentDate)
+        : undefined,
+      graduationDate: dto.graduationDate
+        ? new Date(dto.graduationDate)
+        : undefined,
     });
 
     return this.profileRepository.save(profile);
   }
 
-  async findAll(page: number = 1, limit: number = 20): Promise<{ data: StudentProfile[]; total: number }> {
+  async findAll(
+    page: number = 1,
+    limit: number = 20,
+  ): Promise<{ data: StudentProfile[]; total: number }> {
     const [data, total] = await this.profileRepository
       .createQueryBuilder('profile')
       .leftJoinAndSelect('profile.student', 'student')
@@ -87,7 +108,9 @@ export class StudentProfileService {
     };
   }> {
     // 获取学生信息
-    const student = await this.userRepository.findOne({ where: { id: studentId } });
+    const student = await this.userRepository.findOne({
+      where: { id: studentId },
+    });
     if (!student) {
       throw new NotFoundException('学生用户不存在');
     }
@@ -113,11 +136,15 @@ export class StudentProfileService {
       .limit(1)
       .getRawOne();
 
-    const totalGrades = await this.gradeRepository.count({ where: { studentId } });
+    const totalGrades = await this.gradeRepository.count({
+      where: { studentId },
+    });
 
     const gradeSummary = {
       totalRecords: totalGrades,
-      latestAverage: latestGrade?.avgScore ? parseFloat(latestGrade.avgScore) : null,
+      latestAverage: latestGrade?.avgScore
+        ? parseFloat(latestGrade.avgScore)
+        : null,
       latestTerm: latestGrade?.term || null,
     };
 
@@ -139,14 +166,22 @@ export class StudentProfileService {
     Object.assign(profile, {
       ...dto,
       updatedBy,
-      enrollmentDate: dto.enrollmentDate ? new Date(dto.enrollmentDate) : profile.enrollmentDate,
-      graduationDate: dto.graduationDate ? new Date(dto.graduationDate) : profile.graduationDate,
+      enrollmentDate: dto.enrollmentDate
+        ? new Date(dto.enrollmentDate)
+        : profile.enrollmentDate,
+      graduationDate: dto.graduationDate
+        ? new Date(dto.graduationDate)
+        : profile.graduationDate,
     });
 
     return this.profileRepository.save(profile);
   }
 
-  async archive(id: string, reason: string, updatedBy?: string): Promise<StudentProfile> {
+  async archive(
+    id: string,
+    reason: string,
+    updatedBy?: string,
+  ): Promise<StudentProfile> {
     const profile = await this.findOne(id);
     profile.isArchived = true;
     profile.archivedAt = new Date();
@@ -172,7 +207,9 @@ export class StudentProfileService {
     dto: Partial<CreateStudentProfileDto>,
     createdBy?: string,
   ): Promise<StudentProfile> {
-    let profile = await this.profileRepository.findOne({ where: { studentId } });
+    let profile = await this.profileRepository.findOne({
+      where: { studentId },
+    });
     if (profile) {
       Object.assign(profile, { ...dto, updatedBy: createdBy });
     } else {

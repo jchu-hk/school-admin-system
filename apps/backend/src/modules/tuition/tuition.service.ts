@@ -5,7 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere, Not, IsNull } from 'typeorm';
-import { TuitionStandard, TuitionPayment, TuitionStatus, TuitionPaymentStatus, PaymentMethod, SubStatus, SubsidyType } from './tuition.entity';
+import {
+  TuitionPayment,
+  TuitionPaymentStatus,
+  SubStatus,
+  SubsidyType,
+} from './tuition.entity';
 import {
   CreateTuitionStandardDto,
   UpdateTuitionStandardDto,
@@ -144,7 +149,7 @@ export class TuitionService {
     createDto: CreateTuitionPaymentDto,
   ): Promise<TuitionPayment> {
     const payment = this.paymentRepository.create({
-      ...createDto as any,
+      ...(createDto as any),
       ...createDto,
       paymentDate: createDto.paymentDate
         ? new Date(createDto.paymentDate)
@@ -241,10 +246,14 @@ export class TuitionService {
     const payment = await this.findOnePayment(paymentId);
 
     // For full exemption or exempted status
-    if (subsidyType === SubsidyType.FULL || subsidyType === SubsidyType.EXEMPTED) {
+    if (
+      subsidyType === SubsidyType.FULL ||
+      subsidyType === SubsidyType.EXEMPTED
+    ) {
       payment.status = 'exempted';
       // AC-01: Full subsidy should be HK$550
-      payment.subsidyAmount = subsidyAmount || TuitionStandard.DEFAULT_FULL_SUBSIDY;
+      payment.subsidyAmount =
+        subsidyAmount || TuitionStandard.DEFAULT_FULL_SUBSIDY;
       payment.subsidyType = subsidyType;
       payment.subsidyRemark = remark || '全额资助';
     } else if (subsidyType === SubsidyType.PARTIAL) {
@@ -277,7 +286,9 @@ export class TuitionService {
     const payment = await this.findOnePayment(paymentId);
     const totalAmount = Number(payment.amount);
     const subsidyAmount = Number(payment.subsidyAmount) || 0;
-    const isExempted = payment.status === 'exempted' || payment.subsidyType === SubsidyType.EXEMPTED;
+    const isExempted =
+      payment.status === 'exempted' ||
+      payment.subsidyType === SubsidyType.EXEMPTED;
 
     return {
       subsidyType: payment.subsidyType || 'none',
@@ -293,25 +304,36 @@ export class TuitionService {
    * AC-04: Generate semester-end tuition reconciliation report
    * Shows: income, unpaid, status distribution
    */
-  async generateReconciliationReport(academicYear: string): Promise<ReconciliationReport> {
+  async generateReconciliationReport(
+    academicYear: string,
+  ): Promise<ReconciliationReport> {
     const payments = await this.paymentRepository.find({
       where: { academicYear },
     });
 
     // Calculate summary
-    const totalStudents = new Set(payments.map(p => p.studentId)).size;
-    const totalReceivable = payments.reduce((sum, p) => sum + Number(p.amount), 0);
-    const totalReceived = payments.reduce((sum, p) => sum + Number(p.paidAmount || 0), 0);
+    const totalStudents = new Set(payments.map((p) => p.studentId)).size;
+    const totalReceivable = payments.reduce(
+      (sum, p) => sum + Number(p.amount),
+      0,
+    );
+    const totalReceived = payments.reduce(
+      (sum, p) => sum + Number(p.paidAmount || 0),
+      0,
+    );
     const totalArrears = totalReceivable - totalReceived;
 
     // Count exempt students
-    const exemptPayments = payments.filter(p => p.status === 'exempted');
-    const exemptCount = new Set(exemptPayments.map(p => p.studentId)).size;
-    const exemptAmount = exemptPayments.reduce((sum, p) => sum + Number(p.amount), 0);
+    const exemptPayments = payments.filter((p) => p.status === 'exempted');
+    const exemptCount = new Set(exemptPayments.map((p) => p.studentId)).size;
+    const exemptAmount = exemptPayments.reduce(
+      (sum, p) => sum + Number(p.amount),
+      0,
+    );
 
     // Status distribution
     const statusCounts: Record<string, { count: number; amount: number }> = {};
-    payments.forEach(p => {
+    payments.forEach((p) => {
       const status = p.status;
       if (!statusCounts[status]) {
         statusCounts[status] = { count: 0, amount: 0 };
@@ -320,19 +342,35 @@ export class TuitionService {
       statusCounts[status].amount += Number(p.amount);
     });
 
-    const statusDistribution = Object.entries(statusCounts).map(([status, data]) => ({
-      status,
-      count: data.count,
-      amount: data.amount,
-      percentage: payments.length > 0 ? (data.count / payments.length) * 100 : 0,
-    }));
+    const statusDistribution = Object.entries(statusCounts).map(
+      ([status, data]) => ({
+        status,
+        count: data.count,
+        amount: data.amount,
+        percentage:
+          payments.length > 0 ? (data.count / payments.length) * 100 : 0,
+      }),
+    );
 
     // Grade distribution
-    const gradeData: Record<string, { totalStudents: number; receivable: number; received: number; arrears: number }> = {};
-    payments.forEach(p => {
+    const gradeData: Record<
+      string,
+      {
+        totalStudents: number;
+        receivable: number;
+        received: number;
+        arrears: number;
+      }
+    > = {};
+    payments.forEach((p) => {
       const grade = p.grade || 'Unknown';
       if (!gradeData[grade]) {
-        gradeData[grade] = { totalStudents: 0, receivable: 0, received: 0, arrears: 0 };
+        gradeData[grade] = {
+          totalStudents: 0,
+          receivable: 0,
+          received: 0,
+          arrears: 0,
+        };
       }
       gradeData[grade].totalStudents++;
       gradeData[grade].receivable += Number(p.amount);
@@ -340,24 +378,39 @@ export class TuitionService {
       gradeData[grade].arrears += Number(p.amount) - Number(p.paidAmount || 0);
     });
 
-    const gradeDistribution = Object.entries(gradeData).map(([grade, data]) => ({
-      grade,
-      ...data,
-    }));
+    const gradeDistribution = Object.entries(gradeData).map(
+      ([grade, data]) => ({
+        grade,
+        ...data,
+      }),
+    );
 
     // Overdue summary
-    const overduePayments = payments.filter(p => p.subStatus === SubStatus.OVERDUE);
+    const overduePayments = payments.filter(
+      (p) => p.subStatus === SubStatus.OVERDUE,
+    );
     const overdueSummary = {
       totalOverdue: overduePayments.length,
-      overdueAmount: overduePayments.reduce((sum, p) => sum + (Number(p.amount) - Number(p.paidAmount || 0)), 0),
-      overdueDays: Math.max(0, ...overduePayments.map(p => p.overdueDays || 0)),
+      overdueAmount: overduePayments.reduce(
+        (sum, p) => sum + (Number(p.amount) - Number(p.paidAmount || 0)),
+        0,
+      ),
+      overdueDays: Math.max(
+        0,
+        ...overduePayments.map((p) => p.overdueDays || 0),
+      ),
     };
 
     // Disputed summary
-    const disputedPayments = payments.filter(p => p.subStatus === SubStatus.DISPUTED);
+    const disputedPayments = payments.filter(
+      (p) => p.subStatus === SubStatus.DISPUTED,
+    );
     const disputedSummary = {
       totalDisputed: disputedPayments.length,
-      disputedAmount: disputedPayments.reduce((sum, p) => sum + (Number(p.amount) - Number(p.paidAmount || 0)), 0),
+      disputedAmount: disputedPayments.reduce(
+        (sum, p) => sum + (Number(p.amount) - Number(p.paidAmount || 0)),
+        0,
+      ),
     };
 
     return {
@@ -386,7 +439,12 @@ export class TuitionService {
    */
   async checkOverduePayments(): Promise<{
     updated: number;
-    overdueList: { paymentId: string; studentName: string; overdueDays: number; amount: number }[];
+    overdueList: {
+      paymentId: string;
+      studentName: string;
+      overdueDays: number;
+      amount: number;
+    }[];
   }> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -399,7 +457,12 @@ export class TuitionService {
       ],
     });
 
-    const overdueList: { paymentId: string; studentName: string; overdueDays: number; amount: number }[] = [];
+    const overdueList: {
+      paymentId: string;
+      studentName: string;
+      overdueDays: number;
+      amount: number;
+    }[] = [];
     let updated = 0;
 
     for (const payment of payments) {
@@ -409,14 +472,14 @@ export class TuitionService {
 
         if (dueDate < today) {
           const overdueDays = Math.floor(
-            (today.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24)
+            (today.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24),
           );
 
           payment.subStatus = SubStatus.OVERDUE;
           payment.overdueDays = overdueDays;
           payment.lastOverdueCheckAt = new Date();
           payment.status = 'overdue';
-          
+
           await this.paymentRepository.save(payment);
           updated++;
 
@@ -442,7 +505,7 @@ export class TuitionService {
   async createDispute(
     paymentId: string,
     reason: string,
-    userId: string,
+    _userId: string,
   ): Promise<TuitionPayment> {
     const payment = await this.findOnePayment(paymentId);
 
@@ -465,7 +528,7 @@ export class TuitionService {
     paymentId: string,
     resolution: 'adjusted' | 'waived' | 'maintained',
     newAmount?: number,
-    operatorId?: string,
+    _operatorId?: string,
   ): Promise<TuitionPayment> {
     const payment = await this.findOnePayment(paymentId);
 
@@ -486,7 +549,10 @@ export class TuitionService {
     } else {
       // Maintained - resume normal status
       payment.subStatus = SubStatus.NONE;
-      payment.status = Number(payment.amount) <= Number(payment.paidAmount) ? 'paid' : 'pending';
+      payment.status =
+        Number(payment.amount) <= Number(payment.paidAmount)
+          ? 'paid'
+          : 'pending';
     }
 
     return this.paymentRepository.save(payment);

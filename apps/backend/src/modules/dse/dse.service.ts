@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
-import { DseRelease, DseReleaseStatus } from './entities/dse-release.entity';
-import { DseResult, DseResultStatus, DseLevel } from './entities/dse-result.entity';
-import { DseReview, DseReviewStatus } from './entities/dse-review.entity';
-import { DseOfferTracking, JupasStatus } from './entities/dse-offer-tracking.entity';
+import { DseResult, DseResultStatus } from './entities/dse-result.entity';
 import {
   CreateDseReleaseDto,
   UpdateDseReleaseDto,
@@ -22,10 +24,19 @@ import {
   QueryDseOfferTrackingDto,
   DseStatsResponseDto,
 } from './dto/dse.dto';
-import { User, UserRole } from '../user/user.entity';
+import { User } from '../user/user.entity';
 
 const LEVEL_SCORES: Record<string, number> = {
-  '5++': 5, '5+': 5, '5': 5, '4': 4, '3': 3, '2': 2, '1': 1, 'U': 0, 'Absent': 0, 'Not Attended': 0,
+  '5++': 5,
+  '5+': 5,
+  '5': 5,
+  '4': 4,
+  '3': 3,
+  '2': 2,
+  '1': 1,
+  U: 0,
+  Absent: 0,
+  'Not Attended': 0,
 };
 
 // 最佳5科总分计算
@@ -40,7 +51,10 @@ function computeBestFive(result: Partial<DseResult>): number {
     LEVEL_SCORES[result.elective2Level] ?? 0,
     LEVEL_SCORES[result.elective3Level] ?? 0,
   ];
-  return scores.sort((a, b) => b - a).slice(0, 5).reduce((sum, s) => sum + s, 0);
+  return scores
+    .sort((a, b) => b - a)
+    .slice(0, 5)
+    .reduce((sum, s) => sum + s, 0);
 }
 
 @Injectable()
@@ -68,9 +82,11 @@ export class DseService {
       where: { releaseYear, academicYear: dto.academicYear },
     });
     if (existing) {
-      throw new BadRequestException(`学年 ${dto.academicYear} 的放榜记录已存在`);
+      throw new BadRequestException(
+        `学年 ${dto.academicYear} 的放榜记录已存在`,
+      );
     }
-    const release = this.releaseRepo.create({ ...dto, releaseYear });
+    const _release = this.releaseRepo.create({ ...dto, releaseYear });
     return this.releaseRepo.save(release);
   }
 
@@ -83,29 +99,39 @@ export class DseService {
   }
 
   async findOneRelease(id: string): Promise<DseRelease> {
-    const release = await this.releaseRepo.findOne({ where: { id } });
+    const _release = await this.releaseRepo.findOne({ where: { id } });
     if (!release) throw new NotFoundException(`放榜记录 #${id} 不存在`);
     return release;
   }
 
-  async updateRelease(id: string, dto: UpdateDseReleaseDto): Promise<DseRelease> {
-    const release = await this.findOneRelease(id);
+  async updateRelease(
+    id: string,
+    dto: UpdateDseReleaseDto,
+  ): Promise<DseRelease> {
+    const _release = await this.findOneRelease(id);
     Object.assign(release, dto);
     return this.releaseRepo.save(release);
   }
 
   // ==================== DSE Result CRUD ====================
 
-  async importResult(dto: ImportDseResultDto, operatorId: string): Promise<DseResult> {
-    const release = await this.findOneRelease(dto.releaseId);
-    const student = await this.userRepo.findOne({ where: { id: dto.studentId } });
+  async importResult(
+    dto: ImportDseResultDto,
+    _operatorId: string,
+  ): Promise<DseResult> {
+    const _release = await this.findOneRelease(dto.releaseId);
+    const student = await this.userRepo.findOne({
+      where: { id: dto.studentId },
+    });
     if (!student) throw new NotFoundException(`学生 #${dto.studentId} 不存在`);
 
     const existing = await this.resultRepo.findOne({
       where: { releaseId: dto.releaseId, studentId: dto.studentId },
     });
     if (existing) {
-      throw new BadRequestException(`学生 ${student.name} 的成绩已在该学年录入`);
+      throw new BadRequestException(
+        `学生 ${student.name} 的成绩已在该学年录入`,
+      );
     }
 
     const result = this.resultRepo.create({
@@ -137,9 +163,12 @@ export class DseService {
     return this.resultRepo.save(saved);
   }
 
-  async batchImport(dto: BatchImportDseResultDto): Promise<{ success: number; failed: number; errors: string[] }> {
-    const release = await this.findOneRelease(dto.releaseId);
-    let success = 0, failed = 0;
+  async batchImport(
+    dto: BatchImportDseResultDto,
+  ): Promise<{ success: number; failed: number; errors: string[] }> {
+    const _release = await this.findOneRelease(dto.releaseId);
+    let success = 0,
+      failed = 0;
     const errors: string[] = [];
 
     for (const item of dto.results) {
@@ -160,7 +189,10 @@ export class DseService {
     if (query.studentId) where.studentId = query.studentId;
     if (query.className) where.className = query.className;
     if (query.resultStatus) where.resultStatus = query.resultStatus;
-    return this.resultRepo.find({ where, order: { className: 'ASC', studentName: 'ASC' } });
+    return this.resultRepo.find({
+      where,
+      order: { className: 'ASC', studentName: 'ASC' },
+    });
   }
 
   async findOneResult(id: string): Promise<DseResult> {
@@ -177,9 +209,12 @@ export class DseService {
 
   // ==================== DSE Review CRUD ====================
 
-  async createReview(dto: CreateDseReviewDto, applicantId: string): Promise<DseReview> {
+  async createReview(
+    dto: CreateDseReviewDto,
+    applicantId: string,
+  ): Promise<DseReview> {
     const dseResult = await this.findOneResult(dto.dseResultId);
-    const release = await this.findOneRelease(dseResult.releaseId);
+    const _release = await this.findOneRelease(dseResult.releaseId);
     if (new Date() > new Date(release.reviewDeadline ?? release.releaseDate)) {
       throw new BadRequestException('已超过覆核申请截止日期');
     }
@@ -201,7 +236,11 @@ export class DseService {
     return review;
   }
 
-  async approveReview(id: string, dto: ApproveDseReviewDto, approverId: string): Promise<DseReview> {
+  async approveReview(
+    id: string,
+    dto: ApproveDseReviewDto,
+    approverId: string,
+  ): Promise<DseReview> {
     const review = await this.findOneReview(id);
     if (review.status !== DseReviewStatus.PENDING) {
       throw new BadRequestException('当前状态不允许审批');
@@ -212,7 +251,10 @@ export class DseService {
     return this.reviewRepo.save(review);
   }
 
-  async updateReviewResult(id: string, dto: UpdateDseReviewResultDto): Promise<DseReview> {
+  async updateReviewResult(
+    id: string,
+    dto: UpdateDseReviewResultDto,
+  ): Promise<DseReview> {
     const review = await this.findOneReview(id);
     review.hkeaaNewLevel = dto.hkeaaNewLevel;
     review.hkeaaResultRemark = dto.hkeaaResultRemark;
@@ -238,9 +280,15 @@ export class DseService {
 
   // ==================== Offer Tracking CRUD ====================
 
-  async createOfferTracking(dto: CreateDseOfferTrackingDto): Promise<DseOfferTracking> {
-    const student = await this.userRepo.findOne({ where: { id: dto.studentId } });
-    const existing = await this.offerRepo.findOne({ where: { dseResultId: dto.dseResultId } });
+  async createOfferTracking(
+    dto: CreateDseOfferTrackingDto,
+  ): Promise<DseOfferTracking> {
+    const student = await this.userRepo.findOne({
+      where: { id: dto.studentId },
+    });
+    const existing = await this.offerRepo.findOne({
+      where: { dseResultId: dto.dseResultId },
+    });
     if (existing) {
       throw new BadRequestException('该学生的升学去向记录已存在，请更新');
     }
@@ -257,7 +305,9 @@ export class DseService {
     return this.offerRepo.save(offer);
   }
 
-  async findAllOffers(query: QueryDseOfferTrackingDto): Promise<DseOfferTracking[]> {
+  async findAllOffers(
+    query: QueryDseOfferTrackingDto,
+  ): Promise<DseOfferTracking[]> {
     const where: any = {};
     if (query.dseResultId) where.dseResultId = query.dseResultId;
     if (query.className) where.className = query.className;
@@ -271,7 +321,10 @@ export class DseService {
     return offer;
   }
 
-  async updateOffer(id: string, dto: UpdateDseOfferTrackingDto): Promise<DseOfferTracking> {
+  async updateOffer(
+    id: string,
+    dto: UpdateDseOfferTrackingDto,
+  ): Promise<DseOfferTracking> {
     const offer = await this.findOneOffer(id);
     Object.assign(offer, dto);
     return this.offerRepo.save(offer);
@@ -280,64 +333,121 @@ export class DseService {
   // ==================== Statistics ====================
 
   async getStats(releaseId: string): Promise<DseStatsResponseDto> {
-    const release = await this.findOneRelease(releaseId);
+    const _release = await this.findOneRelease(releaseId);
     const results = await this.resultRepo.find({ where: { releaseId } });
-    const reviews = await this.reviewRepo.find({ where: { dseResultId: In(results.map(r => r.id)) } });
-    const offers = await this.offerRepo.find({ where: { dseResultId: In(results.map(r => r.id)) } });
+    const reviews = await this.reviewRepo.find({
+      where: { dseResultId: In(results.map((r) => r.id)) },
+    });
+    const offers = await this.offerRepo.find({
+      where: { dseResultId: In(results.map((r) => r.id)) },
+    });
 
-    const publishedCount = results.filter(r => r.publishedToParent).length;
+    const publishedCount = results.filter((r) => r.publishedToParent).length;
 
     // 各科目统计
-    const subjects = ['chineseLevel', 'englishLevel', 'mathCompulsoryLevel', 'liberalStudiesLevel'];
+    const subjects = [
+      'chineseLevel',
+      'englishLevel',
+      'mathCompulsoryLevel',
+      'liberalStudiesLevel',
+    ];
     const subjectNames: Record<string, string> = {
-      chineseLevel: '中國語文', englishLevel: '英國語文',
-      mathCompulsoryLevel: '數學必修', liberalStudiesLevel: '通識',
+      chineseLevel: '中國語文',
+      englishLevel: '英國語文',
+      mathCompulsoryLevel: '數學必修',
+      liberalStudiesLevel: '通識',
     };
 
-    const bySubjectStats = subjects.map(field => {
-      const levels = results.map(r => r[field as keyof DseResult] as string).filter(Boolean);
-      const passed = levels.filter(l => !['U', 'Absent', 'Not Attended'].includes(l)).length;
-      const level5Plus = levels.filter(l => ['5++', '5+', '5'].includes(l)).length;
-      const level4Plus = levels.filter(l => ['5++', '5+', '5', '4'].includes(l)).length;
+    const bySubjectStats = subjects.map((field) => {
+      const levels = results
+        .map((r) => r[field as keyof DseResult] as string)
+        .filter(Boolean);
+      const passed = levels.filter(
+        (l) => !['U', 'Absent', 'Not Attended'].includes(l),
+      ).length;
+      const level5Plus = levels.filter((l) =>
+        ['5++', '5+', '5'].includes(l),
+      ).length;
+      const level4Plus = levels.filter((l) =>
+        ['5++', '5+', '5', '4'].includes(l),
+      ).length;
       return {
         subject: subjectNames[field] ?? field,
         candidates: levels.length,
-        level5PlusPct: levels.length ? `${((level5Plus / levels.length) * 100).toFixed(1)}%` : '0%',
-        level4PlusPct: levels.length ? `${((level4Plus / levels.length) * 100).toFixed(1)}%` : '0%',
-        passRate: levels.length ? `${((passed / levels.length) * 100).toFixed(1)}%` : '0%',
-        schoolAvg: levels.length ? (levels.reduce((s, l) => s + (LEVEL_SCORES[l] ?? 0), 0) / levels.length).toFixed(2) : '0',
+        level5PlusPct: levels.length
+          ? `${((level5Plus / levels.length) * 100).toFixed(1)}%`
+          : '0%',
+        level4PlusPct: levels.length
+          ? `${((level4Plus / levels.length) * 100).toFixed(1)}%`
+          : '0%',
+        passRate: levels.length
+          ? `${((passed / levels.length) * 100).toFixed(1)}%`
+          : '0%',
+        schoolAvg: levels.length
+          ? (
+              levels.reduce((s, l) => s + (LEVEL_SCORES[l] ?? 0), 0) /
+              levels.length
+            ).toFixed(2)
+          : '0',
         hkeaaAvg: '待获取', // HKEAA参考数据需对接SDP
       };
     });
 
     // 班级统计
     const classMap: Record<string, { total: number; best5Sum: number }> = {};
-    results.forEach(r => {
+    results.forEach((r) => {
       if (!r.className) return;
-      if (!classMap[r.className]) classMap[r.className] = { total: 0, best5Sum: 0 };
+      if (!classMap[r.className])
+        classMap[r.className] = { total: 0, best5Sum: 0 };
       classMap[r.className].total++;
       classMap[r.className].best5Sum += r.bestFiveTotal ?? 0;
     });
     const classStats: Record<string, { avgBest5: number; count: number }> = {};
     for (const [cls, data] of Object.entries(classMap)) {
-      classStats[cls] = { avgBest5: Math.round(data.best5Sum / data.total), count: data.total };
+      classStats[cls] = {
+        avgBest5: Math.round(data.best5Sum / data.total),
+        count: data.total,
+      };
     }
 
     // JUPAS统计
     const jupasStats = {
       total: offers.length,
-      applied: offers.filter(o => o.jupasStatus !== JupasStatus.NOT_APPLIED).length,
-      offered: offers.filter(o => [JupasStatus.BAND_A_OFFERED, JupasStatus.BAND_B_OFFERED, JupasStatus.BAND_C_OFFERED, JupasStatus.CONFIRMED, JupasStatus.CONDITIONAL_OFFER].includes(o.jupasStatus)).length,
-      confirmed: offers.filter(o => o.jupasStatus === JupasStatus.CONFIRMED).length,
-      notApplied: offers.filter(o => o.jupasStatus === JupasStatus.NOT_APPLIED).length,
+      applied: offers.filter((o) => o.jupasStatus !== JupasStatus.NOT_APPLIED)
+        .length,
+      offered: offers.filter((o) =>
+        [
+          JupasStatus.BAND_A_OFFERED,
+          JupasStatus.BAND_B_OFFERED,
+          JupasStatus.BAND_C_OFFERED,
+          JupasStatus.CONFIRMED,
+          JupasStatus.CONDITIONAL_OFFER,
+        ].includes(o.jupasStatus),
+      ).length,
+      confirmed: offers.filter((o) => o.jupasStatus === JupasStatus.CONFIRMED)
+        .length,
+      notApplied: offers.filter(
+        (o) => o.jupasStatus === JupasStatus.NOT_APPLIED,
+      ).length,
     };
 
     // 覆核统计
     const reviewStats = {
       total: reviews.length,
-      pending: reviews.filter(r => r.status === DseReviewStatus.PENDING).length,
-      submitted: reviews.filter(r => [DseReviewStatus.SUBMITTED_TO_HKEAA, DseReviewStatus.HKEAA_REVIEWING].includes(r.status)).length,
-      completed: reviews.filter(r => [DseReviewStatus.HKEAA_COMPLETED, DseReviewStatus.RESULT_UPDATED].includes(r.status)).length,
+      pending: reviews.filter((r) => r.status === DseReviewStatus.PENDING)
+        .length,
+      submitted: reviews.filter((r) =>
+        [
+          DseReviewStatus.SUBMITTED_TO_HKEAA,
+          DseReviewStatus.HKEAA_REVIEWING,
+        ].includes(r.status),
+      ).length,
+      completed: reviews.filter((r) =>
+        [
+          DseReviewStatus.HKEAA_COMPLETED,
+          DseReviewStatus.RESULT_UPDATED,
+        ].includes(r.status),
+      ).length,
     };
 
     return {
@@ -345,8 +455,12 @@ export class DseService {
       academicYear: release.academicYear,
       releaseDate: release.releaseDate.toISOString().split('T')[0],
       totalStudents: results.length,
-      resultsReceived: results.filter(r => r.resultStatus !== DseResultStatus.PENDING).length,
-      resultsPending: results.filter(r => r.resultStatus === DseResultStatus.PENDING).length,
+      resultsReceived: results.filter(
+        (r) => r.resultStatus !== DseResultStatus.PENDING,
+      ).length,
+      resultsPending: results.filter(
+        (r) => r.resultStatus === DseResultStatus.PENDING,
+      ).length,
       publishedCount,
       bySubjectStats,
       classStats,

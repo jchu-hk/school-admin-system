@@ -1,21 +1,26 @@
 import {
   Injectable,
   BadRequestException,
-  UnauthorizedException,
   ForbiddenException,
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThan, LessThan, IsNull } from 'typeorm';
+import { Repository, MoreThan, LessThan } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { SetPasswordDto } from './dto/set-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { LinkStudentDto, LinkedStudentResponseDto } from './dto/link-student.dto';
-import { ParentStudentLink, RelationshipType } from './entities/parent-student-link.entity';
-import { TemporaryPassword, TempPasswordType } from './entities/temporary-password.entity';
+import {
+  LinkStudentDto,
+  LinkedStudentResponseDto,
+} from './dto/link-student.dto';
+import { ParentStudentLink } from './entities/parent-student-link.entity';
+import {
+  TemporaryPassword,
+  TempPasswordType,
+} from './entities/temporary-password.entity';
 import { OtpRequest, OtpRequestType } from './entities/otp-request.entity';
 
 // Password policy constants
@@ -83,7 +88,10 @@ export class PasswordService {
   /**
    * Validate password strength
    */
-  validatePasswordStrength(password: string): { valid: boolean; errors: string[] } {
+  validatePasswordStrength(password: string): {
+    valid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     if (password.length < PASSWORD_POLICY.minLength) {
@@ -101,7 +109,10 @@ export class PasswordService {
     if (PASSWORD_POLICY.requireNumbers && !/[0-9]/.test(password)) {
       errors.push('密码必须包含数字');
     }
-    if (PASSWORD_POLICY.requireSpecialChars && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    if (
+      PASSWORD_POLICY.requireSpecialChars &&
+      !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    ) {
       errors.push('密码必须包含特殊字符');
     }
 
@@ -111,7 +122,10 @@ export class PasswordService {
   /**
    * Check if password was used recently
    */
-  async isPasswordRecentlyUsed(user: User, newPassword: string): Promise<boolean> {
+  async isPasswordRecentlyUsed(
+    user: User,
+    newPassword: string,
+  ): Promise<boolean> {
     if (!user.passwordHistory || user.passwordHistory.length === 0) {
       return false;
     }
@@ -252,7 +266,10 @@ export class PasswordService {
 
     // For non-first-time users, validate old password
     if (user.password && dto.oldPassword) {
-      const isOldPasswordValid = await bcrypt.compare(dto.oldPassword, user.password);
+      const isOldPasswordValid = await bcrypt.compare(
+        dto.oldPassword,
+        user.password,
+      );
       if (!isOldPasswordValid) {
         await this.recordFailedAttempt(user);
         throw new BadRequestException({
@@ -265,7 +282,10 @@ export class PasswordService {
     }
 
     // Check password history
-    const recentlyUsed = await this.isPasswordRecentlyUsed(user, dto.newPassword);
+    const recentlyUsed = await this.isPasswordRecentlyUsed(
+      user,
+      dto.newPassword,
+    );
     if (recentlyUsed) {
       throw new BadRequestException({
         success: false,
@@ -284,7 +304,10 @@ export class PasswordService {
       passwordHistory.push(user.password);
       // Keep only last N passwords
       if (passwordHistory.length > PASSWORD_POLICY.historyLength) {
-        passwordHistory.splice(0, passwordHistory.length - PASSWORD_POLICY.historyLength);
+        passwordHistory.splice(
+          0,
+          passwordHistory.length - PASSWORD_POLICY.historyLength,
+        );
       }
     }
 
@@ -393,7 +416,9 @@ export class PasswordService {
     });
 
     // Check cooldown (60 seconds)
-    const cooldownStart = new Date(Date.now() - OTP_CONFIG.resendCooldownSeconds * 1000);
+    const cooldownStart = new Date(
+      Date.now() - OTP_CONFIG.resendCooldownSeconds * 1000,
+    );
     const recentRequest = await this.otpRequestRepository.findOne({
       where: {
         phone,
@@ -404,7 +429,8 @@ export class PasswordService {
 
     if (recentRequest) {
       const remainingSeconds = Math.ceil(
-        OTP_CONFIG.resendCooldownSeconds - (Date.now() - recentRequest.createdAt.getTime()) / 1000,
+        OTP_CONFIG.resendCooldownSeconds -
+          (Date.now() - recentRequest.createdAt.getTime()) / 1000,
       );
       throw new BadRequestException({
         success: false,
@@ -417,7 +443,9 @@ export class PasswordService {
     // Generate OTP
     const code = this.generateOtpCode();
     const codeHash = await bcrypt.hash(code, PASSWORD_POLICY.bcryptSaltRounds);
-    const expiresAt = new Date(Date.now() + OTP_CONFIG.expiryMinutes * 60 * 1000);
+    const expiresAt = new Date(
+      Date.now() + OTP_CONFIG.expiryMinutes * 60 * 1000,
+    );
 
     // Create OTP request
     const otpRequest = this.otpRequestRepository.create({
@@ -495,7 +523,9 @@ export class PasswordService {
     if (!isValid) {
       // Record failed attempt against the user (if exists) for lockout
       const user = await this.userRepository.findOne(
-        dto.phone ? { where: { phone: dto.phone } } : { where: { email: dto.email! } },
+        dto.phone
+          ? { where: { phone: dto.phone } }
+          : { where: { email: dto.email! } },
       );
       if (user) await this.recordFailedAttempt(user);
 
@@ -542,7 +572,10 @@ export class PasswordService {
     }
 
     // User exists — check password history
-    const recentlyUsed = await this.isPasswordRecentlyUsed(user, dto.newPassword);
+    const recentlyUsed = await this.isPasswordRecentlyUsed(
+      user,
+      dto.newPassword,
+    );
     if (recentlyUsed) {
       throw new BadRequestException({
         success: false,
@@ -558,7 +591,10 @@ export class PasswordService {
     if (user.password) {
       passwordHistory.push(user.password);
       if (passwordHistory.length > PASSWORD_POLICY.historyLength) {
-        passwordHistory.splice(0, passwordHistory.length - PASSWORD_POLICY.historyLength);
+        passwordHistory.splice(
+          0,
+          passwordHistory.length - PASSWORD_POLICY.historyLength,
+        );
       }
     }
 
@@ -753,7 +789,9 @@ export class PasswordService {
 
     // In production, send via SMS/email
     if (process.env.NODE_ENV !== 'production') {
-      console.log(`[PasswordService] Temp password for user ${userId}: ${code}`);
+      console.log(
+        `[PasswordService] Temp password for user ${userId}: ${code}`,
+      );
     }
 
     return {

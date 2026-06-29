@@ -9,7 +9,15 @@ import { FeeController } from './fee.controller';
 import { FeeService } from './fee.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([FeeType, FeeRecord, FeeItem, FeeCollection, FeeReduction])],
+  imports: [
+    TypeOrmModule.forFeature([
+      FeeType,
+      FeeRecord,
+      FeeItem,
+      FeeCollection,
+      FeeReduction,
+    ]),
+  ],
   controllers: [FeeController],
   providers: [FeeService],
   exports: [FeeService],

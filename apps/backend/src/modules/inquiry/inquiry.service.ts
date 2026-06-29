@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { UserRole } from '../user/user.entity';
 import { NotificationService } from '../notification/notification.service';
 import {
@@ -86,7 +86,7 @@ export class InquiryService {
   ): Promise<ParentInquiry> {
     // 如果dto中没有parentId，使用当前用户ID
     const parentId = dto.parentId || userId;
-    
+
     const inquiry = this.inquiryRepository.create({
       ...dto,
       parentId,
@@ -184,12 +184,40 @@ export class InquiryService {
   private async performAIAnalysis(inquiry: ParentInquiry): Promise<void> {
     // 意图分类映射
     const intentMap: Record<InquiryCategory, string[]> = {
-      [InquiryCategory.ACADEMIC]: ['grade_inquiry', 'homework', 'exam_schedule', 'academic'],
-      [InquiryCategory.ATTENDANCE]: ['bus_time_inquiry', 'bus_route_inquiry', 'bus_delay', 'leave_application', 'leave_status', 'attendance'],
-      [InquiryCategory.DISCIPLINE]: ['discipline', 'behavior', 'rule_violation'],
+      [InquiryCategory.ACADEMIC]: [
+        'grade_inquiry',
+        'homework',
+        'exam_schedule',
+        'academic',
+      ],
+      [InquiryCategory.ATTENDANCE]: [
+        'bus_time_inquiry',
+        'bus_route_inquiry',
+        'bus_delay',
+        'leave_application',
+        'leave_status',
+        'attendance',
+      ],
+      [InquiryCategory.DISCIPLINE]: [
+        'discipline',
+        'behavior',
+        'rule_violation',
+      ],
       [InquiryCategory.HEALTH]: ['health', 'sick', 'medical', 'health_check'],
-      [InquiryCategory.FINANCE]: ['fee_inquiry', 'payment_method', 'outstanding_fee', 'tuition', 'finance'],
-      [InquiryCategory.GENERAL]: ['general_info', 'contact_info', 'school_calendar', 'lunch_menu', 'lunch_change'],
+      [InquiryCategory.FINANCE]: [
+        'fee_inquiry',
+        'payment_method',
+        'outstanding_fee',
+        'tuition',
+        'finance',
+      ],
+      [InquiryCategory.GENERAL]: [
+        'general_info',
+        'contact_info',
+        'school_calendar',
+        'lunch_menu',
+        'lunch_change',
+      ],
       [InquiryCategory.OTHER]: ['complaint', 'feedback', 'other_inquiry'],
     };
 
@@ -253,8 +281,7 @@ export class InquiryService {
 
     const qb = this.inquiryRepository
       .createQueryBuilder('inquiry')
-      
-      
+
       .orderBy('inquiry.parentSubmittedAt', 'DESC');
 
     // 按角色过滤
@@ -560,7 +587,9 @@ export class InquiryService {
    * AC-04: 检查超时警告 (>10分钟未处理标记warning)
    * 每5分钟执行一次，更新所有待处理查询的超时警告级别
    */
-  async checkTimeoutWarnings(schoolId: string): Promise<TimeoutWarningsResponseDto> {
+  async checkTimeoutWarnings(
+    schoolId: string,
+  ): Promise<TimeoutWarningsResponseDto> {
     const now = new Date();
     const WARNING_THRESHOLD_MS = 10 * 60 * 1000; // 10分钟
     const CRITICAL_THRESHOLD_MS = 30 * 60 * 1000; // 30分钟
@@ -568,7 +597,7 @@ export class InquiryService {
     // 获取所有未关闭且未首次回复的待处理查询
     const pendingInquiries = await this.inquiryRepository
       .createQueryBuilder('inquiry')
-      
+
       .where('inquiry.schoolId = :schoolId', { schoolId })
       .andWhere('inquiry.status IN (:...statuses)', {
         statuses: [
@@ -586,7 +615,8 @@ export class InquiryService {
     let criticalCount = 0;
 
     for (const inquiry of pendingInquiries) {
-      const waitingMs = now.getTime() - new Date(inquiry.parentSubmittedAt).getTime();
+      const waitingMs =
+        now.getTime() - new Date(inquiry.parentSubmittedAt).getTime();
       const waitingMinutes = Math.floor(waitingMs / 60000);
 
       let warningLevel = TimeoutWarningLevel.NONE;
@@ -601,7 +631,9 @@ export class InquiryService {
 
       // 更新数据库中的警告级别
       if (inquiry.timeoutWarning !== warningLevel) {
-        await this.inquiryRepository.update(inquiry.id, { timeoutWarning: warningLevel });
+        await this.inquiryRepository.update(inquiry.id, {
+          timeoutWarning: warningLevel,
+        });
       }
 
       if (warningLevel !== TimeoutWarningLevel.NONE) {
@@ -641,13 +673,13 @@ export class InquiryService {
     const page = parseInt(query.page || '1');
     const limit = parseInt(query.limit || '20');
 
-    const qb = this.inquiryRepository
-      .createQueryBuilder('inquiry')
-      
-      ;
+    const qb = this.inquiryRepository.createQueryBuilder('inquiry');
 
     // 只看校务人员/主任
-    if (userRole === UserRole.SCHOOL_STAFF || userRole === UserRole.SCHOOL_DIRECTOR) {
+    if (
+      userRole === UserRole.SCHOOL_STAFF ||
+      userRole === UserRole.SCHOOL_DIRECTOR
+    ) {
       // 可以看所有
     }
 
@@ -661,7 +693,9 @@ export class InquiryService {
 
     // 过滤条件
     if (query.assignedTo) {
-      qb.andWhere('inquiry.assignedTo = :assignedTo', { assignedTo: query.assignedTo });
+      qb.andWhere('inquiry.assignedTo = :assignedTo', {
+        assignedTo: query.assignedTo,
+      });
     }
 
     if (query.timeoutOnly) {
@@ -671,7 +705,9 @@ export class InquiryService {
     }
 
     if (query.escalatedOnly) {
-      qb.andWhere('inquiry.escalationRequired = :escalated', { escalated: true });
+      qb.andWhere('inquiry.escalationRequired = :escalated', {
+        escalated: true,
+      });
     }
 
     // 只看未关闭的
@@ -686,7 +722,10 @@ export class InquiryService {
       qb.orderBy('inquiry.parentSubmittedAt', 'ASC');
     } else if (sortBy === 'priority') {
       // 紧急优先
-      qb.orderBy('inquiry.priority', 'ASC').addOrderBy('inquiry.parentSubmittedAt', 'ASC');
+      qb.orderBy('inquiry.priority', 'ASC').addOrderBy(
+        'inquiry.parentSubmittedAt',
+        'ASC',
+      );
     } else {
       // 默认按提交时间降序（最新的在前）
       qb.orderBy('inquiry.parentSubmittedAt', 'DESC');
@@ -711,7 +750,8 @@ export class InquiryService {
       statsQb.where('inquiry.id IS NOT NULL');
     }
 
-    statsQb.andWhere('inquiry.status NOT IN (:...closedStatuses)', {
+    statsQb
+      .andWhere('inquiry.status NOT IN (:...closedStatuses)', {
         closedStatuses: [InquiryStatus.CLOSED],
       })
       .groupBy('inquiry.status');
@@ -733,7 +773,8 @@ export class InquiryService {
       timeoutQb.where('inquiry.id IS NOT NULL');
     }
 
-    timeoutQb.andWhere('inquiry.timeoutWarning IN (:...levels)', {
+    timeoutQb
+      .andWhere('inquiry.timeoutWarning IN (:...levels)', {
         levels: [TimeoutWarningLevel.WARNING, TimeoutWarningLevel.CRITICAL],
       })
       .andWhere('inquiry.status NOT IN (:...closedStatuses)', {
@@ -748,7 +789,8 @@ export class InquiryService {
     });
 
     const items: QueueItemDto[] = inquiries.map((inquiry) => {
-      const waitingMs = now.getTime() - new Date(inquiry.parentSubmittedAt).getTime();
+      const waitingMs =
+        now.getTime() - new Date(inquiry.parentSubmittedAt).getTime();
       const waitingMinutes = Math.floor(waitingMs / 60000);
 
       return {
@@ -825,7 +867,7 @@ export class InquiryService {
    */
   async autoReply(
     inquiryId: string,
-    schoolId: string,
+    _schoolId: string,
   ): Promise<{ success: boolean; replyId?: string }> {
     const inquiry = await this.findOne(inquiryId);
 
@@ -854,7 +896,9 @@ export class InquiryService {
     // 通知家长
     await this.sendReplyNotification(saved, inquiry);
 
-    this.logger.log(`[AutoReply] Inquiry ${inquiryId} auto-replied successfully`);
+    this.logger.log(
+      `[AutoReply] Inquiry ${inquiryId} auto-replied successfully`,
+    );
 
     return { success: true, replyId: saved.id };
   }
@@ -893,7 +937,9 @@ export class InquiryService {
       undefined,
     );
 
-    this.logger.log(`[Transfer] Inquiry ${inquiryId} transferred to ${dto.transferTo} by ${transferredBy}`);
+    this.logger.log(
+      `[Transfer] Inquiry ${inquiryId} transferred to ${dto.transferTo} by ${transferredBy}`,
+    );
 
     return this.findOne(inquiryId);
   }
@@ -913,7 +959,9 @@ export class InquiryService {
     }
 
     const updates: any = {
-      transferStatus: accept ? TransferStatus.ACCEPTED : TransferStatus.REJECTED,
+      transferStatus: accept
+        ? TransferStatus.ACCEPTED
+        : TransferStatus.REJECTED,
     };
 
     if (accept) {
@@ -932,7 +980,7 @@ export class InquiryService {
   async recordCallLog(
     inquiryId: string,
     dto: CallLogDto,
-    userId: string,
+    _userId: string,
   ): Promise<ParentInquiry> {
     const inquiry = await this.findOne(inquiryId);
 
@@ -942,11 +990,16 @@ export class InquiryService {
       sentiment: dto.sentiment,
       // AC-08: 情绪激动 → 自动升级至校务主任处理 (AC-03)
       escalationRequired:
-        dto.sentiment === InquirySentiment.ANGRY ? true : inquiry.escalationRequired,
+        dto.sentiment === InquirySentiment.ANGRY
+          ? true
+          : inquiry.escalationRequired,
     };
 
     // 如果情绪激动，自动升级
-    if (dto.sentiment === InquirySentiment.ANGRY && !inquiry.escalationRequired) {
+    if (
+      dto.sentiment === InquirySentiment.ANGRY &&
+      !inquiry.escalationRequired
+    ) {
       updates.escalationRequired = true;
       updates.status = InquiryStatus.ESCALATED;
 
@@ -977,7 +1030,9 @@ export class InquiryService {
 
     await this.inquiryRepository.update(inquiryId, updates);
 
-    this.logger.log(`[CallLog] Recorded call log for ${inquiryId}: duration=${dto.callDurationMinutes}min, sentiment=${dto.sentiment}`);
+    this.logger.log(
+      `[CallLog] Recorded call log for ${inquiryId}: duration=${dto.callDurationMinutes}min, sentiment=${dto.sentiment}`,
+    );
 
     return this.findOne(inquiryId);
   }

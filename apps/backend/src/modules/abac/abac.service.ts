@@ -552,7 +552,9 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
     const queryBuilder = this.auditLogRepository.createQueryBuilder('log');
 
     if (targetUserId) {
-      queryBuilder.andWhere('log.target_user_id = :targetUserId', { targetUserId });
+      queryBuilder.andWhere('log.target_user_id = :targetUserId', {
+        targetUserId,
+      });
     }
 
     if (operatorId) {
@@ -588,41 +590,81 @@ export class AbacService implements OnModuleInit, OnModuleDestroy {
         name: '管理员',
         description: '系统超级管理员，拥有所有权限',
         permissions: {
-          '*': { actions: ['*'], conditions: {} }
-        }
+          '*': { actions: ['*'], conditions: {} },
+        },
       },
       teacher: {
         name: '教师',
         description: '教师角色，拥有班级、学生、课程管理权限',
         permissions: {
-          'class': { actions: ['view', 'edit', 'create'], conditions: { 'resource.teacherId': 'user.id' } },
-          'student': { actions: ['view', 'edit', 'create'], conditions: { 'resource.classId': { '$in': 'user.classIds' } } },
-          'course': { actions: ['view', 'edit', 'create'], conditions: { 'resource.teacherId': 'user.id' } },
-          'grade': { actions: ['view', 'edit'], conditions: { 'resource.classId': { '$in': 'user.classIds' } } },
-          'attendance': { actions: ['view', 'edit', 'create'], conditions: { 'resource.classId': { '$in': 'user.classIds' } } },
-        }
+          class: {
+            actions: ['view', 'edit', 'create'],
+            conditions: { 'resource.teacherId': 'user.id' },
+          },
+          student: {
+            actions: ['view', 'edit', 'create'],
+            conditions: { 'resource.classId': { $in: 'user.classIds' } },
+          },
+          course: {
+            actions: ['view', 'edit', 'create'],
+            conditions: { 'resource.teacherId': 'user.id' },
+          },
+          grade: {
+            actions: ['view', 'edit'],
+            conditions: { 'resource.classId': { $in: 'user.classIds' } },
+          },
+          attendance: {
+            actions: ['view', 'edit', 'create'],
+            conditions: { 'resource.classId': { $in: 'user.classIds' } },
+          },
+        },
       },
       parent: {
         name: '家长',
         description: '家长角色，仅可查看自己孩子的相关信息',
         permissions: {
-          'student': { actions: ['view'], conditions: { 'resource.id': { '$in': 'user.relatedStudentIds' } } },
-          'grade': { actions: ['view'], conditions: { 'resource.studentId': { '$in': 'user.relatedStudentIds' } } },
-          'attendance': { actions: ['view'], conditions: { 'resource.studentId': { '$in': 'user.relatedStudentIds' } } },
-          'notice': { actions: ['view'], conditions: {} },
-        }
+          student: {
+            actions: ['view'],
+            conditions: { 'resource.id': { $in: 'user.relatedStudentIds' } },
+          },
+          grade: {
+            actions: ['view'],
+            conditions: {
+              'resource.studentId': { $in: 'user.relatedStudentIds' },
+            },
+          },
+          attendance: {
+            actions: ['view'],
+            conditions: {
+              'resource.studentId': { $in: 'user.relatedStudentIds' },
+            },
+          },
+          notice: { actions: ['view'], conditions: {} },
+        },
       },
       student: {
         name: '学生',
         description: '学生角色，仅可查看自己的信息和公开内容',
         permissions: {
-          'student': { actions: ['view'], conditions: { 'resource.id': 'user.id' } },
-          'grade': { actions: ['view'], conditions: { 'resource.studentId': 'user.id' } },
-          'attendance': { actions: ['view'], conditions: { 'resource.studentId': 'user.id' } },
-          'course': { actions: ['view'], conditions: { 'resource.classId': 'user.classId' } },
-          'notice': { actions: ['view'], conditions: {} },
-        }
-      }
+          student: {
+            actions: ['view'],
+            conditions: { 'resource.id': 'user.id' },
+          },
+          grade: {
+            actions: ['view'],
+            conditions: { 'resource.studentId': 'user.id' },
+          },
+          attendance: {
+            actions: ['view'],
+            conditions: { 'resource.studentId': 'user.id' },
+          },
+          course: {
+            actions: ['view'],
+            conditions: { 'resource.classId': 'user.classId' },
+          },
+          notice: { actions: ['view'], conditions: {} },
+        },
+      },
     };
   }
 }

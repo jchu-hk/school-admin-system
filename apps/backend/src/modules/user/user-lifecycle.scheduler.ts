@@ -8,9 +8,7 @@ import { UserLifecycleService } from './user-lifecycle.service';
  */
 @Injectable()
 export class UserLifecycleScheduler {
-  constructor(
-    private readonly userLifecycleService: UserLifecycleService,
-  ) {}
+  constructor(private readonly userLifecycleService: UserLifecycleService) {}
 
   /**
    * Run daily at 9:00 AM to check for expiring accounts

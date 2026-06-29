@@ -5,7 +5,6 @@ import {
   IsEnum,
   IsBoolean,
   IsDateString,
-  IsNumber,
 } from 'class-validator';
 import { EnrollmentStatus } from '../student-profile.entity';
 

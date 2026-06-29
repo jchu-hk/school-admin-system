@@ -507,7 +507,10 @@ export class RecordPaymentDto {
   @Min(0.01)
   amount: number;
 
-  @ApiPropertyOptional({ description: '付款方式', enum: ['cash', 'bank_transfer', 'online', 'other'] })
+  @ApiPropertyOptional({
+    description: '付款方式',
+    enum: ['cash', 'bank_transfer', 'online', 'other'],
+  })
   @IsOptional()
   @IsString()
   @MaxLength(50)

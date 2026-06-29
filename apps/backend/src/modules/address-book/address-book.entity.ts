@@ -8,7 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { User, UserRole } from '../user/user.entity';
+import { User } from '../user/user.entity';
 
 @Entity('address_book')
 export class AddressBook {
@@ -20,7 +20,10 @@ export class AddressBook {
   @Column({ length: 100 })
   name: string;
 
-  @ApiProperty({ description: '联系人类型', enum: ['teacher', 'staff', 'parent', 'student', 'other'] })
+  @ApiProperty({
+    description: '联系人类型',
+    enum: ['teacher', 'staff', 'parent', 'student', 'other'],
+  })
   @Column({
     type: 'enum',
     enum: ['teacher', 'staff', 'parent', 'student', 'other'],

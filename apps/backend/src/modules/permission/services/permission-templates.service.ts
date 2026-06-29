@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PermissionTemplate } from '../entities/permission-template.entity';
@@ -122,7 +126,8 @@ export class PermissionTemplatesService {
     if (targetRoles) template.targetRoles = targetRoles;
 
     if (permissionIds) {
-      const permissions = await this.permissionRepository.findByIds(permissionIds);
+      const permissions =
+        await this.permissionRepository.findByIds(permissionIds);
       template.permissions = permissions;
     }
 
@@ -152,14 +157,15 @@ export class PermissionTemplatesService {
     }
 
     // 获取所有权限
-    const allPermissions = await this.permissionRepository.find();
+    await this.permissionRepository.find();
 
     // 创建系统预设模板
     const systemTemplates = [
       {
         name: '教师基础权限',
         code: 'teacher_basic',
-        description: '教师的基础操作权限，包括查看本班学生数据、录入成绩、考勤等',
+        description:
+          '教师的基础操作权限，包括查看本班学生数据、录入成绩、考勤等',
         targetRoles: ['TEACHER', 'CLASS_TEACHER'],
         isSystem: true,
       },
@@ -180,7 +186,8 @@ export class PermissionTemplatesService {
       {
         name: '财务人员权限',
         code: 'finance_staff',
-        description: '财务人员的权限，仅在工作时间有效，包括学费管理、奖学金管理等',
+        description:
+          '财务人员的权限，仅在工作时间有效，包括学费管理、奖学金管理等',
         targetRoles: ['FINANCE_STAFF'],
         isSystem: true,
       },

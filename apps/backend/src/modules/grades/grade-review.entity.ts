@@ -1,6 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm'
-import { User } from '../user/user.entity'
-import { GradeRecord } from './grade-record.entity'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
+import { User } from '../user/user.entity';
+import { GradeRecord } from './grade-record.entity';
 
 export enum ReviewAction {
   SUBMIT = 'submit',
@@ -19,43 +26,43 @@ export enum ReviewLevel {
 @Entity('grade_reviews')
 export class GradeReview {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id: string;
 
   @Column({ name: 'grade_record_id' })
-  gradeRecordId: string
+  gradeRecordId: string;
 
   @ManyToOne(() => GradeRecord, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'grade_record_id' })
-  gradeRecord: GradeRecord
+  gradeRecord: GradeRecord;
 
   @Column({ name: 'reviewer_id' })
-  reviewerId: string
+  reviewerId: string;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'reviewer_id' })
-  reviewer: User
+  reviewer: User;
 
   @Column({ type: 'enum', enum: ReviewAction })
-  action: ReviewAction
+  action: ReviewAction;
 
   @Column({ type: 'enum', enum: ReviewLevel })
-  level: ReviewLevel
+  level: ReviewLevel;
 
   @Column({ type: 'text', nullable: true })
-  comment: string
+  comment: string;
 
   @Column({ type: 'jsonb', default: {} })
-  previousData: Record<string, any>
+  previousData: Record<string, any>;
 
   @Column({ type: 'jsonb', default: {} })
-  newData: Record<string, any>
+  newData: Record<string, any>;
 
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date
+  createdAt: Date;
 
   @Column({ name: 'ip_address', nullable: true })
-  ipAddress: string
+  ipAddress: string;
 
   @Column({ name: 'user_agent', type: 'text', nullable: true })
-  userAgent: string
+  userAgent: string;
 }

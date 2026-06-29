@@ -60,7 +60,12 @@ export class PermissionController {
   @ApiQuery({ name: 'userRole', required: false, description: '用户角色' })
   @ApiQuery({ name: 'action', required: false, description: '操作类型' })
   @ApiQuery({ name: 'resource', required: false, description: '资源类型' })
-  @ApiQuery({ name: 'decision', required: false, enum: ['allow', 'deny'], description: '决策结果' })
+  @ApiQuery({
+    name: 'decision',
+    required: false,
+    enum: ['allow', 'deny'],
+    description: '决策结果',
+  })
   @ApiQuery({ name: 'startDate', required: false, description: '开始日期' })
   @ApiQuery({ name: 'endDate', required: false, description: '结束日期' })
   @ApiQuery({ name: 'page', required: false, description: '页码' })

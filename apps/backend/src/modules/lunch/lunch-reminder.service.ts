@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LunchChange, LunchChangeStatus } from './lunch-change.entity';
@@ -46,9 +46,14 @@ export class LunchReminderScheduler {
         .execute();
 
       const count = result.affected || 0;
-      this.logger.log(`【Cron】午膳变更自动拒绝任务完成，拒绝了 ${count} 条变更`);
+      this.logger.log(
+        `【Cron】午膳变更自动拒绝任务完成，拒绝了 ${count} 条变更`,
+      );
     } catch (error) {
-      this.logger.error(`【Cron】午膳变更自动拒绝任务失败: ${error.message}`, error.stack);
+      this.logger.error(
+        `【Cron】午膳变更自动拒绝任务失败: ${error.message}`,
+        error.stack,
+      );
     }
   }
 
@@ -85,7 +90,7 @@ export class LunchReminderScheduler {
       const notifiedUsers = Object.keys(userMap);
       this.logger.log(
         `【Cron】午膳变更提醒任务完成，待通知用户 ${notifiedUsers.length} 人，` +
-        `共计 ${pendingChanges.length} 条待审变更`,
+          `共计 ${pendingChanges.length} 条待审变更`,
       );
 
       // TODO: 实际发送微信/飞书通知
@@ -94,7 +99,10 @@ export class LunchReminderScheduler {
       //   await notificationService.send({ userId, template: 'lunch_change_reminder', ... })
       // }
     } catch (error) {
-      this.logger.error(`【Cron】午膳变更提醒任务失败: ${error.message}`, error.stack);
+      this.logger.error(
+        `【Cron】午膳变更提醒任务失败: ${error.message}`,
+        error.stack,
+      );
     }
   }
 }

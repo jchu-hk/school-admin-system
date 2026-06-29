@@ -328,7 +328,10 @@ export class UpdateTuitionPaymentDto {
   @IsString()
   disputeReason?: string;
 
-  @ApiPropertyOptional({ description: '争议解决方案', enum: ['adjusted', 'waived', 'maintained'] })
+  @ApiPropertyOptional({
+    description: '争议解决方案',
+    enum: ['adjusted', 'waived', 'maintained'],
+  })
   @IsOptional()
   @IsEnum(['adjusted', 'waived', 'maintained'])
   disputeResolution?: 'adjusted' | 'waived' | 'maintained';
@@ -376,7 +379,10 @@ export class TuitionPaymentQueryDto {
   keyword?: string;
 
   // ============ Sub-status filter (AC-02/AC-03) ============
-  @ApiPropertyOptional({ description: '子状态', enum: ['none', 'installment_plan', 'overdue', 'disputed', 'paused'] })
+  @ApiPropertyOptional({
+    description: '子状态',
+    enum: ['none', 'installment_plan', 'overdue', 'disputed', 'paused'],
+  })
   @IsOptional()
   @IsString()
   subStatus?: string;
@@ -410,11 +416,16 @@ export class CreateDisputeDto {
 }
 
 export class ResolveDisputeDto {
-  @ApiProperty({ description: '解决方案', enum: ['adjusted', 'waived', 'maintained'] })
+  @ApiProperty({
+    description: '解决方案',
+    enum: ['adjusted', 'waived', 'maintained'],
+  })
   @IsEnum(['adjusted', 'waived', 'maintained'])
   resolution: 'adjusted' | 'waived' | 'maintained';
 
-  @ApiPropertyOptional({ description: '调整后金额（仅当resolution=adjusted时有效）' })
+  @ApiPropertyOptional({
+    description: '调整后金额（仅当resolution=adjusted时有效）',
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)

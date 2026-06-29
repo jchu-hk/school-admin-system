@@ -216,7 +216,11 @@ export class FeeController {
 
   @Post('collections')
   @ApiOperation({ summary: '创建费用征收记录' })
-  @ApiResponse({ status: 201, description: '费用征收记录创建成功', type: FeeCollection })
+  @ApiResponse({
+    status: 201,
+    description: '费用征收记录创建成功',
+    type: FeeCollection,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createFeeCollection(@Body() createDto: CreateFeeCollectionDto) {
     return this.feeService.createFeeCollection(createDto);
@@ -244,7 +248,11 @@ export class FeeController {
 
   @Put('collections/:id')
   @ApiOperation({ summary: '更新费用征收记录' })
-  @ApiResponse({ status: 200, description: '费用征收记录更新成功', type: FeeCollection })
+  @ApiResponse({
+    status: 200,
+    description: '费用征收记录更新成功',
+    type: FeeCollection,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   updateFeeCollection(
     @Param('id', ParseUUIDPipe) id: string,
@@ -255,7 +263,11 @@ export class FeeController {
 
   @Post('collections/:id/payment')
   @ApiOperation({ summary: '记录付款' })
-  @ApiResponse({ status: 200, description: '付款记录成功', type: FeeCollection })
+  @ApiResponse({
+    status: 200,
+    description: '付款记录成功',
+    type: FeeCollection,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   recordPayment(
     @Param('id', ParseUUIDPipe) id: string,
@@ -279,7 +291,11 @@ export class FeeController {
 
   @Post('reductions')
   @ApiOperation({ summary: '创建费用减免申请' })
-  @ApiResponse({ status: 201, description: '费用减免申请创建成功', type: FeeReduction })
+  @ApiResponse({
+    status: 201,
+    description: '费用减免申请创建成功',
+    type: FeeReduction,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   createFeeReduction(@Body() createDto: CreateFeeReductionDto) {
     return this.feeService.createFeeReduction(createDto);
@@ -307,7 +323,11 @@ export class FeeController {
 
   @Post('reductions/:id/approve')
   @ApiOperation({ summary: '审批费用减免申请' })
-  @ApiResponse({ status: 200, description: '费用减免审批成功', type: FeeReduction })
+  @ApiResponse({
+    status: 200,
+    description: '费用减免审批成功',
+    type: FeeReduction,
+  })
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
   approveFeeReduction(
     @Param('id', ParseUUIDPipe) id: string,
