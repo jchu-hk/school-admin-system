@@ -1,6 +1,6 @@
 # 智慧校园管理系统 - 项目Wiki
 
-> 静态常查阅资料集成页 | **版本**: v1.5.5 | **最后更新**: 2026-06-30 22:37 (GMT+8)
+> 静态常查阅资料集成页 | **版本**: v1.5.5 | **最后更新**: 2026-06-30 22:40 (GMT+8)
 
 ---
 
@@ -79,14 +79,14 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 ## 🧪 测试环境
 
-> ⚠️ **最后更新**: 2026-06-30 14:10 (GMT+8)
+> ⚠️ **最后更新**: 2026-06-30 22:40 (GMT+8)
 > ⚠️ Cloudflare Quick Tunnel 有间歇性连接问题
 
 | 服务 | 本地URL (本机) | 外部URL | 状态 |
 |------|----------------|---------|------|
-| **后端API** | http://localhost:3000/api | https://incorporate-precious-gzip-tiffany.trycloudflare.com/api | ✅ Quick Tunnel |
-| **前端** | http://localhost:8080 | https://naval-swing-accommodation-mounted.trycloudflare.com | ✅ Quick Tunnel |
-| **健康检查** | http://localhost:3000/api/health | https://incorporate-precious-gzip-tiffany.trycloudflare.com/api/health | ✅ Quick Tunnel |
+| **后端API** | http://localhost:3000/api | https://mere-salaries-restored-transportation.trycloudflare.com/api | ✅ Quick Tunnel |
+| **前端** | http://localhost:8080 | https://gadgets-deputy-manor-reliability.trycloudflare.com | ✅ Quick Tunnel |
+| **健康检查** | http://localhost:3000/api/health | https://mere-salaries-restored-transportation.trycloudflare.com/api/health | ✅ Quick Tunnel |
 
 **访问方式说明**:
 - **本地访问** (推荐): 直接访问 `http://localhost:8080` 和 `http://localhost:3000`
