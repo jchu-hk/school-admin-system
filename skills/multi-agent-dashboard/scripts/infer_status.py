@@ -146,20 +146,43 @@ def infer_from_heartbeat_files() -> Dict[str, Dict]:
     
     return status
 
+def infer_from_agent_status_file() -> Dict[str, Dict]:
+    """Read from agent-status.json (highest priority)"""
+    status = {}
+    status_file = Path("/workspace/projects/workspace/agents/project-admin/logs/agent-status.json")
+    if status_file.exists():
+        try:
+            data = json.loads(status_file.read_text())
+            agents = data.get("agents", {})
+            for agent_name, agent_info in agents.items():
+                status[agent_name] = {
+                    "status": agent_info.get("status", "idle"),
+                    "task": agent_info.get("task", "等待任务"),
+                    "evidence": f"Updated: {agent_info.get('lastUpdate', 'unknown')}"[:30]
+                }
+        except Exception as e:
+            print(f"Error reading agent-status.json: {e}")
+    return status
+
 def infer_status(repo: str) -> Dict[str, Dict]:
     """Combine all inference methods
     
-    Priority: heartbeat files > agent-messages.json > GitHub Issues
-    NOTE: Removed commit inference - use agent-communication skill instead
+    Priority: agent-status.json > heartbeat files > agent-messages.json > GitHub Issues
     """
     
     status = {}
     
-    # 1. Heartbeat files (most reliable if present)
-    heartbeat_status = infer_from_heartbeat_files()
-    status.update(heartbeat_status)
+    # 1. Agent-status.json (highest priority - direct status write)
+    file_status = infer_from_agent_status_file()
+    status.update(file_status)
     
-    # 2. Agent-messages.json status field (from agent-communication skill)
+    # 2. Heartbeat files
+    heartbeat_status = infer_from_heartbeat_files()
+    for agent, s in heartbeat_status.items():
+        if agent not in status:
+            status[agent] = s
+    
+    # 3. Agent-messages.json status field
     agent_msg_file = Path("/workspace/projects/workspace/agents/project-admin/logs/agent-messages.json")
     if agent_msg_file.exists():
         agent_messages = json.loads(agent_msg_file.read_text())
@@ -174,13 +197,13 @@ def infer_status(repo: str) -> Dict[str, Dict]:
                         "evidence": f"From message: {m.get('message', '')[:30]}"
                     }
     
-    # 3. GitHub Issue events (in-progress labels)
+    # 4. GitHub Issue events (in-progress labels)
     issue_status = infer_from_issues(repo)
     for agent, s in issue_status.items():
         if agent not in status:
             status[agent] = s
     
-    # 4. Default: idle (only for agents with no status at all)
+    # 5. Default: idle
     for agent in AGENT_CONFIG:
         if agent not in status:
             status[agent] = {"status": "idle", "task": "等待任务", "evidence": "No activity recorded"}
