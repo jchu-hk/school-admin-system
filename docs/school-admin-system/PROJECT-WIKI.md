@@ -84,9 +84,9 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 | 服务 | 本地URL (本机) | 外部URL | 状态 |
 |------|----------------|---------|------|
-| **后端API** | http://localhost:3000/api | https://salvation-fellowship-fool-competition.trycloudflare.com/api | ⚠️ Quick Tunnel |
-| **前端** | http://localhost:8080 | https://yen-courts-soft-continuous.trycloudflare.com | ⚠️ Quick Tunnel |
-| **健康检查** | http://localhost:3000/api/health | https://salvation-fellowship-fool-competition.trycloudflare.com/api/health | ⚠️ Quick Tunnel |
+| **后端API** | http://localhost:3000/api | https://incorporate-precious-gzip-tiffany.trycloudflare.com/api | ✅ Quick Tunnel |
+| **前端** | http://localhost:8080 | https://naval-swing-accommodation-mounted.trycloudflare.com | ✅ Quick Tunnel |
+| **健康检查** | http://localhost:3000/api/health | https://incorporate-precious-gzip-tiffany.trycloudflare.com/api/health | ✅ Quick Tunnel |
 
 **访问方式说明**:
 - **本地访问** (推荐): 直接访问 `http://localhost:8080` 和 `http://localhost:3000`

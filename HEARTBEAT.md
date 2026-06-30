@@ -1,6 +1,6 @@
 # HEARTBEAT.md — 项目全景状况
 
-**更新时间**: 2026-06-29 21:50
+**更新时间**: 2026-06-30 19:45
 
 ---
 
@@ -58,11 +58,25 @@
 
 ---
 
-## 🔄 进行中的工作 (2026-06-29)
+## 🔄 开放Issue (2026-06-30 18:25)
 
-| Issue | 描述 | 负责人 | 状态 |
-|-------|------|--------|------|
-| #41 | 学生档案管理 | DEV | ⚠️ 分支超期2天，需跟进 |
+**总计**: 20个开放Issue
+
+**最新Issue (2026-06-30 新增)**:
+| # | 描述 | 优先级 | 状态 |
+|---|------|--------|------|
+| 192 | 实现入职手续办理功能 (F-REC-005) | P2 | OPEN |
+| 191 | 实现录用审批流程功能 (F-REC-004) | P2 | OPEN |
+| 190 | 实现面试安排功能 (F-REC-003) | P2 | OPEN |
+| 189 | 实现简历收集与筛选功能 (F-REC-002) | P2 | OPEN |
+| 188 | 实现职位发布与管理功能 (F-REC-001) | P2 | OPEN |
+
+**其他开放Issue**:
+- #184: 教师招聘模块 - Service/Controller补充 (P4)
+- #182: 会议管理模块 - Service/Controller补充 (P4)
+- #140: TypeORM实体元数据警告 (P3, ready-for-review)
+- #56-#51: 自动提醒、工作流自动化、AI功能 (P3)
+- #50-#45: 资产管理、文档管理、成绩发布等 (P2)
 
 > ⚠️ `in-progress` 标签的Issue请在分支合并后更新状态
 
@@ -189,10 +203,13 @@ agent-PM (调度中枢)
 | 前端 | ✅ 已部署 | v1.5.0 |
 | 数据库 | ✅ 运行中 | - |
 
-**URL**: https://until-diamonds-disclosure-needle.trycloudflare.com
+**前端**: https://naval-swing-accommodation-mounted.trycloudflare.com
+**后端**: https://incorporate-precious-gzip-tiffany.trycloudflare.com
+**状态**: ✅ 运行正常
 
-**Frontend: 
-**Backend API**: 
+---
+
+> ⚠️ Cloudflare Tunnel每次重启会更换URL，以上为当前有效地址
 
 ---
 
@@ -355,7 +372,8 @@ agent-PM (调度中枢)
 
 ### 当前测试URL
 
-**https://until-diamonds-disclosure-needle.trycloudflare.com**
+**前端**: https://naval-swing-accommodation-mounted.trycloudflare.com
+**后端**: https://incorporate-precious-gzip-tiffany.trycloudflare.com
 
 ### 测试账号
 
@@ -386,6 +404,14 @@ agent-PM (调度中枢)
 **修复**: Push empty commit强制清除缓存
 
 **CI历史**: CI失败持续超过30+ commits
+
+---
+
+## ✅ 测试环境连接正常 (2026-06-30 19:45)
+
+- 前端: https://naval-swing-accommodation-mounted.trycloudflare.com ✅
+- 后端: https://incorporate-precious-gzip-tiffany.trycloudflare.com ✅
+- 注意: Cloudflare Tunnel每次重启会更换URL，已更新到最新
 
 ---
 
