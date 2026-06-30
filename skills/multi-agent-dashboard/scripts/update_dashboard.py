@@ -64,9 +64,9 @@ def build_html(status: dict, messages: list) -> str:
             <span class="status-badge {'status-running' if running else 'status-idle'}">{s}</span>
         </div>'''
     
-    # Build messages HTML with GMT+8 time
+    # Build messages HTML with GMT+8 time (newest first)
     messages_html = ""
-    for m in messages[-20:]:  # Last 20 messages
+    for m in reversed(messages[-20:]):  # Last 20 messages, reversed to show newest first
         mtype = m.get("type", "default")
         utc_time = datetime.fromisoformat(m["timestamp"].replace("Z", "+00:00"))
         gmt8 = utc_time + timedelta(hours=8)

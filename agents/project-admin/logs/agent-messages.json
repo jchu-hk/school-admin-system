@@ -168,5 +168,77 @@
       "status": "idle",
       "task": "教师招聘模块系统设计完成。已创建5个DEV任务：\n- Issue #188: 职位发布与管理 (F-"
     }
+  },
+  {
+    "timestamp": "2026-06-30T11:11:32Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "派发5个招聘模块开发任务: #188 职位发布管理, #189 简历收集筛选, #190 面试管理, #191 流程状态跟踪, #192 数据统计",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "派发5个招聘模块开发任务: #188 职位发布管理, #189 简历收集筛选, #190 面试管理,"
+    }
+  },
+  {
+    "timestamp": "2026-06-30T11:34:02Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "Issue #188 完成: 职位发布与管理 (F-REC-001) - 创建/发布/暂停/恢复/关闭职位API, 提交 abc0cf8",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "Issue #188 完成: 职位发布与管理 (F-REC-001) - 创建/发布/暂停/恢复/关"
+    }
+  },
+  {
+    "timestamp": "2026-06-30T11:41:17Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "Issue #189 完成: 简历收集与筛选 (F-REC-002) - 申请提交/状态更新/筛选/拒绝API, 提交 558cd88",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "Issue #189 完成: 简历收集与筛选 (F-REC-002) - 申请提交/状态更新/筛选/"
+    }
+  },
+  {
+    "timestamp": "2026-06-30T11:55:04Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "Issue #190 完成: 面试安排与管理 (F-REC-003) - 面试创建/评分/完成/取消API, 提交 1201f65",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "Issue #190 完成: 面试安排与管理 (F-REC-003) - 面试创建/评分/完成/取消"
+    }
+  },
+  {
+    "timestamp": "2026-06-30T11:58:35Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "Issue #191 完成: 招聘流程状态跟踪 (F-REC-004) - 流程状态/漏斗概览/时间统计/时间线API, 提交 d2e4900",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "Issue #191 完成: 招聘流程状态跟踪 (F-REC-004) - 流程状态/漏斗概览/时间"
+    }
+  },
+  {
+    "timestamp": "2026-06-30T12:01:31Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "招聘模块5个任务全部完成 (#188-192), 提交到main. 包括: 职位发布/申请管理/面试管理/流程跟踪/数据看板",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "招聘模块5个任务全部完成 (#188-192), 提交到main. 包括: 职位发布/申请管理/面试"
+    }
   }
 ]

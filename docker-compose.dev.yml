@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: school-admin-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: school_admin
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    image: infra-backend:latest
+    container_name: school-admin-backend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./apps/backend:/app
+      - ./packages:/packages
+  
+  frontend:
+    build:
+      context: school-admin-frontend
+      dockerfile: Dockerfile
+    image: infra-frontend:latest
+    container_name: school-admin-frontend
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend

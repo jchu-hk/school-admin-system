@@ -32,12 +32,24 @@ describe('ValidateUuidPipe', () => {
       { value: 'not-a-uuid', description: 'plain string' },
       { value: '12345', description: 'short numeric string' },
       { value: '123e4567-e89b-12d3-a456', description: 'incomplete UUID' },
-      { value: '123e4567-e89b-12d3-a456-42661417400g', description: 'UUID with invalid hex char' },
+      {
+        value: '123e4567-e89b-12d3-a456-42661417400g',
+        description: 'UUID with invalid hex char',
+      },
       { value: '', description: 'empty string' },
-      { value: '123e4567e89b12d3a456426614174000', description: 'UUID without dashes' },
-      { value: '123e4567-e89b-12d3-a456-42661417400', description: 'UUID with wrong length' },
+      {
+        value: '123e4567e89b12d3a456426614174000',
+        description: 'UUID without dashes',
+      },
+      {
+        value: '123e4567-e89b-12d3-a456-42661417400',
+        description: 'UUID with wrong length',
+      },
       { value: 'student-123', description: 'student-like string' },
-      { value: '123e4567-e89b-12d3-a456-42661417400x', description: 'trailing invalid char' },
+      {
+        value: '123e4567-e89b-12d3-a456-42661417400x',
+        description: 'trailing invalid char',
+      },
     ];
 
     it.each(invalidValues)(
@@ -74,7 +86,9 @@ describe('ValidateUuidPipe', () => {
     });
 
     it('should reject undefined value', () => {
-      expect(() => pipe.transform(undefined as any)).toThrow(BadRequestException);
+      expect(() => pipe.transform(undefined as any)).toThrow(
+        BadRequestException,
+      );
     });
   });
 });
