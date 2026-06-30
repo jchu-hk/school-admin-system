@@ -120,14 +120,68 @@
     │
     ├── 新Issue → 分析 → 指派
     │
-    ├── DEV完成 → 派工QA
+    ├── [REQ] Issue → REQ Agent
     │
-    ├── QA失败 → 派工DEV
+    ├── REQ 完成 → CHECKER 审查 → ARCH 设计 → DEV 开发
     │
-    ├── Bug报告 → 派工DEV
+    ├── DEV 完成 → QA 测试
+    │
+    ├── QA 通过 → 关闭 Issue
+    │
+    ├── QA 失败 → DEV 修复
     │
     └── 其他 → 根据规则处理
 ```
+
+### 4.3 REQ 专用流转规则
+
+**REQ 完整流程** (2026-06-30):
+```
+1. PM 派发 REQ 任务
+   └── 标签: req + in-progress
+   └── 派发: REQ Agent
+
+2. REQ 完成需求文档
+   └── 输出: SPEC-REC-{MODULE}.md
+   └── 调用 write_message --from REQ --to PM --type done
+
+3. PM 派发 CHECKER 审查
+   └── 标签: checker + in-review
+   └── 派发: CHECKER Agent
+   └── 任务: 审查需求质量、完整性、可行性
+
+4. CHECKER 审查完成
+   └── 如果 PASS: 派发 ARCH
+   └── 如果 FAIL: 返回 REQ 修改
+   └── 调用 write_message --from CHECKER --to PM --type done/passed/failed
+
+5. PM 派发 ARCH 设计
+   └── 标签: arch + design
+   └── 派发: ARCH Agent
+   └── 任务: 系统设计、数据库设计、API设计
+
+6. ARCH 完成设计
+   └── 输出: SPEC-SYSTEM-DESIGN.md, DB-SCHEMA.md, API-DESIGN.md
+   └── 调用 write_message --from ARCH --to PM --type done
+
+7. PM 派发 DEV 开发
+   └── 标签: dev + in-progress
+   └── 派发: DEV Agent
+   └── 任务: 根据设计文档开发
+
+8. DEV 完成开发
+   └── 派发 QA 测试
+```
+
+**Issue 标签规则**:
+| 阶段 | 标签 | 说明 |
+|------|------|------|
+| REQ 阶段 | `req` + `in-progress` | REQ 正在编写需求 |
+| CHECKER 阶段 | `checker` + `in-review` | CHECKER 正在审查 |
+| ARCH 阶段 | `arch` + `design` | ARCH 正在设计 |
+| DEV 阶段 | `dev` + `in-progress` | DEV 正在开发 |
+| QA 阶段 | `qa` + `testing` | QA 正在测试 |
+| 完成 | 无 | 关闭 Issue |
 
 ---
 
