@@ -258,18 +258,6 @@ chore:    杂项
 
 ---
 
-## 📞 联系方式
-
-- **仓库**: https://github.com/jchu-hk/school-admin-system
-- **Owner**: jchu-hk
-
----
-
-**GitHub**: https://github.com/jchu-hk/school-admin-system
-**Owner**: jchu-hk
-
----
-
 ## 🚀 进行中的工作 (In Progress)
 
 | Issue | 描述 | 负责人 | 开始时间 | 预计完成 |
@@ -334,3 +322,14 @@ https://github.com/jchu-hk/school-admin-system/blob/main/multi-agent-dashboard.h
 - ✓ CHECKER - 代码审查
 - 🏗️ ARCH - 架构设计
 - 📝 REQ - 需求分析
+
+---
+
+## 📞 联系方式
+
+- **仓库**: https://github.com/jchu-hk/school-admin-system
+- **Owner**: jchu-hk
+
+---
+
+*此页面在版本发布或重大变更时更新*
