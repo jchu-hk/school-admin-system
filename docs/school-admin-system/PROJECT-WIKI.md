@@ -79,20 +79,28 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 ## 🧪 测试环境
 
-> ⚠️ **最后更新**: 2026-06-30 22:40 (GMT+8)
-> ⚠️ Cloudflare Quick Tunnel 有间歇性连接问题
+> ⚠️ **最后更新**: 2026-06-30 23:13 (GMT+8)
+> ❌ Cloudflare Quick Tunnel **不可用** - ERR_CONNECTION_CLOSED
+> ✅ **推荐使用本地访问** (localhost)
 
 | 服务 | 本地URL (本机) | 外部URL | 状态 |
 |------|----------------|---------|------|
-| **后端API** | http://localhost:3000/api | https://mere-salaries-restored-transportation.trycloudflare.com/api | ✅ Quick Tunnel |
-| **前端** | http://localhost:8080 | https://gadgets-deputy-manor-reliability.trycloudflare.com | ✅ Quick Tunnel |
-| **健康检查** | http://localhost:3000/api/health | https://mere-salaries-restored-transportation.trycloudflare.com/api/health | ✅ Quick Tunnel |
+| **后端API** | http://localhost:3000/api | Cloudflare Quick Tunnel | ❌ 连接错误 |
+| **前端** | http://localhost:8080 | Cloudflare Quick Tunnel | ❌ 连接错误 |
+| **健康检查** | http://localhost:3000/api/health | - | ✅ 本地可用 |
 
 **访问方式说明**:
-- **本地访问** (推荐): 直接访问 `http://localhost:8080` 和 `http://localhost:3000`
-- **外部URL**: Cloudflare Quick Tunnels 可能间歇性不可用，如遇 530 错误请使用本地访问
+- **本地访问** (✅ 推荐): 直接访问 `http://localhost:8080` 和 `http://localhost:3000`
+- **外部访问** (❌ 暂不可用): Cloudflare Quick Tunnel 连接不稳定
 
-**DNS传播进度**: 通常需要5-10分钟生效
+**常见错误**:
+- `DNS_PROBE_FINISHED_NXDOMAIN` - URL 过期或未注册
+- `ERR_CONNECTION_CLOSED` - Tunnel 连接被关闭
+- `Error 1016` - Cloudflare 无法连接到源服务器
+
+**解决方案**:
+1. 使用本地访问（本机上最可靠）
+2. 配置 Cloudflare Named Tunnel（需要 Cloudflare 账号，更稳定）
 | Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | ✅ 已配置 |
 
 ### 🍎 Mac 本地测试环境 (Docker镜像)
