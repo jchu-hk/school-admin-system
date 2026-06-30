@@ -6,7 +6,10 @@ import {
   ApplicationStatus,
 } from './recruitment-application.entity';
 import { RecruitmentInterview } from './recruitment-interview.entity';
-import { RecruitmentActivityLog, ActivityType } from './recruitment-activity-log.entity';
+import {
+  RecruitmentActivityLog,
+  ActivityType,
+} from './recruitment-activity-log.entity';
 
 @Injectable()
 export class RecruitmentWorkflowService {
@@ -79,10 +82,14 @@ export class RecruitmentWorkflowService {
       total: Object.values(statusMap).reduce((a, b) => a + b, 0),
       byStatus: {
         [ApplicationStatus.NEW]: statusMap[ApplicationStatus.NEW] || 0,
-        [ApplicationStatus.SCREENING]: statusMap[ApplicationStatus.SCREENING] || 0,
-        [ApplicationStatus.SHORTLISTED]: statusMap[ApplicationStatus.SHORTLISTED] || 0,
-        [ApplicationStatus.INTERVIEW]: statusMap[ApplicationStatus.INTERVIEW] || 0,
-        [ApplicationStatus.REJECTED]: statusMap[ApplicationStatus.REJECTED] || 0,
+        [ApplicationStatus.SCREENING]:
+          statusMap[ApplicationStatus.SCREENING] || 0,
+        [ApplicationStatus.SHORTLISTED]:
+          statusMap[ApplicationStatus.SHORTLISTED] || 0,
+        [ApplicationStatus.INTERVIEW]:
+          statusMap[ApplicationStatus.INTERVIEW] || 0,
+        [ApplicationStatus.REJECTED]:
+          statusMap[ApplicationStatus.REJECTED] || 0,
         [ApplicationStatus.OFFER]: statusMap[ApplicationStatus.OFFER] || 0,
       },
       pipelineStages: {
@@ -114,11 +121,19 @@ export class RecruitmentWorkflowService {
     };
 
     const calcDays = (start: Date, end: Date) => {
-      return Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+      return Math.round(
+        (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24),
+      );
     };
 
-    let screenDays = 0, shortlistDays = 0, interviewDays = 0, offerDays = 0;
-    let screenCount = 0, shortlistCount = 0, interviewCount = 0, offerCount = 0;
+    let screenDays = 0,
+      shortlistDays = 0,
+      interviewDays = 0,
+      offerDays = 0;
+    let screenCount = 0,
+      shortlistCount = 0,
+      interviewCount = 0,
+      offerCount = 0;
 
     for (const app of apps) {
       const submitted = new Date(app.submittedAt || app.createdAt);
@@ -139,7 +154,10 @@ export class RecruitmentWorkflowService {
         shortlistCount++;
       }
 
-      if (app.status === ApplicationStatus.INTERVIEW || app.status === ApplicationStatus.OFFER) {
+      if (
+        app.status === ApplicationStatus.INTERVIEW ||
+        app.status === ApplicationStatus.OFFER
+      ) {
         const updated = new Date(app.updatedAt);
         interviewDays += calcDays(submitted, updated);
         interviewCount++;
@@ -152,10 +170,14 @@ export class RecruitmentWorkflowService {
       }
     }
 
-    stats.avgTimeToScreen = screenCount > 0 ? Math.round(screenDays / screenCount) : 0;
-    stats.avgTimeToShortlist = shortlistCount > 0 ? Math.round(shortlistDays / shortlistCount) : 0;
-    stats.avgTimeToInterview = interviewCount > 0 ? Math.round(interviewDays / interviewCount) : 0;
-    stats.avgTimeToOffer = offerCount > 0 ? Math.round(offerDays / offerCount) : 0;
+    stats.avgTimeToScreen =
+      screenCount > 0 ? Math.round(screenDays / screenCount) : 0;
+    stats.avgTimeToShortlist =
+      shortlistCount > 0 ? Math.round(shortlistDays / shortlistCount) : 0;
+    stats.avgTimeToInterview =
+      interviewCount > 0 ? Math.round(interviewDays / interviewCount) : 0;
+    stats.avgTimeToOffer =
+      offerCount > 0 ? Math.round(offerDays / offerCount) : 0;
 
     return stats;
   }
@@ -228,13 +250,20 @@ export class RecruitmentWorkflowService {
 
   private getPipelineStage(status: ApplicationStatus): string {
     switch (status) {
-      case ApplicationStatus.NEW: return 'new';
-      case ApplicationStatus.SCREENING: return 'screening';
-      case ApplicationStatus.SHORTLISTED: return 'shortlisted';
-      case ApplicationStatus.INTERVIEW: return 'interview';
-      case ApplicationStatus.OFFER: return 'offer';
-      case ApplicationStatus.REJECTED: return 'rejected';
-      default: return 'unknown';
+      case ApplicationStatus.NEW:
+        return 'new';
+      case ApplicationStatus.SCREENING:
+        return 'screening';
+      case ApplicationStatus.SHORTLISTED:
+        return 'shortlisted';
+      case ApplicationStatus.INTERVIEW:
+        return 'interview';
+      case ApplicationStatus.OFFER:
+        return 'offer';
+      case ApplicationStatus.REJECTED:
+        return 'rejected';
+      default:
+        return 'unknown';
     }
   }
 }

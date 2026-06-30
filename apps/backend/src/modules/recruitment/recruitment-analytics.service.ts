@@ -30,7 +30,10 @@ export class RecruitmentAnalyticsService {
     }
 
     // Applications by position
-    const byPosition: Record<string, { total: number; byStatus: Record<string, number> }> = {};
+    const byPosition: Record<
+      string,
+      { total: number; byStatus: Record<string, number> }
+    > = {};
     for (const app of applications) {
       const posTitle = app.position?.title || '未知职位';
       if (!byPosition[posTitle]) {
@@ -135,10 +138,9 @@ export class RecruitmentAnalyticsService {
         offerRate:
           interviewedApps > 0
             ? (
-                ((applications.filter((a) => a.status === 'OFFER').length /
+                (applications.filter((a) => a.status === 'OFFER').length /
                   interviewedApps) *
-                  100) ||
-                0
+                  100 || 0
               ).toFixed(1) + '%'
             : '0%',
         overallConversion:

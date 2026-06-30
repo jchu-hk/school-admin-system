@@ -1,10 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Query,
-  ParseUUIDPipe,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseUUIDPipe } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -69,7 +63,8 @@ export class RecruitmentWorkflowController {
   async getApplicationTimeline(
     @Param('applicationId', ParseUUIDPipe) applicationId: string,
   ) {
-    const result = await this.workflowService.getApplicationTimeline(applicationId);
+    const result =
+      await this.workflowService.getApplicationTimeline(applicationId);
     return {
       success: true,
       data: result,

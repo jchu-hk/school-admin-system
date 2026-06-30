@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
@@ -131,7 +135,10 @@ export class RecruitmentPositionService {
   async publish(id: string): Promise<RecruitmentPosition> {
     const position = await this.findOne(id);
 
-    if (position.status !== PositionStatus.DRAFT && position.status !== PositionStatus.PAUSED) {
+    if (
+      position.status !== PositionStatus.DRAFT &&
+      position.status !== PositionStatus.PAUSED
+    ) {
       throw new BadRequestException('只有草稿或已暂停的职位可以发布');
     }
 

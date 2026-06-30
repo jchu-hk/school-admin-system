@@ -30,7 +30,9 @@ import { UserRole } from '../user/user.entity';
 @ApiBearerAuth()
 @Controller('v1/recruitment/applications')
 export class RecruitmentApplicationController {
-  constructor(private readonly applicationService: RecruitmentApplicationService) {}
+  constructor(
+    private readonly applicationService: RecruitmentApplicationService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: '提交申请' })

@@ -69,13 +69,7 @@ export class RecruitmentApplicationService {
     pageSize: number;
     items: RecruitmentApplication[];
   }> {
-    const {
-      positionId,
-      status,
-      keyword,
-      page = 1,
-      pageSize = 20,
-    } = query;
+    const { positionId, status, keyword, page = 1, pageSize = 20 } = query;
 
     const qb = this.appRepo
       .createQueryBuilder('app')
@@ -124,10 +118,22 @@ export class RecruitmentApplicationService {
 
     // Validate status transition
     const validTransitions: Record<ApplicationStatus, ApplicationStatus[]> = {
-      [ApplicationStatus.NEW]: [ApplicationStatus.SCREENING, ApplicationStatus.REJECTED],
-      [ApplicationStatus.SCREENING]: [ApplicationStatus.SHORTLISTED, ApplicationStatus.REJECTED],
-      [ApplicationStatus.SHORTLISTED]: [ApplicationStatus.INTERVIEW, ApplicationStatus.REJECTED],
-      [ApplicationStatus.INTERVIEW]: [ApplicationStatus.OFFER, ApplicationStatus.REJECTED],
+      [ApplicationStatus.NEW]: [
+        ApplicationStatus.SCREENING,
+        ApplicationStatus.REJECTED,
+      ],
+      [ApplicationStatus.SCREENING]: [
+        ApplicationStatus.SHORTLISTED,
+        ApplicationStatus.REJECTED,
+      ],
+      [ApplicationStatus.SHORTLISTED]: [
+        ApplicationStatus.INTERVIEW,
+        ApplicationStatus.REJECTED,
+      ],
+      [ApplicationStatus.INTERVIEW]: [
+        ApplicationStatus.OFFER,
+        ApplicationStatus.REJECTED,
+      ],
       [ApplicationStatus.REJECTED]: [],
       [ApplicationStatus.OFFER]: [],
     };

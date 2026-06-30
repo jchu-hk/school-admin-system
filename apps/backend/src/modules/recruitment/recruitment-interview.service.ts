@@ -9,7 +9,6 @@ import {
   RecruitmentInterview,
   InterviewStatus,
   InterviewScore,
-  ScoreItem,
 } from './recruitment-interview.entity';
 import { ApplicationStatus } from './recruitment-application.entity';
 import {
@@ -32,7 +31,9 @@ export class RecruitmentInterviewService {
 
   async create(dto: CreateInterviewDto): Promise<RecruitmentInterview> {
     // Verify application exists
-    const application = await this.applicationService.findOne(dto.applicationId);
+    const application = await this.applicationService.findOne(
+      dto.applicationId,
+    );
 
     // Validate application is in correct status
     if (
@@ -254,9 +255,8 @@ export class RecruitmentInterviewService {
     await this.interviewRepo.save(interview);
 
     // Update application status directly via repo
-    const newAppStatus = dto.overallRecommendation === 'NOT_RECOMMEND' 
-      ? 'REJECTED' 
-      : 'OFFER';
+    const newAppStatus =
+      dto.overallRecommendation === 'NOT_RECOMMEND' ? 'REJECTED' : 'OFFER';
     await this.applicationService.updateStatus(interview.applicationId, {
       status: newAppStatus as any,
       screeningNotes: `最终建议: ${dto.overallRecommendation}`,
