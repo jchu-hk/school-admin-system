@@ -812,6 +812,7 @@ inquiries (id)
 | published_at | TIMESTAMPTZ | | 发布时间 |
 | paused_at | TIMESTAMPTZ | | 暂停时间 |
 | closed_at | TIMESTAMPTZ | | 关闭时间 |
+| application_count | INT | DEFAULT 0 | 申请数量 |
 | school_id | UUID | FK→schools | 学校ID |
 | created_by | UUID | FK→users | 创建人 |
 | created_at | TIMESTAMPTZ | NOT NULL | |

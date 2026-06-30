@@ -35,6 +35,7 @@ import { SchoolInfoModule } from './modules/school-info/school-info.module';
 import { AddressBookModule } from './modules/address-book/address-book.module';
 import { ExamModule } from './modules/exam/exam.module';
 import { BudgetModule } from './modules/budget/budget.module';
+import { RecruitmentModule } from './modules/recruitment/recruitment.module';
 
 @Module({
   imports: [
@@ -54,7 +55,6 @@ import { BudgetModule } from './modules/budget/budget.module';
         synchronize: false,
         autoLoadEntities: true,
         namingStrategy: new CamelCaseNamingStrategy(),
-
       }),
       inject: [ConfigService],
     }),
@@ -90,6 +90,7 @@ import { BudgetModule } from './modules/budget/budget.module';
     AddressBookModule,
     ExamModule,
     BudgetModule,
+    RecruitmentModule,
   ],
   controllers: [],
   providers: [],
