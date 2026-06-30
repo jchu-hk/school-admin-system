@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { apiClient, getToken } from './apiClient';
+import apiClient from '../api/client';
+import { getToken } from '../utils/tokenService';
 import { useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 
