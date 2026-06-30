@@ -9,6 +9,11 @@
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #e0e0e0; padding: 20px }
         .container { max-width: 1400px; margin: 0 auto }
         h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
+        .tabs { display: flex; margin-bottom: 20px; gap: 8px }
+        .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; background: rgba(255,255,255,0.05); color: #9ca3af; font-size: 1em; font-weight: 500; cursor: pointer; transition: all 0.3s ease }
+        .tab-btn.active { background: #4ade80; color: #1a1a2e; box-shadow: 0 0 15px rgba(74,222,128,0.3) }
+        .tab-content { display: none }
+        .tab-content.active { display: block }
         .card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px }
         .agent-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px }
         .agent { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 12px; text-align: center; border: 2px solid rgba(255,255,255,0.1) }
@@ -32,114 +37,188 @@
     <div class="container">
         <h1>🤖 Multi-Agent Dashboard <span style="font-size:0.6em;color:#6b7280">(GMT+8)</span></h1>
         
-        <div class="card">
-            <h2 style="color:#4ade80;margin-bottom:15px">👥 Agents</h2>
-            <div class="agent-grid"><div class="agent">
-            <div class="agent-icon">🧑💼</div>
-            <div class="agent-name">PM</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent">
-            <div class="agent-icon">🔧</div>
-            <div class="agent-name">DEVOPS</div>
-            <div class="agent-task">Cloudflare Tunnel 暂不可用，建议使用本地访</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent">
-            <div class="agent-icon">🤖</div>
-            <div class="agent-name">DEV</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent">
-            <div class="agent-icon">🔍</div>
-            <div class="agent-name">QA</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent">
-            <div class="agent-icon">✓</div>
-            <div class="agent-name">CHECKER</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent">
-            <div class="agent-icon">🏗️</div>
-            <div class="agent-name">ARCH</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent">
-            <div class="agent-icon">📝</div>
-            <div class="agent-name">REQ</div>
-            <div class="agent-task">等待任务</div>
-            <span class="status-badge status-idle">idle</span>
-        </div></div>
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="today">📅 Today (T)</button>
+            <button class="tab-btn" data-tab="yesterday">📆 Yesterday (T-1)</button>
         </div>
         
-        <div class="card">
-            <h2 style="color:#4ade80;margin-bottom:15px">💬 Agent Messages</h2>
-            <div class="message-list"><div class="message-item msg-assign">
-            <div class="message-time">22:40</div>
-            <div class="message-content">PM → DEVOPS: 检查并启用测试环境外部访问（Cloudflare Tunnel）</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">20:01</div>
-            <div class="message-content">DEV → PM: 招聘模块5个任务全部完成 (#188-192), 提交到main. 包括: 职位发布/申请管理/面试管理/流程跟踪/数据</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">19:58</div>
-            <div class="message-content">DEV → PM: Issue #191 完成: 招聘流程状态跟踪 (F-REC-004) - 流程状态/漏斗概览/时间统计/时间线API,</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">19:55</div>
-            <div class="message-content">DEV → PM: Issue #190 完成: 面试安排与管理 (F-REC-003) - 面试创建/评分/完成/取消API, 提交 12</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">19:41</div>
-            <div class="message-content">DEV → PM: Issue #189 完成: 简历收集与筛选 (F-REC-002) - 申请提交/状态更新/筛选/拒绝API, 提交 </div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">19:34</div>
-            <div class="message-content">DEV → PM: Issue #188 完成: 职位发布与管理 (F-REC-001) - 创建/发布/暂停/恢复/关闭职位API, 提交</div>
-        </div><div class="message-item msg-assign">
-            <div class="message-time">19:11</div>
-            <div class="message-content">PM → DEV: 派发5个招聘模块开发任务: #188 职位发布管理, #189 简历收集筛选, #190 面试管理, #191 流程状态</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">15:24</div>
-            <div class="message-content">ARCH → PM: 教师招聘模块系统设计完成。已创建5个DEV任务：
+        <!-- Today Tab Content -->
+        <div id="today" class="tab-content active">
+            <div class="card">
+                <h2 style="color:#4ade80;margin-bottom:15px">👥 Agents</h2>
+                <div class="agent-grid"><div class="agent">
+                <div class="agent-icon">🧑💼</div>
+                <div class="agent-name">PM</div>
+                <div class="agent-task">等待任务</div>
+                <span class="status-badge status-idle">idle</span>
+            </div><div class="agent">
+                <div class="agent-icon">🔧</div>
+                <div class="agent-name">DEVOPS</div>
+                <div class="agent-task">Cloudflare Tunnel 暂不可用，建议使用本地访</div>
+                <span class="status-badge status-idle">idle</span>
+            </div><div class="agent">
+                <div class="agent-icon">🤖</div>
+                <div class="agent-name">DEV</div>
+                <div class="agent-task">等待任务</div>
+                <span class="status-badge status-idle">idle</span>
+            </div><div class="agent">
+                <div class="agent-icon">🔍</div>
+                <div class="agent-name">QA</div>
+                <div class="agent-task">等待任务</div>
+                <span class="status-badge status-idle">idle</span>
+            </div><div class="agent">
+                <div class="agent-icon">✓</div>
+                <div class="agent-name">CHECKER</div>
+                <div class="agent-task">等待任务</div>
+                <span class="status-badge status-idle">idle</span>
+            </div><div class="agent">
+                <div class="agent-icon">🏗️</div>
+                <div class="agent-name">ARCH</div>
+                <div class="agent-task">等待任务</div>
+                <span class="status-badge status-idle">idle</span>
+            </div><div class="agent">
+                <div class="agent-icon">📝</div>
+                <div class="agent-name">REQ</div>
+                <div class="agent-task">等待任务</div>
+                <span class="status-badge status-idle">idle</span>
+            </div></div>
+            </div>
+            
+            <div class="card">
+                <h2 style="color:#4ade80;margin-bottom:15px">💬 Agent Messages</h2>
+                <div class="message-list"><div class="message-item msg-assign">
+                <div class="message-time">22:40</div>
+                <div class="message-content">PM → DEVOPS: 检查并启用测试环境外部访问（Cloudflare Tunnel）</div>
+            </div><div class="message-item msg-done">
+                <div class="message-time">20:01</div>
+                <div class="message-content">DEV → PM: 招聘模块5个任务全部完成 (#188-192), 提交到main. 包括: 职位发布/申请管理/面试管理/流程跟踪/数据</div>
+            </div><div class="message-item msg-done">
+                <div class="message-time">19:58</div>
+                <div class="message-content">DEV → PM: Issue #191 完成: 招聘流程状态跟踪 (F-REC-004) - 流程状态/漏斗概览/时间统计/时间线API,</div>
+            </div><div class="message-item msg-done">
+                <div class="message-time">19:55</div>
+                <div class="message-content">DEV → PM: Issue #190 完成: 面试安排与管理 (F-REC-003) - 面试创建/评分/完成/取消API, 提交 12</div>
+            </div><div class="message-item msg-done">
+                <div class="message-time">19:41</div>
+                <div class="message-content">DEV → PM: Issue #189 完成: 简历收集与筛选 (F-REC-002) - 申请提交/状态更新/筛选/拒绝API, 提交 </div>
+            </div><div class="message-item msg-done">
+                <div class="message-time">19:34</div>
+                <div class="message-content">DEV → PM: Issue #188 完成: 职位发布与管理 (F-REC-001) - 创建/发布/暂停/恢复/关闭职位API, 提交</div>
+            </div><div class="message-item msg-assign">
+                <div class="message-time">19:11</div>
+                <div class="message-content">PM → DEV: 派发5个招聘模块开发任务: #188 职位发布管理, #189 简历收集筛选, #190 面试管理, #191 流程状态</div>
+            </div><div class="message-item msg-done">
+                <div class="message-time">15:24</div>
+                <div class="message-content">ARCH → PM: 教师招聘模块系统设计完成。已创建5个DEV任务：
 - Issue #188: 职位发布与管理 (F-REC-001)
 -</div>
-        </div><div class="message-item msg-info">
-            <div class="message-time">15:22</div>
-            <div class="message-content">ARCH → PM: 开始创建招聘模块的DEV任务</div>
-        </div><div class="message-item msg-assign">
-            <div class="message-time">15:03</div>
-            <div class="message-content">PM → ARCH: 设计 Issue #175: 教师招聘管理模块 (DB, API, UI)</div>
-        </div><div class="message-item msg-failed">
-            <div class="message-time">14:49</div>
-            <div class="message-content">CHECKER → PM: Review PASS with corrections: DB-SCHEMA, DATA-DICTIONARY, AP</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">14:48</div>
-            <div class="message-content">CHECKER → PM: REQ审查完成：PASS，需补充DB-SCHEMA/Data-Dictionary/API文档</div>
-        </div><div class="message-item msg-assign">
-            <div class="message-time">14:43</div>
-            <div class="message-content">PM → CHECKER: Review requirement doc for Issue #175: 教师招聘管理模块</div>
-        </div><div class="message-item msg-assign">
-            <div class="message-time">14:24</div>
-            <div class="message-content">PM → DEVOPS: Setup Docker images for Mac local testing environment</div>
-        </div><div class="message-item msg-assign">
-            <div class="message-time">14:23</div>
-            <div class="message-content">PM → DEVOPS: Setup Docker images for Mac local testing environment</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">11:03</div>
-            <div class="message-content">QA → PM: Dashboard 修复验证通过，DEVOPS 状态正确显示为 idle</div>
-        </div><div class="message-item msg-done">
-            <div class="message-time">11:03</div>
-            <div class="message-content">DEVOPS → PM: Tunnel URLs 生成完成，但 Cloudflare 530 问题仍存在，建议本地访问</div>
-        </div><div class="message-item msg-received">
-            <div class="message-time">10:20</div>
-            <div class="message-content">QA → PM: 开始验证 Dashboard 修复</div>
-        </div><div class="message-item msg-assign">
-            <div class="message-time">10:20</div>
-            <div class="message-content">PM → QA: 验证 Dashboard 修复：确认 PM→DEVOPS 任务分配状态正确显示</div>
-        </div><div class="message-item msg-received">
-            <div class="message-time">10:16</div>
-            <div class="message-content">DEVOPS → PM: 开始设置 localtunnel</div>
-        </div></div>
+            </div><div class="message-item msg-info">
+                <div class="message-time">15:22</div>
+                <div class="message-content">ARCH → PM: 开始创建招聘模块的DEV任务</div>
+            </div><div class="message-item msg-assign">
+                <div class="message-time">15:03</div>
+                <div class="message-content">PM → ARCH: 设计 Issue #175: 教师招聘管理模块 (DB, API, UI)</div>
+            </div><div class="message-item msg-failed">
+                <div class="message-time">14:49</div>
+                <div class="message-content">CHECKER → PM: Review PASS with corrections: DB-SCHEMA, DATA-DICTIONARY, AP</div>
+            </div></div>
+            </div>
         </div>
         
-        <div class="refresh">Updated: 2026-07-01 00:00:23 (GMT+8) | Source: agent-status.json</div>
+        <!-- Yesterday Tab Content -->
+        <div id="yesterday" class="tab-content">
+            <div class="card">
+                <h2 style="color:#4ade80;margin-bottom:15px">👥 Agents (Yesterday)</h2>
+                <div class="agent-grid"><div class="agent running">
+                <div class="agent-icon">🧑💼</div>
+                <div class="agent-name">PM</div>
+                <div class="agent-task">招聘模块开发调度</div>
+                <span class="status-badge status-running">running</span>
+            </div><div class="agent">
+                <div class="agent-icon">🔧</div>
+                <div class="agent-name">DEVOPS</div>
+                <div class="agent-task">测试环境维护</div>
+                <span class="status-badge status-idle">idle</span>
+            </div><div class="agent running">
+                <div class="agent-icon">🤖</div>
+                <div class="agent-name">DEV</div>
+                <div class="agent-task">招聘模块功能开发</div>
+                <span class="status-badge status-running">running</span>
+            </div><div class="agent">
+                <div class="agent-icon">🔍</div>
+                <div class="agent-name">QA</div>
+                <div class="agent-task">等待任务</div>
+                <span class="status-badge status-idle">idle</span>
+            </div><div class="agent">
+                <div class="agent-icon">✓</div>
+                <div class="agent-name">CHECKER</div>
+                <div class="agent-task">需求文档审查</div>
+                <span class="status-badge status-idle">idle</span>
+            </div><div class="agent">
+                <div class="agent-icon">🏗️</div>
+                <div class="agent-name">ARCH</div>
+                <div class="agent-task">招聘模块架构设计</div>
+                <span class="status-badge status-idle">idle</span>
+            </div><div class="agent">
+                <div class="agent-icon">📝</div>
+                <div class="agent-name">REQ</div>
+                <div class="agent-task">等待任务</div>
+                <span class="status-badge status-idle">idle</span>
+            </div></div>
+            </div>
+            
+            <div class="card">
+                <h2 style="color:#4ade80;margin-bottom:15px">💬 Agent Messages (Yesterday)</h2>
+                <div class="message-list"><div class="message-item msg-done">
+                <div class="message-time">14:48</div>
+                <div class="message-content">CHECKER → PM: REQ审查完成：PASS，需补充DB-SCHEMA/Data-Dictionary/API文档</div>
+            </div><div class="message-item msg-assign">
+                <div class="message-time">14:43</div>
+                <div class="message-content">PM → CHECKER: Review requirement doc for Issue #175: 教师招聘管理模块</div>
+            </div><div class="message-item msg-assign">
+                <div class="message-time">14:24</div>
+                <div class="message-content">PM → DEVOPS: Setup Docker images for Mac local testing environment</div>
+            </div><div class="message-item msg-done">
+                <div class="message-time">11:03</div>
+                <div class="message-content">QA → PM: Dashboard 修复验证通过，DEVOPS 状态正确显示为 idle</div>
+            </div><div class="message-item msg-done">
+                <div class="message-time">11:03</div>
+                <div class="message-content">DEVOPS → PM: Tunnel URLs 生成完成，但 Cloudflare 530 问题仍存在，建议本地访问</div>
+            </div><div class="message-item msg-received">
+                <div class="message-time">10:20</div>
+                <div class="message-content">QA → PM: 开始验证 Dashboard 修复</div>
+            </div><div class="message-item msg-assign">
+                <div class="message-time">10:20</div>
+                <div class="message-content">PM → QA: 验证 Dashboard 修复：确认 PM→DEVOPS 任务分配状态正确显示</div>
+            </div><div class="message-item msg-received">
+                <div class="message-time">10:16</div>
+                <div class="message-content">DEVOPS → PM: 开始设置 localtunnel</div>
+            </div></div>
+            </div>
+        </div>
+        
+        <div class="refresh">Updated: 2026-07-01 07:05:00 (GMT+8) | Source: agent-status.json</div>
+    </div>
+    <script>
+        // Tab Switching Logic
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                
+                // Remove active class from all buttons and contents
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to selected button and content
+                btn.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    </script>
     </div>
 </body>
 </html>
