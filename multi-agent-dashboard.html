@@ -41,15 +41,15 @@
         
         <div class="card">
             <h2 style="color:#4ade80;margin-bottom:15px">👥 Agents</h2>
-            <div class="agent-grid"><div class="agent">
-            <div class="agent-icon">🔧</div>
-            <div class="agent-name">DEVOPS</div>
-            <div class="agent-task">环境检查完成 - Cloudflare Quick Tunn</div>
-            <span class="status-badge status-idle">idle</span>
-        </div><div class="agent running">
+            <div class="agent-grid"><div class="agent running">
             <div class="agent-icon">🧑💼</div>
             <div class="agent-name">PM</div>
-            <div class="agent-task">DEVOPS 检查 tunnel 状态并优化 watchdo</div>
+            <div class="agent-task">协调 DEVOPS 设置 localtunnel</div>
+            <span class="status-badge status-running">running</span>
+        </div><div class="agent running">
+            <div class="agent-icon">🔧</div>
+            <div class="agent-name">DEVOPS</div>
+            <div class="agent-task">Setup localtunnel for frontend</div>
             <span class="status-badge status-running">running</span>
         </div><div class="agent">
             <div class="agent-icon">🤖</div>
@@ -109,6 +109,8 @@
             <div class="card">
                 <h2 style="color:#4ade80;margin-bottom:15px">📝 Commits</h2>
                 <div class="commit-item">
+            <span style="color:#60a5fa">efad0dd</span> skill: dashboard update 10:17
+        </div><div class="commit-item">
             <span style="color:#60a5fa">0573cf4</span> skill: dashboard update 10:16
         </div><div class="commit-item">
             <span style="color:#60a5fa">272de85</span> docs: Update PROJECT-WIKI header timesta
@@ -122,16 +124,14 @@
             <span style="color:#60a5fa">2003316</span> fix: move misplaced import in budget.dto
         </div><div class="commit-item">
             <span style="color:#60a5fa">5d96813</span> fix: resolve flaky abac cache timing tes
-        </div><div class="commit-item">
-            <span style="color:#60a5fa">d1cdcb9</span> fix(ci): clean tsbuildinfo before build 
         </div>
             </div>
         </div>
         
-        <div class="refresh">Refreshed: 2026-06-30 10:17:14 | Source: GitHub Events</div>
+        <div class="refresh">Refreshed: 2026-06-30 10:18:58 | Source: GitHub Events</div>
     </div>
     <script>
-    const STATE = [{"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "环境检查完成 - Cloudflare Quick Tunn", "color": "#f97316"}, {"icon": "🧑💼", "name": "PM", "status": "running", "task": "DEVOPS 检查 tunnel 状态并优化 watchdo", "color": "#fbbf24"}, {"icon": "🤖", "name": "DEV", "status": "idle", "task": "等待任务", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "idle", "task": "等待任务", "color": "#4ade80"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "等待任务", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "等待任务", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "idle", "task": "等待任务", "color": "#ec4899"}];
+    const STATE = [{"icon": "🧑💼", "name": "PM", "status": "running", "task": "协调 DEVOPS 设置 localtunnel", "color": "#fbbf24"}, {"icon": "🔧", "name": "DEVOPS", "status": "running", "task": "Setup localtunnel for frontend", "color": "#f97316"}, {"icon": "🤖", "name": "DEV", "status": "idle", "task": "等待任务", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "idle", "task": "等待任务", "color": "#4ade80"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "等待任务", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "等待任务", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "idle", "task": "等待任务", "color": "#ec4899"}];
     const ALL_MESSAGES = [{"timestamp": "2026-06-30T10:15:51", "from": "PM", "to": "DEVOPS", "message": "Setup localtunnel for frontend (8080) and backend (3000) as free alternative to Cloudflare", "type": "assign"}, {"timestamp": "2026-06-29T19:41:50", "from": "PM", "to": "DEVOPS", "message": "DEVOPS 检查 tunnel 状态并优化 watchdog", "type": "assign"}, {"timestamp": "2026-06-29T19:32:43", "from": "DEVOPS", "to": "PM", "message": "环境检查完成 - Cloudflare Quick Tunnel 数据平面不稳定，建议迁移到 Named Tunnel", "type": "done"}];
     let currentPeriod = 'today';
     
