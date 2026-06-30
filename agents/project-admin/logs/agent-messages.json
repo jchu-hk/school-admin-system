@@ -240,5 +240,17 @@
       "status": "idle",
       "task": "招聘模块5个任务全部完成 (#188-192), 提交到main. 包括: 职位发布/申请管理/面试"
     }
+  },
+  {
+    "timestamp": "2026-06-30T14:40:15Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "检查并启用测试环境外部访问（Cloudflare Tunnel）",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "检查并启用测试环境外部访问（Cloudflare Tunnel）"
+    }
   }
 ]
