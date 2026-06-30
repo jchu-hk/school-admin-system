@@ -15,6 +15,9 @@
 **/skills
 **/ui_spec
 **/arch
-**/scripts
 **/.github
 !node_modules
+!scripts/seed-*.sql
+!scripts/seed-*.sh
+!scripts/seed-*.ts
+!scripts/generate-test-data.js
