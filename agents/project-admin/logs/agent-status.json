@@ -1,39 +1,39 @@
 {
   "agents": {
     "PM": {
-      "status": "running",
-      "task": "协调 DEVOPS 设置 localtunnel",
-      "lastUpdate": "2026-06-30T10:16:00+08:00"
+      "status": "idle",
+      "task": "等待任务",
+      "lastUpdate": "2026-06-30T11:34:00+08:00"
     },
     "DEVOPS": {
       "status": "idle",
-      "task": "Tunnel setup complete - URLs generated but Cloudflare 530 issue persists",
-      "lastUpdate": "2026-06-30T11:03:00+08:00"
+      "task": "等待任务",
+      "lastUpdate": "2026-06-30T11:34:00+08:00"
     },
     "DEV": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T10:00:00+08:00"
+      "lastUpdate": "2026-06-30T11:34:00+08:00"
     },
     "QA": {
-      "status": "running",
-      "task": "验证 Dashboard 修复：确认 PM→DEVOPS 任务分配状态正确显示",
-      "lastUpdate": "2026-06-30T10:20:00+08:00"
+      "status": "idle",
+      "task": "等待任务",
+      "lastUpdate": "2026-06-30T11:34:00+08:00"
     },
     "CHECKER": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T10:00:00+08:00"
+      "lastUpdate": "2026-06-30T11:34:00+08:00"
     },
     "ARCH": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T10:00:00+08:00"
+      "lastUpdate": "2026-06-30T11:34:00+08:00"
     },
     "REQ": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T10:00:00+08:00"
+      "lastUpdate": "2026-06-30T11:34:00+08:00"
     }
   }
 }
