@@ -1,6 +1,6 @@
 # HEARTBEAT.md — 项目全景状况
 
-**更新时间**: 2026-06-29 17:15
+**更新时间**: 2026-06-29 21:50
 
 ---
 
@@ -373,6 +373,21 @@ agent-PM (调度中枢)
 |-------|------|------|
 | #132 | OPS系统维护文档 | ✅ 完成 |
 | #133 | 自动化回归测试 | ✅ 完成 |
+
+## ⚠️ CI/CD 问题 (2026-06-30 08:25 更新)
+
+**状态**: 触发force rebuild (`4781a34`)，等待CI验证
+
+**根因**: GitHub Actions缓存了旧的增量build，CI runner用的是 `dse.service.ts` 的旧版本
+- 本地build + test全部通过 (157/157)
+- CI失败但commit message声称"0 errors, 157/157"
+- 说明commit时没有正确执行CI build step
+
+**修复**: Push empty commit强制清除缓存
+
+**CI历史**: CI失败持续超过30+ commits
+
+---
 
 ## 🔄 Dashboard实时更新修复 (2026-06-26 23:55)
 
