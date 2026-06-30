@@ -19,20 +19,19 @@
         .status-badge { padding: 2px 6px; border-radius: 3px; font-size: 0.7em }
         .status-running { background: #4ade80; color: #1a1a2e }
         .status-idle { background: rgba(255,255,255,0.1); color: #9ca3af }
-        .message-filters { display: flex; gap: 8px; margin-bottom: 15px }
-        .filter-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #9ca3af; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85em; transition: all 0.2s }
         .message-list { max-height: 400px; overflow-y: auto }
         .message-item { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px; margin-bottom: 8px; border-left: 3px solid }
         .msg-done { border-left-color: #4ade80 }
         .msg-assign { border-left-color: #fbbf24 }
         .msg-received { border-left-color: #60a5fa }
         .msg-default { border-left-color: #6b7280 }
-        .refresh { text-align: center; color: #6b7280; font-size: 0.8em }
+        .refresh { text-align: center; color: #6b7280; font-size: 0.8em; margin-top: 20px }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🤖 Multi-Agent Dashboard <span style="font-size:0.6em;color:#6b7280">(GMT+8)</span></h1>
+        
         <div class="card">
             <h2 style="color:#4ade80;margin-bottom:15px">👥 Agents</h2>
             <div class="agent-grid"><div class="agent">
@@ -72,32 +71,31 @@
         <span class="status-badge status-idle">idle</span>
     </div></div>
         </div>
+        
         <div class="card">
-            <h2 style="color:#4ade80;margin-bottom:15px">💬 Messages</h2>
+            <h2 style="color:#4ade80;margin-bottom:15px">💬 Agent Messages</h2>
             <div class="message-list"><div class="message-item msg-assign">
-        <div class="message-time">02:15</div>
-        <div class="message-content">PM → DEVOPS: Setup localtunnel for frontend (8080) and backend </div>
+        <div class="message-time">10:15</div>
+        <div class="message-content">PM → DEVOPS: Setup localtunnel for frontend (8080) and backend (3000) as </div>
     </div><div class="message-item msg-received">
-        <div class="message-time">02:16</div>
+        <div class="message-time">10:16</div>
         <div class="message-content">DEVOPS → PM: 开始设置 localtunnel</div>
     </div><div class="message-item msg-assign">
-        <div class="message-time">02:20</div>
+        <div class="message-time">10:20</div>
         <div class="message-content">PM → QA: 验证 Dashboard 修复：确认 PM→DEVOPS 任务分配状态正确显示</div>
     </div><div class="message-item msg-received">
-        <div class="message-time">02:20</div>
+        <div class="message-time">10:20</div>
         <div class="message-content">QA → PM: 开始验证 Dashboard 修复</div>
     </div><div class="message-item msg-done">
-        <div class="message-time">03:03</div>
+        <div class="message-time">11:03</div>
         <div class="message-content">DEVOPS → PM: Tunnel URLs 生成完成，但 Cloudflare 530 问题仍存在，建议本地访问</div>
     </div><div class="message-item msg-done">
-        <div class="message-time">03:03</div>
+        <div class="message-time">11:03</div>
         <div class="message-content">QA → PM: Dashboard 修复验证通过，DEVOPS 状态正确显示为 idle</div>
-    </div><div class="message-item msg-done">
-        <div class="message-time">03:34</div>
-        <div class="message-content">PM → system: 所有任务完成，更新 Agent 模板，清理状态</div>
     </div></div>
         </div>
-        <div class="refresh">Updated: 2026-06-30 13:33:23 | Source: agent-status.json</div>
+        
+        <div class="refresh">Updated: 2026-06-30 13:52:51 (GMT+8)</div>
     </div>
 </body>
 </html>
