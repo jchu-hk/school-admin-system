@@ -88,6 +88,9 @@
                 <button class="filter-btn" onclick="setPeriod('all')">全部</button>
             </div>
             <div class="message-list" id="messageList"><div class="message-item msg-assign">
+            <div class="message-time">10:15</div>
+            <div class="message-content">PM → DEVOPS: Setup localtunnel for frontend (8080) and backend (3000) as free alternative to Cloudflare</div>
+        </div><div class="message-item msg-assign">
             <div class="message-time">19:41</div>
             <div class="message-content">PM → DEVOPS: DEVOPS 检查 tunnel 状态并优化 watchdog</div>
         </div><div class="message-item msg-done">
@@ -106,30 +109,30 @@
             <div class="card">
                 <h2 style="color:#4ade80;margin-bottom:15px">📝 Commits</h2>
                 <div class="commit-item">
-            <span style="color:#60a5fa">45685ec</span> fix: resolve test failures in abac, atte
+            <span style="color:#60a5fa">272de85</span> docs: Update PROJECT-WIKI header timesta
         </div><div class="commit-item">
-            <span style="color:#60a5fa">2744baa</span> fix: resolve CI/CD lint/test/build error
+            <span style="color:#60a5fa">9811373</span> docs: Move contact section to footer in 
         </div><div class="commit-item">
-            <span style="color:#60a5fa">64e8579</span> docs: add MISTAKE-LOG and TOKEN-LESS-EXP
+            <span style="color:#60a5fa">a237af0</span> fix(ci): restore removed DTO imports in 
         </div><div class="commit-item">
-            <span style="color:#60a5fa">8180c2b</span> docs: update agent-communication SKILL.m
+            <span style="color:#60a5fa">7174f2e</span> ci: force rebuild - clear cache (commit 
         </div><div class="commit-item">
-            <span style="color:#60a5fa">cb4163c</span> fix: remove commit inference from infer_
+            <span style="color:#60a5fa">2003316</span> fix: move misplaced import in budget.dto
         </div><div class="commit-item">
-            <span style="color:#60a5fa">8c61e5f</span> skill: dashboard update 20:06
+            <span style="color:#60a5fa">5d96813</span> fix: resolve flaky abac cache timing tes
         </div><div class="commit-item">
-            <span style="color:#60a5fa">c28ab3b</span> skill: dashboard update 20:03
+            <span style="color:#60a5fa">d1cdcb9</span> fix(ci): clean tsbuildinfo before build 
         </div><div class="commit-item">
-            <span style="color:#60a5fa">45a1659</span> feat: add agent-communication skill with
+            <span style="color:#60a5fa">c07455c</span> ci: force rebuild (empty commit to bypas
         </div>
             </div>
         </div>
         
-        <div class="refresh">Refreshed: 2026-06-30 00:00:57 | Source: GitHub Events</div>
+        <div class="refresh">Refreshed: 2026-06-30 10:16:24 | Source: GitHub Events</div>
     </div>
     <script>
     const STATE = [{"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "环境检查完成 - Cloudflare Quick Tunn", "color": "#f97316"}, {"icon": "🧑💼", "name": "PM", "status": "running", "task": "DEVOPS 检查 tunnel 状态并优化 watchdo", "color": "#fbbf24"}, {"icon": "🤖", "name": "DEV", "status": "idle", "task": "等待任务", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "idle", "task": "等待任务", "color": "#4ade80"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "等待任务", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "等待任务", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "idle", "task": "等待任务", "color": "#ec4899"}];
-    const ALL_MESSAGES = [{"timestamp": "2026-06-29T19:41:50", "from": "PM", "to": "DEVOPS", "message": "DEVOPS 检查 tunnel 状态并优化 watchdog", "type": "assign"}, {"timestamp": "2026-06-29T19:32:43", "from": "DEVOPS", "to": "PM", "message": "环境检查完成 - Cloudflare Quick Tunnel 数据平面不稳定，建议迁移到 Named Tunnel", "type": "done"}];
+    const ALL_MESSAGES = [{"timestamp": "2026-06-30T10:15:51", "from": "PM", "to": "DEVOPS", "message": "Setup localtunnel for frontend (8080) and backend (3000) as free alternative to Cloudflare", "type": "assign"}, {"timestamp": "2026-06-29T19:41:50", "from": "PM", "to": "DEVOPS", "message": "DEVOPS 检查 tunnel 状态并优化 watchdog", "type": "assign"}, {"timestamp": "2026-06-29T19:32:43", "from": "DEVOPS", "to": "PM", "message": "环境检查完成 - Cloudflare Quick Tunnel 数据平面不稳定，建议迁移到 Named Tunnel", "type": "done"}];
     let currentPeriod = 'today';
     
     function setPeriod(period) {
