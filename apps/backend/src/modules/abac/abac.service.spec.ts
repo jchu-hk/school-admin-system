@@ -568,7 +568,7 @@ describe('AbacService', () => {
       });
       expect(first.allow).toBe(true);
 
-      // 第二次调用（应该从缓存返回）
+      // 第二次调用（应该从缓存返回，耗时极短）
       const second = await service.evaluate({
         input: {
           role: 'SCHOOL_DIRECTOR',
@@ -578,7 +578,8 @@ describe('AbacService', () => {
         },
       });
       expect(second.allow).toBe(true);
-      expect(second.decisionTimeMs).toBeLessThanOrEqual(first.decisionTimeMs);
+      // 缓存调用耗时应该很短（<=5ms），容许CI环境时序抖动
+      expect(second.decisionTimeMs).toBeLessThanOrEqual(5);
     });
   });
 
