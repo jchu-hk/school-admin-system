@@ -8,6 +8,7 @@ import {
   IsBoolean,
   IsUUID,
   IsNotEmpty,
+  IsInt,
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';

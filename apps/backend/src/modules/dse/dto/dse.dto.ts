@@ -8,11 +8,14 @@ import {
   IsNumber,
   Min,
   MinLength,
+  ValidateNested,
+  IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { DseReleaseStatus } from '../entities/dse-release.entity';
 import { DseResultStatus, DseLevel } from '../entities/dse-result.entity';
 import { DseReviewStatus, DseReviewType } from '../entities/dse-review.entity';
+import { JupasStatus } from '../entities/dse-offer-tracking.entity';
 
 // ==================== DSE Release DTOs ====================
 

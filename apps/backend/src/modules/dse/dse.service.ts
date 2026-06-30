@@ -6,7 +6,13 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
+import { DseRelease } from './entities/dse-release.entity';
 import { DseResult, DseResultStatus } from './entities/dse-result.entity';
+import { DseReview, DseReviewStatus } from './entities/dse-review.entity';
+import {
+  DseOfferTracking,
+  JupasStatus,
+} from './entities/dse-offer-tracking.entity';
 import {
   CreateDseReleaseDto,
   UpdateDseReleaseDto,
@@ -86,7 +92,7 @@ export class DseService {
         `学年 ${dto.academicYear} 的放榜记录已存在`,
       );
     }
-    const _release = this.releaseRepo.create({ ...dto, releaseYear });
+    const release = this.releaseRepo.create({ ...dto, releaseYear });
     return this.releaseRepo.save(release);
   }
 
@@ -99,7 +105,7 @@ export class DseService {
   }
 
   async findOneRelease(id: string): Promise<DseRelease> {
-    const _release = await this.releaseRepo.findOne({ where: { id } });
+    const release = await this.releaseRepo.findOne({ where: { id } });
     if (!release) throw new NotFoundException(`放榜记录 #${id} 不存在`);
     return release;
   }
@@ -108,7 +114,7 @@ export class DseService {
     id: string,
     dto: UpdateDseReleaseDto,
   ): Promise<DseRelease> {
-    const _release = await this.findOneRelease(id);
+    const release = await this.findOneRelease(id);
     Object.assign(release, dto);
     return this.releaseRepo.save(release);
   }
@@ -214,7 +220,7 @@ export class DseService {
     applicantId: string,
   ): Promise<DseReview> {
     const dseResult = await this.findOneResult(dto.dseResultId);
-    const _release = await this.findOneRelease(dseResult.releaseId);
+    const release = await this.findOneRelease(dseResult.releaseId);
     if (new Date() > new Date(release.reviewDeadline ?? release.releaseDate)) {
       throw new BadRequestException('已超过覆核申请截止日期');
     }
@@ -333,7 +339,7 @@ export class DseService {
   // ==================== Statistics ====================
 
   async getStats(releaseId: string): Promise<DseStatsResponseDto> {
-    const _release = await this.findOneRelease(releaseId);
+    const release = await this.findOneRelease(releaseId);
     const results = await this.resultRepo.find({ where: { releaseId } });
     const reviews = await this.reviewRepo.find({
       where: { dseResultId: In(results.map((r) => r.id)) },
