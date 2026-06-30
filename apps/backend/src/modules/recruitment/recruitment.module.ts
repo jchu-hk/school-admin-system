@@ -9,6 +9,9 @@ import { RecruitmentApplicationController } from './recruitment-application.cont
 import { RecruitmentInterview } from './recruitment-interview.entity';
 import { RecruitmentInterviewService } from './recruitment-interview.service';
 import { RecruitmentInterviewController } from './recruitment-interview.controller';
+import { RecruitmentActivityLog } from './recruitment-activity-log.entity';
+import { RecruitmentWorkflowService } from './recruitment-workflow.service';
+import { RecruitmentWorkflowController } from './recruitment-workflow.controller';
 
 @Module({
   imports: [
@@ -16,22 +19,26 @@ import { RecruitmentInterviewController } from './recruitment-interview.controll
       RecruitmentPosition,
       RecruitmentApplication,
       RecruitmentInterview,
+      RecruitmentActivityLog,
     ]),
   ],
   controllers: [
     RecruitmentPositionController,
     RecruitmentApplicationController,
     RecruitmentInterviewController,
+    RecruitmentWorkflowController,
   ],
   providers: [
     RecruitmentPositionService,
     RecruitmentApplicationService,
     RecruitmentInterviewService,
+    RecruitmentWorkflowService,
   ],
   exports: [
     RecruitmentPositionService,
     RecruitmentApplicationService,
     RecruitmentInterviewService,
+    RecruitmentWorkflowService,
   ],
 })
 export class RecruitmentModule {}
