@@ -1,0 +1,158 @@
+# ============================================================
+# Smart School Admin System - Local Development (Mac)
+# ============================================================
+# Usage:
+#   docker compose -f infra/docker-compose.local.yml up -d
+#   docker compose -f infra/docker-compose.local.yml down
+# ============================================================
+
+services:
+  # ------------------------------------------------------------
+  # PostgreSQL Database
+  # ------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: school-admin-postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-school_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-school_admin123}
+      POSTGRES_DB: ${DB_NAME:-school_admin}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-school_admin} -d ${DB_NAME:-school_admin}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - school-network
+
+  # ------------------------------------------------------------
+  # Redis Cache
+  # ------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: school-admin-redis
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - school-network
+
+  # ------------------------------------------------------------
+  # Backend API Service (NestJS)
+  # ------------------------------------------------------------
+  backend:
+    image: ghcr.io/jchu-hk/school-admin-system/backend:latest
+    container_name: school-admin-backend
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3000
+      APP_NAME: SmartSchoolAdmin
+      TZ: Asia/Hong_Kong
+
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-school_admin}
+      DB_PASSWORD: ${DB_PASSWORD:-school_admin123}
+      DB_NAME: ${DB_NAME:-school_admin}
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+
+      OPA_URL: http://opa:8181
+
+      NOTIFICATION_CHANNEL: ${NOTIFICATION_CHANNEL:-mock}
+
+      COZE_API_KEY: ${COZE_API_KEY:-}
+      COZE_BOT_ID: ${COZE_BOT_ID:-}
+
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - school-network
+
+  # ------------------------------------------------------------
+  # Frontend Web Application (React)
+  # ------------------------------------------------------------
+  frontend:
+    image: ghcr.io/jchu-hk/school-admin-system/frontend:latest
+    container_name: school-admin-frontend
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - school-network
+
+  # ------------------------------------------------------------
+  # OPA (Open Policy Agent) - ABAC Policy Engine
+  # ------------------------------------------------------------
+  opa:
+    image: openpolicyagent/opa:0.62.0
+    container_name: school-admin-opa
+    ports:
+      - "${OPA_PORT:-8181}:8181"
+    command: run --server --log-level info --set=decision_logs.console=true
+    volumes:
+      - ./infra/opa/policies:/policies:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "opa", "eval", "1+1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - school-network
+
+# ============================================================
+# Networks
+# ============================================================
+networks:
+  school-network:
+    driver: bridge
+    name: school-admin-network
+
+# ============================================================
+# Volumes (Persistent Data)
+# ============================================================
+volumes:
+  postgres_data:
+    name: school-admin-postgres-data
+  redis_data:
+    name: school-admin-redis-data

@@ -4,15 +4,15 @@
 # =============================================================================
 
 # Stage 1: Build
-FROM docker.m.daocloud.io/library/node:22-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
 # Copy package files
-COPY package.json yarn.lock ./
+COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN yarn install
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -22,10 +22,10 @@ ARG VITE_API_URL=http://localhost:3000/api
 ENV VITE_API_URL=$VITE_API_URL
 
 # Build the frontend
-RUN yarn build
+RUN npm run build
 
 # Stage 2: Serve with nginx
-FROM docker.m.daocloud.io/library/nginx:alpine
+FROM nginx:alpine
 
 # Remove default nginx content
 RUN rm -rf /usr/share/nginx/html/*

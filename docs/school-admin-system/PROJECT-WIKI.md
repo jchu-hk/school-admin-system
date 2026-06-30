@@ -79,7 +79,7 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 ## 🧪 测试环境
 
-> ⚠️ **最后更新**: 2026-06-30 10:35 (GMT+8)
+> ⚠️ **最后更新**: 2026-06-30 14:10 (GMT+8)
 > ⚠️ Cloudflare Quick Tunnel 有间歇性连接问题
 
 | 服务 | 本地URL (本机) | 外部URL | 状态 |
@@ -94,6 +94,110 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 **DNS传播进度**: 通常需要5-10分钟生效
 | Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | ✅ 已配置 |
+
+### 🍎 Mac 本地测试环境 (Docker镜像)
+
+**Docker镜像仓库**: GitHub Container Registry (ghcr.io)
+
+#### 快速启动
+
+```bash
+# 1. 克隆代码库
+git clone https://github.com/jchu-hk/school-admin-system.git
+cd school-admin-system
+
+# 2. 拉取最新Docker镜像
+docker pull ghcr.io/jchu-hk/school-admin-system/backend:latest
+docker pull ghcr.io/jchu-hk/school-admin-system/frontend:latest
+
+# 3. 启动服务 (使用简化的本地配置)
+docker compose -f infra/docker-compose.local.yml up -d
+
+# 4. 查看日志
+docker compose -f infra/docker-compose.local.yml logs -f
+
+# 5. 停止服务
+docker compose -f infra/docker-compose.local.yml down
+```
+
+#### 验证服务
+
+```bash
+# 检查后端健康状态
+curl http://localhost:3000/api/health
+
+# 检查前端
+open http://localhost:8080
+```
+
+#### 配置说明
+
+**环境变量** (可选，在项目根目录创建 `.env` 文件):
+
+```bash
+# 数据库配置
+DB_USER=school_admin
+DB_PASSWORD=school_admin123
+DB_NAME=school_admin
+DB_PORT=5432
+
+# Redis配置
+REDIS_PORT=6379
+
+# 后端配置
+BACKEND_PORT=3000
+JWT_SECRET=change-me-in-production
+JWT_EXPIRES_IN=7d
+
+# 前端配置
+FRONTEND_PORT=8080
+
+# OPA配置
+OPA_PORT=8181
+
+# 日志级别
+LOG_LEVEL=info
+
+# 可选: AI服务配置
+COZE_API_KEY=
+COZE_BOT_ID=
+```
+
+#### Docker镜像信息
+
+| 镜像 | 仓库 | 标签 |
+|------|------|------|
+| 后端 | ghcr.io/jchu-hk/school-admin-system/backend | latest, commit-sha |
+| 前端 | ghcr.io/jchu-hk/school-admin-system/frontend | latest, commit-sha |
+
+**自动构建**: 当代码推送到 `main` 分支时，GitHub Actions会自动构建并推送最新镜像
+
+#### 常见问题
+
+**Q: 镜像拉取失败？**
+```bash
+# 确保Docker已登录GitHub Container Registry
+echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
+```
+
+**Q: 端口被占用？**
+修改 `.env` 文件中的端口配置，例如:
+```bash
+BACKEND_PORT=3001
+FRONTEND_PORT=8081
+```
+
+**Q: 数据库初始化失败？**
+```bash
+# 停止服务并清理数据卷
+docker compose -f infra/docker-compose.local.yml down -v
+# 重新启动
+docker compose -f infra/docker-compose.local.yml up -d
+```
+
+**Q: 查看镜像构建日志？**
+访问: https://github.com/jchu-hk/school-admin-system/actions/workflows/docker-build-push.yml
+
 
 ### 系统版本信息
 
