@@ -59,13 +59,24 @@
 
 ## 3. 执行流程
 
-### 3.1 启动时
+### 3.1 启动时 (REQUIRED)
+
+**Must call dashboard update BEFORE starting work:**
+```bash
+python3 skills/agent-communication/scripts/write_message.py \
+  --from QA \
+  --to PM \
+  --message "开始验收 Issue #{id}: {title}" \
+  --type received \
+  --status running
+```
 
 1. **记录开始时间**
-2. **创建Cron Job** - 定时向PM汇报状态
-3. **分析任务** - 制定测试计划
-4. **准备环境** - 确认测试环境可用
-5. **开始测试**
+2. **更新Dashboard状态** → QA: running ✅
+3. **创建Cron Job** - 定时向PM汇报状态
+4. **分析任务** - 制定测试计划
+5. **准备环境** - 确认测试环境可用
+6. **开始测试**
 
 ### 3.2 测试中
 
@@ -92,7 +103,26 @@
 - {remaining_time}
 ```
 
-### 3.3 完成时
+### 3.3 完成时 (REQUIRED)
+
+**Must call dashboard update BEFORE reporting results:**
+```bash
+# If PASS:
+python3 skills/agent-communication/scripts/write_message.py \
+  --from QA \
+  --to PM \
+  --message "Issue #{id} 验收通过" \
+  --type done \
+  --status idle
+
+# If FAIL:
+python3 skills/agent-communication/scripts/write_message.py \
+  --from QA \
+  --to PM \
+  --message "Issue #{id} 验收失败，发现 {n} 个Bug" \
+  --type failed \
+  --status idle
+```
 
 **验收通过:**
 ```markdown

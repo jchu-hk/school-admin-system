@@ -39,12 +39,23 @@
 
 ## 3. 执行流程
 
-### 3.1 启动时
+### 3.1 启动时 (REQUIRED)
+
+**Must call dashboard update BEFORE starting work:**
+```bash
+python3 skills/agent-communication/scripts/write_message.py \
+  --from DEV \
+  --to PM \
+  --message "开始执行 Issue #{id}: {title}" \
+  --type received \
+  --status running
+```
 
 1. **记录开始时间**
-2. **创建Cron Job** - 定时向PM汇报状态
-3. **分析任务** - 拆解为子任务
-4. **开始执行**
+2. **更新Dashboard状态** → DEV: running ✅
+3. **创建Cron Job** - 定时向PM汇报状态
+4. **分析任务** - 拆解为子任务
+5. **开始执行**
 
 ### 3.2 执行中
 
@@ -69,12 +80,23 @@
 - {remaining_time}
 ```
 
-### 3.3 完成时
+### 3.3 完成时 (REQUIRED)
 
-1. **提交代码** - git commit & push
-2. **创建PR** (如需要)
-3. **合并到main** (如已批准)
-4. **移交QA** - 发送HANDOFF消息
+**Must call dashboard update BEFORE sending HANDOFF:**
+```bash
+python3 skills/agent-communication/scripts/write_message.py \
+  --from DEV \
+  --to PM \
+  --message "Issue #{id} 开发完成，准备移交QA" \
+  --type done \
+  --status idle
+```
+
+1. **更新Dashboard状态** → DEV: idle ✅
+2. **提交代码** - git commit & push
+3. **创建PR** (如需要)
+4. **合并到main** (如已批准)
+5. **移交QA** - 发送HANDOFF message to PM
 
 ```markdown
 ## 🤖 DEV工作完成

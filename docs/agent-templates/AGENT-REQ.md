@@ -69,7 +69,17 @@
 
 ## 4. 模拟执行流程
 
-### 4.1 启动
+### 4.1 启动 (REQUIRED)
+
+**Must call dashboard update BEFORE starting simulation:**
+```bash
+python3 skills/agent-communication/scripts/write_message.py \
+  --from REQ \
+  --to PM \
+  --message "开始学校日常运作模拟" \
+  --type received \
+  --status running
+```
 
 ```markdown
 ## 🤖 REQ模拟启动
@@ -117,7 +127,17 @@
 {状态详情}
 ```
 
-### 4.4 完成报告
+### 4.4 完成报告 (REQUIRED)
+
+**Must call dashboard update BEFORE reporting completion:**
+```bash
+python3 skills/agent-communication/scripts/write_message.py \
+  --from REQ \
+  --to PM \
+  --message "学校日常运作模拟完成，发现 {n} 个问题" \
+  --type done \
+  --status idle
+```
 
 ```markdown
 ## 📋 REQ模拟完成报告

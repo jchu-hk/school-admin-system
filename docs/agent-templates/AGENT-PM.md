@@ -225,6 +225,22 @@
 
 ### 10.1 派工消息 (TASK_ASSIGN)
 
+**Step 1: PM updates Dashboard (REQUIRED before spawning)**
+```bash
+python3 skills/agent-communication/scripts/write_message.py \
+  --from PM \
+  --to {AGENT} \
+  --message "派发任务: Issue #{id}" \
+  --type assign \
+  --status running
+```
+
+**Step 2: Spawn Agent with task brief**
+
+**Step 3: Expect Agent to update Dashboard when starting/completing**
+- Agent will call write_message --status running when starting
+- Agent will call write_message --status idle when completing
+
 ```markdown
 ## 🤖 任务派工
 
@@ -241,6 +257,11 @@
 
 ### 参考文档
 {relevant_docs}
+
+### ⚠️ IMPORTANT
+You MUST call dashboard update when:
+1. Starting work: write_message --status running
+2. Completing work: write_message --status idle
 
 ---
 请回复 STATUS_UPDATE 开始执行。
