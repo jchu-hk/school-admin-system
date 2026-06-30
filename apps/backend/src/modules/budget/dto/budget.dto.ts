@@ -16,6 +16,8 @@ import {
   ExpenseCategory,
   ExpenseStatus,
   BudgetAdjustType,
+  FiscalBudgetCategory,
+  BudgetExecutionStatus,
 } from '../entities/budget.entity';
 
 // ==================== Budget DTOs ====================
@@ -382,11 +384,6 @@ export class MonthlyTrendDto {
 }
 
 // ==================== F-NEW-004: Annual Budget DTOs ====================
-
-import {
-  FiscalBudgetCategory,
-  BudgetExecutionStatus,
-} from '../entities/budget.entity';
 
 export class CreateAnnualBudgetDto {
   @ApiProperty({ description: '财政年度', example: 2026 })
