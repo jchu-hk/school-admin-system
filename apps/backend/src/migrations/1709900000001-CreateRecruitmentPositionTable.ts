@@ -65,7 +65,9 @@ export class CreateRecruitmentPositionTable1709900000001 implements MigrationInt
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE IF EXISTS "recruitment_positions" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "recruitment_positions" CASCADE`,
+    );
     await queryRunner.query(`DROP TYPE IF EXISTS "position_status_enum"`);
     await queryRunner.query(`DROP TYPE IF EXISTS "employment_type_enum"`);
   }

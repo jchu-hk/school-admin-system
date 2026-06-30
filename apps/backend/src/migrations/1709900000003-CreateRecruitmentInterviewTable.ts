@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateRecruitmentInterviewTable1709900000003
-  implements MigrationInterface
-{
+export class CreateRecruitmentInterviewTable1709900000003 implements MigrationInterface {
   name = 'CreateRecruitmentInterviewTable1709900000003';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -88,6 +86,8 @@ export class CreateRecruitmentInterviewTable1709900000003
     );
     await queryRunner.query(`DROP TYPE IF EXISTS "interview_status_enum"`);
     await queryRunner.query(`DROP TYPE IF EXISTS "interview_type_enum"`);
-    await queryRunner.query(`DROP TYPE IF EXISTS "overall_recommendation_enum"`);
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "overall_recommendation_enum"`,
+    );
   }
 }

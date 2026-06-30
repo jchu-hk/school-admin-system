@@ -245,8 +245,7 @@ describe('GradeRecordsService', () => {
 
       // Assert that alert was created with correct attributes using the hoisted mock
       const alertCreateCall = mockManagerCreate.mock.calls.find(
-        (call: any[]) =>
-          call[1]?.type === AlertType.GRADE_REVOKED,
+        (call: any[]) => call[1]?.type === AlertType.GRADE_REVOKED,
       );
       expect(alertCreateCall).toBeDefined();
       expect(alertCreateCall[1]).toMatchObject({

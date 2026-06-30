@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateRecruitmentApplicationTable1709900000002
-  implements MigrationInterface
-{
+export class CreateRecruitmentApplicationTable1709900000002 implements MigrationInterface {
   name = 'CreateRecruitmentApplicationTable1709900000002';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -73,8 +71,6 @@ export class CreateRecruitmentApplicationTable1709900000002
     await queryRunner.query(
       `DROP TABLE IF EXISTS "recruitment_applications" CASCADE`,
     );
-    await queryRunner.query(
-      `DROP TYPE IF EXISTS "application_status_enum"`,
-    );
+    await queryRunner.query(`DROP TYPE IF EXISTS "application_status_enum"`);
   }
 }
