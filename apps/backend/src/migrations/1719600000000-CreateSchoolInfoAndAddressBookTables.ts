@@ -332,7 +332,10 @@ export class CreateSchoolInfoAndAddressBookTables1719600000000 implements Migrat
     `);
 
     // Drop indexes
-    await queryRunner.dropIndex('address_book', 'IDX_address_book_contact_type');
+    await queryRunner.dropIndex(
+      'address_book',
+      'IDX_address_book_contact_type',
+    );
     await queryRunner.dropIndex('address_book', 'IDX_address_book_user_id');
     await queryRunner.dropIndex('address_book', 'IDX_address_book_school_id');
     await queryRunner.dropIndex('school_info', 'IDX_school_info_code');

@@ -788,3 +788,291 @@ inquiries (id)
 
 **索引**: (dse_result_id), (jupas_status), UNIQUE(dse_result_id)
 
+---
+
+## 模块 14: 教师招聘管理模块 (Module 14 - Recruitment Management)
+
+## 表: recruitment_positions — 招聘职位
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 职位ID |
+| title | VARCHAR(100) | NOT NULL | 职位名称 |
+| subject | VARCHAR(50) | NOT NULL | 教授学科 |
+| employment_type | ENUM | NOT NULL | 雇佣类型 (FULL_TIME/PART_TIME/CONTRACT) |
+| salary_min | DECIMAL(10,2) | NOT NULL | 最低薪资 |
+| salary_max | DECIMAL(10,2) | NOT NULL | 最高薪资 |
+| salary_currency | VARCHAR(10) | DEFAULT 'HKD' | 薪资货币 |
+| location | VARCHAR(200) | NOT NULL | 工作地点 |
+| requirements | JSONB | NOT NULL | 任职要求列表 (数组) |
+| responsibilities | JSONB | NOT NULL | 工作职责列表 (数组) |
+| benefits | JSONB | | 福利待遇列表 (数组) |
+| application_deadline | DATE | NOT NULL | 申请截止日期 |
+| status | ENUM | NOT NULL, DEFAULT 'DRAFT' | 职位状态 (DRAFT/PUBLISHED/PAUSED/CLOSED) |
+| published_at | TIMESTAMPTZ | | 发布时间 |
+| paused_at | TIMESTAMPTZ | | 暂停时间 |
+| closed_at | TIMESTAMPTZ | | 关闭时间 |
+| school_id | UUID | FK→schools | 学校ID |
+| created_by | UUID | FK→users | 创建人 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+| deleted_at | TIMESTAMPTZ | | 软删除 |
+
+**索引**: PRIMARY KEY (id), (status), (subject), (application_deadline), (school_id)
+**外键**: (school_id)→schools(id), (created_by)→users(id)
+
+**枚举值 — employment_type:**
+```
+FULL_TIME  — 全职
+PART_TIME  — 兼职
+CONTRACT   — 合约
+```
+
+**枚举值 — status (position_status):**
+```
+DRAFT      — 草稿
+PUBLISHED  — 已发布
+PAUSED     — 已暂停
+CLOSED     — 已关闭
+```
+
+---
+
+## 表: recruitment_applications — 招聘申请
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 申请ID |
+| application_number | VARCHAR(50) | UNIQUE, NOT NULL | 申请编号 (APP-YYYY-NNNN) |
+| position_id | UUID | FK→recruitment_positions, NOT NULL | 职位ID |
+| applicant_name | VARCHAR(100) | NOT NULL | 申请人姓名 |
+| email | VARCHAR(255) | NOT NULL | 邮箱 |
+| phone | VARCHAR(20) | NOT NULL | 联系电话 |
+| cv_url | VARCHAR(500) | NOT NULL | 简历文件URL |
+| cover_letter | TEXT | | 求职信 |
+| education | JSONB | NOT NULL | 教育背景 (数组) |
+| experience | JSONB | | 工作经历 (数组) |
+| status | ENUM | NOT NULL, DEFAULT 'NEW' | 申请状态 (NEW/SCREENING/SHORTLISTED/INTERVIEW/REJECTED/OFFER) |
+| screening_notes | TEXT | | 筛选备注 |
+| rejection_reason | TEXT | | 拒绝原因 |
+| rejected_at | TIMESTAMPTZ | | 拒绝时间 |
+| rejected_by | UUID | FK→users | 拒绝人 |
+| submitted_at | TIMESTAMPTZ | NOT NULL | 提交时间 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+| deleted_at | TIMESTAMPTZ | | 软删除 |
+
+**索引**: PRIMARY KEY (id), UNIQUE (application_number), (position_id), (status), (email), (submitted_at)
+**外键**: (position_id)→recruitment_positions(id), (rejected_by)→users(id)
+
+**枚举值 — status (application_status):**
+```
+NEW         — 新申请
+SCREENING   — 筛选中
+SHORTLISTED — 候选
+INTERVIEW   — 面试中
+REJECTED    — 已淘汰
+OFFER       — 已发Offer
+```
+
+**JSONB 字段结构 — education:**
+```json
+[
+  {
+    "degree": "学士",
+    "school": "香港中文大学",
+    "major": "中文",
+    "year": "2015"
+  }
+]
+```
+
+**JSONB 字段结构 — experience:**
+```json
+[
+  {
+    "company": "XX中学",
+    "position": "中文科教师",
+    "duration": "2015-2020",
+    "description": "教授中一至中三中文科"
+  }
+]
+```
+
+---
+
+## 表: recruitment_interviews — 面试安排
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 面试ID |
+| application_id | UUID | FK→recruitment_applications, NOT NULL | 申请ID |
+| interview_date | TIMESTAMPTZ | NOT NULL | 面试时间 |
+| duration_minutes | INTEGER | NOT NULL | 面试时长 (分钟) |
+| interview_type | ENUM | NOT NULL | 面试形式 (ONLINE/ONSITE) |
+| meeting_link | VARCHAR(500) | | 线上会议链接 |
+| location | VARCHAR(200) | | 线下面试地点 |
+| notes | TEXT | | 备注 |
+| status | ENUM | NOT NULL, DEFAULT 'SCHEDULED' | 面试状态 (SCHEDULED/COMPLETED/CANCELLED) |
+| overall_recommendation | ENUM | | 综合建议 (RECOMMEND/NOT_RECOMMEND/PENDING) |
+| final_notes | TEXT | | 最终评语 |
+| cancelled_at | TIMESTAMPTZ | | 取消时间 |
+| cancelled_by | UUID | FK→users | 取消人 |
+| cancellation_reason | TEXT | | 取消原因 |
+| completed_at | TIMESTAMPTZ | | 完成时间 |
+| completed_by | UUID | FK→users | 完成人 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id), (application_id), (interview_date), (status)
+**外键**: (application_id)→recruitment_applications(id), (cancelled_by)→users(id), (completed_by)→users(id)
+
+**枚举值 — interview_type:**
+```
+ONLINE  — 线上面试
+ONSITE  — 线下面试
+```
+
+**枚举值 — status (interview_status):**
+```
+SCHEDULED  — 已安排
+COMPLETED  — 已完成
+CANCELLED  — 已取消
+```
+
+**枚举值 — overall_recommendation:**
+```
+RECOMMEND       — 推荐录用
+NOT_RECOMMEND  — 不推荐录用
+PENDING         — 待定
+```
+
+---
+
+## 表: recruitment_interviewers — 面试官
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 关系ID |
+| interview_id | UUID | FK→recruitment_interviews, NOT NULL | 面试ID |
+| interviewer_id | UUID | FK→users, NOT NULL | 面试官ID |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id), (interview_id, interviewer_id)
+**外键**: (interview_id)→recruitment_interviews(id), (interviewer_id)→users(id)
+
+---
+
+## 表: recruitment_interview_scores — 面试评分
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 评分ID |
+| interview_id | UUID | FK→recruitment_interviews, NOT NULL | 面试ID |
+| interviewer_id | UUID | FK→users, NOT NULL | 面试官ID |
+| criterion | VARCHAR(100) | NOT NULL | 评分维度 |
+| score | INTEGER | NOT NULL, CHECK (score >= 1 AND score <= 5) | 评分 (1-5) |
+| comment | TEXT | | 评语 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id), (interview_id, interviewer_id, criterion)
+**外键**: (interview_id)→recruitment_interviews(id), (interviewer_id)→users(id)
+
+---
+
+## 表: recruitment_offers — 录用Offer
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | Offer ID |
+| offer_number | VARCHAR(50) | UNIQUE, NOT NULL | Offer编号 (OFF-YYYY-NNNN) |
+| application_id | UUID | FK→recruitment_applications, NOT NULL | 申请ID |
+| salary | DECIMAL(10,2) | NOT NULL | 薪资 |
+| start_date | DATE | NOT NULL | 预计到职日期 |
+| position | VARCHAR(100) | NOT NULL | 录用职位 |
+| benefits_package | JSONB | | 福利套餐 |
+| status | ENUM | NOT NULL, DEFAULT 'PENDING' | Offer状态 (PENDING/ACCEPTED/DECLINED/SIGNED) |
+| valid_until | DATE | NOT NULL | Offer有效期 |
+| sent_at | TIMESTAMPTZ | | 发送时间 |
+| responded_at | TIMESTAMPTZ | | 回应时间 |
+| acceptance_token | VARCHAR(255) | | 接受令牌 (用于外部链接) |
+| signed_contract_url | VARCHAR(500) | | 已签约合同URL |
+| signed_at | TIMESTAMPTZ | | 签约时间 |
+| created_by | UUID | FK→users | 创建人 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id), UNIQUE (offer_number), (application_id), (status), (acceptance_token)
+**外键**: (application_id)→recruitment_applications(id), (created_by)→users(id)
+
+**枚举值 — status (offer_status):**
+```
+PENDING    — 待回应
+ACCEPTED   — 已接受
+DECLINED   — 已拒绝
+SIGNED     — 已签约
+```
+
+**JSONB 字段结构 — benefits_package:**
+```json
+{
+  "mpf": true,
+  "medical": true,
+  "annual_leave": 14,
+  "housing_allowance": false,
+  "transport_allowance": false
+}
+```
+
+---
+
+## 表: recruitment_onboarding — 入职流程
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 入职流程ID |
+| offer_id | UUID | FK→recruitment_offers, NOT NULL | Offer ID |
+| teacher_profile_id | UUID | FK→users | 教师档案ID (入职后关联) |
+| start_date | DATE | NOT NULL | 到职日期 |
+| status | ENUM | NOT NULL, DEFAULT 'PENDING' | 入职状态 (PENDING/IN_PROGRESS/COMPLETED) |
+| completed_at | TIMESTAMPTZ | | 完成时间 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id), (offer_id), (teacher_profile_id), (status)
+**外键**: (offer_id)→recruitment_offers(id), (teacher_profile_id)→users(id)
+
+**枚举值 — status (onboarding_status):**
+```
+PENDING      — 待开始
+IN_PROGRESS  — 进行中
+COMPLETED    — 已完成
+```
+
+---
+
+## 表: recruitment_onboarding_tasks — 入职任务
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 任务ID |
+| onboarding_id | UUID | FK→recruitment_onboarding, NOT NULL | 入职流程ID |
+| item | VARCHAR(200) | NOT NULL | 任务项目 |
+| description | TEXT | | 任务描述 |
+| required | BOOLEAN | NOT NULL, DEFAULT true | 是否必填 |
+| status | ENUM | NOT NULL, DEFAULT 'PENDING' | 任务状态 (PENDING/COMPLETED) |
+| document_url | VARCHAR(500) | | 文档URL |
+| completed_at | TIMESTAMPTZ | | 完成时间 |
+| completed_by | UUID | FK→users | 完成人 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id), (onboarding_id), (status)
+**外键**: (onboarding_id)→recruitment_onboarding(id), (completed_by)→users(id)
+
+**枚举值 — status (task_status):**
+```
+PENDING    — 待完成
+COMPLETED  — 已完成
+```
+

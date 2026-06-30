@@ -1,4 +1,10 @@
-import { MigrationInterface, QueryRunner, Table, TableIndex, TableForeignKey } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableIndex,
+  TableForeignKey,
+} from 'typeorm';
 
 /**
  * 创建DSE模块的4张核心表
@@ -529,8 +535,14 @@ export class CreateDseTables1782530500000 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // 删除外键
-    await queryRunner.dropForeignKey('dse_offer_tracking', 'fk_dse_offer_tracking_student');
-    await queryRunner.dropForeignKey('dse_offer_tracking', 'fk_dse_offer_tracking_result');
+    await queryRunner.dropForeignKey(
+      'dse_offer_tracking',
+      'fk_dse_offer_tracking_student',
+    );
+    await queryRunner.dropForeignKey(
+      'dse_offer_tracking',
+      'fk_dse_offer_tracking_result',
+    );
     await queryRunner.dropForeignKey('dse_reviews', 'fk_dse_reviews_applicant');
     await queryRunner.dropForeignKey('dse_reviews', 'fk_dse_reviews_result');
     await queryRunner.dropForeignKey('dse_results', 'fk_dse_results_student');

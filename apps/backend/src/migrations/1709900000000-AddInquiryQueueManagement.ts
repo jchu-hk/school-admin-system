@@ -89,13 +89,23 @@ export class AddInquiryQueueManagement1709900000000 implements MigrationInterfac
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // 删除索引
-    await queryRunner.query(`DROP INDEX IF EXISTS "idx_parent_inquiries_timeout_warning";`);
-    await queryRunner.query(`DROP INDEX IF EXISTS "idx_parent_inquiries_transfer_status";`);
-    await queryRunner.query(`DROP INDEX IF EXISTS "idx_parent_inquiries_escalation_required";`);
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "idx_parent_inquiries_timeout_warning";`,
+    );
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "idx_parent_inquiries_transfer_status";`,
+    );
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "idx_parent_inquiries_escalation_required";`,
+    );
 
     // 删除外键约束
-    await queryRunner.query(`ALTER TABLE "parent_inquiries" DROP CONSTRAINT IF EXISTS "fk_inquiry_transfer_to";`);
-    await queryRunner.query(`ALTER TABLE "parent_inquiries" DROP CONSTRAINT IF EXISTS "fk_inquiry_transferred_by";`);
+    await queryRunner.query(
+      `ALTER TABLE "parent_inquiries" DROP CONSTRAINT IF EXISTS "fk_inquiry_transfer_to";`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "parent_inquiries" DROP CONSTRAINT IF EXISTS "fk_inquiry_transferred_by";`,
+    );
 
     // 删除字段
     await queryRunner.query(`
@@ -110,7 +120,9 @@ export class AddInquiryQueueManagement1709900000000 implements MigrationInterfac
 
     // 删除枚举类型（谨慎）
     await queryRunner.query(`DROP TYPE IF EXISTS "inquiry_sentiment_enum";`);
-    await queryRunner.query(`DROP TYPE IF EXISTS "timeout_warning_level_enum";`);
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "timeout_warning_level_enum";`,
+    );
     await queryRunner.query(`DROP TYPE IF EXISTS "transfer_status_enum";`);
   }
 }

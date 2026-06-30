@@ -91,11 +91,19 @@ export class AddParentPasswordTables1718755200000 implements MigrationInterface 
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP INDEX IF EXISTS "idx_otp_requests_phone_date"`);
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "idx_otp_requests_phone_date"`,
+    );
     await queryRunner.query(`DROP INDEX IF EXISTS "idx_otp_requests_user"`);
-    await queryRunner.query(`DROP INDEX IF EXISTS "idx_temporary_passwords_user"`);
-    await queryRunner.query(`DROP INDEX IF EXISTS "idx_parent_student_links_student"`);
-    await queryRunner.query(`DROP INDEX IF EXISTS "idx_parent_student_links_parent"`);
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "idx_temporary_passwords_user"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "idx_parent_student_links_student"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX IF EXISTS "idx_parent_student_links_parent"`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "otp_requests"`);
     await queryRunner.query(`DROP TABLE IF EXISTS "temporary_passwords"`);
     await queryRunner.query(`DROP TABLE IF EXISTS "parent_student_links"`);

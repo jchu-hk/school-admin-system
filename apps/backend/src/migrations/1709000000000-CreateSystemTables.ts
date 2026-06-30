@@ -296,7 +296,10 @@ export class CreateSystemTables1709000000000 implements MigrationInterface {
     await queryRunner.dropIndex('system_logs', 'IDX_system_logs_module');
     await queryRunner.dropIndex('system_logs', 'IDX_system_logs_created_at');
     await queryRunner.dropIndex('system_logs', 'IDX_system_logs_level');
-    await queryRunner.dropIndex('system_configs', 'IDX_system_configs_category');
+    await queryRunner.dropIndex(
+      'system_configs',
+      'IDX_system_configs_category',
+    );
 
     // 删除表
     await queryRunner.dropTable('system_users');
