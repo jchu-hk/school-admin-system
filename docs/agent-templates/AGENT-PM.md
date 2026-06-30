@@ -221,50 +221,62 @@
 
 ---
 
-## 10. 消息模板
+## 10. ⚠️ 重要：Agent Dashboard 更新规则
 
-### 10.1 派工消息 (TASK_ASSIGN)
+**核心原则**：每个 Agent 自己负责更新自己的 Dashboard 状态
 
-**Step 1: PM updates Dashboard (REQUIRED before spawning)**
+### 10.1 每个 Agent 必须做什么
+
+所有 Agent (PM, DEV, QA, DEVOPS, CHECKER, ARCH, REQ) 必须在关键节点调用 `write_message.py`：
+
+| 时机 | 命令 | 说明 |
+|------|------|------|
+| 派发任务 (PM) | `--from PM --to AGENT --type assign --status running` | 记录派工，更新 PM 状态 |
+| 接收任务 (Agent) | `--from AGENT --to PM --type received --status running` | 记录接收，更新 Agent 状态 |
+| 完成任务 (Agent) | `--from AGENT --to PM --type done --status idle` | 记录完成，更新 Agent 状态 |
+
+### 10.2 write_message.py 的功能
+
+每个 Agent 调用 `write_message.py` 会自动完成：
+1. ✅ 写入 `agent-messages.json`（消息日志）
+2. ✅ 自动更新 Dashboard HTML
+3. ✅ 推送 Dashboard 到 GitHub
+
+PM 不需要替其他 Agent 更新 Dashboard。
+
+### 10.3 派工模板
+
+**PM 派发任务时执行**:
 ```bash
+# Step 1: PM 记录派发消息
 python3 skills/agent-communication/scripts/write_message.py \
   --from PM \
   --to {AGENT} \
   --message "派发任务: Issue #{id}" \
   --type assign \
   --status running
+
+# Step 2: Spawn Agent
+sessions_spawn --task "{task_description}" ...
 ```
 
-**Step 2: Spawn Agent with task brief**
+**Agent 接收任务后执行** (Agent 必须自己做):
+```bash
+# Agent 第1件事：记录任务接收
+python3 skills/agent-communication/scripts/write_message.py \
+  --from {AGENT} \
+  --to PM \
+  --message "开始执行: {task}" \
+  --type received \
+  --status running
 
-**Step 3: Expect Agent to update Dashboard when starting/completing**
-- Agent will call write_message --status running when starting
-- Agent will call write_message --status idle when completing
-
-```markdown
-## 🤖 任务派工
-
-**接收**: {agent_name}
-**Issue**: #{id} - {title}
-**时间**: {timestamp}
-**期望完成**: {deadline}
-
-### 任务描述
-{issue_body}
-
-### 验收标准
-{acceptance_criteria}
-
-### 参考文档
-{relevant_docs}
-
-### ⚠️ IMPORTANT
-You MUST call dashboard update when:
-1. Starting work: write_message --status running
-2. Completing work: write_message --status idle
-
----
-请回复 STATUS_UPDATE 开始执行。
+# Agent 完成后：记录任务完成
+python3 skills/agent-communication/scripts/write_message.py \
+  --from {AGENT} \
+  --to PM \
+  --message "任务完成: {result}" \
+  --type done \
+  --status idle
 ```
 
 ### 10.2 提醒消息 (REMINDER)

@@ -4,11 +4,12 @@ Write agent message to unified message log.
 This should be called by ALL agents when they communicate.
 
 Usage:
-  python write_agent_message.py --from PM --to DEVOPS --message "派发任务: healthcheck" --type assign
+  python write_message.py --from PM --to DEVOPS --message "派发任务" --type assign --status running
 
 Features:
 - Writes to agent-messages.json
-- Auto-updates dashboard after each message
+- Auto-updates dashboard after each message (reads local files only)
+- Agent status is tracked via --status parameter
 """
 
 import argparse
@@ -17,8 +18,10 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-MESSAGE_FILE = Path("/workspace/projects/workspace/agents/project-admin/logs/agent-messages.json")
-SKILL_DIR = Path(__file__).parent
+# Workspace root
+WORKSPACE = Path("/workspace/projects/workspace")
+MESSAGE_FILE = WORKSPACE / "agents/project-admin/logs/agent-messages.json"
+DASHBOARD_SCRIPT = WORKSPACE / "skills/multi-agent-dashboard/scripts/update_dashboard.py"
 
 def write_message(from_agent: str, to_agent: str, message: str, msg_type: str = "default", status: str = None, auto_update_dashboard: bool = True):
     """Write message to unified log"""
@@ -56,12 +59,12 @@ def write_message(from_agent: str, to_agent: str, message: str, msg_type: str = 
     print(f"✅ Message logged: {from_agent} → {to_agent}: {message[:50]}")
     
     # Auto-update dashboard after writing message
-    if auto_update_dashboard:
+    if auto_update_dashboard and DASHBOARD_SCRIPT.exists():
         try:
             result = subprocess.run(
-                ["python3", str(SKILL_DIR / "update_dashboard.py"), "--repo", "jchu-hk/school-admin-system"],
+                ["python3", str(DASHBOARD_SCRIPT)],
                 capture_output=True, text=True, timeout=60,
-                cwd=str(SKILL_DIR.parent.parent)
+                cwd=str(WORKSPACE)
             )
             if result.returncode == 0:
                 print("✅ Dashboard auto-updated")
@@ -69,19 +72,23 @@ def write_message(from_agent: str, to_agent: str, message: str, msg_type: str = 
                 print(f"⚠️ Dashboard update failed: {result.stderr[:100]}")
         except Exception as e:
             print(f"⚠️ Dashboard auto-update error: {e}")
+    elif auto_update_dashboard:
+        print(f"⚠️ Dashboard script not found: {DASHBOARD_SCRIPT}")
     
     return new_msg
 
 def main():
     parser = argparse.ArgumentParser(description="Write agent message to unified log")
-    parser.add_argument("--from", dest="from_agent", required=True, help="Sender agent (PM/DEV/QA/DEVOPS/etc)")
-    parser.add_argument("--to", dest="to_agent", required=True, help="Receiver agent")
+    parser.add_argument("--from", dest="from_agent", required=True, 
+                        choices=["PM", "DEV", "QA", "DEVOPS", "CHECKER", "ARCH", "REQ"],
+                        help="Sender agent")
+    parser.add_argument("--to", dest="to_agent", required=True, help="Receiver agent (PM/DEV/QA/DEVOPS/CHECKER/ARCH/REQ/system)")
     parser.add_argument("--message", required=True, help="Message content")
     parser.add_argument("--type", dest="msg_type", default="default", 
                         choices=["assign", "received", "done", "failed", "passed", "info", "default"],
                         help="Message type")
     parser.add_argument("--status", dest="agent_status", default=None,
-                        choices=["running", "idle", "done", "failed"],
+                        choices=["running", "idle"],
                         help="Agent status (optional, for state tracking)")
     parser.add_argument("--no-auto-update", dest="no_auto_update", action="store_true",
                         help="Skip dashboard auto-update")

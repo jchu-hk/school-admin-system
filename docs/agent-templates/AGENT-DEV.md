@@ -39,9 +39,19 @@
 
 ## 3. 执行流程
 
-### 3.1 启动时 (REQUIRED)
+### ⚠️ 重要：每个 Agent 必须自己调用 write_message.py
 
-**Must call dashboard update BEFORE starting work:**
+**工作原理**：
+- 每个 Agent 在关键节点（启动/完成）必须自己调用 `write_message.py`
+- 这个脚本会自动：
+  1. 记录消息到 `agent-messages.json`
+  2. 自动更新 Dashboard HTML
+  3. 推送到 GitHub
+- PM 不需要替其他 Agent 更新 Dashboard
+
+### 3.1 启动时 (REQUIRED - 每个 Agent 必须执行)
+
+**第1步：调用 write_message.py 记录任务接收**
 ```bash
 python3 skills/agent-communication/scripts/write_message.py \
   --from DEV \
@@ -51,11 +61,14 @@ python3 skills/agent-communication/scripts/write_message.py \
   --status running
 ```
 
+**这会自动完成：**
+- ✅ 记录消息到 agent-messages.json
+- ✅ 更新 Dashboard: DEV → running
+- ✅ 推送 Dashboard 到 GitHub
+
 1. **记录开始时间**
-2. **更新Dashboard状态** → DEV: running ✅
-3. **创建Cron Job** - 定时向PM汇报状态
-4. **分析任务** - 拆解为子任务
-5. **开始执行**
+2. **分析任务** - 拆解为子任务
+3. **开始执行**
 
 ### 3.2 执行中
 
