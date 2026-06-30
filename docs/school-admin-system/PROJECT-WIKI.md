@@ -79,18 +79,18 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 ## 🧪 测试环境
 
-> ⚠️ **最后更新**: 2026-06-30 07:30 (GMT+8)
-> ⚠️ Cloudflare Quick Tunnel外部访问有问题，临时方案：本地访问
+> ⚠️ **最后更新**: 2026-06-30 10:35 (GMT+8)
+> ⚠️ Cloudflare Quick Tunnel 有间歇性连接问题
 
 | 服务 | 本地URL (本机) | 外部URL | 状态 |
 |------|----------------|---------|------|
-| **后端API** | https://elizabeth-recreational-led-dot.trycloudflare.com/api | ⚠️ Quick Tunnel（临时） | 需重新启动时更新 |
-| **前端** | https://consumers-lions-aaa-million.trycloudflare.com | ⚠️ Quick Tunnel（临时） | 需重新启动时更新 |
-| **健康检查** | https://elizabeth-recreational-led-dot.trycloudflare.com/api/health | ⚠️ Quick Tunnel | 验证服务状态 |
+| **后端API** | http://localhost:3000/api | https://salvation-fellowship-fool-competition.trycloudflare.com/api | ⚠️ Quick Tunnel |
+| **前端** | http://localhost:8080 | https://yen-courts-soft-continuous.trycloudflare.com | ⚠️ Quick Tunnel |
+| **健康检查** | http://localhost:3000/api/health | https://salvation-fellowship-fool-competition.trycloudflare.com/api/health | ⚠️ Quick Tunnel |
 
-**临时解决方案**: 请使用您本地的浏览器访问测试环境
-- 后端: https://school.zhumuai.cn/api (Named Tunnel待配置)
-- 前端: https://school.zhumuai.cn (待域名DNS生效)
+**访问方式说明**:
+- **本地访问** (推荐): 直接访问 `http://localhost:8080` 和 `http://localhost:3000`
+- **外部URL**: Cloudflare Quick Tunnels 可能间歇性不可用，如遇 530 错误请使用本地访问
 
 **DNS传播进度**: 通常需要5-10分钟生效
 | Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | ✅ 已配置 |
