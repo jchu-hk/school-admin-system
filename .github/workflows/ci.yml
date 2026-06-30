@@ -51,6 +51,11 @@ jobs:
           node-version: '22'
           cache: 'pnpm'
       - run: pnpm install
+      - name: Clean TypeScript incremental build cache
+        run: |
+          rm -f apps/backend/dist/tsconfig.build.tsbuildinfo
+          rm -f apps/backend/tsconfig.tsbuildinfo
+          find apps/backend -name "*.tsbuildinfo" -delete 2>/dev/null || true
       - run: pnpm --filter @school-admin/backend build
 
   deploy:
