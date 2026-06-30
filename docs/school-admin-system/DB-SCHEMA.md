@@ -1027,6 +1027,25 @@ SIGNED     — 已签约
 
 ---
 
+## 表: recruitment_activity_logs — 招聘活动日志
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 日志ID |
+| application_id | UUID | FK→recruitment_applications, NOT NULL | 申请ID |
+| activity_type | ENUM | NOT NULL | 活动类型 |
+| performed_by | VARCHAR(100) | | 操作人 |
+| description | TEXT | NOT NULL | 描述 |
+| old_value | VARCHAR(50) | | 旧值 |
+| new_value | VARCHAR(50) | | 新值 |
+| metadata | JSONB | | 附加数据 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id), (application_id), (activity_type)
+**外键**: (application_id)→recruitment_applications(id)
+
+---
+
 ## 表: recruitment_onboarding — 入职流程
 
 | 列名 | 类型 | 约束 | 描述 |
