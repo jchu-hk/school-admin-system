@@ -3,37 +3,37 @@
     "PM": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T15:04:00+08:00"
+      "lastUpdate": "2026-06-30T22:50:00+08:00"
+    },
+    "DEVOPS": {
+      "status": "running",
+      "task": "检查并启用测试环境外部访问（Cloudflare Tunnel）",
+      "lastUpdate": "2026-06-30T22:40:00+08:00"
     },
     "ARCH": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T15:04:00+08:00"
+      "lastUpdate": "2026-06-30T22:50:00+08:00"
     },
     "CHECKER": {
       "status": "idle",
-      "task": "Review PASS with corrections: DB-SCHEMA, DATA-DICT",
-      "lastUpdate": "2026-06-30T15:04:00+08:00"
-    },
-    "DEVOPS": {
-      "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T15:04:00+08:00"
+      "lastUpdate": "2026-06-30T22:50:00+08:00"
     },
     "DEV": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T15:04:00+08:00"
+      "lastUpdate": "2026-06-30T22:50:00+08:00"
     },
     "QA": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T15:04:00+08:00"
+      "lastUpdate": "2026-06-30T22:50:00+08:00"
     },
     "REQ": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T15:04:00+08:00"
+      "lastUpdate": "2026-06-30T22:50:00+08:00"
     }
   }
 }
