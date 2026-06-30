@@ -126,6 +126,11 @@ const mockBudgetAllocation = (
 
 describe('BudgetService F-NEW-004', () => {
   let service: BudgetService;
+  let annualBudgetRepo: ReturnType<typeof mockAnnualBudgetRepo>;
+  let allocationRepo: ReturnType<typeof mockAllocationRepo>;
+  let _budgetRepo: ReturnType<typeof mockBudgetRepo>;
+  let expenseRepo: ReturnType<typeof mockExpenseRepo>;
+  let _adjustmentRepo: ReturnType<typeof mockAdjustmentRepo>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -154,9 +159,9 @@ describe('BudgetService F-NEW-004', () => {
     service = module.get<BudgetService>(BudgetService);
     annualBudgetRepo = module.get(getRepositoryToken(AnnualBudget));
     allocationRepo = module.get(getRepositoryToken(BudgetAllocation));
-    budgetRepo = module.get(getRepositoryToken(Budget));
+    _budgetRepo = module.get(getRepositoryToken(Budget));
     expenseRepo = module.get(getRepositoryToken(BudgetExpense));
-    adjustmentRepo = module.get(getRepositoryToken(BudgetAdjustment));
+    _adjustmentRepo = module.get(getRepositoryToken(BudgetAdjustment));
   });
 
   afterEach(() => jest.clearAllMocks());

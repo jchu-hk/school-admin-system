@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DseService } from './dse.service';
-import { DseRelease } from './entities/dse-release.entity';
+import { DseRelease, DseReleaseStatus } from './entities/dse-release.entity';
 import { DseResult, DseResultStatus } from './entities/dse-result.entity';
 import {
   DseReview,

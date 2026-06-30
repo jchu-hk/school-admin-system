@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { GradeRecord, RecordStatus } from './grade-record.entity';
 import { GradeReview, ReviewAction, ReviewLevel } from './grade-review.entity';
-import { GradeReview, ReviewAction, ReviewLevel } from './grade-review.entity';
 import {
   GradeAuditAlert,
   AlertType,
