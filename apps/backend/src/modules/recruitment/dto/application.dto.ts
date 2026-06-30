@@ -75,7 +75,7 @@ export class CreateApplicationDto {
   @ApiProperty({ description: '电话' })
   @IsString()
   @MinLength(1)
-  @MaxLength(20)
+  @MaxLength(50)
   phone: string;
 
   @ApiPropertyOptional({ description: '简历文件URL' })
