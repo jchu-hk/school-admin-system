@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindOptionsWhere } from 'typeorm';
+import { Repository, Like, FindOptionsWhere, DeepPartial } from 'typeorm';
 import { AddressBook } from './address-book.entity';
 import {
   CreateAddressBookDto,
@@ -23,7 +23,7 @@ export class AddressBookService {
       ...createDto,
       createdBy: userId,
       updatedBy: userId,
-    } as any);
+    } as DeepPartial<AddressBook>) as AddressBook;
     return this.addressBookRepository.save(contact);
   }
 

@@ -35,13 +35,6 @@ export class CreateCourseDto {
   @MaxLength(50)
   subject: string;
 
-  @ApiPropertyOptional({ description: '科目', example: '数学' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(50)
-  subject?: string;
-
-  @ApiPropertyOptional({ description: '班级ID' })
   @IsOptional()
   @IsString()
   classId?: string;

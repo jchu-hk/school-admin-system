@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere, Not, IsNull } from 'typeorm';
 import {
   TuitionPayment,
+  TuitionStandard,
   TuitionPaymentStatus,
   SubStatus,
   SubsidyType,

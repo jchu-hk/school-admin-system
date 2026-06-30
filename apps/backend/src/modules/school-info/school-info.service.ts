@@ -4,7 +4,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindOptionsWhere } from 'typeorm';
+import { Repository, Like, FindOptionsWhere, DeepPartial } from 'typeorm';
 import { SchoolInfo } from './school-info.entity';
 import {
   CreateSchoolInfoDto,
@@ -36,7 +36,7 @@ export class SchoolInfoService {
       ...createDto,
       createdBy: userId,
       updatedBy: userId,
-    } as any);
+    } as DeepPartial<SchoolInfo>) as SchoolInfo;
     return this.schoolInfoRepository.save(school);
   }
 

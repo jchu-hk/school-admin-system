@@ -795,7 +795,7 @@ export class InstallmentService {
 
   async resolveDispute(
     paymentId: string,
-    _dto: ResolveDisputeDto,
+    dto: ResolveDisputeDto,
     _userId: string,
   ): Promise<{ message: string }> {
     const payment = await this.paymentRepository.findOne({
