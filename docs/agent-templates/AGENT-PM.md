@@ -161,27 +161,64 @@
    └── 任务: 系统设计、数据库设计、API设计
 
 6. ARCH 完成设计
-   └── 输出: SPEC-SYSTEM-DESIGN.md, DB-SCHEMA.md, API-DESIGN.md
+   └── 输出: DB-SCHEMA.md, DATA-DICTIONARY.md, API-DESIGN.md, UI-SPEC-{MODULE}.md (如需要)
+   └── 创建开发 Tasks (带依赖条件)
+   └── 依赖: 每个 DEV task 依赖 ARCH 设计完成
    └── 调用 write_message --from ARCH --to PM --type done
 
 7. PM 派发 DEV 开发
    └── 标签: dev + in-progress
    └── 派发: DEV Agent
-   └── 任务: 根据设计文档开发
+   └── 任务: 根据设计文档开发 (依赖 ARCH Issue 完成)
+   └── 验证: ARCH 设计文档存在
 
 8. DEV 完成开发
    └── 派发 QA 测试
+
+**开发任务依赖规则** (2026-06-30):
+```
+每个 DEV 开发任务必须:
+1. 依赖 ARCH 设计 Issue 完成
+2. 验证依赖文件存在:
+   - DB-SCHEMA.md
+   - DATA-DICTIONARY.md
+   - API-DESIGN.md
+   - UI-SPEC-{MODULE}.md (如需要)
+3. 在 Issue body 中引用设计文档
+
+示例:
+---
+## 依赖
+- Issue #{arch_issue} (ARCH 设计完成)
+
+## 参考文档
+- DB-SCHEMA.md
+- DATA-DICTIONARY.md
+- API-DESIGN.md
+---
+```
 ```
 
 **Issue 标签规则**:
 | 阶段 | 标签 | 说明 |
 |------|------|------|
-| REQ 阶段 | `req` + `in-progress` | REQ 正在编写需求 |
-| CHECKER 阶段 | `checker` + `in-review` | CHECKER 正在审查 |
-| ARCH 阶段 | `arch` + `design` | ARCH 正在设计 |
+| REQ 阶段 (BA) | `req` + `in-progress` | REQ 正在分析需求 |
+| CHECKER 阶段 | `checker` + `in-review` | CHECKER 正在审查需求 |
+| ARCH 阶段 | `arch` + `design` | ARCH 正在设计系统 |
 | DEV 阶段 | `dev` + `in-progress` | DEV 正在开发 |
 | QA 阶段 | `qa` + `testing` | QA 正在测试 |
 | 完成 | 无 | 关闭 Issue |
+
+**REQ vs ARCH 职责分工** (2026-06-30):
+| 项 | REQ (BA) | ARCH (系统设计) |
+|---|----------|-----------------|
+| **需求分析** | ✅ 负责 | ✅ 理解需求后设计 |
+| **功能定义** | ✅ 输出 Function | ✅ 基于 Function 设计 |
+| **业务流程** | ✅ 描述 | ✅ 设计实现方案 |
+| **DB Schema** | ❌ 不设计 | ✅ 设计表结构、字段 |
+| **Data Dictionary** | ❌ 不设计 | ✅ 定义字段含义 |
+| **API Design** | ❌ 不设计 | ✅ 设计端点、请求/响应 |
+| **UI Design** | ❌ 不设计 | ✅ 设计界面、交互 |
 
 ---
 

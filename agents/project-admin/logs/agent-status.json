@@ -3,37 +3,37 @@
     "PM": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T14:44:00+08:00"
-    },
-    "CHECKER": {
-      "status": "idle",
-      "task": "等待任务",
-      "lastUpdate": "2026-06-30T14:44:00+08:00"
-    },
-    "DEVOPS": {
-      "status": "idle",
-      "task": "等待任务",
-      "lastUpdate": "2026-06-30T14:44:00+08:00"
-    },
-    "DEV": {
-      "status": "idle",
-      "task": "等待任务",
-      "lastUpdate": "2026-06-30T14:44:00+08:00"
-    },
-    "QA": {
-      "status": "idle",
-      "task": "等待任务",
-      "lastUpdate": "2026-06-30T14:44:00+08:00"
+      "lastUpdate": "2026-06-30T15:04:00+08:00"
     },
     "ARCH": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T14:44:00+08:00"
+      "lastUpdate": "2026-06-30T15:04:00+08:00"
+    },
+    "CHECKER": {
+      "status": "idle",
+      "task": "Review PASS with corrections: DB-SCHEMA, DATA-DICT",
+      "lastUpdate": "2026-06-30T15:04:00+08:00"
+    },
+    "DEVOPS": {
+      "status": "idle",
+      "task": "等待任务",
+      "lastUpdate": "2026-06-30T15:04:00+08:00"
+    },
+    "DEV": {
+      "status": "idle",
+      "task": "等待任务",
+      "lastUpdate": "2026-06-30T15:04:00+08:00"
+    },
+    "QA": {
+      "status": "idle",
+      "task": "等待任务",
+      "lastUpdate": "2026-06-30T15:04:00+08:00"
     },
     "REQ": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-06-30T14:44:00+08:00"
+      "lastUpdate": "2026-06-30T15:04:00+08:00"
     }
   }
 }

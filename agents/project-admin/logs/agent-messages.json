@@ -82,5 +82,72 @@
       "status": "idle",
       "task": "All tasks completed"
     }
+  },
+  {
+    "timestamp": "2026-06-30T06:23:43Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "Setup Docker images for Mac local testing environment",
+    "type": "assign"
+  },
+  {
+    "timestamp": "2026-06-30T06:24:44Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "Setup Docker images for Mac local testing environment",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Setup Docker images for Mac local testing environm"
+    }
+  },
+  {
+    "timestamp": "2026-06-30T06:43:31Z",
+    "from": "PM",
+    "to": "CHECKER",
+    "message": "Review requirement doc for Issue #175: 教师招聘管理模块",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Review requirement doc for Issue #175: 教师招聘管理模块"
+    }
+  },
+  {
+    "timestamp": "2026-06-30T06:48:16Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "REQ审查完成：PASS，需补充DB-SCHEMA/Data-Dictionary/API文档",
+    "type": "done",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "idle",
+      "task": "REQ审查完成：PASS，需补充DB-SCHEMA/Data-Dictionary/API文档"
+    }
+  },
+  {
+    "timestamp": "2026-06-30T06:49:38Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "Review PASS with corrections: DB-SCHEMA, DATA-DICTIONARY, API-DESIGN not updated",
+    "type": "failed",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "idle",
+      "task": "Review PASS with corrections: DB-SCHEMA, DATA-DICT"
+    }
+  },
+  {
+    "timestamp": "2026-06-30T07:03:39Z",
+    "from": "PM",
+    "to": "ARCH",
+    "message": "设计 Issue #175: 教师招聘管理模块 (DB, API, UI)",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "设计 Issue #175: 教师招聘管理模块 (DB, API, UI)"
+    }
   }
 ]
