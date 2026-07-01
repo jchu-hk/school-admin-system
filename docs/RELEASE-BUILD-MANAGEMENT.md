@@ -6,9 +6,42 @@
 |------|------|------|--------|
 | **DEV开发** | Feature Branch PR合并 | 构建测试 | DEV |
 | **CI构建** | Push to main | 生成镜像 | CI/CD |
-| **QA验证** | 镜像构建完成 | 测试环境验证 | QA |
+| **QA验证** | 批量累积/PM通知 | 测试环境验证 | QA |
 | **Release发布** | QA通过 | 稳定版本发布 | PM/DEVOPS |
 | **Mac Local刷新** | Release完成 | 开发者本地测试 | DEVOPS |
+
+---
+
+## PM管控机制
+
+### QA验收队列
+
+PM维护一个待验收Issue队列，可以**批量累积**多个Issue后再统一安排QA验收：
+
+```json
+// qa-queue.json - PM管控的QA验收队列
+{
+  "last_updated": "2026-07-01T05:30:00Z",
+  "pending_qa": [
+    {
+      "issue": 155,
+      "title": "学生编辑Modal z-index问题",
+      "dev_done_at": "2026-07-01T04:00:00Z",
+      "status": "ready_for_qa"
+    }
+  ],
+  "qa_in_progress": [],
+  "qa_passed": [],
+  "qa_failed": []
+}
+```
+
+### PM检查清单（每次心跳）
+
+- [ ] 检查QA队列是否有待验收Issue
+- [ ] 检查是否有新完成的Issue需要加入队列
+- [ ] 批量累积足够后安排QA验收
+- [ ] 跟踪QA验收结果
 
 ---
 
@@ -18,19 +51,10 @@
 ```
 DEV 完成代码修改
     ↓
-提交到 feature/xxx 分支
-    ↓
-创建 PR / 或直接合并到 main
+提交到 feature/xxx 分支 / 或直接合并到 main
     ↓
 触发 CI Pipeline
 ```
-
-### 镜像Tag规则
-| Tag | 含义 | 何时更新 |
-|-----|------|----------|
-| `sha-{commit}` | 特定提交 | 每次push |
-| `latest` | 最新稳定版 | 每次PR合并到main |
-| `v1.5.5` | Release版本 | 手动发布 |
 
 ### DEV操作
 ```bash
@@ -46,7 +70,7 @@ git push origin main
 ## 阶段2: CI构建
 
 ### GitHub Actions流程
-```yaml
+```
 Push to main:
   1. Build frontend Docker image
      → Tag: ghcr.io/jchu-hk/school-admin-system/frontend:sha-{sha}
@@ -57,78 +81,97 @@ Push to main:
      → Tag: ghcr.io/jchu-hk/school-admin-system/backend:latest
   
   3. Push to GHCR
+  4. 通知: PM (Dashboard更新)
 ```
 
-### 构建产物
-| 镜像 | Registry | Latest Tag | SHA Tag |
-|------|----------|------------|---------|
-| Frontend | ghcr.io | ✅ 已推送 | ✅ 已推送 |
-| Backend | ghcr.io | ✅ 已推送 | ✅ 已推送 |
+### 镜像Tag规则
+| Tag | 含义 | 何时更新 | 用途 |
+|-----|------|----------|------|
+| `sha-{commit}` | 特定提交 | 每次push | 调试 |
+| `latest` | 最新开发版 | PR合并到main | **测试环境** |
+| `v1.5.6` | 正式Release | QA通过后 | **Mac Local** |
 
 ---
 
-## 阶段3: QA验证环境
+## 阶段3: DEVOPS部署测试环境
 
-### 部署位置
-| 环境 | URL | 用途 |
-|------|-----|------|
-| **测试环境** | `cloudflare-tunnel-url` | QA验证 |
-| **本地环境** | `localhost:8080` | 开发者测试 |
-
-### QA验证流程
-```
-CI构建完成 (镜像已推送到GHCR)
-    ↓
-DEVOPS 部署到测试环境
-    ↓
-QA 访问测试环境验证
-    ↓
-QA 通过/失败
-    ↓
-通知PM结果
-```
-
-### 测试环境部署命令
+### PM管控
+PM**主动派发**DEVOPS任务，不等待：
 ```bash
-# 方式1: 使用 docker-compose (推荐)
-cd infra
-docker-compose -f docker-compose.test.yml pull frontend backend
-docker-compose -f docker-compose.test.yml up -d
+python3 skills/pm-orchestrator/scripts/assign_task.py \
+  --from PM --to DEVOPS \
+  --issue 155 \
+  --message "部署最新镜像到测试环境" \
+  --spawn
+```
 
-# 方式2: 手动拉取最新镜像
+### DEVOPS操作
+```bash
+# 1. 拉取最新镜像
 docker pull ghcr.io/jchu-hk/school-admin-system/frontend:latest
 docker pull ghcr.io/jchu-hk/school-admin-system/backend:latest
-docker-compose -f docker-compose.local.yml up -d
 
-# 验证部署
+# 2. 重启容器
+docker-compose -f docker-compose.local.yml up -d frontend backend
+
+# 3. 验证
 curl http://localhost:8080/api/health
+curl http://localhost:3000/api/health
 ```
 
-### QA验收清单
-| 检查项 | 通过标准 |
-|--------|----------|
-| 功能测试 | 按Issue描述验证功能正常 |
-| 回归测试 | 不破坏现有功能 |
-| UI测试 | 样式/布局正常 |
+### PM收到通知后
+1. 确认测试环境可用
+2. **将Issue加入QA队列**
+3. 等待批量累积或立即安排QA
 
-### QA操作
-```bash
-# QA验收后报告
-python3 skills/agent-communication/scripts/write_message.py \
-  --from QA --to PM \
-  --message "Issue #155 QA验证通过" \
-  --type done
+---
 
-# 或失败
-python3 skills/agent-communication/scripts/write_message.py \
-  --from QA --to PM \
-  --message "Issue #155 QA验证失败: [原因]" \
-  --type failed
+## 阶段4: QA验收队列
+
+### PM管理QA队列
+
+| 操作 | 命令 |
+|------|------|
+| 添加到队列 | `python3 scripts/qa_queue.py --add 155` |
+| 查看队列 | `python3 scripts/qa_queue.py --list` |
+| 派发QA | `python3 scripts/qa_queue.py --assign-qa` |
+| 更新状态 | `python3 scripts/qa_queue.py --update 155 --status passed` |
+
+### 批量验收策略
+
+**PM决定何时派发QA**：
+
+| 场景 | PM操作 |
+|------|--------|
+| 单个紧急P0 | 立即派发QA |
+| 多个Issue累积 | 每天固定时间派发 |
+| 累积>=5个Issue | 立即派发QA |
+
+### PM的QA管控规则
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ PM QA管控清单                                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ □ DEV完成 → 加入QA队列                                      │
+│                                                             │
+│ □ 队列>=5个Issue → 立即派发QA                                │
+│                                                             │
+│ □ 每天09:00/18:00 → 检查队列，必要时派发QA                  │
+│                                                             │
+│ □ QA结果 → 更新队列状态                                      │
+│                                                             │
+│ □ QA全部通过 → 创建Release → Mac Local刷新                  │
+│                                                             │
+│ □ 有Issue失败 → 退回DEV修复 → 重新加入队列                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 阶段4: Release发布
+## 阶段5: Release发布
 
 ### 触发条件
 | 条件 | 操作 |
@@ -145,97 +188,59 @@ git push origin v1.5.6
 
 # 3. CI自动构建Release镜像
 # → Tag: ghcr.io/jchu-hk/school-admin-system/frontend:v1.5.6
-# → Tag: ghcr.io/jchu-hk/school-admin-system/backend:v1.5.6
 
-# 4. 更新Release Notes
-gh release create v1.5.6 \
-  --title "v1.5.6 - Bug Fix Release" \
-  --notes "Fix #155: 学生编辑Modal问题"
+# 4. PM通知Mac Local刷新
 ```
-
-### Release镜像
-| Tag | 含义 | 何时更新 |
-|-----|------|----------|
-| `v1.5.6` | 正式发布版本 | Release Tag |
-| `latest` | 最新稳定版 | Release Tag |
 
 ---
 
-## 阶段5: Mac Local刷新
+## 阶段6: Mac Local刷新
 
-### 开发者本地更新
+### PM派发任务
 ```bash
-# 1. 拉取最新Release版本
+python3 skills/pm-orchestrator/scripts/assign_task.py \
+  --from PM --to DEVOPS \
+  --message "刷新Mac Local到v1.5.6" \
+  --spawn
+```
+
+### DEVOPS操作
+```bash
+# 1. 拉取Release版本
 docker pull ghcr.io/jchu-hk/school-admin-system/frontend:v1.5.6
 docker pull ghcr.io/jchu-hk/school-admin-system/backend:v1.5.6
 
 # 2. 重启容器
-docker-compose -f docker-compose.local.yml up -d
-
-# 3. 验证版本
-docker ps | grep school-admin
-```
-
-### 自动刷新机制 (可选)
-```bash
-# 使用 watchtower 自动更新
-docker run -d \
-  --name watchtower \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  containrrr/watchtower \
-  --interval 300
+docker-compose up -d
 ```
 
 ---
 
-## 当前问题 & 解决方案
-
-### 问题1: 本地容器没自动更新
-| 问题 | 原因 | 解决 |
-|------|------|------|
-| 本地容器还是旧版本 | 没有拉取latest | DEVOPS手动拉取或设置自动刷新 |
-
-### 问题2: QA不知道在哪测试
-| 问题 | 原因 | 解决 |
-|------|------|------|
-| 测试URL不明确 | 没有固定测试URL | DEVOPS维护稳定测试URL |
-
-### 问题3: latest vs Release Tag混淆
-| Tag | 用途 | 更新时机 |
-|-----|------|----------|
-| `sha-xxx` | 特定提交测试 | 每次push |
-| `latest` | 开发中最新 | 每次main push |
-| `v1.5.6` | 正式发布 | Release tag |
-
----
-
-## 总结: 完整流程
+## 完整流程图
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ DEV 完成开发                                                │
-│   git commit → git push origin main                        │
+│ 1. DEV 完成开发                                             │
+│    git commit → git push origin main                       │
+│    → CI自动构建 → GHCR推送                                   │
 └─────────────────────┬───────────────────────────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ CI Pipeline (自动)                                          │
-│   1. Build Docker images                                   │
-│   2. Push to GHCR: latest + sha-xxx                       │
-│   3. 通知: PM / Dashboard                                  │
+│ 2. DEVOPS 部署测试环境                                       │
+│    PM派发 → DEVOPS执行 → 拉取latest镜像                     │
+│    → 重启容器 → 验证                                         │
 └─────────────────────┬───────────────────────────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ DEVOPS 部署到测试环境                                       │
-│   docker pull ghcr.io/.../frontend:latest                 │
-│   docker-compose up -d                                     │
-│   通知QA测试URL                                             │
+│ 3. PM 管控QA队列                                            │
+│    → 将Issue加入队列                                        │
+│    → 累积多个Issue                                          │
+│    → 达到条件后派发QA                                       │
 └─────────────────────┬───────────────────────────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ QA 验收                                                      │
-│   1. 访问测试URL                                            │
-│   2. 按Issue验证功能                                        │
-│   3. 报告结果 (通过/失败)                                    │
+│ 4. QA 验收                                                  │
+│    PM派发 → QA执行 → 报告结果                               │
 └─────────────────────┬───────────────────────────────────────┘
                       ↓
           ┌───────────┴───────────┐
@@ -245,42 +250,54 @@ docker run -d \
     └─────┬────┘           └─────┬────┘
           ↓                       ↓
     ┌──────────────┐       ┌──────────────┐
-    │ PM 创建 Release │      │ 返回DEV修复    │
-    │ git tag v1.5.6 │       └──────────────┘
-    └─────┬──────────┘
-          ↓
-    ┌─────────────────────────────────────────────────────────┐
-    │ Release Pipeline (自动)                                  │
-    │   1. Build: v1.5.6 images                               │
-    │   2. Push to GHCR: v1.5.6                              │
-    │   3. Update latest tag                                  │
-    └─────────────────────┬───────────────────────────────────┘
-                          ↓
-    ┌─────────────────────────────────────────────────────────┐
-    │ Mac Local 开发者刷新 (手动/自动)                         │
-    │   docker pull .../v1.5.6                               │
-    │   docker-compose up -d                                  │
-    └─────────────────────────────────────────────────────────┘
+    │ PM 创建 Release │      │ 退回DEV修复  │
+    │ → Mac Local   │       │ 重新加入队列  │
+    └──────────────┘       └──────────────┘
 ```
 
 ---
 
-## 关键规则
+## QA队列管理脚本
 
-1. **latest 不等于 Release** - latest是开发中最新，可能未经验证
-2. **QA验证后才能Release** - 确保质量
-3. **明确谁负责什么**:
-   - DEV: 提交代码
-   - CI: 自动构建
-   - DEVOPS: 部署测试环境
-   - QA: 验收测试
-   - PM: Release决策
+### 位置
+`scripts/qa_queue.py`
+
+### 功能
+```bash
+# 查看队列
+python3 scripts/qa_queue.py --list
+
+# 添加Issue到队列
+python3 scripts/qa_queue.py --add 155 --title "学生编辑Modal问题"
+
+# 更新状态
+python3 scripts/qa_queue.py --update 155 --status passed
+python3 scripts/qa_queue.py --update 155 --status failed
+
+# 派发QA
+python3 scripts/qa_queue.py --assign-qa
+
+# 统计
+python3 scripts/qa_queue.py --stats
+```
+
+---
+
+## Dashboard集成
+
+Dashboard显示PM管控状态：
+
+| 组件 | 显示内容 |
+|------|----------|
+| QA队列 | 待验收/验收中/已通过/失败 |
+| 队列数量 | pending: 3, in_progress: 1, passed: 5, failed: 1 |
+| 下次QA | 预计时间 / 达到条件 |
 
 ---
 
 ## 待办事项
 
-- [ ] DEVOPS创建 `docker-compose.test.yml` 测试环境配置
-- [ ] DEVOPS维护固定测试URL
-- [ ] 设置测试环境自动刷新机制
+- [ ] 创建 `scripts/qa_queue.py` 队列管理脚本
+- [ ] Dashboard集成QA队列显示
+- [ ] PM心跳检查QA队列
 - [ ] 文档更新: PROJECT-WIKI.md
