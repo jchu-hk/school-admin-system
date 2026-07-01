@@ -13,16 +13,19 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
 .agent-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px }
 .agent { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 12px; text-align: center; border: 2px solid rgba(255,255,255,0.1) }
 .agent.running { border-color: #4ade80; box-shadow: 0 0 15px rgba(74,222,128,0.3) }
+.agent.terminated { border-color: #ef4444; opacity: 0.7 }
 .agent-icon { font-size: 1.6em }
 .agent-name { font-weight: bold; font-size: 0.9em }
 .agent-task { font-size: 0.75em; color: #9ca3af }
 .status-badge { padding: 2px 6px; border-radius: 3px; font-size: 0.7em }
 .status-running { background: #4ade80; color: #1a1a2e }
 .status-idle { background: rgba(255,255,255,0.1); color: #9ca3af }
+.status-terminated { background: #ef4444; color: white }
 .message-list { max-height: 400px; overflow-y: auto }
 .message-item { background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px; margin-bottom: 8px; border-left: 3px solid }
 .msg-done { border-left-color: #4ade80 }
 .msg-received { border-left-color: #60a5fa }
+.msg-failed { border-left-color: #ef4444 }
 .msg-default { border-left-color: #6b7280 }
 .refresh { text-align: center; color: #6b7280; font-size: 0.8em; margin-top: 20px }
 </style>
@@ -48,11 +51,11 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
     <div class="agent-name">DEV</div>
     <div class="agent-task">等待任务</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent running">
+</div><div class="agent  terminated">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
-    <div class="agent-task">验收Issue #155</div>
-    <span class="status-badge status-running">running</span>
+    <div class="agent-task">Issue #155验收超时终止</div>
+    <span class="status-badge status-terminated">terminated</span>
 </div><div class="agent">
     <div class="agent-icon">✓</div>
     <div class="agent-name">CHECKER</div>
@@ -73,7 +76,10 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
 
 <div class="card">
 <h2 style="color:#4ade80;margin-bottom:15px">💬 Messages</h2>
-<div class="message-list"><div class="message-item msg-received">
+<div class="message-list"><div class="message-item msg-failed">
+    <div class="message-time">23:01</div>
+    <div class="message-content">QA → PM: QA: 超时终止 - Issue #155验收超时终止</div>
+</div><div class="message-item msg-received">
     <div class="message-time">14:31</div>
     <div class="message-content">QA → PM: QA: 接收 - 验收Issue #155</div>
 </div><div class="message-item msg-received">
@@ -130,13 +136,10 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
 </div><div class="message-item msg-done">
     <div class="message-time">19:58</div>
     <div class="message-content">DEV → PM: Issue #191 完成: 招聘流程状态跟踪 (F-REC-004) - 流程状态/漏斗概览/时间统计/时间</div>
-</div><div class="message-item msg-done">
-    <div class="message-time">19:55</div>
-    <div class="message-content">DEV → PM: Issue #190 完成: 面试安排与管理 (F-REC-003) - 面试创建/评分/完成/取消API, </div>
 </div></div>
 </div>
 
-<div class="refresh">Updated: 2026-07-01 14:31:35 (GMT+8)</div>
+<div class="refresh">Updated: 2026-07-01 23:01:01 (GMT+8)</div>
 </div>
 </body>
 </html>

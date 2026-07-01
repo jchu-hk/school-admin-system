@@ -5,10 +5,12 @@ Simple Agent Dashboard - Status Update
 Agent calls this when:
 1. Receives task → status: running
 2. Completes task → status: idle
+3. Unexpected termination → status: terminated (Parent agent sets this)
 
 Usage:
     python3 agent_status.py --agent QA --status running --task "验收Issue #155"
     python3 agent_status.py --agent QA --status idle --task "验收完成"
+    python3 agent_status.py --agent QA --status terminated --task "超时终止"
 
 Features:
 - Updates agent-status.json (single source of truth)
@@ -47,16 +49,26 @@ def append_message(agent: str, status: str, task: str):
     if MESSAGE_FILE.exists():
         messages = json.loads(MESSAGE_FILE.read_text())
 
-    msg_type = "done" if status == "idle" else "received"
-    msg = f"{agent}: {'完成' if status == 'idle' else '接收'} - {task}"
+    msg_types = {
+        "done": "done",
+        "running": "received",
+        "terminated": "failed"
+    }
+    msg_type = msg_types.get(status, "default")
+    
+    msg_texts = {
+        "done": f"{agent}: 完成 - {task}",
+        "running": f"{agent}: 接收 - {task}",
+        "terminated": f"{agent}: 超时终止 - {task}"
+    }
+    msg = msg_texts.get(status, f"{agent}: {task}")
 
     messages.append({
         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "from": agent,
         "to": "PM",
         "message": msg,
-        "type": msg_type,
-        "agent_status": agent
+        "type": msg_type
     })
 
     # Keep last 100 messages
@@ -74,14 +86,17 @@ def build_dashboard(status: dict, messages: list):
     agents_html = ""
     for agent in ["PM", "DEVOPS", "DEV", "QA", "CHECKER", "ARCH", "REQ"]:
         agent_data = status.get("agents", {}).get(agent, {"status": "idle", "task": "等待任务"})
-        is_running = agent_data["status"] == "running"
+        agent_status = agent_data.get("status", "idle")
         task = agent_data.get("task", "等待任务")
+        
+        agent_class = agent_status if agent_status in ["running", "terminated"] else ""
+        agent_style = f"agent {' running' if agent_status == 'running' else ''}{' terminated' if agent_status == 'terminated' else ''}"
 
-        agents_html += f'''<div class="agent{' running' if is_running else ''}">
+        agents_html += f'''<div class="{agent_style.strip()}">
     <div class="agent-icon">{icons.get(agent, "❓")}</div>
     <div class="agent-name">{agent}</div>
     <div class="agent-task">{task[:35]}</div>
-    <span class="status-badge {'status-running' if is_running else 'status-idle'}">{agent_data["status"]}</span>
+    <span class="status-badge status-{agent_status}">{agent_status}</span>
 </div>'''
 
     messages_html = ""
@@ -112,16 +127,19 @@ h1 {{ text-align: center; color: #4ade80; margin-bottom: 20px }}
 .agent-grid {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px }}
 .agent {{ background: rgba(0,0,0,0.3); border-radius: 10px; padding: 12px; text-align: center; border: 2px solid rgba(255,255,255,0.1) }}
 .agent.running {{ border-color: #4ade80; box-shadow: 0 0 15px rgba(74,222,128,0.3) }}
+.agent.terminated {{ border-color: #ef4444; opacity: 0.7 }}
 .agent-icon {{ font-size: 1.6em }}
 .agent-name {{ font-weight: bold; font-size: 0.9em }}
 .agent-task {{ font-size: 0.75em; color: #9ca3af }}
 .status-badge {{ padding: 2px 6px; border-radius: 3px; font-size: 0.7em }}
 .status-running {{ background: #4ade80; color: #1a1a2e }}
 .status-idle {{ background: rgba(255,255,255,0.1); color: #9ca3af }}
+.status-terminated {{ background: #ef4444; color: white }}
 .message-list {{ max-height: 400px; overflow-y: auto }}
 .message-item {{ background: rgba(0,0,0,0.2); border-radius: 8px; padding: 10px; margin-bottom: 8px; border-left: 3px solid }}
 .msg-done {{ border-left-color: #4ade80 }}
 .msg-received {{ border-left-color: #60a5fa }}
+.msg-failed {{ border-left-color: #ef4444 }}
 .msg-default {{ border-left-color: #6b7280 }}
 .refresh {{ text-align: center; color: #6b7280; font-size: 0.8em; margin-top: 20px }}
 </style>
@@ -152,8 +170,8 @@ def main():
     parser = argparse.ArgumentParser(description="Agent Status Update")
     parser.add_argument("--agent", required=True, choices=["PM", "DEV", "QA", "DEVOPS", "CHECKER", "ARCH", "REQ"],
                        help="Agent name")
-    parser.add_argument("--status", required=True, choices=["running", "idle"],
-                       help="New status")
+    parser.add_argument("--status", required=True, choices=["running", "idle", "terminated"],
+                       help="New status: running/idle/terminated")
     parser.add_argument("--task", required=True, help="Task description")
     parser.add_argument("--to", default="PM", help="Message recipient (default: PM)")
     args = parser.parse_args()

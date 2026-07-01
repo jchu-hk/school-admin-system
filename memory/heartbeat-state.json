@@ -1,18 +1,44 @@
 {
   "lastChecks": {
-    "git": 1782919200,
-    "github": 1782919200,
-    "agents": 1782919200,
-    "ci_cd": 1782919200,
-    "system": 1782919200,
-    "disk": 1782919200
+    "email": null,
+    "calendar": null,
+    "weather": null,
+    "heartbeat": 1782912600003
   },
-  "notes": {
-    "open_issues": "16个 - 无P0/P1紧急问题",
-    "git_status": "main分支，工作目录干净",
-    "disk": "90% (4.0G free) - 稳定，长期监控",
-    "docker_uptime": "6小时，全部健康运行",
-    "system_status": "健康 - 无异常",
-    "agent_status": "全部idle"
-  }
+  "lastCheckInfo": {
+    "heartbeat": "2026-07-01T21:30:00+08:00"
+  },
+  "checkList": [
+    {
+      "type": "git_status",
+      "result": {
+        "branch": "main",
+        "latest_commit": "97dee59 pm: heartbeat record for 2026-07-01 20:40",
+        "latest_commit_time": "2026-07-01T20:37:50+08:00",
+        "modified_files": [
+          "memory/2026-07-01.md",
+          "memory/heartbeat-state.json"
+        ]
+      },
+      "timestamp": "2026-07-01T21:30:00+08:00"
+    },
+    {
+      "type": "test_env_check",
+      "result": {
+        "url": "https://xxx.xxxxx.xxx",
+        "status": "unreachable",
+        "http_code": "000UNREACHABLE"
+      },
+      "timestamp": "2026-07-01T21:30:00+08:00"
+    },
+    {
+      "type": "document_sync_check",
+      "result": {
+        "PROJECT_WIKI_md": "not_found",
+        "SPEC_COMPLETE_md": "not_found",
+        "SPEC_SYSTEM_DESIGN_md": "not_found"
+      },
+      "timestamp": "2026-07-01T21:30:00+08:00"
+    }
+  ]
 }
