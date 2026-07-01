@@ -51,11 +51,11 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
     <div class="agent-name">DEV</div>
     <div class="agent-task">等待任务</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent  terminated">
+</div><div class="agent  running">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
-    <div class="agent-task">Issue #155验收超时终止</div>
-    <span class="status-badge status-terminated">terminated</span>
+    <div class="agent-task">验收Issue #155 (重试)</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">✓</div>
     <div class="agent-name">CHECKER</div>
@@ -76,7 +76,10 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
 
 <div class="card">
 <h2 style="color:#4ade80;margin-bottom:15px">💬 Messages</h2>
-<div class="message-list"><div class="message-item msg-failed">
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">23:40</div>
+    <div class="message-content">QA → PM: QA: 接收 - 验收Issue #155 (重试)</div>
+</div><div class="message-item msg-failed">
     <div class="message-time">23:01</div>
     <div class="message-content">QA → PM: QA: 超时终止 - Issue #155验收超时终止</div>
 </div><div class="message-item msg-received">
@@ -133,13 +136,10 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
 </div><div class="message-item msg-done">
     <div class="message-time">20:01</div>
     <div class="message-content">DEV → PM: 招聘模块5个任务全部完成 (#188-192), 提交到main. 包括: 职位发布/申请管理/面试管理/流程</div>
-</div><div class="message-item msg-done">
-    <div class="message-time">19:58</div>
-    <div class="message-content">DEV → PM: Issue #191 完成: 招聘流程状态跟踪 (F-REC-004) - 流程状态/漏斗概览/时间统计/时间</div>
 </div></div>
 </div>
 
-<div class="refresh">Updated: 2026-07-01 23:01:01 (GMT+8)</div>
+<div class="refresh">Updated: 2026-07-01 23:40:13 (GMT+8)</div>
 </div>
 </body>
 </html>

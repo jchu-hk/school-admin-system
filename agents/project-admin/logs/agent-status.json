@@ -26,9 +26,9 @@
       "lastUpdate": "2026-06-30T23:15:00+08:00"
     },
     "QA": {
-      "status": "terminated",
-      "task": "Issue #155验收超时终止",
-      "lastUpdate": "2026-07-01T15:01:01Z"
+      "status": "running",
+      "task": "验收Issue #155 (重试)",
+      "lastUpdate": "2026-07-01T15:40:13Z"
     },
     "REQ": {
       "status": "idle",

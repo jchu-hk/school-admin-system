@@ -439,5 +439,12 @@
     "to": "PM",
     "message": "QA: 超时终止 - Issue #155验收超时终止",
     "type": "failed"
+  },
+  {
+    "timestamp": "2026-07-01T15:40:13Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "QA: 接收 - 验收Issue #155 (重试)",
+    "type": "received"
   }
 ]
