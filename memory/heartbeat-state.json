@@ -1,19 +1,17 @@
 {
   "lastChecks": {
-    "git": 1782904800,
-    "github": 1782904800,
-    "agents": 1782904800,
-    "ci_cd": 1782904800,
-    "system": 1782904800,
-    "disk": 1782904800
+    "git": 1782911400,
+    "github": 1782911400,
+    "agents": 1782911400,
+    "ci_cd": 1782911400,
+    "system": 1782911400,
+    "disk": 1782911400
   },
   "notes": {
-    "open_issues": "15个 (P0/P1: 0, P2: 10个, P3: 4个, P4: 1个)",
-    "ci_status": "部分失败 - Deploy Test, Daily Report, QA Checker失败 (Railway Token问题)",
-    "docker_uptime": "5小时 - 所有容器健康运行",
-    "disk": "90% (4.0G free) - 需要监控",
-    "feature_branches": "无 - 所有feature分支已清理",
-    "recruitment_module": "#188-192有dev label，后端完成，前端待开发",
-    "system_status": "健康 - CI Pipeline: 核心步骤通过 (Build, Lint, Test)，Deploy步骤失败 (Railway Token)"
+    "open_issues": "21个 - 无P0/P1紧急问题 (最近关闭 #188-192 教师招聘)",
+    "git_status": "main分支，工作目录干净 (仅heartbeat-state变更)",
+    "disk": "90% (4.0G free) - 需要持续监控",
+    "recent_closed": "#188-192 教师招聘模块已关闭 (2026-07-01)",
+    "system_status": "健康 - Docker服务稳定运行5小时"
   }
 }
