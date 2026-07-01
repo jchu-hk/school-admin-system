@@ -2,14 +2,14 @@
   "lastChecks": {
     "email": null,
     "calendar": null,
-    "github": 1782891113,
-    "system": 1782891113,
-    "disk": 1782891113,
-    "docker": 1782891113,
-    "subagent": 1782891113,
-    "issues": 1782891113
+    "github": 1782894300,
+    "system": 1782894300,
+    "disk": 1782894300,
+    "docker": 1782894300,
+    "subagent": 1782894300,
+    "issues": 1782894300
   },
-  "lastHeartbeat": "2026-07-01T15:25:13+08:00",
+  "lastHeartbeat": "2026-07-01T15:55:00+08:00",
   "status": "HEARTBEAT_OK",
-  "notes": "系统稳定；Docker全部健康；磁盘 90%（约 4.0G 可用）持续紧张；CI趋势良好（agent-dashboard skill已稳定）；E2E测试持续失败（已知问题）；GitHub Issues 17个（P0/P1: 0）；测试环境前后端在线。"
+  "notes": "系统稳定；Docker 10/10 全部健康；磁盘 90%（4.0G 可用）；无活跃Agent；GitHub项目需确认路径。"
 }
