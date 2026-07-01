@@ -13,11 +13,44 @@ from datetime import datetime, timezone, timedelta
 REPO_PATH = Path("/workspace/projects/workspace")
 
 def read_agent_status() -> dict:
-    """Read agent status from agent-status.json"""
+    """Read agent status from agent-status.json AND agent-messages.json"""
+    status = {"agents": {}}
+    
+    # Method 1: Read from agent-status.json
     status_file = REPO_PATH / "agents/project-admin/logs/agent-status.json"
     if status_file.exists():
-        return json.loads(status_file.read_text())
-    return {"agents": {}}
+        status = json.loads(status_file.read_text())
+    
+    # Method 2: Read latest agent_status from agent-messages.json (takes priority if newer)
+    msg_file = REPO_PATH / "agents/project-admin/logs/agent-messages.json"
+    if msg_file.exists():
+        messages = json.loads(msg_file.read_text())
+        
+        # Get latest agent_status for each agent from messages
+        for m in reversed(messages[-50:]):  # Check last 50 messages
+            agent_status = m.get("agent_status")
+            if agent_status:
+                agent_name = agent_status.get("agent", "")
+                agent_state = agent_status.get("status", "idle")
+                task = agent_status.get("task", "等待任务")
+                
+                # Update if not set OR if this message is newer
+                if agent_name and agent_name in status["agents"]:
+                    current_last_update = status["agents"].get(agent_name, {}).get("lastUpdate", "")
+                    msg_time = m.get("timestamp", "")
+                    # Use message timestamp as it's more reliable
+                    status["agents"][agent_name] = {
+                        "status": agent_state,
+                        "task": task[:50],
+                        "lastUpdate": msg_time
+                    }
+    
+    # Ensure all agents exist
+    for agent in ["PM", "DEVOPS", "DEV", "QA", "CHECKER", "ARCH", "REQ"]:
+        if agent not in status["agents"]:
+            status["agents"][agent] = {"status": "idle", "task": "等待任务", "lastUpdate": ""}
+    
+    return status
 
 def read_agent_messages(hours: int = 72) -> list:
     """Read and filter agent messages from agent-messages.json"""
