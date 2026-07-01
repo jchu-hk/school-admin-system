@@ -2,11 +2,13 @@
   "lastChecks": {
     "email": null,
     "calendar": null,
-    "github": 1751299500,
-    "system": 1751299500,
-    "disk": 1751299500
+    "github": 1751340300,
+    "system": 1751340300,
+    "disk": 1751340300,
+    "subagent": 1751340300,
+    "issues": 1751340300
   },
-  "lastHeartbeat": "2026-06-30T13:25:00Z",
+  "lastHeartbeat": "2026-07-01T10:25:00+08:00",
   "status": "HEARTBEAT_OK",
-  "notes": "CI/CD Pipeline ✅ SUCCESS (lint fix from 3c09aea). E2E/Deploy/QA/AgentComm workflows still failing (known). Recruitment #188-192 dev-label (backend done, no frontend). Disk 90%. No pending action."
+  "notes": "✅ #193已关闭。14个open issues（无P0/P1）。磁盘90%持续监控。无活跃Agent。系统稳定。"
 }

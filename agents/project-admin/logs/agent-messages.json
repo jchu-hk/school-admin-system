@@ -252,5 +252,65 @@
       "status": "running",
       "task": "检查并启用测试环境外部访问（Cloudflare Tunnel）"
     }
+  },
+  {
+    "timestamp": "2026-07-01T00:26:01Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "修复 Issue #193: Course Management Failed to fetch error (P1)",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "修复 Issue #193: Course Management Failed to fetch e"
+    }
+  },
+  {
+    "timestamp": "2026-07-01T01:54:56Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "Issue #193 [P1]: 修复课程管理Failed to fetch错误 - 后端API返回错误，需要检查/api/courses端点",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #193 [P1]: 修复课程管理Failed to fetch错误 - 后端API返回"
+    }
+  },
+  {
+    "timestamp": "2026-07-01T01:55:13Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "Issue #193 [P1]: 修复课程管理Failed to fetch错误 - 后端API返回错误，需要检查/api/courses端点",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #193 [P1]: 修复课程管理Failed to fetch错误 - 后端API返回"
+    }
+  },
+  {
+    "timestamp": "2026-07-01T01:55:22Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "Issue #193 [P1]: 修复课程管理Failed to fetch错误",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #193 [P1]: 修复课程管理Failed to fetch错误"
+    }
+  },
+  {
+    "timestamp": "2026-07-01T02:11:23Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "Issue #193 修复完成: 删除重复subject属性，前端构建成功",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "Issue #193 修复完成: 删除重复subject属性，前端构建成功"
+    }
   }
 ]

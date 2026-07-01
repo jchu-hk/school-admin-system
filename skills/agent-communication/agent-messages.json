@@ -1,0 +1,10 @@
+[
+  {
+    "from": "PM",
+    "to": "DEV",
+    "message": "修复 Issue #193: Course Management Failed to fetch error (P1)",
+    "type": "assign",
+    "status": "running",
+    "timestamp": "2026-07-01T00:26:01Z"
+  }
+]
