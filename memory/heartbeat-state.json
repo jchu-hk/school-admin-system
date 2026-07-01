@@ -2,14 +2,14 @@
   "lastChecks": {
     "email": null,
     "calendar": null,
-    "github": 1782885600,
-    "system": 1782885600,
-    "disk": 1782885600,
-    "docker": 1782885600,
-    "subagent": 1782885600,
-    "issues": 1782885600
+    "github": 1782886200,
+    "system": 1782886200,
+    "disk": 1782886200,
+    "docker": 1782886200,
+    "subagent": 1782886200,
+    "issues": 1782886200
   },
-  "lastHeartbeat": "2026-07-01T13:40:00+08:00",
+  "lastHeartbeat": "2026-07-01T13:50:00+08:00",
   "status": "HEARTBEAT_OK",
-  "notes": "✅ 系统稳定。Docker全部健康。磁盘90%(4.0G可用)持续监控。Git已提交。P2任务队列(#188-192招聘等)待处理。"
+  "notes": "✅ 系统稳定。Docker全部健康。磁盘90%(4.0G可用)持续监控。Git已提交(d7bee50)。所有Agent idle。20个开放Issue无新增关键问题。"
 }
