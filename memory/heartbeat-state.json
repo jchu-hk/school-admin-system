@@ -1,17 +1,18 @@
 {
   "lastChecks": {
-    "git": 1782911400,
-    "github": 1782911400,
-    "agents": 1782911400,
-    "ci_cd": 1782911400,
-    "system": 1782911400,
-    "disk": 1782911400
+    "git": 1782917700,
+    "github": 1782917700,
+    "agents": 1782917700,
+    "ci_cd": 1782917700,
+    "system": 1782917700,
+    "disk": 1782917700
   },
   "notes": {
-    "open_issues": "21个 - 无P0/P1紧急问题 (最近关闭 #188-192 教师招聘)",
-    "git_status": "main分支，工作目录干净 (仅heartbeat-state变更)",
-    "disk": "90% (4.0G free) - 需要持续监控",
-    "recent_closed": "#188-192 教师招聘模块已关闭 (2026-07-01)",
-    "system_status": "健康 - Docker服务稳定运行5小时"
+    "open_issues": "16个 - 无P0/P1紧急问题",
+    "git_status": "main分支，工作目录干净",
+    "disk": "90% (4.0G free) - 稳定，长期监控",
+    "docker_uptime": "6小时，全部健康运行",
+    "system_status": "健康 - 无异常",
+    "agent_status": "全部idle"
   }
 }
