@@ -1,16 +1,19 @@
 {
   "lastChecks": {
-    "git": 1751374500,
-    "github": 1751374500,
-    "agents": 1751374500,
-    "ci_cd": 1751374500,
-    "system": 1751374500
+    "git": 1782904800,
+    "github": 1782904800,
+    "agents": 1782904800,
+    "ci_cd": 1782904800,
+    "system": 1782904800,
+    "disk": 1782904800
   },
   "notes": {
-    "recruitment_module": "Issues #188-192 all CLOSED - backend complete, frontend missing",
-    "asset_module": "Issue #50 still open with dev label (last update: 2026-06-27)",
-    "disk": "90% used, 4.0G free — unchanged",
-    "ci_failures": "Deploy Test, daily-report, qa-checker, agent-communication workflows failing — likely cosmetic 0s heartbeat jobs",
-    "open_issues_count": 16
+    "open_issues": "15个 (P0/P1: 0, P2: 10个, P3: 4个, P4: 1个)",
+    "ci_status": "部分失败 - Deploy Test, Daily Report, QA Checker失败 (Railway Token问题)",
+    "docker_uptime": "5小时 - 所有容器健康运行",
+    "disk": "90% (4.0G free) - 需要监控",
+    "feature_branches": "无 - 所有feature分支已清理",
+    "recruitment_module": "#188-192有dev label，后端完成，前端待开发",
+    "system_status": "健康 - CI Pipeline: 核心步骤通过 (Build, Lint, Test)，Deploy步骤失败 (Railway Token)"
   }
 }
