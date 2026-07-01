@@ -105,7 +105,6 @@ const CourseManagementPage: React.FC = () => {
         name: '',
         grade: '',
         subject: '',
-        subject: '',
         teacher: '',
         className: '',
         classroom: '',
