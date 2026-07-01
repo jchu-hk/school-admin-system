@@ -1,12 +1,7 @@
 {
   "lastChecks": {
-    "email": null,
-    "calendar": null,
-    "weather": null,
-    "github": 1751358200,
-    "system": 1751358600,
-    "agents": 1751358600
-  },
-  "lastHeartbeat": "2026-07-01T16:35:00+08:00",
-  "notes": "System stable. Docker healthy (2h uptime). CI SUCCESS. Deploy Test fails (Railway Token - known). Disk 90%. No active agents. 20 open issues (no P0/P1)."
+    "git": 1751345400,
+    "github": 1751345400,
+    "agents": 1751345400
+  }
 }
