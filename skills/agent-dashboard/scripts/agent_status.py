@@ -95,7 +95,7 @@ def build_dashboard(status: dict, messages: list):
     <div class="message-content">{m['from']} → {m['to']}: {m['message'][:55]}</div>
 </div>'''
 
-    now = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.now().astimezone(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
 
     html = f'''<!DOCTYPE html>
 <html lang="zh-CN">
