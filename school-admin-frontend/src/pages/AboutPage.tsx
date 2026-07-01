@@ -1,25 +1,64 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../i18n'
 import { ArrowLeft } from 'lucide-react'
 
-const VERSION = 'v1.5.4'
-const BUILD_DATE = '2026-06-25'
-
-const CHANGELOG = [
-  { version: 'v1.5.4', date: '2026-06-25', changes: ['Bug修复: About页面空白问题', '修复i18n hook调用方式错误'] },
-  { version: 'v1.5.3', date: '2026-06-24', changes: ['Bug修复: 出勤报表数据显示'] },
-  { version: 'v1.5.2', date: '2026-06-23', changes: ['Bug修复: staff1账号登录错误', '测试账号admin/teacher1/parent1/student1/staff1统一密码Admin123!生效'] },
-  { version: 'v1.5.1', date: '2026-06-23', changes: ['Bug修复: 仪表板出勤数据不显示', '前端重新构建部署', 'i18n翻译全覆盖', '全缺陷回归验证'] },
-  { version: 'v1.5.0', date: '2026-06-20', changes: ['家长查询队列管理', '学费管理完整功能', '费用管理', '奖学金/津贴管理', 'Bug修复(语言切换/班级筛选/Modal弹窗等)'] },
-  { version: 'v1.4.0', date: '2026-06-19', changes: ['午膳订单管理', '教师请假管理', '学生出勤管理', '病假AI核验', 'i18n国际化'] },
-  { version: 'v1.3.0', date: '2026-06-19', changes: ['AI边界Bug修复', '分期付款UUID校验'] },
-  { version: 'v1.2.0', date: '2026-06-18', changes: ['学生资助资格', '家长密码设置', '出勤二维码扫码'] },
-]
+interface VersionInfo {
+  version: string
+  buildDate: string
+  gitCommit: string
+  gitBranch: string
+  changelog: Array<{
+    version: string
+    date: string
+    changes: string[]
+  }>
+}
 
 export default function AboutPage() {
   const navigate = useNavigate()
   const { t } = useI18n()
+  const [versionInfo, setVersionInfo] = useState<VersionInfo | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    // 从 /version.json 读取版本信息 (构建时生成)
+    fetch('/version.json')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Version info not found')
+        }
+        return res.json()
+      })
+      .then(data => {
+        setVersionInfo(data)
+        setLoading(false)
+      })
+      .catch(err => {
+        setError(err.message)
+        setLoading(false)
+        // Fallback to default version info
+        setVersionInfo({
+          version: 'v1.5.4',
+          buildDate: '2026-06-25',
+          gitCommit: 'unknown',
+          gitBranch: 'unknown',
+          changelog: [
+            { version: 'v1.5.4', date: '2026-06-25', changes: ['Bug修复: About页面空白问题'] }
+          ]
+        })
+      })
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="animate-pulse bg-gray-200 h-32 rounded-2xl mb-6" />
+        <div className="animate-pulse bg-gray-200 h-48 rounded-xl mb-6" />
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -31,18 +70,24 @@ export default function AboutPage() {
         <h1 className="text-3xl font-bold mb-2">{t.about.title}</h1>
         <p className="text-blue-100">{t.about.subtitle}</p>
         <div className="flex gap-4 mt-4">
-          <span className="bg-white/10 px-4 py-2 rounded-lg font-mono">{VERSION}</span>
-          <span className="bg-white/10 px-4 py-2 rounded-lg">{BUILD_DATE}</span>
+          <span className="bg-white/10 px-4 py-2 rounded-lg font-mono">{versionInfo?.version}</span>
+          <span className="bg-white/10 px-4 py-2 rounded-lg">{versionInfo?.buildDate}</span>
         </div>
+        {versionInfo?.gitCommit !== 'unknown' && (
+          <div className="flex gap-4 mt-2 text-sm text-blue-200">
+            <span>Git: {versionInfo.gitCommit}</span>
+            <span>Branch: {versionInfo.gitBranch}</span>
+          </div>
+        )}
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h2 className="text-xl font-semibold mb-4">{t.about.techArchitecture}</h2>
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div><span className="font-medium">{t.about.frontend}:</span> React + TypeScript</div>
+          <div><span className="font-medium">{t.about.frontend}:</span> React + TypeScript + Vite</div>
           <div><span className="font-medium">{t.about.backend}:</span> NestJS + PostgreSQL</div>
           <div><span className="font-medium">{t.about.cache}:</span> Redis</div>
-          <div><span className="font-medium">{t.about.deployment}:</span> Docker</div>
+          <div><span className="font-medium">{t.about.deployment}:</span> Docker + GitHub Actions</div>
         </div>
       </div>
 
@@ -67,7 +112,7 @@ export default function AboutPage() {
 
       <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
         <h2 className="text-xl font-semibold mb-4">{t.about.changelog}</h2>
-        {CHANGELOG.map((r) => (
+        {versionInfo?.changelog?.map((r) => (
           <div key={r.version} className="mb-4 border-l-2 border-purple-200 pl-4">
             <div className="flex gap-3 mb-2">
               <span className="font-mono font-bold text-purple-600">{r.version}</span>

@@ -1,11 +1,12 @@
 {
   "name": "school-admin-frontend",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.5.5",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run generate-version && vite build",
+    "generate-version": "tsx scripts/generate-version.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
@@ -46,6 +47,7 @@
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.2",
+    "tsx": "^4.19.0",
     "vite": "^8.0.16",
     "vitest": "^4.1.8"
   },
