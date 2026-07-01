@@ -1,9 +1,16 @@
 {
   "lastChecks": {
-    "git": 1751370300,
-    "github": 1751370300,
-    "agents": 1751370300,
-    "ci_cd": 1751370300,
-    "system": 1751370300
+    "git": 1751374500,
+    "github": 1751374500,
+    "agents": 1751374500,
+    "ci_cd": 1751374500,
+    "system": 1751374500
+  },
+  "notes": {
+    "recruitment_module": "Issues #188-192 all CLOSED - backend complete, frontend missing",
+    "asset_module": "Issue #50 still open with dev label (last update: 2026-06-27)",
+    "disk": "90% used, 4.0G free — unchanged",
+    "ci_failures": "Deploy Test, daily-report, qa-checker, agent-communication workflows failing — likely cosmetic 0s heartbeat jobs",
+    "open_issues_count": 16
   }
 }
