@@ -2,13 +2,14 @@
   "lastChecks": {
     "email": null,
     "calendar": null,
-    "github": 1751341500,
-    "system": 1751341500,
-    "disk": 1751341500,
-    "subagent": 1751341500,
-    "issues": 1751341500
+    "github": 1782881400,
+    "system": 1782881400,
+    "disk": 1782881400,
+    "docker": 1782881400,
+    "subagent": 1782881400,
+    "issues": 1782881400
   },
-  "lastHeartbeat": "2026-07-01T11:05:00+08:00",
+  "lastHeartbeat": "2026-07-01T12:50:00+08:00",
   "status": "HEARTBEAT_OK",
-  "notes": "✅ 系统运行稳定。Docker全部健康。磁盘90%持续监控。无活跃Agent。无P0/P1任务。Issue#193已关闭。"
+  "notes": "✅ 系统稳定。Docker全部健康。磁盘90%持续监控中。GitHub: 20个开放Issue(0个P0/P1)。教师招聘模块5个P2 Issue(#188-#192)待处理。无活跃Subagent。测试环境URL正常运行。"
 }
