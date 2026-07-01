@@ -2,14 +2,14 @@
   "lastChecks": {
     "email": null,
     "calendar": null,
-    "github": 1782889800,
-    "system": 1782889800,
-    "disk": 1782889800,
-    "docker": 1782889800,
-    "subagent": 1782889800,
-    "issues": 1782889800
+    "github": 1782891000,
+    "system": 1782891000,
+    "disk": 1782891000,
+    "docker": 1782891000,
+    "subagent": 1782891000,
+    "issues": 1782891000
   },
-  "lastHeartbeat": "2026-07-01T14:10:00+08:00",
+  "lastHeartbeat": "2026-07-01T14:45:00+08:00",
   "status": "HEARTBEAT_OK",
-  "notes": "✅ 系统稳定。Docker全部健康(backend 18h, frontend 41m, postgres 18h, redis 18h, kafka 18h)。磁盘90%(4.0G可用)可考虑Docker prune。无P0/P1 Issue。20个开放Issue无变化。"
+  "notes": "✅ 系统稳定。Docker全部容器重启(7m uptime)，backend healthy。磁盘90%(4.0G可用)持续紧张。无P0/P1 Issue。20个开放Issue无变化。最新commit: e63c8f4(feat: Simple agent-dashboard skill)。"
 }
