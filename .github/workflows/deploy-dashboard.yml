@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'multi-agent-dashboard.html'
+      - 'docs/multi-agent-dashboard.html'
   workflow_dispatch:
 
 permissions:
@@ -32,7 +32,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./multi-agent-dashboard.html
+          path: ./docs
 
       - name: Deploy to GitHub Pages
         id: deployment
