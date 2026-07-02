@@ -1,5 +1,9 @@
 name: Agent Communication
 
+permissions:
+  issues: write
+  pull-requests: write
+
 on:
   issues:
     types: [labeled, unlabeled, closed]

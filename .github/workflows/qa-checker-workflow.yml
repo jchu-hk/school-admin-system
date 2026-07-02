@@ -1,5 +1,9 @@
 name: QA and Checker Workflow
 
+permissions:
+  issues: write
+  pull-requests: write
+
 on:
   pull_request:
     types: [opened, ready_for_review, review_requested, closed]
@@ -54,12 +58,12 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `## 🔔 QA验收请求
+body: `## 🔔 QA验收请求
 
 ### PR信息
-- **#${pr.number}**: ${pr.title}
-- **分支**: ${pr.head.ref}
-- **状态**: 待QA测试
+- <strong>#${pr.number}</strong>: ${pr.title}
+- <strong>分支</strong>: ${pr.head.ref}
+- <strong>状态</strong>: 待QA测试
 
 ### QA检查清单
 - [ ] 功能测试
@@ -117,17 +121,17 @@ jobs:
               body: `## 🔍 CHECKER审查请求
 
 ### ${isPR ? 'PR' : 'Issue'}信息
-- **#${issue.number}**: ${issue.title}
-- **状态**: 待CHECKER审批
+- <strong>#${issue.number}</strong>: ${issue.title}
+- <strong>状态</strong>: 待CHECKER审批
 
 ### CHECKER审查清单
-**代码审查:**
+<strong>代码审查:</strong>
 - [ ] 代码规范符合
 - [ ] 无安全漏洞
 - [ ] 无明显性能问题
 - [ ] 测试覆盖充分
 
-**审批结果:**
+<strong>审批结果:</strong>
 - [ ] APPROVED - 添加 approved 标签
 - [ ] REQUEST_CHANGES - 添加 changes-requested 标签
 
@@ -174,8 +178,8 @@ jobs:
               body: `## ✅ QA测试已通过
 
 ### 测试结果
-- **Issue #${issue.number}**: ${issue.title}
-- **状态**: QA验收通过
+- <strong>Issue #${issue.number}</strong>: ${issue.title}
+- <strong>状态</strong>: QA验收通过
 
 ### CHECKER审批
 请进行代码审查，审查完成后:
