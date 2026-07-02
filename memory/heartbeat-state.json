@@ -1,11 +1,9 @@
 {
   "lastChecks": {
-    "email": null,
-    "calendar": null,
-    "weather": null,
-    "heartbeat": 1751451720,
-    "issue_check": 1751445300,
-    "branch_check": 1751445300,
-    "health_check": 1751445300
+    "heartbeat": 1751537400,
+    "issue_check": 1751535600,
+    "branch_check": 1751535600,
+    "health_check": 1751537400,
+    "tunnel_check": 1751535600
   }
 }
