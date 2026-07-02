@@ -3,29 +3,29 @@
     {
       "icon": "🧑💼",
       "name": "PM",
-      "status": "idle",
-      "task": "调度中枢",
+      "status": "running",
+      "task": "调度中枢 - #194 CI通过，等QA验收",
       "color": "#fbbf24"
     },
     {
       "icon": "🤖",
       "name": "DEV",
       "status": "idle",
-      "task": "完成 #194",
+      "task": "#194 代码完成，等测试环境恢复",
       "color": "#60a5fa"
     },
     {
       "icon": "🔍",
       "name": "QA",
-      "status": "running",
-      "task": "处理 #140",
+      "status": "idle",
+      "task": "等待测试环境恢复后验收 #194",
       "color": "#4ade80"
     },
     {
       "icon": "🔧",
       "name": "DEVOPS",
-      "status": "running",
-      "task": "处理 #152",
+      "status": "idle",
+      "task": "待命 - 需恢复Cloudflare Tunnel",
       "color": "#f97316"
     },
     {
@@ -38,25 +38,25 @@
     {
       "icon": "🏗️",
       "name": "ARCH",
-      "status": "running",
-      "task": "处理 #45",
+      "status": "idle",
+      "task": "待命",
       "color": "#6b7280"
     },
     {
       "icon": "📝",
       "name": "REQ",
-      "status": "running",
-      "task": "处理 #51",
+      "status": "idle",
+      "task": "待命",
       "color": "#ec4899"
     }
   ],
   "stats": {
     "openIssues": 16,
-    "commits": 20,
-    "todayCommits": 12,
-    "recentActivity": 20
+    "commits": 23,
+    "todayCommits": 15,
+    "recentActivity": 23
   },
   "messages": [],
-  "lastUpdate": "2026-07-02 08:36:05",
-  "generatedAt": "2026-07-02T00:36:05.000Z"
+  "lastUpdate": "2026-07-02 08:50:00",
+  "generatedAt": "2026-07-02T00:50:00.000Z"
 }
