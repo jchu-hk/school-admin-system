@@ -9,21 +9,19 @@ on:
 jobs:
   check-status:
     runs-on: ubuntu-latest
+    environment: write-all  # Required for gh cli permissions
     
     steps:
       - uses: actions/checkout@v4
+      - uses: GitHub/login@v3
+        with:
+          GH_TOKEN: ${{ github.token }}
       
       - name: Check Issues Status
         run: |
-          echo "## 📊 项目状态检查 $(date '+%Y-%m-%d %H:%M')" >> $GITHUB_STEP_SUMMARY
+          echo "## 📊 项目状态检查 $(date '+%Y-%m-%d %H:%M') GMT+8" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
-          echo "### 🔴 超时任务" >> $GITHUB_STEP_SUMMARY
-          gh issue list --state open --search "截止" --limit 10 --json number,title >> $GITHUB_STEP_SUMMARY
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📋 进行中任务" >> $GITHUB_STEP_SUMMARY
-          gh issue list --state open --limit 20 --json number,title,assignees >> $GITHUB_STEP_SUMMARY
+          gh issue list --state open --limit 20 --json number,title,assignees --jq '.[] | "- [\#\(.number)] \(.title)"' >> $GITHUB_STEP_SUMMARY
 
       - name: Check for Overdue Issues
         if: github.event_name == 'schedule'
