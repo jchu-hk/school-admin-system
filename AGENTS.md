@@ -720,29 +720,33 @@ A: 查看日志 `/tmp/project-admin-cron.log`
 
 ### 强制规则：所有 Agent 必须使用 agent-communication Skill
 
-**Agent spawn 时**（PM spawn DEV/QA/DEVOPS）：
+**⚠️ 每次 spawn subagent 前必须执行以下步骤：**
+
 ```bash
+# 1️⃣ 记录消息（必须先执行！）
 python3 skills/agent-communication/scripts/write_message.py \
   --from PM --to {AGENT} \
   --message "任务描述" \
   --type assign --status running
+
+# 2️⃣ Spawn subagent
+sessions_spawn(...)
 ```
 
-**Agent 接受任务时**：
-```bash
-python3 skills/agent-communication/scripts/write_message.py \
-  --from {AGENT} --to PM \
-  --message "接受任务，开始执行" \
-  --type received
-```
+**⚠️ Subagent 完成后必须执行：**
 
-**Agent 完成任务时**：
 ```bash
+# 记录完成消息
 python3 skills/agent-communication/scripts/write_message.py \
   --from {AGENT} --to PM \
   --message "任务完成" \
   --type done --status idle
 ```
+
+**禁止行为**：
+- ❌ 先 spawn subagent，后记录消息（顺序不能颠倒！）
+- ❌ 只 spawn 不记录消息
+- ❌ 忘记调用 write_message
 
 ### Skill 位置
 ```
