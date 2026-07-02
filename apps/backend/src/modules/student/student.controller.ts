@@ -19,7 +19,7 @@ import {
   CreateClassAllocationDto,
   ClassAllocationQueryDto,
 } from './dto/student.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @ApiTags('学生管理 (Student Management)')
 @ApiBearerAuth()

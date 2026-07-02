@@ -185,7 +185,7 @@ export class StudentService {
 
     // 排序
     const sortBy = query.sortBy || 'student.created_at';
-    const sortOrder = query.sortOrder || 'desc';
+    const sortOrder = query.sortOrder === 'asc' ? 'ASC' : 'DESC';
     qb.orderBy(sortBy, sortOrder);
 
     // 分页
@@ -198,7 +198,7 @@ export class StudentService {
       const allocation = (s as any).alloc;
       const cls = (s as any).cls;
       const ay = (s as any).ay;
-      const { _deletedAt, ...rest } = s;
+      const { deletedAt: _deletedAt, ...rest } = s as any;
       return {
         ...rest,
         currentClass: allocation
