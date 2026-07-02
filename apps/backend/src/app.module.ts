@@ -36,6 +36,7 @@ import { AddressBookModule } from './modules/address-book/address-book.module';
 import { ExamModule } from './modules/exam/exam.module';
 import { BudgetModule } from './modules/budget/budget.module';
 import { RecruitmentModule } from './modules/recruitment/recruitment.module';
+import { StudentModule } from './modules/student/student.module';
 
 @Module({
   imports: [
@@ -91,6 +92,7 @@ import { RecruitmentModule } from './modules/recruitment/recruitment.module';
     ExamModule,
     BudgetModule,
     RecruitmentModule,
+    StudentModule,
   ],
   controllers: [],
   providers: [],
