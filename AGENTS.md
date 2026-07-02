@@ -6,20 +6,27 @@
 
 # 🚨 CRITICAL RULES (Non-Negotiable)
 
+**详细内容见**: `CRITICAL_RULES.md` - 必须遵守的规则清单
+
 ## 0. Before ANY sessions_spawn - MUST DO THIS FIRST
 
 ```bash
-# 1️⃣ ALWAYS call write_message.py BEFORE spawn
+# 1️⃣ 使用 check_rules.py (推荐) - 自动记录 + 更新 Dashboard
+python3 scripts/check_rules.py spawn {AGENT} "{任务描述}"
+
+# 2️⃣ 或者手动调用 write_message.py
 python3 skills/agent-communication/scripts/write_message.py \
   --from PM --to {AGENT} \
-  --message "任务描述" \
+  --message "{任务描述}" \
   --type assign --status running
 
-# 2️⃣ THEN spawn the subagent
+# 3️⃣ 然后 spawn subagent
 sessions_spawn(...)
 ```
 
 **Failure to do this will result in dashboard not updating.**
+
+**快速检查**: `python3 scripts/check_rules.py verify`
 
 ---
 
@@ -31,6 +38,7 @@ Before doing anything else:
 2. Read `USER.md` — this is who you're helping
 3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
 4. **If in MAIN SESSION** (direct chat with your human): Also read `MEMORY.md`
+5. **Read `CRITICAL_RULES.md`** — 关键规则，必须遵守
 
 Don't ask permission. Just do it.
 
