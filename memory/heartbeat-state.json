@@ -1,59 +1,70 @@
 {
   "lastChecks": {
-    "heartbeat": 1782952500000,
+    "heartbeat": 1782953520000,
     "email": null,
     "calendar": null,
     "weather": null
   },
   "lastCheckInfo": {
-    "heartbeat": "2026-07-02T08:35:00+08:00",
-    "test_env": "unreachable (Cloudflare Tunnel disconnected - DEVOPS action needed)",
-    "ci_workflows": "CI/CD ✅, others ❌ (GH_TOKEN missing - DEVOPS action needed)"
+    "heartbeat": "2026-07-02T08:52:00+08:00",
+    "test_env": "✅ Running (local: backend:8080, frontend:3000), CI/CD in progress",
+    "ci_workflows": "CI/CD ✅ (in_progress), E2E ❌ (GH_TOKEN missing), agent-communication ❌ (GH_TOKEN missing), daily-report ❌ (GH_TOKEN missing)"
   },
   "checkList": [
     {
       "type": "git_status",
       "result": {
-        "branch": "feature/feature-194-student-refactor",
-        "latest_commit": "438618f feat(#194): implement student management module",
-        "latest_commit_time": "2026-07-02T08:35:00+08:00",
-        "ahead_of_origin": 0,
-        "pr": "#195 open",
-        "status": "Code committed, PR open, ready for QA review"
+        "branch": "main",
+        "latest_commit": "a3cdf20 pm: heartbeat 2026-07-02 08:50 - #194 merged, QA pending test env",
+        "latest_commit_time": "2026-07-02T08:51:00+08:00",
+        "ahead_of_origin": 1,
+        "uncommitted": "skills/multi-agent-dashboard/scripts/update_dashboard.py (moved dashboard to docs/)",
+        "status": "main branch, 1 uncommitted change"
       },
-      "timestamp": "2026-07-02T08:35:00+08:00"
+      "timestamp": "2026-07-02T08:52:00+08:00"
     },
     {
       "type": "github_issues",
       "result": {
-        "critical_issue": "#194 [P0] 学生管理模块根本性重构 (PR#195 open)",
-        "feature_branch": "feature/feature-194-student-refactor",
-        "pr_url": "https://github.com/jchu-hk/school-admin-system/pull/195",
+        "issue_194": "✅ CLOSED - Student management refactor merged",
         "open_count": "10+ open issues",
-        "status": "PR open, awaiting QA"
+        "status": "#194 closed, PR #195 merged"
       },
-      "timestamp": "2026-07-02T08:35:00+08:00"
+      "timestamp": "2026-07-02T08:52:00+08:00"
     },
     {
       "type": "ci_status",
       "result": {
-        "ci_cd_pipeline": "success",
+        "ci_cd_pipeline": "in_progress",
+        "docker_build": "in_progress",
+        "deploy_test_env": "failure",
         "agent_communication": "failure (GH_TOKEN)",
         "daily_report": "failure (GH_TOKEN)",
         "qa_checker": "failure (GH_TOKEN)"
       },
-      "timestamp": "2026-07-02T08:35:00+08:00"
+      "timestamp": "2026-07-02T08:52:00+08:00"
+    },
+    {
+      "type": "test_env",
+      "result": {
+        "backend_health": "✅ OK /api/health",
+        "frontend_3000": "✅ Running (Next.js)",
+        "cloudflared": "✅ Running (2 tunnels)",
+        "github_pages": "building",
+        "status": "Local services OK, CI/CD in progress"
+      },
+      "timestamp": "2026-07-02T08:52:00+08:00"
     },
     {
       "type": "blockers",
       "result": {
         "items": [
-          "Cloudflare Tunnel disconnected → test env unreachable (DEVOPS action)",
-          "GH_TOKEN missing → agent-communication / daily-report / qa-checker broken (DEVOPS action)"
+          "GH_TOKEN missing → agent-communication / daily-report / qa-checker broken (DEVOPS action)",
+          "Deploy Test Environment workflow failing (check workflow logs)"
         ],
-        "priority": "HIGH"
+        "priority": "MEDIUM"
       },
-      "timestamp": "2026-07-02T08:35:00+08:00"
+      "timestamp": "2026-07-02T08:52:00+08:00"
     }
   ]
 }
