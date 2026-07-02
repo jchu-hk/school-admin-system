@@ -1,0 +1,19 @@
+{
+  "version": "v1.5.5",
+  "buildDate": "2026-07-01",
+  "gitCommit": "1d72073",
+  "gitBranch": "main",
+  "changelog": [
+    {
+      "version": "build-2026-07-01",
+      "date": "2026-07-01",
+      "changes": [
+        "Deploy dashboard from docs/ for reliable GitHub Pages",
+        "Simple agent-dashboard skill - status+message=transparency",
+        "dashboard update 14:20",
+        "dashboard update 14:13",
+        "dashboard update 14:13"
+      ]
+    }
+  ]
+}

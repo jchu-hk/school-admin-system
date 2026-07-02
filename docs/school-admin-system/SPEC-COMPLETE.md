@@ -9,7 +9,7 @@
 |------|------|
 | 文档名称 | 智能校务助理系统 — 完整功能规格书 |
 | 文档编号 | SPEC-SCHOOL-ADMIN-001 |
-| 当前版本 | **v1.8.0** |
+| 当前版本 | **v1.9.0** |
 | 文档状态 | ~~已核准 (Approved)~~ **→ 变更中 (Change in Progress)** |
 | 存放位置 | `/docs/school-admin-system/SPEC-COMPLETE.md` |
 | 主维护人 | 系统架构团队 |
@@ -5180,9 +5180,6 @@ Step 5: 提醒状态记录 (Reminder Status Logging)
 | MOD-MEET-001 | 任务分派 | F-MEET-003 | 任务分派（从会议生成任务）| P2 |
 | MOD-MEET-001 | 提醒管理 | F-MEET-004 | 到期提醒（自动提醒负责人）| P2 |
 
-<<<<<<< HEAD
-**总计：69个功能函数，涵盖13大模块**（v1.8.0新增Module 13：4项功能）
-=======
 ## 第十五部分：Module 14 — 教师招聘管理模块 (v1.8.1 新增)
 
 ### 模块概述
@@ -5932,4 +5929,202 @@ Total: 38 functions across 5 modules
 | AC-03 | 微信Access Token剩余有效期6小时（告警阈值24小时）| Token健康检查执行 | 状态=warning，recommendation=「Token即将过期，建议立即刷新」，自动触发刷新流程 |
 | AC-04 | WebSAMS API可用率跌至96%（告警阈值98%）| 第三方接口检查 | 状态=error，告警推送至系统管理员（App+短信）|
 | AC-05 | 备份任务昨日未成功完成 | 每日01:00备份任务执行后检查 | 状态=error，告警立即推送至系统管理员和校务主任 |
+
+---
+
+## 第十六部分：Module 15 — 学生档案管理模块 (v1.9.0 新增，P0)
+
+> **Module 15 (Student Profile Management / v1.9.0)** 是基于 Issue #194 用户反馈根本性设计错误而新增的核心模块。
+> 核心变更：学生档案（`students` 表）与系统用户（`users` 表）完全分离，学号按 `YYYYNNNN` 格式自动生成，班级分配按学年动态管理。
+
+### 16.1 模块概述
+
+| 属性 | 描述 |
+|------|------|
+| 模块名称 | Student Profile Management — 学生档案管理模块 |
+| 模块ID | MOD-STU-001 |
+| 优先级 | **P0（根本性设计错误，必须立即修复）** |
+| 用户 | 校务处同工, 校务主任 |
+| 评审依据 | Issue #194 — 学生管理模块根本性重构（2026-07-02）|
+| 关联模块 | MOD-USER-001（用户管理），MOD-CLASS-001（班级管理），MOD-CYCL-001（周期性校务）|
+
+### 16.2 设计背景与问题
+
+**根本性设计错误（Issue #194）：**
+- 旧设计将学生档案混用于 `users` 表（`role='student'`），包含 `username/password` 字段
+- 学生档案是**业务数据**（姓名、学号、性别、出生日期等），不应与系统用户账户混淆
+- 正确的设计应使用独立的 `students` 表存储学生档案数据
+
+**正确设计原则：**
+```
+students (学生档案表 - 业务数据)
+├── id (UUID) - 学生档案唯一标识
+├── student_id (VARCHAR) - 学号，格式 YYYYNNNN，自动生成，不可修改
+├── name_zh (VARCHAR) - 中文姓名
+├── name_en (VARCHAR) - 英文姓名
+├── gender (ENUM) - 性别
+├── birth_date (DATE) - 出生日期
+├── address (TEXT) - 家庭地址
+├── phone (VARCHAR) - 联系电话
+├── email (VARCHAR) - 邮箱
+├── admission_date (DATE) - 入学日期
+├── status (ENUM) - 在校/毕业/退学
+└── created_at/updated_at/deleted_at
+
+users (系统用户表 - 技术账户)
+├── id (UUID) - 用户唯一标识
+├── username (VARCHAR) - 登录账号（可为学号或独立账号）
+├── password (VARCHAR) - 登录密码
+├── role (ENUM) - 用户角色
+└── student_profile_id (FK→students.id, 可选) - 关联学生档案（学生/家长角色）
+```
+
+### 16.3 数据模型设计
+
+#### 核心实体关系
+
+```
+┌─────────────┐       ┌──────────────────────┐       ┌─────────────────┐
+│  students   │◄─────►│  class_allocations    │◄─────►│    classes      │
+│ (学生档案)  │       │    (班级分配)         │       │    (班级)       │
+└──────┬──────┘       └──────────────────────┘       └─────────────────┘
+       │                       │
+       ▼                       ▼
+┌─────────────┐       ┌──────────────────────┐
+│    users    │       │ student_id_sequences │
+│ (系统用户)  │       │    (学号序列表)       │
+└─────────────┘       └──────────────────────┘
+```
+
+### Function F-STU-001: 学生档案 CRUD
+
+**目的：** 管理学生档案的全生命周期，包括创建、查询、更新、软删除
+
+**学号自动生成规则：**
+- 格式：`YYYYNNNN`（YYYY=入学年份，NNNN=4位序号，0001-9999）
+- 按入学年份分组，每年从 0001 开始递增
+- 自动分配，创建时无需输入，确认后不可修改
+
+**输入：**
+| 字段 | 类型 | 必填 | 来源 | 说明 |
+|------|------|------|------|------|
+| name_zh | String | 是 | 用户输入 | 中文姓名 |
+| name_en | String | 可选 | 用户输入 | 英文姓名 |
+| gender | Enum | 是 | 用户输入 | male/female/other |
+| birth_date | Date | 是 | 用户输入 | 出生日期 |
+| address | Text | 可选 | 用户输入 | 家庭地址 |
+| phone | String | 可选 | 用户输入 | 联系电话 |
+| email | String | 可选 | 用户输入 | 邮箱 |
+| admission_date | Date | 是 | 用户输入 | 入学日期 |
+| guardian_name | String | 可选 | 用户输入 | 监护人姓名 |
+| guardian_phone | String | 可选 | 用户输入 | 监护人电话 |
+| guardian_relationship | String | 可选 | 用户输入 | 监护人关系 |
+| emergency_contact | String | 可选 | 用户输入 | 紧急联系人 |
+| emergency_phone | String | 可选 | 用户输入 | 紧急联系电话 |
+| notes | Text | 可选 | 用户输入 | 备注 |
+
+**业务规则：**
+- 学号按 `YYYYNNNN` 格式自动生成，不可手动输入，不可修改
+- 创建学生档案时，系统自动生成对应的 `users` 记录（`role='student'`），或与已有用户关联
+- 软删除时不物理删除，保留 `deleted_at` 时间戳
+- 学生状态：active（在校）、graduated（毕业）、withdrawn（退学）、transferred（转学）
+
+**输出：**
+```json
+{
+  "id": "uuid",
+  "student_id": "2026000001",
+  "name_zh": "王小明",
+  "name_en": "WONG SIU MING",
+  "gender": "male",
+  "birth_date": "2011-03-15",
+  "address": "香港仔田灣大樓A座12樓",
+  "phone": "91234567",
+  "email": "parent@example.com",
+  "admission_date": "2026-09-01",
+  "status": "active",
+  "guardian_name": "王大明",
+  "guardian_phone": "91234568",
+  "guardian_relationship": "父亲",
+  "emergency_contact": "王小華",
+  "emergency_phone": "91234569",
+  "notes": "",
+  "created_at": "2026-07-02T10:00:00+08:00",
+  "updated_at": "2026-07-02T10:00:00+08:00",
+  "current_class": {
+    "class_id": "uuid",
+    "class_name": "1A",
+    "academic_year": "2026-2027"
+  }
+}
+```
+
+#### 验收标准 (AC)
+
+| # | Given（前置条件）| When（操作）| Then（预期结果）|
+|---|----------------|------------|----------------|
+| AC-01 | 2026年9月新学期，添加新生王小明 | 校务处同工填写学生基本信息，点击「保存」| 系统自动生成学号 `2026000001`（2026年第1个入学学生），学生档案创建成功，不要求输入 username/password |
+| AC-02 | 添加第123个2026年入学新生 | 校务处同工填写信息，保存 | 系统生成学号 `2026000123` |
+| AC-03 | 某学生需更新家庭地址 | 校务处同工编辑学生档案，修改地址 | 系统更新地址，student_id 保持不变 |
+| AC-04 | 某学生退学 | 校务处同工将学生状态改为 withdrawn | 学生档案保留，status=withdrawn，学号保留但不重复使用 |
+| AC-05 | 新建学生后查看列表 | 保存成功后返回列表页 | 新学生立即显示在列表中（不刷新），学号、姓名、性别、当前班级均正确显示 |
+| AC-06 | 班级下拉框显示 | 添加学生页面加载 | 班级下拉框显示当前学年（2026-2027）的所有班级，无空值 |
+
+### Function F-STU-002: 班级分配管理（按学年）
+
+**目的：** 管理学生对班级的分配关系，支持按学年动态调整
+
+**输入：**
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| student_id | UUID | 是 | 学生档案ID |
+| class_id | UUID | 是 | 班级ID |
+| academic_year_id | UUID | 是 | 学年ID |
+| allocation_type | Enum | 是 | main（主班）/ elective（选修）/ temporary（临时）|
+| effective_date | Date | 是 | 生效日期 |
+| end_date | Date | 可选 | 结束日期（为空表示当前学年有效）|
+
+**业务规则：**
+- 每个学生在同一学年内只能有一个 `allocation_type='main'` 的主班分配
+- 学年结束时，旧学年分配自动过期，新学年需重新分配
+- 班级分配与学生档案分离，同一学生可跨学年查看分配历史
+
+**输出：**
+```json
+{
+  "allocation_id": "uuid",
+  "student_id": "uuid",
+  "student_id_display": "2026000001",
+  "student_name": "王小明",
+  "class_id": "uuid",
+  "class_name": "1A",
+  "academic_year": "2026-2027",
+  "allocation_type": "main",
+  "effective_date": "2026-09-01",
+  "end_date": null,
+  "status": "active"
+}
+```
+
+#### 验收标准 (AC)
+
+| # | Given（前置条件）| When（操作）| Then（预期结果）|
+|---|----------------|------------|----------------|
+| AC-01 | 新生王小明入读1A班 | 创建学生档案后，分配班级 | 系统生成 class_allocation 记录，allocation_type=main |
+| AC-02 | 学年末，1A班升为2A | 学年切换，重新分配班级 | 王小明新学年分配到2A，旧分配自动过期 |
+| AC-03 | 某学生转班 | 校务处同工更新班级分配 | 系统保留原分配记录（标记end_date），新增新分配记录 |
+| AC-04 | 查询某学生历史班级 | 查看学生详情 | 显示该生历次班级分配记录（学年+班级+类型）|
+
+### Function F-STU-003: 学生-用户关联
+
+**目的：** 建立学生档案与系统用户的关联关系
+
+**关联规则：**
+- 创建学生档案时，可选择创建关联的 `users` 记录（role='student'）
+- 也可将学生档案关联到已有的 `users` 记录
+- 家长用户（role='parent'）通过 `parent_student_links` 表与学生档案关联
+
+---
+
+**文档结束**
 

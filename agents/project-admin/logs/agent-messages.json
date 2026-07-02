@@ -453,5 +453,17 @@
     "to": "PM",
     "message": "QA: 超时终止 - Issue #155验收超时 (17分钟)",
     "type": "failed"
+  },
+  {
+    "timestamp": "2026-07-02T00:02:58Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "Issue #194 [P0] 学生管理模块根本性重构 - 学生档案与系统用户分离。完整设计文档在 memory/2026-07-02-defect-student-management.md。任务顺序：(1)阅读文档 (2)更新SPEC-COMPLETE.md (3)更新DB-SCHEMA.md (4)更新DATA-DICTIONARY.md (5)更新API-DESIGN.md (6)开发后端 (7)开发前端",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #194 [P0] 学生管理模块根本性重构 - 学生档案与系统用户分离。完整设计文档在 "
+    }
   }
 ]

@@ -878,7 +878,117 @@
 
 | 版本 | 日期 | 变更 |
 |------|------|------|
-| v1.6.0 | 2026-06-30 | 新增 Module 14 — 教师招聘管理模块：8个表（positions, applications, interviews, interviewers, interview_scores, offers, onboarding, onboarding_tasks） |
-| v1.5.1 | 2026-06-22 | 基于生产环境数据库实际审查重建；新增 AI 核验相关字段 (ai_review_flagged, ai_review_note, ai_verify_result, certificate_verify_result 等)；更新枚举值定义 |
+| v1.9.0 | 2026-07-02 | 新增 Module 15 — 学生档案管理：新增 students、student_id_sequences、class_allocations、student_users、academic_years 五个表；学生档案与系统用户分离 |
+| v1.6.0 | 2026-06-30 | 新增 Module 14 — 教师招聘管理模块：8个表 |
+| v1.5.1 | 2026-06-22 | 基于生产环境数据库实际审查重建 |
 | v1.5.0 | 2026-06-20 | 添加午膳管理、奖学金、家长查询队列模块 |
 | v1.4.0 | 2026-06-03 | 初始版本 |
+
+---
+
+## 18. 学生档案管理 (students, academic_years, student_id_sequences, class_allocations, student_users)
+
+### 18.1 学年 (academic_years)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 学年ID |
+| year | VARCHAR | 9 | UNIQUE, NOT NULL | 学年，如 2026-2027 |
+| start_date | DATE | | NOT NULL | 学年开始日期 |
+| end_date | DATE | | NOT NULL | 学年结束日期 |
+| is_current | BOOLEAN | | DEFAULT false | 是否当前学年 |
+| status | ENUM | | DEFAULT 'active' | 状态 (active/archived) |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+
+**枚举值 — status:**
+| 值 | 说明 |
+|----|------|
+| active | 启用 |
+| archived | 已归档 |
+
+### 18.2 学生档案 (students)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 学生档案唯一标识 |
+| student_id | VARCHAR | 10 | UNIQUE, NOT NULL | 学号（YYYYNNNN格式，自动生成）|
+| name_zh | VARCHAR | 100 | NOT NULL | 中文姓名 |
+| name_en | VARCHAR | 100 | | 英文姓名 |
+| gender | ENUM | | NOT NULL | 性别 (male/female/other) |
+| birth_date | DATE | | NOT NULL | 出生日期 |
+| address | TEXT | | | 家庭地址 |
+| phone | VARCHAR | 20 | | 联系电话 |
+| email | VARCHAR | 255 | | 邮箱 |
+| admission_date | DATE | | NOT NULL | 入学日期 |
+| status | ENUM | | DEFAULT 'active' | 状态 |
+| guardian_name | VARCHAR | 100 | | 监护人姓名 |
+| guardian_phone | VARCHAR | 20 | | 监护人电话 |
+| guardian_relationship | VARCHAR | 50 | | 监护人关系 |
+| emergency_contact | VARCHAR | 100 | | 紧急联系人 |
+| emergency_phone | VARCHAR | 20 | | 紧急联系电话 |
+| hk_id | VARCHAR | 20 | | 香港身份证 |
+| notes | TEXT | | | 备注 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+| deleted_at | TIMESTAMPTZ | | | 软删除时间 |
+| created_by | UUID | | | 创建人 |
+| updated_by | UUID | | | 更新人 |
+
+**枚举值 — gender:**
+| 值 | 说明 |
+|----|------|
+| male | 男 |
+| female | 女 |
+| other | 其他 |
+
+**枚举值 — status:**
+| 值 | 说明 |
+|----|------|
+| active | 在校 |
+| graduated | 毕业 |
+| withdrawn | 退学 |
+| transferred | 转学 |
+
+### 18.3 学号序列 (student_id_sequences)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 序列ID |
+| academic_year | VARCHAR | 9 | UNIQUE, NOT NULL | 学年 |
+| last_sequence | INTEGER | | NOT NULL DEFAULT 0 | 上一个分配的序号 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+
+### 18.4 班级分配 (class_allocations)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 分配ID |
+| student_id | UUID | | FK→students, NOT NULL | 学生档案ID |
+| class_id | UUID | | FK→classes, NOT NULL | 班级ID |
+| academic_year_id | UUID | | FK→academic_years, NOT NULL | 学年ID |
+| academic_year | VARCHAR | 9 | NOT NULL | 学年（冗余字段，便于查询）|
+| allocation_type | ENUM | | DEFAULT 'main' | 分配类型 |
+| effective_date | DATE | | NOT NULL | 生效日期 |
+| end_date | DATE | | | 结束日期 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+| updated_at | TIMESTAMPTZ | | NOT NULL | 更新时间 |
+
+**枚举值 — allocation_type:**
+| 值 | 说明 |
+|----|------|
+| main | 主班 |
+| elective | 选修 |
+| temporary | 临时 |
+
+### 18.5 学生-用户关联 (student_users)
+
+| 字段名 | 数据类型 | 长度 | 约束 | 说明 |
+|--------|----------|------|------|------|
+| id | UUID | | PK | 关联ID |
+| student_id | UUID | | FK→students, UNIQUE, NOT NULL | 学生档案ID |
+| user_id | UUID | | FK→users, UNIQUE, NOT NULL | 系统用户ID |
+| is_primary_account | BOOLEAN | | DEFAULT true | 是否主要账户 |
+| created_at | TIMESTAMPTZ | | NOT NULL | 创建时间 |
+

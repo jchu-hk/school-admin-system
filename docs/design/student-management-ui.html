@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学生管理模块 UI 设计 - Issue #194</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
+    .modal-overlay { background: rgba(0,0,0,0.5); }
+    .student-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+    .badge { padding: 2px 8px; border-radius: 9999px; font-size: 12px; font-weight: 500; }
+    .badge-active { background: #dcfce7; color: #166534; }
+    .badge-inactive { background: #fef3c7; color: #92400e; }
+    .badge-graduated { background: #e0e7ff; color: #3730a3; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-4">
+          <h1 class="text-xl font-bold text-gray-900">学生管理</h1>
+          <span class="text-sm text-gray-500">Student Management</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="switchTab('list')" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">列表</button>
+          <button onclick="switchTab('add')" class="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg">添加学生</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    
+    <!-- Tab: Student List -->
+    <div id="tab-list" class="tab-content">
+      <!-- Filters -->
+      <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+        <div class="flex flex-wrap gap-4">
+          <!-- Search -->
+          <div class="flex-1 min-w-[200px]">
+            <div class="relative">
+              <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+              <input type="text" placeholder="搜索学号、姓名..." 
+                     class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+          </div>
+          <!-- Class Filter -->
+          <div class="w-48">
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+              <option value="">全部班级</option>
+              <option value="1A">1A</option>
+              <option value="1B">1B</option>
+              <option value="2A">2A</option>
+              <option value="2B">2B</option>
+              <option value="3A">3A</option>
+            </select>
+          </div>
+          <!-- Status Filter -->
+          <div class="w-40">
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+              <option value="">全部状态</option>
+              <option value="active">在读</option>
+              <option value="inactive">休学</option>
+              <option value="graduated">毕业</option>
+            </select>
+          </div>
+          <!-- Academic Year -->
+          <div class="w-40">
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+              <option value="2025-2026">2025-2026</option>
+              <option value="2024-2025">2024-2025</option>
+            </select>
+          </div>
+          <!-- Add Button -->
+          <button onclick="switchTab('add')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            添加学生
+          </button>
+        </div>
+      </div>
+
+      <!-- Student Table -->
+      <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-gray-50 border-b">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">学号</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">学生</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">性别</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">当前班级</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">入学年份</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <!-- Sample Student 1 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3">
+                <span class="font-mono text-sm text-gray-900">2026000001</span>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="student-avatar bg-blue-100 text-blue-600">陈</div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">陳小明</div>
+                    <div class="text-xs text-gray-500">Chan Siu Ming</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">男</td>
+              <td class="px-4 py-3 text-sm text-gray-900">1A</td>
+              <td class="px-4 py-3 text-sm text-gray-600">2026</td>
+              <td class="px-4 py-3">
+                <span class="badge badge-active">在读</span>
+              </td>
+              <td class="px-4 py-3 text-right">
+                <div class="flex justify-end gap-2">
+                  <button onclick="viewStudent('2026000001')" class="p-1.5 text-gray-400 hover:text-blue-600 rounded" title="查看">
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                  </button>
+                  <button onclick="editStudent('2026000001')" class="p-1.5 text-gray-400 hover:text-green-600 rounded" title="编辑">
+                    <i data-lucide="edit-2" class="w-4 h-4"></i>
+                  </button>
+                  <button onclick="deleteStudent('2026000001')" class="p-1.5 text-gray-400 hover:text-red-600 rounded" title="删除">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <!-- Sample Student 2 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3">
+                <span class="font-mono text-sm text-gray-900">2025000045</span>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="student-avatar bg-pink-100 text-pink-600">李</div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">李小红</div>
+                    <div class="text-xs text-gray-500">Li Xiaohong</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">女</td>
+              <td class="px-4 py-3 text-sm text-gray-900">2A</td>
+              <td class="px-4 py-3 text-sm text-gray-600">2025</td>
+              <td class="px-4 py-3">
+                <span class="badge badge-active">在读</span>
+              </td>
+              <td class="px-4 py-3 text-right">
+                <div class="flex justify-end gap-2">
+                  <button onclick="viewStudent('2025000045')" class="p-1.5 text-gray-400 hover:text-blue-600 rounded" title="查看">
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                  </button>
+                  <button onclick="editStudent('2025000045')" class="p-1.5 text-gray-400 hover:text-green-600 rounded" title="编辑">
+                    <i data-lucide="edit-2" class="w-4 h-4"></i>
+                  </button>
+                  <button onclick="deleteStudent('2025000045')" class="p-1.5 text-gray-400 hover:text-red-600 rounded" title="删除">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <!-- Sample Student 3 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3">
+                <span class="font-mono text-sm text-gray-900">2024000089</span>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="student-avatar bg-purple-100 text-purple-600">王</div>
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">王小強</div>
+                    <div class="text-xs text-gray-500">Wang Siu Keung</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">男</td>
+              <td class="px-4 py-3 text-sm text-gray-900">3A</td>
+              <td class="px-4 py-3 text-sm text-gray-600">2024</td>
+              <td class="px-4 py-3">
+                <span class="badge badge-graduated">毕业</span>
+              </td>
+              <td class="px-4 py-3 text-right">
+                <div class="flex justify-end gap-2">
+                  <button onclick="viewStudent('2024000089')" class="p-1.5 text-gray-400 hover:text-blue-600 rounded" title="查看">
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                  </button>
+                  <button onclick="editStudent('2024000089')" class="p-1.5 text-gray-400 hover:text-green-600 rounded" title="编辑">
+                    <i data-lucide="edit-2" class="w-4 h-4"></i>
+                  </button>
+                  <button onclick="deleteStudent('2024000089')" class="p-1.5 text-gray-400 hover:text-red-600 rounded" title="删除">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <!-- Pagination -->
+        <div class="px-4 py-3 border-t flex items-center justify-between">
+          <div class="text-sm text-gray-500">
+            显示 1-3 条，共 89 条记录
+          </div>
+          <div class="flex gap-2">
+            <button class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50" disabled>
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <button class="px-3 py-1 bg-blue-50 text-blue-600 border border-blue-200 rounded">1</button>
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">2</button>
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">3</button>
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">...</button>
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">30</button>
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Add/Edit Student Form -->
+    <div id="tab-add" class="tab-content hidden">
+      <div class="max-w-4xl mx-auto">
+        <!-- Form Header -->
+        <div class="mb-6">
+          <button onclick="switchTab('list')" class="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            返回列表
+          </button>
+          <h2 class="text-2xl font-bold text-gray-900">添加学生</h2>
+          <p class="text-gray-500 mt-1">填写学生基本信息（* 为必填项）</p>
+        </div>
+
+        <!-- Student ID Display (Auto-generated) -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+          <div class="flex items-center gap-3">
+            <i data-lucide="hash" class="w-5 h-5 text-blue-600"></i>
+            <div>
+              <div class="text-sm text-blue-600 font-medium">学号（自动生成）</div>
+              <div class="text-2xl font-mono font-bold text-blue-900">2026000089</div>
+            </div>
+          </div>
+        </div>
+
+        <form id="student-form" class="space-y-6">
+          <!-- Basic Information -->
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <i data-lucide="user" class="w-5 h-5 text-gray-400"></i>
+              基本信息
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Name ZH -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  姓名（中文）<span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="nameZh" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="陈小明">
+              </div>
+              
+              <!-- Name EN -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  姓名（英文）
+                </label>
+                <input type="text" name="nameEn"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="Chan Siu Ming">
+              </div>
+              
+              <!-- Gender -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  性别<span class="text-red-500">*</span>
+                </label>
+                <select name="gender" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="">请选择</option>
+                  <option value="male">男</option>
+                  <option value="female">女</option>
+                  <option value="other">其他</option>
+                </select>
+              </div>
+              
+              <!-- Birth Date -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  出生日期<span class="text-red-500">*</span>
+                </label>
+                <input type="date" name="birthDate" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              
+              <!-- Phone -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  联系电话
+                </label>
+                <input type="tel" name="phone"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="85212345678">
+              </div>
+              
+              <!-- Email -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  邮箱
+                </label>
+                <input type="email" name="email"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="student@email.com">
+              </div>
+              
+              <!-- Admission Date -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  入学日期<span class="text-red-500">*</span>
+                </label>
+                <input type="date" name="admissionDate" required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              
+              <!-- HKID -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  香港身份证
+                </label>
+                <input type="text" name="hkId"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="A123456(7)">
+              </div>
+            </div>
+            
+            <!-- Address -->
+            <div class="mt-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                家庭地址
+              </label>
+              <textarea name="address" rows="2"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="香港九龙塘区..."></textarea>
+            </div>
+          </div>
+
+          <!-- Guardian Information -->
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <i data-lucide="users" class="w-5 h-5 text-gray-400"></i>
+              监护人信息
+              <span class="text-sm font-normal text-gray-500">(可选)</span>
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Guardian Name -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  监护人姓名
+                </label>
+                <input type="text" name="guardianName"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="陈爸爸">
+              </div>
+              
+              <!-- Guardian Phone -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  监护人电话
+                </label>
+                <input type="tel" name="guardianPhone"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="85298765432">
+              </div>
+              
+              <!-- Guardian Email -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  监护人邮箱
+                </label>
+                <input type="email" name="guardianEmail"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="parent@email.com">
+              </div>
+              
+              <!-- Emergency Contact -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  紧急联系人
+                </label>
+                <input type="text" name="emergencyContact"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="关系 + 电话">
+              </div>
+            </div>
+          </div>
+
+          <!-- Class Assignment (Separate from creation) -->
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <i data-lucide="users-round" class="w-5 h-5 text-gray-400"></i>
+              班级分配
+              <span class="text-sm font-normal text-gray-500">(保存后可分配)</span>
+            </h3>
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div class="flex items-start gap-3">
+                <i data-lucide="info" class="w-5 h-5 text-amber-600 mt-0.5"></i>
+                <div>
+                  <div class="font-medium text-amber-800">班级分配说明</div>
+                  <ul class="text-sm text-amber-700 mt-1 space-y-1">
+                    <li>• 班级分配在学生档案创建后单独进行</li>
+                    <li>• 班级分配按学年管理，每年可重新分配</li>
+                    <li>• 同一学生可同时属于多个班级（主班/选修）</li>
+                    <li>• 查看或修改班级请到「班级分配」页面</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <i data-lucide="file-text" class="w-5 h-5 text-gray-400"></i>
+              备注
+              <span class="text-sm font-normal text-gray-500">(可选)</span>
+            </h3>
+            <textarea name="notes" rows="3"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="其他备注信息..."></textarea>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="flex justify-end gap-4 pt-4">
+            <button type="button" onclick="switchTab('list')"
+                    class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+              取消
+            </button>
+            <button type="submit"
+                    class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
+              <i data-lucide="save" class="w-4 h-4"></i>
+              保存学生
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Student Detail Modal -->
+    <div id="student-detail-modal" class="fixed inset-0 z-50 hidden">
+      <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
+      <div class="relative bg-white w-full max-w-4xl mx-auto mt-20 rounded-xl shadow-xl overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold">陈</div>
+              <div>
+                <h2 class="text-xl font-bold">陳小明</h2>
+                <p class="text-blue-100 font-mono">学号: 2026000001</p>
+              </div>
+            </div>
+            <button onclick="closeModal()" class="p-2 hover:bg-white/10 rounded-lg">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <!-- Tabs -->
+          <div class="flex border-b mb-6">
+            <button class="px-4 py-2 font-medium text-blue-600 border-b-2 border-blue-600">基本信息</button>
+            <button class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">班级分配</button>
+            <button class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">出勤记录</button>
+            <button class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">成绩记录</button>
+          </div>
+          
+          <!-- Basic Info Content -->
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <label class="text-sm text-gray-500">性别</label>
+              <p class="font-medium">男</p>
+            </div>
+            <div>
+              <label class="text-sm text-gray-500">出生日期</label>
+              <p class="font-medium">2010-05-15</p>
+            </div>
+            <div>
+              <label class="text-sm text-gray-500">联系电话</label>
+              <p class="font-medium">85212345678</p>
+            </div>
+            <div>
+              <label class="text-sm text-gray-500">邮箱</label>
+              <p class="font-medium">chan.siuming@email.com</p>
+            </div>
+            <div>
+              <label class="text-sm text-gray-500">入学日期</label>
+              <p class="font-medium">2026-09-01</p>
+            </div>
+            <div>
+              <label class="text-sm text-gray-500">当前班级</label>
+              <p class="font-medium">1A</p>
+            </div>
+            <div class="col-span-2">
+              <label class="text-sm text-gray-500">家庭地址</label>
+              <p class="font-medium">香港九龙塘狮子山道1号</p>
+            </div>
+          </div>
+          
+          <!-- Guardian Info -->
+          <div class="mt-6 pt-6 border-t">
+            <h3 class="font-semibold mb-4">监护人信息</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-sm text-gray-500">监护人姓名</label>
+                <p class="font-medium">陳大明</p>
+              </div>
+              <div>
+                <label class="text-sm text-gray-500">监护人电话</label>
+                <p class="font-medium">85298765432</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Tab switching
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('tab-' + tab).classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    // View student detail
+    function viewStudent(studentId) {
+      document.getElementById('student-detail-modal').classList.remove('hidden');
+    }
+
+    // Edit student
+    function editStudent(studentId) {
+      switchTab('add');
+      // TODO: Load student data for editing
+    }
+
+    // Delete student
+    function deleteStudent(studentId) {
+      if (confirm('确定要删除该学生档案吗？此操作不可撤销。')) {
+        // TODO: Call delete API
+        console.log('Delete student:', studentId);
+      }
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('student-detail-modal').classList.add('hidden');
+    }
+
+    // Form submission
+    document.getElementById('student-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // TODO: Call create API
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+      console.log('Submit student data:', data);
+      alert('学生创建成功！学号：2026000089');
+      switchTab('list');
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

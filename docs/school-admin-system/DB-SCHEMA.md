@@ -1096,3 +1096,135 @@ PENDING    — 待完成
 COMPLETED  — 已完成
 ```
 
+---
+
+## 模块 15: 学生档案管理 (Module 15 - Student Profile Management, v1.9.0 新增)
+
+> **Issue #194 — 学生管理模块根本性重构**
+> 核心变更：创建独立的 `students` 表存储学生业务档案，学号自动生成，班级分配按学年动态管理。
+
+---
+
+## 表: academic_years — 学年
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 学年ID |
+| year | VARCHAR(9) | NOT NULL, UNIQUE | 学年，如 2026-2027 |
+| start_date | DATE | NOT NULL | 学年开始日期 |
+| end_date | DATE | NOT NULL | 学年结束日期 |
+| is_current | BOOLEAN | DEFAULT false | 是否当前学年 |
+| status | ENUM | DEFAULT 'active' | 状态 (active/archived) |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id), UNIQUE (year)
+
+---
+
+## 表: students — 学生档案表 (v1.9.0 新增)
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 学生档案唯一标识 |
+| student_id | VARCHAR(10) | UNIQUE, NOT NULL | 学号（YYYYNNNN格式，自动生成）|
+| name_zh | VARCHAR(100) | NOT NULL | 中文姓名 |
+| name_en | VARCHAR(100) | | 英文姓名 |
+| gender | ENUM | NOT NULL | 性别 (male/female/other) |
+| birth_date | DATE | NOT NULL | 出生日期 |
+| address | TEXT | | 家庭地址 |
+| phone | VARCHAR(20) | | 联系电话 |
+| email | VARCHAR(255) | | 邮箱 |
+| admission_date | DATE | NOT NULL | 入学日期 |
+| status | ENUM | DEFAULT 'active' | 状态 (active/graduated/withdrawn/transferred) |
+| guardian_name | VARCHAR(100) | | 监护人姓名 |
+| guardian_phone | VARCHAR(20) | | 监护人电话 |
+| guardian_relationship | VARCHAR(50) | | 监护人关系 |
+| emergency_contact | VARCHAR(100) | | 紧急联系人 |
+| emergency_phone | VARCHAR(20) | | 紧急联系电话 |
+| hk_id | VARCHAR(20) | | 香港身份证 |
+| notes | TEXT | | 备注 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+| deleted_at | TIMESTAMPTZ | | 软删除时间 |
+| created_by | UUID | | 创建人 |
+| updated_by | UUID | | 更新人 |
+
+**索引**: PRIMARY KEY (id), UNIQUE (student_id)
+**说明**: 此表为学生业务档案，与 `users` 表（系统账户）完全分离。学号按 YYYYNNNN 格式自动生成，不可手动输入，不可修改。
+
+**枚举值 — gender:**
+```
+male    — 男
+female  — 女
+other   — 其他
+```
+
+**枚举值 — status (student_status_enum):**
+```
+active     — 在校
+graduated  — 毕业
+withdrawn  — 退学
+transferred — 转学
+```
+
+---
+
+## 表: student_id_sequences — 学号序列表 (v1.9.0 新增)
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 序列ID |
+| academic_year | VARCHAR(9) | UNIQUE, NOT NULL | 学年（如 2026-2027）|
+| last_sequence | INTEGER | NOT NULL DEFAULT 0 | 上一个分配的序号 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id), UNIQUE (academic_year)
+**说明**: 按学年管理学号序号。创建学生时，从对应学年序列获取下一个序号，生成 YYYY + NNNN 格式学号。
+
+---
+
+## 表: class_allocations — 班级分配表 (v1.9.0 新增)
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 分配ID |
+| student_id | UUID | FK→students, NOT NULL | 学生档案ID |
+| class_id | UUID | FK→classes, NOT NULL | 班级ID |
+| academic_year_id | UUID | FK→academic_years, NOT NULL | 学年ID |
+| academic_year | VARCHAR(9) | NOT NULL | 学年（如 2026-2027，便于查询）|
+| allocation_type | ENUM | DEFAULT 'main' | 分配类型 (main/elective/temporary) |
+| effective_date | DATE | NOT NULL | 生效日期 |
+| end_date | DATE | | 结束日期（为空表示当前学年有效）|
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id)
+**外键**: (student_id)→students(id), (class_id)→classes(id), (academic_year_id)→academic_years(id)
+**说明**: 每个学生在同一学年内只能有一个 `allocation_type='main'` 的主班分配。学年末旧分配自动过期，新学年需重新分配。
+
+**枚举值 — allocation_type:**
+```
+main       — 主班（每生每学年仅一个）
+elective   — 选修
+temporary  — 临时
+```
+
+---
+
+## 表: student_users — 学生-用户关联表 (v1.9.0 新增)
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 关联ID |
+| student_id | UUID | FK→students, NOT NULL, UNIQUE | 学生档案ID |
+| user_id | UUID | FK→users, NOT NULL, UNIQUE | 系统用户ID（role='student'）|
+| is_primary_account | BOOLEAN | DEFAULT true | 是否主要账户 |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+
+**索引**: PRIMARY KEY (id), UNIQUE (student_id), UNIQUE (user_id)
+**外键**: (student_id)→students(id), (user_id)→users(id)
+**说明**: 将学生档案（`students`）与系统用户（`users`）关联。一个学生档案可关联多个用户账户（如同时有学生账户和家长关联的学生视图），但 primary 仅一个。
+
+
