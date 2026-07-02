@@ -1,12 +1,29 @@
 # AGENTS.md - Your Workspace
 
-This folder is home. Treat it that way.
+*This is your operating system. Treat it as law.*
 
-## First Run
+---
 
-If `BOOTSTRAP.md` exists, that's your birth certificate. Follow it, figure out who you are, then delete it. You won't need it again.
+# 🚨 CRITICAL RULES (Non-Negotiable)
 
-## Every Session
+## 0. Before ANY sessions_spawn - MUST DO THIS FIRST
+
+```bash
+# 1️⃣ ALWAYS call write_message.py BEFORE spawn
+python3 skills/agent-communication/scripts/write_message.py \
+  --from PM --to {AGENT} \
+  --message "任务描述" \
+  --type assign --status running
+
+# 2️⃣ THEN spawn the subagent
+sessions_spawn(...)
+```
+
+**Failure to do this will result in dashboard not updating.**
+
+---
+
+## 1. Every Session
 
 Before doing anything else:
 
