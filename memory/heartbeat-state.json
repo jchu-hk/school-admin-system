@@ -1,48 +1,11 @@
 {
   "lastChecks": {
-    "heartbeat": 1782954715530,
     "email": null,
     "calendar": null,
-    "weather": null
-  },
-  "lastCheckInfo": {
-    "heartbeat": "2026-07-02T09:11:55+08:00",
-    "test_env": "\u2705 Local OK (backend:8080, frontend:3000), CI/CD in_progress",
-    "ci_workflows": "CI/CD \u2705 in_progress, Deploy Test Env \u274c failure, GH_TOKEN workflows \u274c (agent-comm, daily-report, qa-checker)",
-    "issue_194": "\u2705 CLOSED - PR #195 MERGED"
-  },
-  "checkList": [
-    {
-      "type": "git_status",
-      "result": {
-        "branch": "main",
-        "latest_commit": "cb2333e pm: heartbeat 2026-07-02 08:52 - CI/CD in progress",
-        "status": "main, origin synced, 0 uncommitted"
-      },
-      "timestamp": "2026-07-02T08:55:00+08:00"
-    },
-    {
-      "type": "ci_status",
-      "result": {
-        "ci_cd_pipeline": "in_progress",
-        "docker_build": "in_progress",
-        "deploy_test_env": "failure",
-        "agent_communication": "failure (GH_TOKEN)",
-        "daily_report": "failure (GH_TOKEN)",
-        "qa_checker": "failure (GH_TOKEN)"
-      },
-      "timestamp": "2026-07-02T08:55:00+08:00"
-    },
-    {
-      "type": "blockers",
-      "result": {
-        "items": [
-          "GH_TOKEN missing \u2192 agent-communication / daily-report / qa-checker broken (DEVOPS action needed)",
-          "Deploy Test Environment workflow failing (needs log review)"
-        ],
-        "priority": "MEDIUM"
-      },
-      "timestamp": "2026-07-02T08:55:00+08:00"
-    }
-  ]
+    "weather": null,
+    "issues": 1720204260,
+    "git": 1720204260,
+    "ci": 1720204260,
+    "agents": 1720204260
+  }
 }
