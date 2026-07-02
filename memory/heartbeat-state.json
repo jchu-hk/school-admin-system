@@ -3,10 +3,9 @@
     "email": null,
     "calendar": null,
     "weather": null,
-    "issues": 1750948800,
-    "git": 1750948800,
-    "ci": 1750983300,
-    "agents": 1750948800,
-    "heartbeat": 1782965445
+    "heartbeat": 1751451720,
+    "issue_check": 1751445300,
+    "branch_check": 1751445300,
+    "health_check": 1751445300
   }
 }
