@@ -3,42 +3,57 @@
     "email": null,
     "calendar": null,
     "weather": null,
-    "heartbeat": 1782912600003
+    "heartbeat": 1782950400000
   },
   "lastCheckInfo": {
-    "heartbeat": "2026-07-01T21:30:00+08:00"
+    "heartbeat": "2026-07-02T08:00:00+08:00"
   },
   "checkList": [
     {
       "type": "git_status",
       "result": {
         "branch": "main",
-        "latest_commit": "97dee59 pm: heartbeat record for 2026-07-01 20:40",
-        "latest_commit_time": "2026-07-01T20:37:50+08:00",
+        "latest_commit": "6563c93 feat: Auto-generate version info during build",
+        "latest_commit_time": "2026-07-02T07:30:00+08:00",
+        "ahead_of_origin": 1,
         "modified_files": [
-          "memory/2026-07-01.md",
-          "memory/heartbeat-state.json"
+          "school-admin-frontend/package-lock.json",
+          "school-admin-frontend/yarn.lock"
+        ],
+        "untracked_files": [
+          "memory/2026-07-02-defect-student-management.md",
+          "school-admin-frontend/public/version.json"
         ]
       },
-      "timestamp": "2026-07-01T21:30:00+08:00"
+      "timestamp": "2026-07-02T08:00:00+08:00"
     },
     {
-      "type": "test_env_check",
+      "type": "github_issues",
       "result": {
-        "url": "https://xxx.xxxxx.xxx",
-        "status": "unreachable",
-        "http_code": "000UNREACHABLE"
+        "critical_issue": "#194 [P0] 学生管理模块根本性重构 (in-progress)",
+        "open_count": "43+ open issues",
+        "recruitment_issues": "not found via gh CLI (may not have been created)",
+        "note": "HEARTBEAT.md references #188-192 (recruitment module) but gh search returned no results"
       },
-      "timestamp": "2026-07-01T21:30:00+08:00"
+      "timestamp": "2026-07-02T08:00:00+08:00"
+    },
+    {
+      "type": "ci_status",
+      "result": {
+        "project_status_automation": "failing (GH_TOKEN not set in workflow)",
+        "sync_issues_to_project": "success",
+        "note": "Known issue - workflow needs GH_TOKEN env var"
+      },
+      "timestamp": "2026-07-02T08:00:00+08:00"
     },
     {
       "type": "document_sync_check",
       "result": {
-        "PROJECT_WIKI_md": "not_found",
-        "SPEC_COMPLETE_md": "not_found",
-        "SPEC_SYSTEM_DESIGN_md": "not_found"
+        "PROJECT_WIKI_md": "found",
+        "SPEC_COMPLETE_md": "found",
+        "SPEC_SYSTEM_DESIGN_md": "found"
       },
-      "timestamp": "2026-07-01T21:30:00+08:00"
+      "timestamp": "2026-07-02T08:00:00+08:00"
     }
   ]
 }
