@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  OneToMany,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
@@ -30,7 +29,7 @@ export enum StudentStatus {
 
 /** 分配类型枚举 */
 export enum AllocationType {
-  MAIN = 'main',         // 主班（每生每学年仅一个）
+  MAIN = 'main', // 主班（每生每学年仅一个）
   ELECTIVE = 'elective', // 选修
   TEMPORARY = 'temporary', // 临时
 }

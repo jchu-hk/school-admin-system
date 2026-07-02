@@ -10,12 +10,7 @@ import {
   UseGuards,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiBearerAuth,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { StudentService } from './student.service';
 import {
   CreateStudentDto,
@@ -177,7 +172,10 @@ export class ClassStudentController {
     @Param('id', ParseUUIDPipe) id: string,
     @Query('academic_year') academicYear?: string,
   ) {
-    const result = await this.studentService.findClassStudents(id, academicYear);
+    const result = await this.studentService.findClassStudents(
+      id,
+      academicYear,
+    );
     return {
       code: 0,
       message: 'success',

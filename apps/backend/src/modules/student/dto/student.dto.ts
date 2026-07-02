@@ -34,7 +34,10 @@ export class CreateStudentDto {
   @IsDateString()
   birth_date: string;
 
-  @ApiPropertyOptional({ description: '家庭地址', example: '香港仔田灣大樓A座12樓' })
+  @ApiPropertyOptional({
+    description: '家庭地址',
+    example: '香港仔田灣大樓A座12樓',
+  })
   @IsString()
   @IsOptional()
   address?: string;
@@ -231,7 +234,11 @@ export class StudentQueryDto {
   @IsOptional()
   sortBy?: string;
 
-  @ApiPropertyOptional({ description: '排序方向', default: 'desc', enum: ['asc', 'desc'] })
+  @ApiPropertyOptional({
+    description: '排序方向',
+    default: 'desc',
+    enum: ['asc', 'desc'],
+  })
   @IsString()
   @IsOptional()
   sortOrder?: 'asc' | 'desc';

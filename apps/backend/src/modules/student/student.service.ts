@@ -5,13 +5,12 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, In, Like, IsNull, Not } from 'typeorm';
+import { Repository, DataSource, IsNull } from 'typeorm';
 import {
   Student,
   AcademicYear,
   StudentIdSequence,
   ClassAllocation,
-  Gender,
   StudentStatus,
   AllocationType,
 } from './student.entity';
@@ -99,9 +98,7 @@ export class StudentService {
         where: { hkId: dto.hk_id, deletedAt: IsNull() },
       });
       if (existing) {
-        throw new ConflictException(
-          'STU-004: 同一香港身份证已存在',
-        );
+        throw new ConflictException('STU-004: 同一香港身份证已存在');
       }
     }
 
@@ -151,11 +148,7 @@ export class StudentService {
         'alloc.student_id = student.id AND alloc.end_date IS NULL',
       )
       .leftJoinAndSelect(Class, 'cls', 'cls.id = alloc.class_id')
-      .leftJoinAndSelect(
-        AcademicYear,
-        'ay',
-        'ay.id = alloc.academic_year_id',
-      )
+      .leftJoinAndSelect(AcademicYear, 'ay', 'ay.id = alloc.academic_year_id')
       .where('student.deleted_at IS NULL');
 
     // 搜索过滤
@@ -205,7 +198,7 @@ export class StudentService {
       const allocation = (s as any).alloc;
       const cls = (s as any).cls;
       const ay = (s as any).ay;
-      const { deletedAt, ...rest } = s;
+      const { _deletedAt, ...rest } = s;
       return {
         ...rest,
         currentClass: allocation
@@ -326,7 +319,7 @@ export class StudentService {
   async createClassAllocation(
     studentId: string,
     dto: CreateClassAllocationDto,
-    userId?: string,
+    _userId?: string,
   ): Promise<ClassAllocation> {
     // 验证学生存在
     await this.findOne(studentId);
@@ -358,9 +351,7 @@ export class StudentService {
         },
       });
       if (existing) {
-        throw new ConflictException(
-          'STU-012: 该学生本学年已有主班分配',
-        );
+        throw new ConflictException('STU-012: 该学生本学年已有主班分配');
       }
     }
 
