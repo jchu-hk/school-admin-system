@@ -10,8 +10,8 @@
     {
       "icon": "🤖",
       "name": "DEV",
-      "status": "running",
-      "task": "处理 #50",
+      "status": "idle",
+      "task": "完成 #194",
       "color": "#60a5fa"
     },
     {
@@ -57,6 +57,6 @@
     "recentActivity": 20
   },
   "messages": [],
-  "lastUpdate": "2026-06-27 23:02:32",
-  "generatedAt": "2026-06-27T15:02:32.000Z"
+  "lastUpdate": "2026-07-02 08:36:05",
+  "generatedAt": "2026-07-02T00:36:05.000Z"
 }

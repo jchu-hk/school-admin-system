@@ -80,7 +80,7 @@ def write_message(from_agent: str, to_agent: str, message: str, msg_type: str = 
 def main():
     parser = argparse.ArgumentParser(description="Write agent message to unified log")
     parser.add_argument("--from", dest="from_agent", required=True, 
-                        choices=["PM", "DEV", "QA", "DEVOPS", "CHECKER", "ARCH", "REQ"],
+                        choices=["PM", "DEV", "QA", "DEVOPS", "CHECKER", "ARCH", "REQ", "UI_DESIGNER"],
                         help="Sender agent")
     parser.add_argument("--to", dest="to_agent", required=True, help="Receiver agent (PM/DEV/QA/DEVOPS/CHECKER/ARCH/REQ/system)")
     parser.add_argument("--message", required=True, help="Message content")

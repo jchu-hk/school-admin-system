@@ -157,7 +157,9 @@ export class CreateStudentTables1709436000000 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP TABLE IF EXISTS "student_users" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "class_allocations" CASCADE`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "student_id_sequences" CASCADE`);
+    await queryRunner.query(
+      `DROP TABLE IF EXISTS "student_id_sequences" CASCADE`,
+    );
     await queryRunner.query(`DROP TABLE IF EXISTS "students" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "academic_years" CASCADE`);
     await queryRunner.query(`DROP TYPE IF EXISTS "allocation_type_enum"`);

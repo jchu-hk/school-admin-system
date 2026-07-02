@@ -29,10 +29,17 @@ def read_agent_status() -> dict:
         # Get latest agent_status for each agent from messages
         for m in reversed(messages[-50:]):  # Check last 50 messages
             agent_status = m.get("agent_status")
-            if agent_status:
+            # Handle both dict and string formats
+            if isinstance(agent_status, dict):
                 agent_name = agent_status.get("agent", "")
                 agent_state = agent_status.get("status", "idle")
                 task = agent_status.get("task", "等待任务")
+            elif isinstance(agent_status, str):
+                agent_name = agent_status
+                agent_state = "idle"
+                task = "等待任务"
+            else:
+                continue
                 
                 # Update if not set OR if this message is newer
                 if agent_name and agent_name in status["agents"]:
@@ -46,7 +53,7 @@ def read_agent_status() -> dict:
                     }
     
     # Ensure all agents exist
-    for agent in ["PM", "DEVOPS", "DEV", "QA", "CHECKER", "ARCH", "REQ"]:
+    for agent in ["PM", "DEVOPS", "DEV", "QA", "CHECKER", "ARCH", "REQ", "UI_DESIGNER"]:
         if agent not in status["agents"]:
             status["agents"][agent] = {"status": "idle", "task": "等待任务", "lastUpdate": ""}
     
