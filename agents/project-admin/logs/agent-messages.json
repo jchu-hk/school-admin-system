@@ -642,5 +642,17 @@
       "status": "idle",
       "task": "Heartbeat check completed at 2026-07-03 19:55 - Al"
     }
+  },
+  {
+    "timestamp": "2026-07-03T12:51:13Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "20:50 心跳检查开始",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "20:50 心跳检查开始"
+    }
   }
 ]
