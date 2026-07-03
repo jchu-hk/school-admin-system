@@ -237,27 +237,52 @@ QA执行测试用例
 (7) Test Case Automation
 ```
 
-**规则**：链路中任何环节变更，PM 必须立即创建下游任务，防止遗漏。
+---
 
-| 变更环节 | 必须创建/更新 | 负责人 |
-|---------|-------------|-------|
-| Requirement | → Functional Spec + UI | REQ / PM |
-| Functional Spec / UI | → Arch/System Design + DB Design | PM / ARCH |
-| Arch / DB Design | → Test Cases | PM |
-| Test Cases | → Test Case Automation | QA |
+### 变更管理流程（Change Management Process）
 
-**PM 检查清单**：
-- [ ] 变更是否影响下游环节？
-- [ ] 下游任务是否已创建？
-- [ ] 下游任务是否阻塞当前开发？
+**任何环节发生变更时，PM 必须执行以下步骤：**
 
-**示例**：REQ 新增「学号自动生成」字段
+#### Step 1: Impact Analysis（影响分析）
+
+PM 评估变更对下游环节的影响，回答：
+- 哪些下游环节需要更新？
+- 需要新增哪些文档/测试用例？
+- 是否有阻塞当前开发的上游依赖？
+
+#### Step 2: Impact Analysis Report（影响分析报告）
+
+输出格式：
+```markdown
+## Impact Analysis Report
+**变更来源**: [REQ/Spec/Design/...] #XXX
+**分析时间**: YYYY-MM-DD
+
+### 受影响环节
+| 环节 | 当前状态 | 需要变更 | 负责人 | 优先级 |
+|------|---------|---------|-------|-------|
+| (3) UI Design | 无变更 | 否 | - | - |
+| (4) DB Design | 需要更新 | ER 图新增字段 | ARCH | P1 |
+| (6) Test Cases | 需要创建 | TC for new field | QA | P1 |
+
+### 下游任务
+- [ ] Issue #XXX-DB: 更新 DB-SCHEMA.md（阻塞 DEV）
+- [ ] Issue #XXX-TC: 创建测试用例（阻塞 QA）
+
+### 阻塞关系
+- DEV 开发 **Blocked by** #XXX-DB
+- QA 验收 **Blocked by** #XXX-TC
 ```
-→ Issue #XXX REQ 更新（完成）
-→ Issue #XXX-TC 测试用例准备（必须先完成）
-→ Issue #XXX-DEV DEV 开发（等待测试用例）
-→ Issue #XXX-QA QA 验收（等待 DEV）
-```
+
+#### Step 3: Follow Report（按报告执行）
+
+- 创建下游 Issue
+- 设置 Blocked by 关系
+- 按优先级依次完成
+
+---
+
+**规则**：链路中任何环节变更，必须完成 Step 1 → 2 → 3，禁止跳过影响分析直接开发。
 
 ### 违规处理
 | 违规类型 | 处理方式 |
