@@ -496,5 +496,17 @@
       "status": "idle",
       "task": "Issue #194 UI设计审核通过 ✅ - 学号自动生成 ✅, 基本信息完整 ✅, 无usern"
     }
+  },
+  {
+    "timestamp": "2026-07-03T04:55:26Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "Issue #194 [P0]: 学生管理前端重构 - StudentPage.tsx 迁移到 /api/students\n\n【背景】\n学生管理模块已完成根本性重构，学生档案从 users 表分离到独立的 students 表。\n数据库迁移已完成（students/academic_years/class_allocations 表已创建）。\n\n【任务内容】\n更新 school-admin-frontend/src/pages/StudentPage.tsx：\n\n1. API 端点变更：\n   - 列表查询：GET /api/students（原来是 /api/users?role=student）\n   - 创建学生：POST /api/students\n   - 更新学生：PUT /api/students/:id\n   - 删除学生：DELETE /api/students/:id\n\n2. 数据模型变更：\n   - 移除：username, password 字段（学生不是系统用户）\n   - 新增字段：student_id（只读，自动生成）, gender, birth_date, address, phone, email, guardian_name, guardian_phone, guardian_relationship, emergency_contact, emergency_phone, status\n\n3. UI 调整：\n   - 列表显示：学号、姓名（中英文）、性别、当前班级、状态\n   - 添加表单：无 username/password\n   - 学号字段设为只读（自动生成）\n\n4. 类型定义：\n   - 从后端导入 Student 类型（参考 apps/backend/src/modules/student/student.entity.ts）\n   - 或定义前端 Student 类型匹配 API 响应\n\n【参考文档】\n- API 设计：docs/school-admin-system/API-DESIGN.md\n- UI 设计稿：docs/design/student-management-ui.html\n- 数据库 Schema：docs/school-admin-system/DB-SCHEMA.md\n\n【验收标准】\n- 创建学生时学号自动生成（如 2026000001）\n- 列表显示学生完整信息\n- 筛选功能正常（按姓名/学号/班级/状态）\n\n【提交格式】\n完成后报告：\n- 修改的文件列表\n- commit hash\n- Issue 关联",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #194 [P0]: 学生管理前端重构 - StudentPage.tsx 迁移到 /a"
+    }
   }
 ]
