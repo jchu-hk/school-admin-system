@@ -45,7 +45,7 @@ export class StudentService {
 
   /**
    * 生成学号
-   * 格式: YYYYNNNN（YYYY=入学年份，NNNN=4位序号）
+   * 格式: YYYYNNNN(YYYY=入学年份,NNNN=4位序号)
    * 例如: 2026000001
    */
   private async generateStudentId(admissionYear: number): Promise<string> {
@@ -59,7 +59,7 @@ export class StudentService {
       });
 
       if (!sequence) {
-        // 如果序列不存在，创建新记录
+        // 如果序列不存在,创建新记录
         sequence = manager.create(StudentIdSequence, {
           academicYear: academicYearStr,
           lastSequence: 0,
@@ -70,7 +70,7 @@ export class StudentService {
       // 检查是否已达上限
       if (sequence.lastSequence >= 9999) {
         throw new BadRequestException(
-          `STU-003: 学号生成失败，学年 ${academicYearStr} 序号已达上限（9999）`,
+          `STU-003: 学号生成失败,学年 ${academicYearStr} 序号已达上限(9999)`,
         );
       }
 
@@ -78,7 +78,7 @@ export class StudentService {
       sequence.lastSequence += 1;
       await manager.save(StudentIdSequence, sequence);
 
-      // 生成学号: YYYY + NNNN（补齐4位）
+      // 生成学号: YYYY + NNNN(补齐4位)
       const sequenceNum = sequence.lastSequence.toString().padStart(4, '0');
       return `${admissionYear}${sequenceNum}`;
     });
@@ -140,76 +140,99 @@ export class StudentService {
     const pageSize = Math.min(query.pageSize || 20, 100);
     const skip = (page - 1) * pageSize;
 
-    const qb = this.studentRepo
-      .createQueryBuilder('student')
-      .leftJoinAndSelect(
-        ClassAllocation,
-        'alloc',
-        'alloc.student_id = student.id AND alloc.end_date IS NULL',
-      )
-      .leftJoinAndSelect(Class, 'cls', 'cls.id = alloc.class_id')
-      .leftJoinAndSelect(AcademicYear, 'ay', 'ay.id = alloc.academic_year_id')
-      .where('student.deleted_at IS NULL');
+    const params: any[] = [];
 
-    // 搜索过滤
+    let whereClause = 'WHERE s.deleted_at IS NULL';
+    let paramIdx = 1;
     if (query.search) {
-      qb.andWhere(
-        '(student.name_zh ILIKE :search OR student.student_id ILIKE :search)',
-        { search: `%${query.search}%` },
-      );
+      whereClause += ` AND (s.name_zh ILIKE $${paramIdx} OR s.student_id ILIKE $${paramIdx})`;
+      params.push(`%${query.search}%`);
+      paramIdx++;
     }
-
-    // 班级过滤
     if (query.class_id) {
-      qb.andWhere('alloc.class_id = :classId', {
-        classId: query.class_id,
-      });
+      whereClause += ` AND alloc.class_id = $${paramIdx}`;
+      params.push(query.class_id);
+      paramIdx++;
     }
-
-    // 学年过滤
     if (query.academic_year) {
-      qb.andWhere('ay.year = :academicYear', {
-        academicYear: query.academic_year,
-      });
+      whereClause += ` AND ay.year = $${paramIdx}`;
+      params.push(query.academic_year);
+      paramIdx++;
     }
-
-    // 状态过滤
     if (query.status) {
-      qb.andWhere('student.status = :status', { status: query.status });
+      whereClause += ` AND s.status = $${paramIdx}`;
+      params.push(query.status);
+      paramIdx++;
     }
-
-    // 性别过滤
     if (query.gender) {
-      qb.andWhere('student.gender = :gender', { gender: query.gender });
+      whereClause += ` AND s.gender = $${paramIdx}`;
+      params.push(query.gender);
+      paramIdx++;
     }
 
-    // 排序
-    const sortBy = query.sortBy || 'student.created_at';
+    const sortBy = query.sortBy ? query.sortBy.replace(/\.id$/, '.id') : 's.id';
     const sortOrder = query.sortOrder === 'asc' ? 'ASC' : 'DESC';
-    qb.orderBy(sortBy, sortOrder);
 
-    // 分页
-    qb.skip(skip).take(pageSize);
+    const countSql = `
+      SELECT COUNT(DISTINCT s.id) as total
+      FROM students s
+      LEFT JOIN class_allocations alloc ON alloc.student_id = s.id AND alloc.end_date IS NULL
+      LEFT JOIN classes cls ON cls.id = alloc.class_id
+      LEFT JOIN academic_years ay ON ay.id = alloc.academic_year_id
+      ${whereClause}
+    `;
 
-    const [items, total] = await qb.getManyAndCount();
+    const dataSql = `
+      SELECT
+        s.id, s.student_id, s.name_zh, s.name_en, s.gender,
+        s.birth_date, s.address, s.phone, s.email,
+        s.admission_date, s.status, s.guardian_name,
+        s.guardian_phone, s.guardian_relationship,
+        s.emergency_contact, s.emergency_phone,
+        s.hk_id, s.notes, s.created_at, s.updated_at,
+        cls.id as cls_id, cls.name as cls_name,
+        ay.year as ay_year
+      FROM students s
+      LEFT JOIN class_allocations alloc ON alloc.student_id = s.id AND alloc.end_date IS NULL
+      LEFT JOIN classes cls ON cls.id = alloc.class_id
+      LEFT JOIN academic_years ay ON ay.id = alloc.academic_year_id
+      ${whereClause}
+      ORDER BY ${sortBy} ${sortOrder}
+      LIMIT ${pageSize} OFFSET ${skip}
+    `;
 
-    // 映射结果，添加 currentClass
-    const mappedItems = items.map((s) => {
-      const allocation = (s as any).alloc;
-      const cls = (s as any).cls;
-      const ay = (s as any).ay;
-      const { deletedAt: _deletedAt, ...rest } = s as any;
-      return {
-        ...rest,
-        currentClass: allocation
-          ? {
-              class_id: cls?.id,
-              class_name: cls?.name,
-              academic_year: ay?.year,
-            }
-          : null,
-      };
-    });
+    const [countResult, items] = await Promise.all([
+      this.studentRepo.query(countSql, params),
+      this.studentRepo.query(dataSql, params),
+    ]);
+
+    const total = parseInt(countResult[0]?.total || '0', 10);
+
+    const mappedItems = items.map((s: any) => ({
+      id: s.id,
+      student_id: s.student_id,
+      name_zh: s.name_zh,
+      name_en: s.name_en,
+      gender: s.gender,
+      birth_date: s.birth_date,
+      address: s.address,
+      phone: s.phone,
+      email: s.email,
+      admission_date: s.admission_date,
+      status: s.status,
+      guardian_name: s.guardian_name,
+      guardian_phone: s.guardian_phone,
+      guardian_relationship: s.guardian_relationship,
+      emergency_contact: s.emergency_contact,
+      emergency_phone: s.emergency_phone,
+      hk_id: s.hk_id,
+      notes: s.notes,
+      created_at: s.created_at,
+      updated_at: s.updated_at,
+      currentClass: s.cls_id
+        ? { class_id: s.cls_id, class_name: s.cls_name, academic_year: s.ay_year }
+        : null,
+    }));
 
     return {
       items: mappedItems,
@@ -340,7 +363,7 @@ export class StudentService {
       throw new NotFoundException('学年不存在');
     }
 
-    // 如果是主班分配，检查是否已存在
+    // 如果是主班分配,检查是否已存在
     if (!dto.allocation_type || dto.allocation_type === AllocationType.MAIN) {
       const existing = await this.allocationRepo.findOne({
         where: {
@@ -355,7 +378,7 @@ export class StudentService {
       }
     }
 
-    // 如果是主班分配，先将旧的分配标记为过期
+    // 如果是主班分配,先将旧的分配标记为过期
     if (!dto.allocation_type || dto.allocation_type === AllocationType.MAIN) {
       await this.allocationRepo.update(
         {

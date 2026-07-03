@@ -532,5 +532,48 @@
       "status": "running",
       "task": "Issue #194 [P0] QA 验收: 学生管理模块端到端测试 - CRUD + API验证"
     }
+  },
+  {
+    "timestamp": "2026-07-03T06:04:51Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "Issue #194 [P0] QA 验收: 学生管理模块端到端测试 - CRUD + API验证 (重派)",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #194 [P0] QA 验收: 学生管理模块端到端测试 - CRUD + API验证 "
+    }
+  },
+  {
+    "timestamp": "2026-07-03T06:05:11Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "Issue #194 [P0] 开始验收: 学生管理模块 CRUD + API 端到端测试",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-03T06:13:39Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "Issue #194 QA 验收失败: 执行上下文丢失 (58分钟), 已重派",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "Issue #194 QA 验收失败: 执行上下文丢失 (58分钟), 已重派"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T06:14:06Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "Issue #194 QA 验收失败: 执行上下文丢失 (8分钟, 33 tools无输出)",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "Issue #194 QA 验收失败: 执行上下文丢失 (8分钟, 33 tools无输出)"
+    }
   }
 ]
