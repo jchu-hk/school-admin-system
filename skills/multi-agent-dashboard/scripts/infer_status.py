@@ -189,13 +189,14 @@ def infer_status(repo: str) -> Dict[str, Dict]:
         for m in agent_messages:
             if "agent_status" in m:
                 agent_info = m["agent_status"]
-                agent_name = agent_info.get("agent", "")
-                if agent_name and agent_name not in status:
-                    status[agent_name] = {
-                        "status": agent_info.get("status", "idle"),
-                        "task": agent_info.get("task", ""),
-                        "evidence": f"From message: {m.get('message', '')[:30]}"
-                    }
+                if isinstance(agent_info, dict):
+                    agent_name = agent_info.get("agent", "")
+                    if agent_name and agent_name not in status:
+                        status[agent_name] = {
+                            "status": agent_info.get("status", "idle"),
+                            "task": agent_info.get("task", ""),
+                            "evidence": f"From message: {m.get('message', '')[:30]}"
+                        }
     
     # 4. GitHub Issue events (in-progress labels)
     issue_status = infer_from_issues(repo)

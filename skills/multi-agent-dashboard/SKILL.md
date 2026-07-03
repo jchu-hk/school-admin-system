@@ -49,6 +49,15 @@ python scripts/infer_status.py \
   --repo jchu-hk/school-admin-system
 ```
 
+## Message Box — T / T-1 Tabs
+
+The dashboard Message panel auto-splits messages into:
+
+- **📅 T 今日** — messages from today (GMT+8, current day)
+- **📅 T-1 昨日** — messages from the previous day
+
+Timestamps in each tab show `HH:MM` only (no date needed — the tab label already tells you).
+
 ## Key Improvements vs Old Project-Admin
 
 | Issue | Old | New |
