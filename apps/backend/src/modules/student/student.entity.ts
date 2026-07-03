@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Class } from '../user/class.entity';
 
 // ============ Enums ============
 
@@ -243,6 +244,3 @@ export class ClassAllocation {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }
-
-// Import Class entity for ManyToOne
-import { Class } from '../user/class.entity';

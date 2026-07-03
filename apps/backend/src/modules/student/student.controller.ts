@@ -24,7 +24,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 @ApiTags('学生管理 (Student Management)')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/students')
+@Controller('students')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
@@ -162,7 +162,7 @@ export class StudentController {
 @ApiTags('班级学生管理 (Class Students)')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/classes')
+@Controller('classes')
 export class ClassStudentController {
   constructor(private readonly studentService: StudentService) {}
 
@@ -187,7 +187,7 @@ export class ClassStudentController {
 @ApiTags('学年管理 (Academic Years)')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/academic-years')
+@Controller('academic-years')
 export class AcademicYearController {
   constructor(private readonly studentService: StudentService) {}
 
