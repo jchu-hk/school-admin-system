@@ -1,41 +1,29 @@
 {
-  "version": "v1.5.5",
+  "version": "v1.5.6",
   "buildDate": "2026-07-03",
-  "gitCommit": "48f1cb5",
+  "gitCommit": "2b249df",
   "gitBranch": "main",
   "changelog": [
     {
-      "version": "build-2026-07-03",
+      "version": "v1.5.6",
       "date": "2026-07-03",
       "changes": [
-        "dashboard update 12:55",
-        "heartbeat 2026-07-03 11:55",
-        "heartbeat 11:45 - all services healthy",
-        "dashboard update 09:44",
-        "dashboard update 09:44",
-        "dashboard update 09:44",
-        "dashboard update 09:31",
-        "add 09:05 heartbeat check",
-        "update 2026-07-02 memory with evening/night checks",
-        "add heartbeat checks for 2026-07-03",
-        "add PROJECT-WIKI with environment, architecture, and issue status",
-        "read_agent_status only from agent-status.json (SSOT)",
-        "dashboard update 08:23",
-        "add T/T-1 tab + date labels to dashboard messages",
-        "dashboard update 08:18",
-        "dashboard update 08:16",
-        "dashboard update 08:15",
-        "dashboard update 08:04",
-        "dashboard update 08:03",
-        "dashboard update 08:00",
-        "dashboard update 00:00"
+        "Bug修复: Issue #197 currentClass 返回 null",
+        "Bug修复: Issue #198 禁止软删除学生学号重用",
+        "新增: CreateStudentDto.student_id 字段（可选）",
+        "新增: 测试凭证文档 docs/test-credentials.md",
+        "新增: 测试用例文档 docs/school-admin-system/test-cases/ISSUE-197-198-bugfix.md",
+        "新增: CHANGELOG.md 版本管理文档"
       ]
     },
     {
-      "version": "build-2026-07-02",
+      "version": "v1.5.5",
       "date": "2026-07-02",
       "changes": [
-        "dashboard update 21:01"
+        "Dashboard 更新 13:03",
+        "Heartbeat 2026-07-03 12:40",
+        "修复: 学生管理 About 页面空白问题",
+        "数据迁移: lunch_changes、assets（非紧急）"
       ]
     }
   ]
