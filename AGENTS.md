@@ -754,8 +754,11 @@ python3 skills/agent-communication/scripts/write_message.py \
   --message "任务描述" \
   --type assign --status running
 
-# 2️⃣ Spawn subagent
-sessions_spawn(...)
+# 2️⃣ Spawn subagent（⚠️ 不传 agentId 参数！）
+sessions_spawn(
+  runtime="subagent",  // ✅ 正确
+  // agentId="DEV"     // ❌ 禁止：agentId 只允许 main
+)
 ```
 
 **⚠️ Subagent 完成后必须执行：**
@@ -768,10 +771,19 @@ python3 skills/agent-communication/scripts/write_message.py \
   --type done --status idle
 ```
 
+**⚠️ 关键限制（2026-07-03 发现）**：
+- `sessions_spawn` **禁止**传 `agentId`（Gateway 只允许 `main`，传其他值返回 `forbidden`）
+- `runtime="subagent"` 时不带 agentId，subagent 以 main 身份运行
+- 所有派发记录通过 `write_message.py` 手动写入 agent-messages.json
+- Subagent 完成后的 done 消息也需要手动调用 write_message.py 写入
+
 **禁止行为**：
 - ❌ 先 spawn subagent，后记录消息（顺序不能颠倒！）
 - ❌ 只 spawn 不记录消息
 - ❌ 忘记调用 write_message
+- ❌ 传 agentId 参数（forbidden）
+- ❌ PM 直接执行其他 Agent 的工作
+- ❌ Agent 之间通信不记录
 
 ### Skill 位置
 ```
@@ -784,11 +796,6 @@ skills/agent-communication/
 ### Dashboard 自动更新
 - `write_message.py` 会自动调用 `update_dashboard.py`
 - 每次消息都会实时更新 Dashboard
-
-### 禁止行为
-- ❌ PM 直接执行其他 Agent 的工作
-- ❌ Agent 之间通信不记录
-- ❌ 忘记调用 write_message
 
 ### 违规处理
 - 发现后立即补录消息
