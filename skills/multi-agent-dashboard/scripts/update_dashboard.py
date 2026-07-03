@@ -15,38 +15,21 @@ TZ_GMT8 = timezone(timedelta(hours=8))
 
 
 def read_agent_status() -> dict:
-    """Read agent status from agent-status.json AND agent-messages.json"""
-    status = {"agents": {}}
+    """Read agent status ONLY from agent-status.json (source of truth).
 
+    We intentionally do NOT infer status from agent-messages.json because
+    old agent_status fields in that file can overwrite newer 'idle' entries
+    (the file is append-only, so stale 'running' entries can appear last).
+    """
     status_file = REPO_PATH / "agents/project-admin/logs/agent-status.json"
-    if status_file.exists():
-        status = json.loads(status_file.read_text())
+    if not status_file.exists():
+        return {"agents": {}}
 
-    msg_file = REPO_PATH / "agents/project-admin/logs/agent-messages.json"
-    if msg_file.exists():
-        messages = json.loads(msg_file.read_text())
-        for m in reversed(messages[-50:]):
-            agent_status = m.get("agent_status")
-            if isinstance(agent_status, dict):
-                agent_name = agent_status.get("agent", "")
-                agent_state = agent_status.get("status", "idle")
-                task = agent_status.get("task", "等待任务")
-            elif isinstance(agent_status, str):
-                agent_name = agent_status
-                agent_state = "idle"
-                task = "等待任务"
-            else:
-                continue
-            if agent_name and agent_name in status["agents"]:
-                msg_time = m.get("timestamp", "")
-                status["agents"][agent_name] = {
-                    "status": agent_state,
-                    "task": task[:50],
-                    "lastUpdate": msg_time
-                }
+    status = json.loads(status_file.read_text())
 
+    # Ensure all known agents exist
     for agent in ["PM", "DEVOPS", "DEV", "QA", "CHECKER", "ARCH", "REQ", "UI_DESIGNER"]:
-        if agent not in status["agents"]:
+        if agent not in status.get("agents", {}):
             status["agents"][agent] = {"status": "idle", "task": "等待任务", "lastUpdate": ""}
 
     return status
