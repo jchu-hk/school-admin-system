@@ -15,8 +15,12 @@ python3 skills/agent-communication/scripts/write_message.py \
   --message "{任务描述}" \
   --type assign --status running
 
+**⚠️ 关键限制**：spawn 时**禁止传 agentId**，Gateway 只允许 `main`（传其他值返回 `forbidden`）
+
+```bash
 # 2. 然后才能 spawn
-sessions_spawn(...)
+# sessions_spawn(agentId="DEV")  ← ❌ 禁止！forbidden
+sessions_spawn(runtime="subagent")  ← ✅ 正确
 ```
 
 **违反这个规则 = Dashboard 不更新 = PM 失去对系统的可见性**
