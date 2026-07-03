@@ -30,6 +30,14 @@ export class CreateStudentDto {
   @IsEnum(Gender)
   gender: Gender;
 
+  @ApiPropertyOptional({
+    description: '学号（留空则自动生成，学号唯一即使软删除后也不可重用）',
+    example: '2026-0001',
+  })
+  @IsString()
+  @IsOptional()
+  student_id?: string;
+
   @ApiProperty({ description: '出生日期', example: '2011-03-15' })
   @IsDateString()
   birth_date: string;

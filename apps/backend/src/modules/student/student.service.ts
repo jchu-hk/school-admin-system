@@ -103,17 +103,29 @@ export class StudentService {
       }
     }
 
-    // 自动生成学号
-    const studentId = await this.generateStudentId(admissionYear);
-
     // 检查学号是否已存在（包括软删除记录）
     // 学号是个人唯一标识，软删除后不可重用
-    const existingStudent = await this.studentRepo.findOne({
-      where: { studentId },
-      withDeleted: true,
-    });
-    if (existingStudent) {
-      throw new ConflictException('STU-013: 学号已被使用（包括已删除记录）');
+    let studentId = dto.student_id;
+    if (studentId) {
+      const existingStudent = await this.studentRepo.findOne({
+        where: { studentId },
+        withDeleted: true,
+      });
+      if (existingStudent) {
+        throw new ConflictException('STU-013: 学号已被使用（包括已删除记录）');
+      }
+    } else {
+      // 自动生成学号
+      studentId = await this.generateStudentId(admissionYear);
+
+      // 检查学号是否已存在（包括软删除记录）
+      const existingStudent = await this.studentRepo.findOne({
+        where: { studentId },
+        withDeleted: true,
+      });
+      if (existingStudent) {
+        throw new ConflictException('STU-013: 学号已被使用（包括已删除记录）');
+      }
     }
 
     const student = this.studentRepo.create({
