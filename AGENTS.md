@@ -777,6 +777,33 @@ python3 skills/agent-communication/scripts/write_message.py \
 - 所有派发记录通过 `write_message.py` 手动写入 agent-messages.json
 - Subagent 完成后的 done 消息也需要手动调用 write_message.py 写入
 
+### ⚠️ Subagent Task Prompt 必须包含通信模板
+
+**每次 spawn 时，必须在 task 里嵌入以下模板**（完整内容见 SKILL.md Section "Standard Task Prompt Template"）：
+
+```
+## ⚠️ 必须遵守的通信规则
+
+### 任务开始时（必须先执行）
+python3 skills/agent-communication/scripts/write_message.py \
+  --from {AGENT} --to PM \
+  --message "[Issue #XXX] 开始工作" \
+  --type received
+
+### 任务完成时
+python3 skills/agent-communication/scripts/write_message.py \
+  --from {AGENT} --to PM \
+  --message "[Issue #XXX] 完成/失败" \
+  --type passed/failed --status idle
+
+**禁止**：
+- ❌ 不写 received 就开始工作
+- ❌ 工作完成后不写 passed/failed
+```
+
+**Subagent 不会读 SKILL.md，task prompt 是唯一的约束来源。**
+没有模板 = 没有消息 = Dashboard 空白。
+
 **禁止行为**：
 - ❌ 先 spawn subagent，后记录消息（顺序不能颠倒！）
 - ❌ 只 spawn 不记录消息

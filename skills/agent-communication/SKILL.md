@@ -162,3 +162,80 @@ The Dashboard shows:
 
 - v1.0.0 (2026-06-29): Initial release
 - v1.1.0 (2026-06-29): Added explicit status delivery documentation
+- v1.2.0 (2026-07-03): Added standard task prompt template for subagents
+
+---
+
+## 🏷️ Standard Task Prompt Template (必须嵌入每个 Spawn)
+
+**每个 subagent 的 task 必须包含以下三个步骤，PM 在 spawn 时必须嵌入：**
+
+```markdown
+## 你的任务
+[具体任务描述]
+
+---
+
+## ⚠️ 必须遵守的通信规则
+
+### 任务开始时
+完成以下步骤后再开始工作：
+
+```bash
+# 1. 记录任务接收
+python3 skills/agent-communication/scripts/write_message.py \
+  --from QA --to PM \
+  --message "[Issue #XXX] 开始验收: [具体测试内容]" \
+  --type received
+```
+
+### 任务完成时
+报告结果：
+
+```bash
+# 成功完成
+python3 skills/agent-communication/scripts/write_message.py \
+  --from QA --to PM \
+  --message "[Issue #XXX] 验收通过: [测试结果摘要]" \
+  --type passed --status idle
+
+# 或：失败/阻塞
+python3 skills/agent-communication/scripts/write_message.py \
+  --from QA --to PM \
+  --message "[Issue #XXX] 验收失败: [失败原因]" \
+  --type failed --status idle
+```
+
+**禁止**：
+- ❌ 不写 received 消息就开始工作
+- ❌ 工作完成后不写 passed/failed 消息
+- ❌ 不调用 write_message 直接结束
+```
+
+### 使用方法
+
+PM 在调用 `sessions_spawn` 时，把上述模板嵌入 task 的最前面。例如：
+
+```python
+sessions_spawn(
+  runtime="subagent",
+  task="""
+## ⚠️ 必须遵守的通信规则（先读这里！）
+[write_message 模板内容]
+
+## 你的任务
+[实际任务描述]
+"""
+)
+```
+
+### 为什么需要模板？
+
+- Subagent **不会自动**调用 write_message
+- Subagent **不会主动**读 SKILL.md
+- **Task prompt 是唯一的约束来源**
+- 没有模板 = 没有消息 = Dashboard 空白 = PM 失去可见性
+
+### 验证
+
+Spawn 后检查 agent-messages.json，确认 subagent 已写入 received 消息。
