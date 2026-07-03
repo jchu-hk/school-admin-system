@@ -183,7 +183,7 @@ export default function StudentPage() {
       const token = getToken()
       if (!token) return
 
-      const response = await apiClient.get<{ data: string[] }>('/api/users/classes', {
+      const response = await apiClient.get<{ data: string[] }>('/api/students/classes', {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -214,13 +214,12 @@ export default function StudentPage() {
       const params = new URLSearchParams()
       params.append('page', page.toString())
       params.append('limit', PAGE_SIZE.toString())
-      params.append('role', UserRole.STUDENT)
-      
       if (classFilter) params.append('className', classFilter)
       if (statusFilter) params.append('status', statusFilter)
       if (searchTerm) params.append('search', searchTerm)
 
-      const response = await apiClient.get<{ data: User[]; total: number }>(`/api/users?${params.toString()}`, {
+      const url = params.toString() ? `/api/students?${params.toString()}` : '/api/students'
+      const response = await apiClient.get<{ data: User[]; total: number }>(url, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -265,7 +264,7 @@ export default function StudentPage() {
 
     try {
       const token = getToken()
-      await apiClient.post('/api/users', {
+      await apiClient.post('/api/students', {
         ...data,
         role: UserRole.STUDENT,
         status: UserStatus.ACTIVE,
@@ -306,7 +305,7 @@ export default function StudentPage() {
         delete updateData.subsidyCertificateNo
       }
       
-      await apiClient.patch(`/api/users/${selectedStudent.id}`, updateData, {
+      await apiClient.patch(`/api/students/${selectedStudent.id}`, updateData, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setShowEditModal(false)
@@ -323,7 +322,7 @@ export default function StudentPage() {
     
     try {
       const token = getToken()
-      await apiClient.delete(`/api/users/${selectedStudent.id}`, {
+      await apiClient.delete(`/api/students/${selectedStudent.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setShowDeleteConfirm(false)
