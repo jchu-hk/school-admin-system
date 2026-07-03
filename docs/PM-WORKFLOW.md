@@ -222,12 +222,50 @@ QA执行测试用例
 - Part of: #111 (属于某个Epic)
 ```
 
+### 开发链路（Chain of Development）
+
+**完整链路**：
+```
+(1) Requirement
+    ↓ 变更触发
+(2) Functional Specification + (3) UI Design
+    ↓ 变更触发
+(4) Architecture/System Design + (5) Database Design (ER + Data Dictionary)
+    ↓ 变更触发
+(6) Test Cases
+    ↓ 变更触发
+(7) Test Case Automation
+```
+
+**规则**：链路中任何环节变更，PM 必须立即创建下游任务，防止遗漏。
+
+| 变更环节 | 必须创建/更新 | 负责人 |
+|---------|-------------|-------|
+| Requirement | → Functional Spec + UI | REQ / PM |
+| Functional Spec / UI | → Arch/System Design + DB Design | PM / ARCH |
+| Arch / DB Design | → Test Cases | PM |
+| Test Cases | → Test Case Automation | QA |
+
+**PM 检查清单**：
+- [ ] 变更是否影响下游环节？
+- [ ] 下游任务是否已创建？
+- [ ] 下游任务是否阻塞当前开发？
+
+**示例**：REQ 新增「学号自动生成」字段
+```
+→ Issue #XXX REQ 更新（完成）
+→ Issue #XXX-TC 测试用例准备（必须先完成）
+→ Issue #XXX-DEV DEV 开发（等待测试用例）
+→ Issue #XXX-QA QA 验收（等待 DEV）
+```
+
 ### 违规处理
 | 违规类型 | 处理方式 |
 |---------|---------|
 | 未同步文档就改代码 | 作为补丁补充commit，24小时内补文档 |
 | 严重不一致 | 回滚代码，先补文档再开发 |
 | 多人协作 | 各自负责模块文档，交叉检查 |
+| 链路环节缺失 | 立即补建下游任务，再继续上游开发 |
 
 ---
 
