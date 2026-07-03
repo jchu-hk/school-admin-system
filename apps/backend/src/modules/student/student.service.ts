@@ -92,10 +92,11 @@ export class StudentService {
     const admissionDate = new Date(dto.admission_date);
     const admissionYear = admissionDate.getFullYear();
 
-    // 检查香港身份证是否重复
+    // 检查香港身份证是否重复（包括软删除）
     if (dto.hk_id) {
       const existing = await this.studentRepo.findOne({
-        where: { hkId: dto.hk_id, deletedAt: IsNull() },
+        where: { hkId: dto.hk_id },
+        withDeleted: true,
       });
       if (existing) {
         throw new ConflictException('STU-004: 同一香港身份证已存在');
@@ -104,6 +105,16 @@ export class StudentService {
 
     // 自动生成学号
     const studentId = await this.generateStudentId(admissionYear);
+
+    // 检查学号是否已存在（包括软删除记录）
+    // 学号是个人唯一标识，软删除后不可重用
+    const existingStudent = await this.studentRepo.findOne({
+      where: { studentId },
+      withDeleted: true,
+    });
+    if (existingStudent) {
+      throw new ConflictException('STU-013: 学号已被使用（包括已删除记录）');
+    }
 
     const student = this.studentRepo.create({
       studentId,
@@ -170,20 +181,23 @@ export class StudentService {
       paramIdx++;
     }
 
+    // Add filter for MAIN allocation type to get current class
+    whereClause += ` AND (alloc.allocation_type = 'main' OR alloc.allocation_type IS NULL)`;
+
     const sortBy = query.sortBy ? query.sortBy.replace(/\.id$/, '.id') : 's.id';
     const sortOrder = query.sortOrder === 'asc' ? 'ASC' : 'DESC';
 
     const countSql = `
       SELECT COUNT(DISTINCT s.id) as total
       FROM students s
-      LEFT JOIN class_allocations alloc ON alloc.student_id = s.id AND alloc.end_date IS NULL
+      LEFT JOIN class_allocations alloc ON alloc.student_id = s.id AND alloc.end_date IS NULL AND (alloc.allocation_type = 'main' OR alloc.allocation_type IS NULL)
       LEFT JOIN classes cls ON cls.id = alloc.class_id
       LEFT JOIN academic_years ay ON ay.id = alloc.academic_year_id
       ${whereClause}
     `;
 
     const dataSql = `
-      SELECT
+      SELECT DISTINCT ON (s.id)
         s.id, s.student_id, s.name_zh, s.name_en, s.gender,
         s.birth_date, s.address, s.phone, s.email,
         s.admission_date, s.status, s.guardian_name,
@@ -193,11 +207,11 @@ export class StudentService {
         cls.id as cls_id, cls.name as cls_name,
         ay.year as ay_year
       FROM students s
-      LEFT JOIN class_allocations alloc ON alloc.student_id = s.id AND alloc.end_date IS NULL
+      LEFT JOIN class_allocations alloc ON alloc.student_id = s.id AND alloc.end_date IS NULL AND (alloc.allocation_type = 'main' OR alloc.allocation_type IS NULL)
       LEFT JOIN classes cls ON cls.id = alloc.class_id
       LEFT JOIN academic_years ay ON ay.id = alloc.academic_year_id
       ${whereClause}
-      ORDER BY ${sortBy} ${sortOrder}
+      ORDER BY s.id, ${sortBy} ${sortOrder}
       LIMIT ${pageSize} OFFSET ${skip}
     `;
 
@@ -230,7 +244,11 @@ export class StudentService {
       created_at: s.created_at,
       updated_at: s.updated_at,
       currentClass: s.cls_id
-        ? { class_id: s.cls_id, class_name: s.cls_name, academic_year: s.ay_year }
+        ? {
+            class_id: s.cls_id,
+            class_name: s.cls_name,
+            academic_year: s.ay_year,
+          }
         : null,
     }));
 
