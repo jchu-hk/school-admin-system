@@ -774,8 +774,34 @@ python3 skills/agent-communication/scripts/write_message.py \
 **⚠️ 关键限制（2026-07-03 发现）**：
 - `sessions_spawn` **禁止**传 `agentId`（Gateway 只允许 `main`，传其他值返回 `forbidden`）
 - `runtime="subagent"` 时不带 agentId，subagent 以 main 身份运行
-- 所有派发记录通过 `write_message.py` 手动写入 agent-messages.json
-- Subagent 完成后的 done 消息也需要手动调用 write_message.py 写入
+
+### ⚠️ 所有 Agent 间通信必须记录
+
+**不仅 subagent，PM 与其他 Agent 的协作也要记录**：
+
+```bash
+# PM 请求 DEV 支持（不是 spawn，是请求帮助）
+python3 skills/agent-communication/scripts/write_message.py \
+  --from PM --to DEV \
+  --message "[Issue #XXX] 需要 DEV 帮助: [具体问题]" \
+  --type assign --status running
+
+# DEV 完成支持
+python3 skills/agent-communication/scripts/write_message.py \
+  --from DEV --to PM \
+  --message "[Issue #XXX] 支持完成: [解决方案]" \
+  --type done --status idle
+```
+
+**Dashboard 应显示团队协作**：
+```
+PM → QA  [assign]  QA 开始测试
+QA → PM  [failed]  失败：XXX
+PM → DEV [assign]  PM 请求 DEV 帮助  ← 必须记录！
+DEV → PM [done]    DEV 问题已解决    ← 必须记录！
+PM → QA  [assign]  提供解决方案给 QA
+QA → PM  [passed] QA 通过
+```
 
 ### ⚠️ Subagent Task Prompt 必须包含通信模板
 
