@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #199] PM正在直接修复: 新增学生页面字段更新",
-      "lastUpdate": "2026-07-04T03:09:47Z"
+      "task": "[Issue #196] Test label fix - should add dev label, not pm",
+      "lastUpdate": "2026-07-04T07:25:16Z"
     },
     "DEVOPS": {
       "status": "idle",

@@ -991,5 +991,29 @@
       "status": "idle",
       "task": "[Issues #199+200+201+202+203] 全部修复完成并推送 #199(b29db"
     }
+  },
+  {
+    "timestamp": "2026-07-04T07:24:20Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #196] 循环依赖Bug - student.class_id 和 class_entity 相互引用导致编译错误",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #196] 循环依赖Bug - student.class_id 和 class_en"
+    }
+  },
+  {
+    "timestamp": "2026-07-04T07:25:16Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #196] Test label fix - should add dev label, not pm",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #196] Test label fix - should add dev label"
+    }
   }
 ]
