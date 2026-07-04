@@ -23,15 +23,34 @@ WORKSPACE = Path("/workspace/projects/workspace")
 MESSAGE_FILE = WORKSPACE / "agents/project-admin/logs/agent-messages.json"
 DASHBOARD_SCRIPT = WORKSPACE / "skills/multi-agent-dashboard/scripts/update_dashboard.py"
 
+STATUS_FILE = WORKSPACE / "agents/project-admin/logs/agent-status.json"
+
+
+def write_agent_status(agent: str, status: str, task: str):
+    """Update agent-status.json — this is what the dashboard reads as source of truth."""
+    if STATUS_FILE.exists():
+        data = json.loads(STATUS_FILE.read_text())
+    else:
+        data = {"agents": {}}
+
+    data.setdefault("agents", {})
+    data["agents"][agent] = {
+        "status": status,
+        "task": task[:80],
+        "lastUpdate": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+    STATUS_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2))
+
+
 def write_message(from_agent: str, to_agent: str, message: str, msg_type: str = "default", status: str = None, auto_update_dashboard: bool = True):
     """Write message to unified log"""
-    
+
     # Read existing messages
     if MESSAGE_FILE.exists():
         messages = json.loads(MESSAGE_FILE.read_text())
     else:
         messages = []
-    
+
     # Add new message
     new_msg = {
         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -40,20 +59,22 @@ def write_message(from_agent: str, to_agent: str, message: str, msg_type: str = 
         "message": message,
         "type": msg_type
     }
-    
-    # Add status if provided (for agent state tracking)
+
+    # Add status if provided — write to BOTH message log AND agent-status.json
     if status:
         new_msg["agent_status"] = {
             "agent": from_agent,
             "status": status,
             "task": message[:50]
         }
-    
+        # CRITICAL: also write to agent-status.json so dashboard sees it
+        write_agent_status(from_agent, status, message)
+
     messages.append(new_msg)
-    
+
     # Keep only last 100 messages (prevent file too large)
     messages = messages[-100:]
-    
+
     # Write back
     MESSAGE_FILE.write_text(json.dumps(messages, ensure_ascii=False, indent=2))
     print(f"✅ Message logged: {from_agent} → {to_agent}: {message[:50]}")

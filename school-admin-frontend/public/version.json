@@ -1,29 +1,30 @@
 {
-  "version": "v1.5.6",
-  "buildDate": "2026-07-03",
-  "gitCommit": "2b249df",
+  "version": "v1.5.5",
+  "buildDate": "2026-07-04",
+  "gitCommit": "17ba773",
   "gitBranch": "main",
   "changelog": [
     {
-      "version": "v1.5.6",
-      "date": "2026-07-03",
+      "version": "build-2026-07-04",
+      "date": "2026-07-04",
       "changes": [
-        "Bug修复: Issue #197 currentClass 返回 null",
-        "Bug修复: Issue #198 禁止软删除学生学号重用",
-        "新增: CreateStudentDto.student_id 字段（可选）",
-        "新增: 测试凭证文档 docs/test-credentials.md",
-        "新增: 测试用例文档 docs/school-admin-system/test-cases/ISSUE-197-198-bugfix.md",
-        "新增: CHANGELOG.md 版本管理文档"
-      ]
-    },
-    {
-      "version": "v1.5.5",
-      "date": "2026-07-02",
-      "changes": [
-        "Dashboard 更新 13:03",
-        "Heartbeat 2026-07-03 12:40",
-        "修复: 学生管理 About 页面空白问题",
-        "数据迁移: lunch_changes、assets（非紧急）"
+        "dashboard update 11:09",
+        "dashboard update 11:09",
+        "dashboard update 11:08",
+        "dashboard update 11:08",
+        "dashboard update 11:07",
+        "#200 - 修复人工录入出勤记录4项Bug",
+        "dashboard update 11:02",
+        "#201 #202 #203 - 修复资产管理崩溃 + 用户管理部门筛选/保存",
+        "dashboard update 10:59",
+        "dashboard update 10:59",
+        "dashboard update 10:59",
+        "dashboard update 10:59",
+        "dashboard update 10:02",
+        "dashboard update 09:25",
+        "dashboard update 09:03",
+        "update PROJECT-WIKI with v1.5.6 release deployment info",
+        "dashboard update 08:50"
       ]
     }
   ]

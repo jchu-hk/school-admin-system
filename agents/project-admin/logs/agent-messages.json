@@ -955,5 +955,29 @@
     "to": "PM",
     "message": "[Issue #199+#200] 开始修复",
     "type": "received"
+  },
+  {
+    "timestamp": "2026-07-04T03:09:47Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #199] PM正在直接修复: 新增学生页面字段更新",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #199] PM正在直接修复: 新增学生页面字段更新"
+    }
+  },
+  {
+    "timestamp": "2026-07-04T03:10:35Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #199+#200] 修复完成，commit已推送",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[Issue #199+#200] 修复完成，commit已推送"
+    }
   }
 ]
