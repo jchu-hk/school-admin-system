@@ -19,6 +19,8 @@
 
 | Service | URL | Status |
 |---------|-----|--------|
+| Frontend (Cloudflare Tunnel) | `https://school-admin.[tunnel].trycloudflare.com` | ✅ Active |
+| Backend API (Cloudflare Tunnel) | `https://school-admin-backend.[tunnel].trycloudflare.com` | ✅ Active |
 | Local Frontend | `http://localhost:8080` | ✅ Serving (HTTP 200) |
 | Local Backend | `http://localhost:3000` | ✅ Healthy (`{"status":"ok"}`) |
 | PostgreSQL | `localhost:5432` | ✅ Healthy |
