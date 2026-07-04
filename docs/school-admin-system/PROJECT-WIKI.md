@@ -79,8 +79,9 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 ## 🧪 测试环境
 
-> ⚠️ **最后更新**: 2026-06-30 23:13 (GMT+8)
-> ❌ Cloudflare Quick Tunnel **不可用** - ERR_CONNECTION_CLOSED
+> ⚠️ **最后更新**: 2026-07-03 08:11 (GMT+8)
+> ✅ **本地测试环境已刷新** (Commit: 78f4138)
+> ❌ Cloudflare Quick Tunnel **不可用** - Docker Hub 在中国网络受限
 > ✅ **推荐使用本地访问** (localhost)
 
 | 服务 | 本地URL (本机) | 外部URL | 状态 |
@@ -211,12 +212,21 @@ docker compose -f infra/docker-compose.local.yml up -d
 
 | 组件 | 版本 | Git Commit | 更新时间 |
 |------|------|------------|----------|
-| 后端 | v1.5.4 | `bb18156` | 2026-06-26 20:15:00 |
-| 前端 | v1.5.4 | `bb18156` | 2026-06-26 20:15:00 |
-| 数据库 | v1.5.1 | - | 2026-06-26 |
+| 后端 | v1.5.5 | `78f4138` | 2026-07-03 08:10:00 |
+| 前端 | v1.5.5 | `78f4138` | 2026-07-03 08:10:00 |
+| 数据库 | v1.5.5 | - | 2026-07-03 |
 
-**代码基线**: https://github.com/jchu-hk/school-admin-system/commit/bb18156
-**最新Tag**: v1.5.4
+**代码基线**: https://github.com/jchu-hk/school-admin-system/commit/78f4138
+**最新Tag**: v1.5.5
+
+### 2026-07-03 刷新记录
+- ✅ 代码已同步至最新 `78f4138` (包含 dashboard 更新、学生模块改进)
+- ✅ 后端 dist 已重新编译并部署至容器
+- ✅ 前端已重新构建并部署至容器 (vite build v8.0.16)
+- ✅ 数据库迁移记录已同步 (21个迁移均已标记为已执行)
+- ✅ 修复了 student.entity.ts 中的循环依赖问题
+- ⚠️ Docker Hub 在中国网络受限，无法拉取新基础镜像
+- ✅ 替代方案: 通过 `docker cp` 直接更新容器内 dist 文件
 
 ### 监控Dashboard
 

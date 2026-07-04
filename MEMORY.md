@@ -183,3 +183,18 @@ agent-PM (调度中枢) → DEV/QA/DEVOPS/CHECKER
 - Workspace is gitignored; versioning is file-based with archive snapshots
 - All three version snapshots (v1.0.0/v1.1.0/v1.2.0) are in archive/
 
+## 2026-07-03 — 测试环境刷新 (Commit 78f4138)
+
+**任务**: 下载最新代码并刷新本地测试环境
+
+**完成事项**:
+1. ✅ GitHub代码已从 v1.5.4 (bb18156) 同步至 v1.5.5 (78f4138, 40+新commits)
+2. ✅ 修复 student.entity.ts 循环依赖 (Class导入在文件底部而非顶部)
+3. ✅ 后端dist重新编译并部署至容器
+4. ✅ 前端重新构建(vite v8)并部署至容器
+5. ✅ 数据库迁移同步 (21个migration均标记为已执行)
+6. ✅ PROJECT-WIKI.md 更新
+
+**已知问题**: Docker Hub 在中国网络受限，无法通过 docker build 重建镜像
+**解决方法**: docker cp + docker exec 直接更新运行容器
+

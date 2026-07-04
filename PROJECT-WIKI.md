@@ -1,16 +1,17 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-03 08:45 GMT+8
-> Updated by: PM Agent (automated)
+> Last updated: 2026-07-04 08:54 GMT+8
+> Updated by: Zhuclaw (manual release)
 
 ---
 
 ## 📦 Current Version
 
-- **Version**: 10.1.0
-- **Latest Commit**: `095af5055a9fa1419197181ae7841d9afee1ac98`
+- **Version**: v1.5.6
+- **Latest Commit**: `dfc40a5`
 - **Branch**: `main` (clean)
-- **Docker Uptime**: ~25h+
+- **Docker Uptime**: Fresh deploy (2026-07-04 08:44)
+- **Images**: Pulled `ghcr.io/jchu-hk/school-admin-system/backend:latest` & `frontend:latest` (linux/amd64 via Rosetta)
 
 ---
 
@@ -18,10 +19,11 @@
 
 | Service | URL | Status |
 |---------|-----|--------|
-| Frontend | `https://school-admin.[tunnel].trycloudflare.com` | ✅ Active |
-| Backend API | `https://school-admin-backend.[tunnel].trycloudflare.com` | ✅ Active |
-| Local Frontend | `http://localhost:3001` | ✅ |
-| Local Backend | `http://localhost:3000` | ✅ |
+| Local Frontend | `http://localhost:8080` | ✅ Serving (HTTP 200) |
+| Local Backend | `http://localhost:3000` | ✅ Healthy (`{"status":"ok"}`) |
+| PostgreSQL | `localhost:5432` | ✅ Healthy |
+| Redis | `localhost:6379` | ✅ Healthy |
+| OPA | `localhost:8181` | ✅ Healthy |
 
 > **Note**: Tunnel URLs may change after tunnel restart. Verify connectivity if frontend/backend become unreachable.
 
@@ -43,15 +45,16 @@ Browser → Cloudflare Tunnel → Frontend (Next.js :3001)
 
 | Container | Port | Purpose |
 |-----------|------|---------|
-| `frontend` | 3001 | Next.js web app |
-| `backend` | 3000 | NestJS REST API |
-| `postgres` | 5432 | Primary database |
-| `redis` | 6379 | Cache/queue |
-| `kafka` | 9092 | Event streaming |
-| `zookeeper` | 2181 | Kafka coordination |
-| `prometheus` | 9090 | Metrics |
-| `grafana` | 3003 | Dashboards |
-| `alertmanager` | 9093 | Alerts |
+| `school-admin-frontend` | 8080 → 80 | Web app (Nginx) |
+| `school-admin-backend` | 3000 | NestJS REST API |
+| `school-admin-postgres` | 5432 | Primary database |
+| `school-admin-redis` | 6379 | Cache/queue |
+| `school-admin-opa` | 8181 | Open Policy Agent (ABAC) |
+| `school-admin-kafka` | 9092 | Event streaming (persistent) |
+| `school-admin-zookeeper` | 2181 | Kafka coordination (persistent) |
+| `school-admin-prometheus` | 9091 | Metrics (persistent) |
+| `school-admin-grafana` | 3001 | Dashboards (persistent) |
+| `school-admin-alertmanager` | 9093 | Alerts (persistent)
 
 ---
 
@@ -140,9 +143,28 @@ Live dashboard: [multi-agent-dashboard.html](multi-agent-dashboard.html)
 
 ## 🔄 Recent Activity
 
-- **2026-07-03**: Project-Wiki created; backend health endpoint verified
-- **2026-07-02**: Cloudflare tunnel restarted; tunnel URLs updated
-- **2026-07-02**: Docker services running ~25h; all healthy
+### 2026-07-04 — Production Release Deployed
+
+**Version: v1.5.6 — Bug fixes for #197 & #198**
+
+- **Deploy time**: 08:44 GMT+8
+- **Pull**: Fresh Docker images from GHCR (backend + frontend `latest`)
+- **Git**: Updated to `dfc40a5` (fast-forward from `2b249df`)
+- **Changes deployed**:
+  - 🐛 Fix #197: `currentClass` returning null
+  - 🐛 Fix #198: Prevent soft-deleted student_id reuse
+  - ✨ New: `CreateStudentDto.student_id` optional field
+  - 📄 New: Test credentials doc (`docs/test-credentials.md`)
+  - 📄 New: Test cases for #197 & #198
+  - 📄 New: `CHANGELOG.md` version management
+  - 🛠 New: Release automation script (`scripts/release.sh`)
+  - 📋 New: Release Management Plan (`docs/RELEASE-MANAGEMENT.md`)
+- **Compose stack**: Fresh deploy via `infra/docker-compose.local.yml`
+  - Architecture: Backend (NestJS) + Frontend (Nginx) + Postgres + Redis + OPA
+  - Backend/frontend run as prebuilt GHCR images (amd64 via Rosetta)
+  - Postgres/Redis data volumes persist across deployments
+  - OPA serves as ABAC policy engine
+- **Platform note**: Images are `linux/amd64`; Rosetta emulation on Apple Silicon
 
 ---
 
