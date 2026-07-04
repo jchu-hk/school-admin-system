@@ -7,7 +7,7 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository, In, Between } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import * as QRCode from 'qrcode';
 import {
@@ -263,8 +263,17 @@ export class AttendanceService {
       late: number;
     };
   }> {
+    // Parse as local date (Hong Kong / UTC+8) to avoid timezone mismatch.
+    // The frontend sends dates as 'YYYY-MM-DD' in local time.
+    const [year, month, day] = date.split('-').map(Number);
+    const startLocal = new Date(year, month - 1, day, 0, 0, 0);
+    const endLocal = new Date(year, month - 1, day, 23, 59, 59, 999);
+
     const records = await this.attendanceRepository.find({
-      where: { classId, attendanceDate: new Date(date) },
+      where: {
+        classId,
+        attendanceDate: Between(startLocal, endLocal) as any,
+      },
       relations: ['student', 'teacher'],
       order: { checkInTime: 'ASC' },
     });
@@ -279,7 +288,13 @@ export class AttendanceService {
         `COUNT(CASE WHEN attendance.status = 'late' THEN 1 END) as late`,
       ])
       .where('attendance.class_id = :classId', { classId })
-      .andWhere('attendance.attendance_date = :date', { date });
+      .andWhere(
+        'attendance.attendance_date BETWEEN :startLocal AND :endLocal',
+        {
+          startLocal: startLocal.toISOString(),
+          endLocal: endLocal.toISOString(),
+        },
+      );
 
     const statsResult = await statsQuery.getRawOne();
 
@@ -618,6 +633,12 @@ export class AttendanceService {
     sickLeave: number;
     personalLeave: number;
   }> {
+    // Parse as local date (Hong Kong / UTC+8) to avoid timezone mismatch.
+    // The frontend sends dates as 'YYYY-MM-DD' in local time.
+    const [year, month, day] = date.split('-').map(Number);
+    const startLocal = new Date(year, month - 1, day, 0, 0, 0);
+    const endLocal = new Date(year, month - 1, day, 23, 59, 59, 999);
+
     const queryBuilder = this.attendanceRepository
       .createQueryBuilder('attendance')
       .select([
@@ -629,7 +650,13 @@ export class AttendanceService {
         `COUNT(CASE WHEN attendance.status = 'sick_leave' THEN 1 END) as "sickLeave"`,
         `COUNT(CASE WHEN attendance.status = 'personal_leave' THEN 1 END) as "personalLeave"`,
       ])
-      .where('attendance.attendance_date = :date', { date });
+      .where(
+        'attendance.attendance_date BETWEEN :startLocal AND :endLocal',
+        {
+          startLocal: startLocal.toISOString(),
+          endLocal: endLocal.toISOString(),
+        },
+      );
 
     if (classId) {
       queryBuilder.andWhere('attendance.class_id = :classId', { classId });

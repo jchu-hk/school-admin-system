@@ -123,6 +123,7 @@ export default function AttendancePage() {
 
   // Manual entry state
   const [manualRecords, setManualRecords] = useState<BatchRecordInput[]>([]);
+  const [manualDate, setManualDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
   const [previewData, setPreviewData] = useState<ConfirmPreviewResponse | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -164,7 +165,8 @@ export default function AttendancePage() {
   }, [loadData]);
 
   // ============ Manual Entry Handlers ============
-  const initManualRecords = () => {
+  const initManualRecords = (dateOverride?: string) => {
+    const targetDate = dateOverride ?? manualDate;
     const students = MOCK_STUDENTS[selectedClass] || [];
     const initial: BatchRecordInput[] = students.map((s) => ({
       studentId: s.id,
@@ -178,13 +180,23 @@ export default function AttendancePage() {
     setPreviewData(null);
     setShowPreview(false);
     setBatchId(null);
+    setError(null);
+  };
+
+  // Sync manualDate to today when switching to manual tab
+  const handleTabChange = (tab: typeof activeTab) => {
+    if (tab === 'manual') {
+      const today = new Date().toISOString().split('T')[0];
+      setManualDate(today);
+    }
+    setActiveTab(tab);
   };
 
   useEffect(() => {
     if (activeTab === 'manual') {
       initManualRecords();
     }
-  }, [activeTab, selectedClass]);
+  }, [activeTab, selectedClass, manualDate]);
 
   const updateManualRecord = (index: number, field: keyof BatchRecordInput, value: string) => {
     setManualRecords((prev) => {
@@ -196,16 +208,18 @@ export default function AttendancePage() {
 
   const handlePreview = async () => {
     setSubmitting(true);
+    setError(null);
     try {
       const data = await attendanceApi.confirmPreview({
         classId: selectedClass,
-        attendanceDate: selectedDate,
+        attendanceDate: manualDate,
         records: manualRecords,
       });
       setPreviewData(data);
       setShowPreview(true);
-    } catch {
-      setError('预览生成失败，请检查数据');
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || '预览生成失败，请检查数据';
+      setError(msg);
     } finally {
       setSubmitting(false);
     }
@@ -214,10 +228,11 @@ export default function AttendancePage() {
   const handleBatchSubmit = async () => {
     if (!previewData) return;
     setSubmitting(true);
+    setError(null);
     try {
       const result = await attendanceApi.batchCreate({
         classId: selectedClass,
-        attendanceDate: selectedDate,
+        attendanceDate: manualDate,
         records: manualRecords,
       });
       setBatchId(result.batchId);
@@ -225,8 +240,9 @@ export default function AttendancePage() {
       setShowPreview(false);
       setManualRecords([]);
       loadData();
-    } catch {
-      setError('批量保存失败，请稍后重试');
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || '批量保存失败，请稍后重试';
+      setError(msg);
     } finally {
       setSubmitting(false);
     }
@@ -530,7 +546,7 @@ export default function AttendancePage() {
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-lg font-semibold text-gray-800">📝 人工录入出勤记录</h3>
           <button
-            onClick={initManualRecords}
+            onClick={() => { setError(null); initManualRecords(); }}
             className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
           >
             <RefreshCw size={14} /> 重置
@@ -555,8 +571,11 @@ export default function AttendancePage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">日期</label>
             <input
               type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
+              value={manualDate}
+              onChange={(e) => {
+                setManualDate(e.target.value);
+                initManualRecords(e.target.value);
+              }}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
             />
           </div>
@@ -697,7 +716,7 @@ export default function AttendancePage() {
         ].map(({ key, label, icon: Icon }) => (
           <button
             key={key}
-            onClick={() => setActiveTab(key as typeof activeTab)}
+            onClick={() => handleTabChange(key as typeof activeTab)}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition ${
               activeTab === key
                 ? 'bg-blue-600 text-white shadow-sm'
