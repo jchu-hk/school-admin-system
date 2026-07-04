@@ -867,5 +867,17 @@
       "status": "idle",
       "task": "[Cron Job] multi-agent-dashboard-daily-refresh - 每"
     }
+  },
+  {
+    "timestamp": "2026-07-04T00:03:33Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "[心跳检查] 2026-07-04 08:03 - 服务运行正常，Git已提交推送",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "[心跳检查] 2026-07-04 08:03 - 服务运行正常，Git已提交推送"
+    }
   }
 ]
