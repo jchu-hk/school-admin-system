@@ -108,6 +108,9 @@ services:
     container_name: school-admin-frontend
     ports:
       - "${FRONTEND_PORT:-8080}:80"
+    volumes:
+      # Mount local version.json so the About page reflects the current git commit at deploy time
+      - ../school-admin-frontend/public/version.json:/usr/share/nginx/html/version.json:ro
     depends_on:
       - backend
     restart: unless-stopped
