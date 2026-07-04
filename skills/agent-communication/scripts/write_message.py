@@ -63,7 +63,7 @@ def extract_issue_numbers(message: str) -> list[int]:
     return [int(m) for m in re.findall(r'#(\d+)', message)]
 
 
-def update_github_issue_labels(issue_number: int, msg_type: str, from_agent: str, message: str) -> None:
+def update_github_issue_labels(issue_number: int, msg_type: str, from_agent: str, to_agent: str, message: str) -> None:
     """Auto-update GitHub Issue labels based on message type and agent."""
 
     labels_to_add = []
@@ -71,7 +71,8 @@ def update_github_issue_labels(issue_number: int, msg_type: str, from_agent: str
 
     if msg_type == "assign":
         labels_to_add.append("in-progress")
-        agent_label = GITHUB_AGENT_LABELS.get(from_agent)
+        # Label = the agent who WILL DO the work (to_agent), not sender (from_agent)
+        agent_label = GITHUB_AGENT_LABELS.get(to_agent)
         if agent_label:
             labels_to_add.append(agent_label)
 
@@ -101,13 +102,13 @@ def update_github_issue_labels(issue_number: int, msg_type: str, from_agent: str
         print(f"  🔴 Closed Issue #{issue_number}")
 
 
-def sync_issue_labels_for_message(from_agent: str, msg_type: str, message: str) -> None:
+def sync_issue_labels_for_message(from_agent: str, to_agent: str, msg_type: str, message: str) -> None:
     """Extract issue numbers from message and update GitHub labels accordingly."""
     if from_agent not in GITHUB_AGENT_LABELS:
         return
     issue_numbers = extract_issue_numbers(message)
     for issue_number in issue_numbers:
-        update_github_issue_labels(issue_number, msg_type, from_agent, message)
+        update_github_issue_labels(issue_number, msg_type, from_agent, to_agent, message)
 
 
 # ---------------------------------------------------------------------------
@@ -163,7 +164,7 @@ def write_message(
         write_agent_status(from_agent, status, message)
 
     # Auto-update GitHub Issue labels
-    sync_issue_labels_for_message(from_agent, msg_type, message)
+    sync_issue_labels_for_message(from_agent, to_agent, msg_type, message)
 
     messages.append(new_msg)
     messages = messages[-100:]
