@@ -9,7 +9,6 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Class } from '../user/class.entity';
 
 // ============ Enums ============
 
@@ -201,10 +200,10 @@ export class ClassAllocation {
   @Column({ type: 'uuid', name: 'student_id' })
   studentId: string;
 
-  @ApiProperty({ description: '班级ID', type: () => Class })
-  @ManyToOne(() => Class, { onDelete: 'CASCADE' })
+  @ApiProperty({ description: '班级ID', type: 'Class' })
+  @ManyToOne('Class', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'class_id' })
-  class: Class;
+  class: any;
 
   @Column({ type: 'uuid', name: 'class_id' })
   classId: string;
