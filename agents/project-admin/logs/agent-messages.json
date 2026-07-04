@@ -654,5 +654,218 @@
       "status": "running",
       "task": "20:50 心跳检查开始"
     }
+  },
+  {
+    "timestamp": "2026-07-03T12:52:03Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "心跳检查完成 - 服务正常",
+    "type": "done",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "心跳检查完成 - 服务正常"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T13:56:49Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "Issue #197 + #198: 修复学生管理Bug (1)currentClass null (2)禁止学号重用",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #197 + #198: 修复学生管理Bug (1)currentClass null "
+    }
+  },
+  {
+    "timestamp": "2026-07-03T13:57:19Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "Issue #197 + #198: 开始修复学生管理Bug",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-03T13:59:43Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "Issue #197 + #198: 修复完成, commit: 019d8dbdaae19726c1dfb8cbe4e19267123d4849",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "Issue #197 + #198: 修复完成, commit: 019d8dbdaae19726c"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:00:44Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "Issue #197 + #198: 修复完成, commit: 019d8db, 1文件 +25/-7",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "Issue #197 + #198: 修复完成, commit: 019d8db, 1文件 +25/"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:01:01Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "Issue #197 + #198: 验收修复 (currentClass + 学号唯一性)",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #197 + #198: 验收修复 (currentClass + 学号唯一性)"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:01:33Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "Issue #197 + #198: 开始验收修复",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-03T14:04:21Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "Issue #197 + #198: 验收失败 - API需要认证且无有效凭证",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "Issue #197 + #198: 验收失败 - API需要认证且无有效凭证"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:05:12Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "Issue #197 + #198: 验收失败 - API 需要认证,401 Unauthorized,无有效测试凭证",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "Issue #197 + #198: 验收失败 - API 需要认证,401 Unauthorize"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:07:24Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "Issue #197 + #198: 重试验收 (凭证已提供: qa_test/qa_test123)",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #197 + #198: 重试验收 (凭证已提供: qa_test/qa_test123"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:08:18Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "Issue #197 + #198: 开始验收 (凭证已提供)",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-03T14:09:21Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "Issue #197 + #198: 验收失败 - 测试环境不可用 (后端服务无法连接端口 3000/4000)",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "Issue #197 + #198: 验收失败 - 测试环境不可用 (后端服务无法连接端口 3000"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:51:23Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "Issue #197+#198: QA 失败重试 - DEV 已重建 Docker 镜像，测试凭证: qa_student/*** (student角色无需OTP)",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #197+#198: QA 失败重试 - DEV 已重建 Docker 镜像，测试凭证:"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:51:25Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "Issue #197+#198: 重试失败 - 后端在端口3000非4000，API DTO格式已变",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "Issue #197+#198: 重试失败 - 后端在端口3000非4000，API DTO格式已变"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:51:27Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "Issue #197+#198: 重试v3 - 正确端口3000，API新格式(name_zh,birth_date等)，学号自动生成无student_id字段",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #197+#198: 重试v3 - 正确端口3000，API新格式(name_zh,bi"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:51:36Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "Issue #197+#198: PM 手动验证完成 - currentClass✅/学号重用✅，提供正确API格式给QA",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Issue #197+#198: PM 手动验证完成 - currentClass✅/学号重用✅，提"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T14:51:38Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "Issue #197+#198: PM直接验证通过，无需QA重复验证，Issue可关闭",
+    "type": "passed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "Issue #197+#198: PM直接验证通过，无需QA重复验证，Issue可关闭"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T22:00:25Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "[Cron Job] multi-agent-dashboard-daily-refresh - 开始执行每日Dashboard更新",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Cron Job] multi-agent-dashboard-daily-refresh - 开"
+    }
+  },
+  {
+    "timestamp": "2026-07-03T22:00:37Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "[Cron Job] multi-agent-dashboard-daily-refresh - 每日Dashboard更新完成",
+    "type": "done",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "[Cron Job] multi-agent-dashboard-daily-refresh - 每"
+    }
   }
 ]

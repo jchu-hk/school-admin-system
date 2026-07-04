@@ -1,1 +1,8 @@
-{"lastChecks":{"email":null,"calendar":null,"mentions":null,"weather":null}}
+{
+  "lastChecks": {
+    "email": 1720022700,
+    "calendar": 1720022700,
+    "mentions": 1720022700,
+    "weather": 1720022700
+  }
+}
