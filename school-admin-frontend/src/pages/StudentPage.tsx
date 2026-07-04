@@ -69,9 +69,8 @@ interface PaginatedResponse<T> {
 }
 
 // ============ Validation Schema ============
-// Schema for creating new student - password required
+// Schema for creating new student
 const createStudentSchema = z.object({
-  username: z.string().min(1, '用户名不能为空').max(50, '用户名不能超过50个字符'),
   name: z.string().min(1, '姓名不能为空').max(100, '姓名不能超过100个字符'),
   hkId: z.string()
     .regex(/^[A-Z][0-9]{6}\([0-9A]\)$/, '香港身份证格式不正确，例如：A123456(7)')
@@ -87,34 +86,14 @@ const createStudentSchema = z.object({
     .optional()
     .or(z.literal('')),
   className: z.string().max(50, '班级不能超过50个字符').optional().or(z.literal('')),
-  password: z.string()
-    .min(1, '密码不能为空')
-    .min(8, '密码至少8位')
-    .regex(/[A-Z]/, '密码必须包含大写字母')
-    .regex(/[a-z]/, '密码必须包含小写字母')
-    .regex(/[0-9]/, '密码必须包含数字')
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, '密码必须包含特殊字符'),
   subsidyEligibility: z.enum(['full_subsidy', 'half_subsidy', 'none', 'pending']).optional(),
   subsidyStartDate: z.string().optional().or(z.literal('')),
   subsidyEndDate: z.string().optional().or(z.literal('')),
   subsidyCertificateNo: z.string().max(50, '资助证明编号不能超过50个字符').optional().or(z.literal('')),
 });
 
-// Schema for editing student - password optional (empty = no change)
-const editStudentSchema = createStudentSchema.extend({
-  password: z.string()
-    .optional()
-    .refine(
-      (val) => !val || val === '' || (
-        val.length >= 8 &&
-        /[A-Z]/.test(val) &&
-        /[a-z]/.test(val) &&
-        /[0-9]/.test(val) &&
-        /[!@#$%^&*(),.?":{}|<>]/.test(val)
-      ),
-      { message: '密码至少8位，必须包含大小写字母、数字和特殊字符' }
-    ),
-});
+// Schema for editing student
+const editStudentSchema = createStudentSchema;
 
 type StudentFormData = z.infer<typeof createStudentSchema>
 
@@ -162,14 +141,12 @@ export default function StudentPage() {
   } = useForm<StudentFormData>({
     resolver: zodResolver(editStudentSchema), // Use edit schema (password optional)
     defaultValues: {
-      username: '',
       name: '',
       hkId: '',
       phone: '',
       email: '',
       whatsapp: '',
       className: '',
-      password: '',
       subsidyEligibility: 'none',
       subsidyStartDate: '',
       subsidyEndDate: '',
@@ -252,16 +229,6 @@ export default function StudentPage() {
 
   // Handlers
   const handleCreate = async (data: StudentFormData) => {
-    // Validate password for create mode
-    if (!data.password || data.password.trim() === '') {
-      throw new Error('创建学生必须设置密码');
-    }
-    // Validate password strength
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
-    if (!passwordRegex.test(data.password)) {
-      throw new Error('密码至少8位，必须包含大小写字母、数字和特殊字符');
-    }
-
     try {
       const token = getToken()
       await apiClient.post('/api/students', {
@@ -290,10 +257,6 @@ export default function StudentPage() {
     try {
       const token = getToken()
       const updateData: Partial<StudentFormData> = { ...data }
-      if (!updateData.password) {
-        delete updateData.password
-      }
-      // Send subsidyEligibility as-is (including 'none' which is a valid value)
       // Only remove empty/null values for optional date fields
       if (!updateData.subsidyStartDate) {
         delete updateData.subsidyStartDate
@@ -336,14 +299,12 @@ export default function StudentPage() {
   const openEditModal = (student: User) => {
     setSelectedStudent(student)
     reset({
-      username: student.username,
       name: student.name,
       hkId: student.hkId || '',
       phone: student.phone || '',
       email: student.email || '',
       whatsapp: student.whatsapp || '',
       className: student.className || '',
-      password: '',
       subsidyEligibility: student.subsidyEligibility || 'none',
       subsidyStartDate: student.subsidyStartDate || '',
       subsidyEndDate: student.subsidyEndDate || '',
@@ -607,7 +568,6 @@ export default function StudentPage() {
             register={register}
             errors={errors}
             handleSubmit={handleSubmit}
-            showPassword
             classOptions={classOptions}
           />
         </Modal>
@@ -623,7 +583,6 @@ export default function StudentPage() {
             register={register}
             errors={errors}
             handleSubmit={handleSubmit}
-            showPassword
             isEdit
             classOptions={classOptions}
           />
@@ -705,32 +664,14 @@ interface StudentFormProps {
   isSubmitting: boolean
   register: ReturnType<typeof useForm<StudentFormData>>['register']
   errors: ReturnType<typeof useForm<StudentFormData>>['formState']['errors']
-  showPassword?: boolean
   isEdit?: boolean
   classOptions: string[]
 }
 
-function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register, errors, showPassword, isEdit, classOptions }: StudentFormProps) {
+function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register, errors, isEdit, classOptions }: StudentFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            用户名 <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            {...register('username')}
-            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-              errors.username ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="请输入用户名"
-          />
-          {errors.username && (
-            <p className="mt-1 text-sm text-red-500">{errors.username.message}</p>
-          )}
-        </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             姓名 <span className="text-red-500">*</span>
@@ -820,28 +761,6 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
             <p className="mt-1 text-sm text-red-500">{errors.whatsapp.message}</p>
           )}
         </div>
-
-        {showPassword && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              密码 {!isEdit && <span className="text-red-500">*</span>}
-            </label>
-            <input
-              type="password"
-              {...register('password')}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder={isEdit ? '留空则不修改' : '请输入密码'}
-            />
-            {errors.password && (
-              <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
-            )}
-            {isEdit && (
-              <p className="mt-1 text-xs text-gray-500">留空则不修改密码</p>
-            )}
-          </div>
-        )}
       </div>
 
       {/* 资助资格部分 */}
@@ -918,7 +837,7 @@ function StudentDetail({ student }: StudentDetailProps) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <DetailItem icon={<User size={20} />} label="用户名" value={student.username} />
+        <DetailItem icon={<User size={20} />} label="学号" value={student.username} />
         <DetailItem icon={<User size={20} />} label="姓名" value={student.name} />
         <DetailItem icon={<User size={20} />} label="香港身份证号" value={student.hkId || '-'} />
         <DetailItem icon={<Users size={20} />} label="班级" value={student.className || '-'} />
