@@ -167,6 +167,15 @@
         <th>健康檢查</th>
         <td><code>curl http://localhost:3000/api/health</code> → 200 ✅</td>
       </tr>
+      <tr>
+        <th>🌐 Cloudflare 隧道</th>
+        <td><a class="url-link" href="https://ellis-tip-forums-cabin.trycloudflare.com" target="_blank">https://ellis-tip-forums-cabin.trycloudflare.com</a><br/>
+          <small>🚀 中國境內推薦 · 443/QUIC · 免域名 · 無需審批</small></td>
+      </tr>
+      <tr>
+        <th>🗂 Cloudflare Wiki</th>
+        <td><a class="url-link" href="https://ellis-tip-forums-cabin.trycloudflare.com/wiki.html" target="_blank">https://ellis-tip-forums-cabin.trycloudflare.com/wiki.html</a></td>
+      </tr>
     </table>
   </div>
 
@@ -313,7 +322,10 @@
   <div class="card">
     <h2><span class="icon">&#x1F4DD;</span>已知事項 & 注意</h2>
     <ul style="padding-left:1.2rem;font-size:0.9rem;">
-      <li><strong>cloudflared</strong> 未能啟動 — 主機缺少 <code>/root/.cloudflared</code> 設定，如有需要可手動補上</li>
+      <li><strong>cloudflared</strong> 已運作 ✅<br/>
+        Cloudflare 隧道網址: <a href="https://ellis-tip-forums-cabin.trycloudflare.com" target="_blank">https://ellis-tip-forums-cabin.trycloudflare.com</a><br/>
+        Wiki: <a href="https://ellis-tip-forums-cabin.trycloudflare.com/wiki.html" target="_blank">https://ellis-tip-forums-cabin.trycloudflare.com/wiki.html</a><br/>
+        <small>中國境內可直接存取 (443/QUIC)，建議優先使用</small></li>
       <li><strong>OTP 驗證</strong> — 開發模式下，登入後伺服器在回應中會直接附上 OTP 碼（如 <code>"otpCode":"417667"</code>），複製貼上即可完成驗證，無需真正收電郵/SMS</li>
       <li><strong>Migration 鏈</strong> — 部分後續 Migration 依賴順序有問題 (inquiries table)，已改用 <code>synchronize: true</code> 讓 TypeORM 自動建立表格</li>
       <li><strong>Docker 鏡像</strong> — 使用 DaoCloud 鏡像加速 (<code>docker.m.daocloud.io</code>)</li>
@@ -326,13 +338,13 @@
     <h2><span class="icon">📄</span>Wiki 後設資料</h2>
     <table class="wiki-table">
       <tr><th style="width:140px;">檔案位置</th><td><code>/Volumes/SSD/school-admin-system/testing-env-wiki.html</code></td></tr>
-      <tr><th>Wiki 更新時間</th><td>2026-07-04 12:44 CST</td></tr>
+      <tr><th>Wiki 更新時間</th><td>2026-07-04 22:18 CST</td></tr>
       <tr><th>建立者</th><td>Zhuclaw 🐾</td></tr>
     </table>
   </div>
 
   <div class="footer">
-    <p>Zhuclaw 🐾 · 上次更新 2026-07-04 12:44 CST</p>
+    <p>Zhuclaw 🐾 · 上次更新 2026-07-04 22:18 CST</p>
   </div>
 
 </div>
