@@ -546,7 +546,7 @@ export default function AttendancePage() {
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-lg font-semibold text-gray-800">📝 人工录入出勤记录</h3>
           <button
-            onClick={() => { setError(null); initManualRecords(); }}
+            onClick={() => { setError(null); setSubmitSuccess(null); initManualRecords(); }}
             className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
           >
             <RefreshCw size={14} /> 重置
@@ -648,14 +648,22 @@ export default function AttendancePage() {
         )}
 
         <div className="flex justify-end gap-3 mt-5">
-          <button
-            onClick={handlePreview}
-            disabled={submitting || manualRecords.length === 0}
-            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition text-sm disabled:opacity-50"
-          >
-            <Eye size={16} />
-            {submitting ? '生成预览...' : '生成确认预览'}
-          </button>
+          {manualRecords.length > 0 && (
+            <button
+              onClick={handlePreview}
+              disabled={submitting}
+              className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition text-sm disabled:opacity-50"
+            >
+              <Eye size={16} />
+              {submitting ? '生成预览...' : '生成确认预览'}
+            </button>
+          )}
+          {manualRecords.length === 0 && (
+            <div className="flex items-center gap-2 px-4 py-2 text-sm text-amber-600 bg-amber-50 rounded-lg">
+              <AlertCircle size={16} />
+              请先选择有学生的班级
+            </div>
+          )}
         </div>
       </div>
     );
