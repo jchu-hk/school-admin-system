@@ -201,15 +201,13 @@ export default function UserPage() {
       
       if (roleFilter) params.append('role', roleFilter)
       if (statusFilter) params.append('status', statusFilter)
-      if (departmentFilter) params.append('department', departmentFilter)
+      if (departmentFilter) params.append('dept', departmentFilter)
       if (searchTerm) params.append('search', searchTerm)
 
-      const response = await apiClient.get<{ data: User[]; total: number }>(`/api/users?${params.toString()}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const response = await apiClient.get<{ data: User[]; total: number }>(`/api/users?${params.toString()}`)
 
-      setUsers(response.data.data || [])
-      setTotal(response.data.total || 0)
+      setUsers(Array.isArray(response.data?.data) ? response.data.data : [])
+      setTotal(typeof response.data?.total === 'number' ? response.data.total : 0)
     } catch (error) {
       console.error('Failed to fetch users:', error)
       if (isAxiosError(error) && error.response?.status === 401) {
@@ -226,7 +224,7 @@ export default function UserPage() {
       const response = await apiClient.get<Role[]>('/api/roles', {
         headers: { Authorization: `Bearer ${token}` },
       })
-      setRoles(response.data || [])
+      setRoles(Array.isArray(response.data) ? response.data : [])
     } catch (error) {
       console.error('Failed to fetch roles:', error)
     }

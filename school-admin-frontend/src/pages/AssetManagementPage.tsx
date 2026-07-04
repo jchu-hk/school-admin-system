@@ -103,8 +103,8 @@ const AssetManagementPage: React.FC = () => {
         status: selectedStatus || undefined,
       };
       const response = await getAssets(params);
-      setAssets(response.data);
-      setTotal(response.total);
+      setAssets(Array.isArray(response.data) ? response.data : []);
+      setTotal(typeof response.total === 'number' ? response.total : 0);
     } catch (err: any) {
       setError(err.message || '获取资产列表失败');
     } finally {

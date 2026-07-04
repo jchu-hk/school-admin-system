@@ -81,8 +81,8 @@ const AssetRentalPage: React.FC = () => {
         status: selectedStatus || undefined,
       };
       const response = await getRentals(params);
-      setRentals(response.data);
-      setTotal(response.total);
+      setRentals(Array.isArray(response.data) ? response.data : []);
+      setTotal(typeof response.total === 'number' ? response.total : 0);
     } catch (err: any) {
       setError(err.message || '获取租借记录失败');
     } finally {
@@ -93,7 +93,7 @@ const AssetRentalPage: React.FC = () => {
   const fetchAssets = async () => {
     try {
       const response = await getAssets({ pageSize: 100 });
-      setAssets(response.data);
+      setAssets(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error('Failed to fetch assets:', err);
     }
@@ -102,9 +102,10 @@ const AssetRentalPage: React.FC = () => {
   const fetchOverdueCount = async () => {
     try {
       const overdue = await getOverdueRentals();
-      setOverdueCount(overdue.length);
+      setOverdueCount(Array.isArray(overdue) ? overdue.length : 0);
     } catch (err) {
       console.error('Failed to fetch overdue:', err);
+      setOverdueCount(0);
     }
   };
 
