@@ -111,6 +111,8 @@ services:
     volumes:
       # Mount local version.json so the About page reflects the current git commit at deploy time
       - ../school-admin-frontend/public/version.json:/usr/share/nginx/html/version.json:ro
+      # Mount local testing env wiki
+      - ../testing-env-wiki.html:/usr/share/nginx/html/wiki.html:ro
     depends_on:
       - backend
     restart: unless-stopped

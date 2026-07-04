@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>學校管理系統測試環境 Wiki</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --card: #ffffff;
+      --border: #e0e0e0;
+      --text: #1a1a2e;
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+      --green: #059669;
+      --orange: #d97706;
+      --gray: #6b7280;
+      --code-bg: #f1f5f9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+    header h1 { font-size: 1.8rem; color: var(--accent); margin-bottom: 0.3rem; }
+    header p { color: var(--gray); font-size: 0.95rem; }
+    .badge {
+      display: inline-block;
+      background: var(--green);
+      color: #fff;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .card h2 {
+      font-size: 1.15rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .card h2 .icon { margin-right: 0.5rem; }
+    table.wiki-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    table.wiki-table th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 600;
+      border-bottom: 2px solid var(--accent);
+      white-space: nowrap;
+    }
+    table.wiki-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    table.wiki-table tr:last-child td { border-bottom: none; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: "SF Mono", "JetBrains Mono", monospace;
+      font-size: 0.85rem;
+    }
+    .url-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .url-link:hover { text-decoration: underline; }
+    .status-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-right: 0.4rem;
+    }
+    .status-dot.green { background: var(--green); }
+    .status-dot.gray { background: var(--gray); }
+    .service-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+    .service-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.75rem;
+      background: var(--code-bg);
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+    .service-item .name { font-weight: 500; }
+    .service-item .port { color: var(--gray); font-family: monospace; }
+    .footer {
+      text-align: center;
+      color: var(--gray);
+      font-size: 0.8rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    @media (max-width: 600px) {
+      .service-grid { grid-template-columns: 1fr; }
+      body { padding: 1rem 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>🏫 學校管理系統 — 測試環境</h1>
+    <p>School Admin System · Testing Environment Wiki</p>
+    <p style="margin-top:0.4rem;">
+      <span class="badge" style="background:var(--green);">🟢 全部服務在線</span>
+      <span class="badge" style="background:var(--accent);">v1.5.6</span>
+    </p>
+    <p style="margin-top:0.6rem; font-size:0.85rem; color:var(--gray);">
+      部署時間: 2026-07-04 08:44 CST · 手動發布 (Zhuclaw 🐾)
+    </p>
+  </header>
+
+  <!-- 存取方式 -->
+  <div class="card">
+    <h2><span class="icon">🔗</span>存取方式</h2>
+    <table class="wiki-table">
+      <tr>
+        <th style="width:140px;">前端 Web</th>
+        <td><a class="url-link" href="http://localhost:8080" target="_blank">http://localhost:8080</a></td>
+      </tr>
+      <tr>
+        <th>API 文件</th>
+        <td><a class="url-link" href="http://localhost:3000/api/docs" target="_blank">http://localhost:3000/api/docs</a> (Swagger)</td>
+      </tr>
+      <tr>
+        <th>API 端點</th>
+        <td><a class="url-link" href="http://localhost:3000" target="_blank">http://localhost:3000</a></td>
+      </tr>
+      <tr>
+        <th>健康檢查</th>
+        <td><code>curl http://localhost:3000/api/health</code> → 200 ✅</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 版本資訊 -->
+  <div class="card">
+    <h2><span class="icon">📦</span>版本資訊</h2>
+    <table class="wiki-table">
+      <tr>
+        <th style="width:140px;">Git 倉庫</th>
+        <td><a class="url-link" href="https://github.com/jchu-hk/school-admin-system" target="_blank">github.com/jchu-hk/school-admin-system</a></td>
+      </tr>
+      <tr>
+        <th>最新 Release</th>
+        <td><a href="https://github.com/jchu-hk/school-admin-system/releases/tag/v1.5.6" target="_blank">v1.5.6</a> — 问题修复 (bugfix#197-#198)</td>
+      </tr>
+      <tr>
+        <th>最新 Commit</th>
+        <td><code>dfc40a5</code> — v1.5.6 問題修復 & 發布腳本 (bugfix#197-#198)</td>
+      </tr>
+      <tr>
+        <th>Commit 時間</th>
+        <td>2026-07-04 08:34 +0800</td>
+      </tr>
+        <tr>
+        <th>代碼下載時間</th>
+        <td>2026-07-04 08:42 +08:00</td>
+      </tr>
+      <tr>
+        <th>倉庫建立</th>
+        <td>2026-05-31</td>
+      </tr>
+      <tr>
+        <th>倉庫最後推送</th>
+        <td>2026-07-04 08:44 +08:00 (手動發布)</td>
+      </tr>
+      <tr>
+        <th>分支</th>
+        <td><code>main</code></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 測試帳號 -->
+  <div class="card">
+    <h2><span class="icon">👤</span>測試帳號</h2>
+    <table class="wiki-table">
+      <tr>
+        <th style="width:140px;">帳號</th>
+        <td><code>admin</code>（系統管理員 · system_admin）</td>
+      </tr>
+      <tr>
+        <th>密碼</th>
+        <td><code>admin123</code></td>
+      </tr>
+      <tr>
+        <th>登入流程</th>
+        <td>帳號密碼 → OTP 驗證（開發模式下伺服器會回傳 OTP 碼，無需真的收電郵/SMS）</td>
+      </tr>
+      <tr>
+        <th>身份</th>
+        <td>系統管理員，擁有最高權限</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 服務狀態 -->
+  <div class="card">
+    <h2><span class="icon">⚙️</span>服務狀態</h2>
+    <div class="service-grid">
+      <div class="service-item">
+        <span class="name"><span class="status-dot green"></span>Backend</span>
+        <span class="port">:3000</span>
+      </div>
+      <div class="service-item">
+        <span class="name"><span class="status-dot green"></span>Frontend</span>
+        <span class="port">:8080</span>
+      </div>
+      <div class="service-item">
+        <span class="name"><span class="status-dot green"></span>PostgreSQL</span>
+        <span class="port">:5432</span>
+      </div>
+      <div class="service-item">
+        <span class="name"><span class="status-dot green"></span>Redis</span>
+        <span class="port">:6379</span>
+      </div>
+      <div class="service-item">
+        <span class="name"><span class="status-dot green"></span>Kafka</span>
+        <span class="port">:9092</span>
+      </div>
+      <div class="service-item">
+        <span class="name"><span class="status-dot green"></span>Zookeeper</span>
+        <span class="port">2181</span>
+      </div>
+      <div class="service-item">
+        <span class="name"><span class="status-dot green"></span>OPA</span>
+        <span class="port">:8181</span>
+      </div>
+      <div class="service-item">
+        <span class="name"><span class="status-dot green"></span>Prometheus</span>
+        <span class="port">:9091</span>
+      </div>
+      <div class="service-item">
+        <span class="name"><span class="status-dot green"></span>Grafana</span>
+        <span class="port">:3001</span>
+      </div>
+      <div class="service-item">
+        <span class="name"><span class="status-dot green"></span>Alertmanager</span>
+        <span class="port">:9093</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 資料庫 -->
+  <div class="card">
+    <h2><span class="icon">🗃️</span>資料庫</h2>
+    <table class="wiki-table">
+      <tr><th style="width:140px;">資料庫</th><td><code>school_admin</code></td></tr>
+      <tr><th>用戶</th><td><code>school_admin</code></td></tr>
+      <tr><th>密碼</th><td>無密碼（本機 Docker）</td></tr>
+      <tr><th>Port</th><td><code>5432</code></td></tr>
+      <tr><th>表格數量</th><td>73 張</td></tr>
+      <tr><th>Schema 模式</th><td>自動同步 (<code>synchronize: true</code>) — Entity → Table</td></tr>
+      <tr><th>已運行 Migration</th><td>CreateSystemTables (2024-02-27)</td></tr>
+    </table>
+  </div>
+
+  <!-- 已知事項 -->
+  <!-- v1.5.6 Release Notes -->
+  <div class="card">
+    <h2><span class="icon">🚀</span>v1.5.6 版本更新</h2>
+    <p style="font-size:0.9rem;margin-bottom:0.8rem;">Release date: 2026-07-03 · 類型: 問題修復</p>
+    <ul style="padding-left:1.2rem;font-size:0.9rem;">
+      <li><strong>#197</strong> — 學生管理頁面 <code>currentClass</code> 字段為空導致頁面白屏</li>
+      <li><strong>#198</strong> — 學生管理中同一個 <code>student_id</code> 被分配到多個班級導致數據混亂</li>
+      <li><strong>student.service.ts</strong> — 重構學生查詢邏輯</li>
+      <li><strong>student.dto.ts</strong> — 添加 student_id 字段校驗</li>
+      <li><strong>StudentPage.tsx</strong> — 修復API路徑</li>
+      <li><strong>PROJECT-WIKI.md</strong> — 測試憑證和環境信息</li>
+      <li><strong>CHANGELOG.md</strong> + <strong>scripts/release.sh</strong> — 發布自動化腳本</li>
+      <li><strong>docs/RELEASE-MANAGEMENT.md</strong> — 發布管理計劃</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="icon">&#x1F4DD;</span>已知事項 & 注意</h2>
+    <ul style="padding-left:1.2rem;font-size:0.9rem;">
+      <li><strong>cloudflared</strong> 未能啟動 — 主機缺少 <code>/root/.cloudflared</code> 設定，如有需要可手動補上</li>
+      <li><strong>OTP 驗證</strong> — 開發模式下，登入後伺服器在回應中會直接附上 OTP 碼（如 <code>"otpCode":"417667"</code>），複製貼上即可完成驗證，無需真正收電郵/SMS</li>
+      <li><strong>Migration 鏈</strong> — 部分後續 Migration 依賴順序有問題 (inquiries table)，已改用 <code>synchronize: true</code> 讓 TypeORM 自動建立表格</li>
+      <li><strong>Docker 鏡像</strong> — 使用 DaoCloud 鏡像加速 (<code>docker.m.daocloud.io</code>)</li>
+      <li><strong>本地啟動時間</strong> — <code>docker compose up -d</code> 首次約需 3-5 分鐘（含安裝依賴、TypeScript 編譯）</li>
+    </ul>
+  </div>
+
+  <!-- Wiki 資訊 -->
+  <div class="card">
+    <h2><span class="icon">📄</span>Wiki 後設資料</h2>
+    <table class="wiki-table">
+      <tr><th style="width:140px;">檔案位置</th><td><code>/Volumes/SSD/school-admin-system/testing-env-wiki.html</code></td></tr>
+      <tr><th>Wiki 更新時間</th><td>2026-07-04 12:44 CST</td></tr>
+      <tr><th>建立者</th><td>Zhuclaw 🐾</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    <p>Zhuclaw 🐾 · 上次更新 2026-07-04 12:44 CST</p>
+  </div>
+
+</div>
+</body>
+</html>
