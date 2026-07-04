@@ -1,30 +1,32 @@
 {
-  "version": "v1.5.5",
+  "version": "v1.5.6",
+  "buildNumber": "build-20260704-01",
   "buildDate": "2026-07-04",
-  "gitCommit": "17ba773",
+  "gitCommit": "5e8cf54",
   "gitBranch": "main",
+  "environment": "testing",
   "changelog": [
     {
-      "version": "build-2026-07-04",
+      "build": "build-20260704-01",
       "date": "2026-07-04",
+      "type": "bugfix",
+      "issues": ["#199", "#200", "#201", "#202", "#203"],
       "changes": [
-        "dashboard update 11:09",
-        "dashboard update 11:09",
-        "dashboard update 11:08",
-        "dashboard update 11:08",
-        "dashboard update 11:07",
-        "#200 - 修复人工录入出勤记录4项Bug",
-        "dashboard update 11:02",
-        "#201 #202 #203 - 修复资产管理崩溃 + 用户管理部门筛选/保存",
-        "dashboard update 10:59",
-        "dashboard update 10:59",
-        "dashboard update 10:59",
-        "dashboard update 10:59",
-        "dashboard update 10:02",
-        "dashboard update 09:25",
-        "dashboard update 09:03",
-        "update PROJECT-WIKI with v1.5.6 release deployment info",
-        "dashboard update 08:50"
+        "[P1] #199 - 新增学生页面字段更新（学生档案而非系统用户）",
+        "[P1] #200 - 人工录入出勤记录4项Bug修复（时区、按钮响应、日期默认、重置）",
+        "[P1] #201 - 资产管理页面崩溃修复（TypeError: Cannot read properties of undefined）",
+        "[P1] #202 - 资产租借页面崩溃修复（同上）",
+        "[P2] #203 - 用户管理部门筛选无效 + 新增用户保存无响应修复"
+      ]
+    },
+    {
+      "build": "v1.5.6",
+      "date": "2026-07-03",
+      "type": "release",
+      "issues": ["#197", "#198"],
+      "changes": [
+        "[P2] #197 - 修复学生管理页面空白（currentClass 字段 null）",
+        "[P2] #198 - 修复同一 student_id 被分配到多个班级"
       ]
     }
   ]
