@@ -1,6 +1,6 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-05 08:49 GMT+8
+> Last updated: 2026-07-05 17:08 GMT+8
 > Updated by: Zhuclaw (manual release)
 
 ---
@@ -21,8 +21,8 @@
 
 | Service | URL | Status |
 |---------|-----|--------|
-| Frontend (Cloudflare Tunnel) | `https://school-admin.[tunnel].trycloudflare.com` | ✅ Active |
-| Backend API (Cloudflare Tunnel) | `https://school-admin-backend.[tunnel].trycloudflare.com` | ✅ Active |
+| Frontend (Cloudflare Tunnel) | `https://starring-alphabetical-combining-contribution.trycloudflare.com` | ✅ Active |
+| Backend API (Cloudflare Tunnel) | `https://agency-beings-symbol-chicago.trycloudflare.com` | ✅ Active |
 | Local Frontend | `http://localhost:8080` | ✅ Serving (HTTP 200) |
 | Local Backend | `http://localhost:3000` | ✅ Healthy (`{"status":"ok"}`) |
 | PostgreSQL | `localhost:5432` | ✅ Healthy |
