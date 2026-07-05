@@ -23,7 +23,8 @@
 |---------|-----|--------|
 | Frontend (Cloudflare Tunnel) | `https://expenses-forests-collections-pad.trycloudflare.com` | ✅ Active |
 | Backend API (Cloudflare Tunnel) | `https://meaning-harvey-clearly-automobiles.trycloudflare.com` | ✅ Active |
-| Coze Dev Proxy | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/login` | ✅ Active |
+| Coze Frontend | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/` | ✅ Active |
+| Coze API | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/api/` | ✅ Active |
 | Local Backend | `http://localhost:3000` | ✅ Healthy (`{"status":"ok"}`) |
 | PostgreSQL | `localhost:5432` | ✅ Healthy |
 | Redis | `localhost:6379` | ✅ Healthy |
