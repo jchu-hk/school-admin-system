@@ -1,19 +1,19 @@
 {
   "lastChecks": {
-    "heartbeat": 1783240236,
+    "heartbeat": 1783241400,
     "github": 1752072300,
-    "services": 1783240236,
+    "services": 1783241400,
     "dashboard": 1752072300
   },
   "lastCheckDate": "2026-07-05",
-  "lastCheckTime": "16:30 GMT+8",
+  "lastCheckTime": "16:50 GMT+8",
   "githubSummary": {
     "P0": 0,
     "P1": 0,
     "P2": 7,
     "P3": 5,
     "totalCritical": 0,
-    "notes": "\u6240\u6709Issue\u5df2\u5173\u95ed\uff0c\u7cfb\u7edf\u7a33\u5b9a"
+    "notes": "所有Issue已关闭，系统稳定"
   },
-  "notes": "\u5468\u65e516:30\u68c0\u67e5\u3002\u6240\u6709Docker\u670d\u52a1\u8fd0\u884c8+\u5c0f\u65f6\u65e0\u91cd\u542f\uff0cbackend API\u6b63\u5e38\u3002Git\u5de5\u4f5c\u533a\u5e72\u51c0\u3002"
+  "notes": "周日16:50检查。所有Docker服务运行正常（backend 9h+，frontend 5h+，postgres/redis/kafka healthy）。Backend API健康。"
 }
