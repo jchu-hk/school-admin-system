@@ -1034,5 +1034,17 @@
       "status": "idle",
       "task": "[Issue #196] 修复完成，commit: https://github.com/jchu-"
     }
+  },
+  {
+    "timestamp": "2026-07-05T01:01:09Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[部署请求] 重建前端镜像以显示 v1.5.7 版本信息",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[部署请求] 重建前端镜像以显示 v1.5.7 版本信息"
+    }
   }
 ]

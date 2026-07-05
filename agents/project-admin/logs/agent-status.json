@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #196] Test label fix - should add dev label, not pm",
-      "lastUpdate": "2026-07-04T07:25:16Z"
+      "task": "[部署请求] 重建前端镜像以显示 v1.5.7 版本信息",
+      "lastUpdate": "2026-07-05T01:01:09Z"
     },
     "DEVOPS": {
       "status": "idle",
