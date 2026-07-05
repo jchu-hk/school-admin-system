@@ -254,7 +254,7 @@ export default function LeavePage() {
       const token = getToken()
       if (!token) return
 
-      const response = await apiClient.get('/api/users?role=teacher&limit=100', {
+      const response = await apiClient.get('/api/users?role=teacher&pageSize=100', {
         headers: { Authorization: `Bearer ${token}` },
       })
       setTeachers(response.data || [])
@@ -278,7 +278,7 @@ export default function LeavePage() {
 
       const params = new URLSearchParams()
       params.append('page', page.toString())
-      params.append('limit', PAGE_SIZE.toString())
+      params.append('pageSize', PAGE_SIZE.toString())
 
       if (activeTab === 'my' && currentUser) {
         params.append('applicantId', currentUser.id)

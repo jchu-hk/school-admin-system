@@ -117,7 +117,7 @@ export default function LunchOrderPage() {
   const fetchOrders = useCallback(async (p = page) => {
     setLoading(true)
     try {
-      const params = new URLSearchParams({ page: String(p), limit: String(limit) })
+      const params = new URLSearchParams({ page: String(p), pageSize: String(limit) })
       if (orderFilter.status) params.append('status', orderFilter.status)
       if (orderFilter.startDate) params.append('startDate', orderFilter.startDate)
       if (orderFilter.endDate) params.append('endDate', orderFilter.endDate)
@@ -130,7 +130,7 @@ export default function LunchOrderPage() {
   const fetchChanges = useCallback(async (p = changePage) => {
     setLoading(true)
     try {
-      const params = new URLSearchParams({ page: String(p), limit: String(limit) })
+      const params = new URLSearchParams({ page: String(p), pageSize: String(limit) })
       if (changeFilter.status) params.append('status', changeFilter.status)
       if (changeFilter.changeType) params.append('changeType', changeFilter.changeType)
       const { data } = await apiClient.get(`/lunch/changes?${params}`)

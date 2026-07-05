@@ -130,7 +130,7 @@ const inquiryApi = {
     if (params?.escalatedOnly) queryParams.append('escalatedOnly', 'true')
     if (params?.sortBy) queryParams.append('sortBy', params.sortBy)
     if (params?.page) queryParams.append('page', params.page.toString())
-    if (params?.limit) queryParams.append('limit', params.limit.toString())
+    if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString())
 
     const response = await apiClient.get(`/api/inquiries/queue?${queryParams}`)
     return response.data

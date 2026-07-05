@@ -153,7 +153,7 @@ export default function StudentPage() {
       const token = getToken()
       if (!token) { window.location.href = '/login'; return }
 
-      const params = new URLSearchParams({ page: page.toString(), limit: PAGE_SIZE.toString() })
+      const params = new URLSearchParams({ page: page.toString(), pageSize: PAGE_SIZE.toString() })
       if (searchTerm) params.append('search', searchTerm)
 
       const response = await apiClient.get<{ data: PaginatedResponse<Student> }>(

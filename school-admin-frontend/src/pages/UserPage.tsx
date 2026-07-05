@@ -197,7 +197,7 @@ export default function UserPage() {
 
       const params = new URLSearchParams()
       params.append('page', page.toString())
-      params.append('limit', PAGE_SIZE.toString())
+      params.append('pageSize', PAGE_SIZE.toString())
       
       if (roleFilter) params.append('role', roleFilter)
       if (statusFilter) params.append('status', statusFilter)

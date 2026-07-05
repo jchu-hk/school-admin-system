@@ -61,7 +61,7 @@ export default function StudentProfilePage() {
 
       const params = new URLSearchParams();
       params.append('page', page.toString());
-      params.append('limit', PAGE_SIZE.toString());
+      params.append('pageSize', PAGE_SIZE.toString());
       if (statusFilter) params.append('status', statusFilter);
 
       const response = await apiClient.get<{ data: StudentProfile[]; total: number }>(
