@@ -1,12 +1,12 @@
 {
   "lastChecks": {
-    "heartbeat": 1783264800,
+    "heartbeat": 1783265724,
     "github": 1783264500,
-    "services": 1783264800,
+    "services": 1783265724,
     "dashboard": 1752072300
   },
   "lastCheckDate": "2026-07-05",
-  "lastCheckTime": "20:30 GMT+8",
+  "lastCheckTime": "20:35 GMT+8",
   "githubSummary": {
     "P0": 0,
     "P1": 0,
@@ -16,5 +16,5 @@
     "openIssues": 10,
     "notes": "10个Open Issue（5个P2 + 5个P3），无紧急问题"
   },
-  "notes": "周日晚间20:30心跳检查。Backend healthy，Frontend 1小时重启后稳定，GitHub 10个Open Issue（无P0/P1），系统稳定运行12小时。"
+  "notes": "周日晚间20:35心跳检查。Backend healthy (12h)，Frontend 1小时重启后稳定，GitHub 10个Open Issue（无P0/P1），系统稳定运行12小时。"
 }
