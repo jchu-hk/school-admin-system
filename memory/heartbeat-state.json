@@ -1,20 +1,11 @@
 {
   "lastChecks": {
-    "heartbeat": 1783266300,
-    "github": 1783266300,
-    "services": 1783266300,
-    "dashboard": 1752072300
+    "docker": 1751783400,
+    "backend_api": 1751783400,
+    "git": 1751783400,
+    "github_issues": 1751783400
   },
-  "lastCheckDate": "2026-07-05",
-  "lastCheckTime": "20:45 GMT+8",
-  "githubSummary": {
-    "P0": 0,
-    "P1": 0,
-    "P2": 0,
-    "P3": 0,
-    "totalCritical": 0,
-    "openIssues": 14,
-    "notes": "14个Open Issue（无优先级标签），无紧急问题"
-  },
-  "notes": "周日晚间20:40心跳检查。Backend healthy (13h)，Frontend 1小时重启后稳定，GitHub 14个Open Issue（无P0/P1），系统稳定运行13小时。"
+  "lastCheckTime": "2026-07-05T20:50:00+08:00",
+  "status": "ok",
+  "notes": "All services running 13h, API healthy, no P0/P1 issues"
 }
