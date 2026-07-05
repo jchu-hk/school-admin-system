@@ -1,6 +1,6 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-05 17:17 GMT+8
+> Last updated: 2026-07-05 17:40 GMT+8
 > Updated by: PM (automated tunnel refresh)
 
 ---
@@ -21,8 +21,8 @@
 
 | Service | URL | Status |
 |---------|-----|--------|
-| Frontend (Cloudflare Tunnel) | `https://properties-cars-interracial-unit.trycloudflare.com` | ✅ Active |
-| Backend API (Cloudflare Tunnel) | `https://cartridges-temporal-crystal-diagram.trycloudflare.com` | ✅ Active |
+| Frontend (Cloudflare Tunnel) | `https://expenses-forests-collections-pad.trycloudflare.com` | ✅ Active |
+| Backend API (Cloudflare Tunnel) | `https://meaning-harvey-clearly-automobiles.trycloudflare.com` | ✅ Active |
 | Local Frontend | `http://localhost:8080` | ✅ Serving (HTTP 200) |
 | Local Backend | `http://localhost:3000` | ✅ Healthy (`{"status":"ok"}`) |
 | PostgreSQL | `localhost:5432` | ✅ Healthy |
