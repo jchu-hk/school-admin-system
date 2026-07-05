@@ -1,19 +1,21 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-04 08:54 GMT+8
+> Last updated: 2026-07-05 08:49 GMT+8
 > Updated by: Zhuclaw (manual release)
 
 ---
 
 ## 📦 Current Version
 
-- **Version**: v1.5.6
-- **Latest Commit**: `dfc40a5`
-- **Branch**: `main` (clean)
-- **Docker Uptime**: Fresh deploy (2026-07-04 08:44)
-- **Images**: Pulled `ghcr.io/jchu-hk/school-admin-system/backend:latest` & `frontend:latest` (linux/amd64 via Rosetta)
+- **Version**: v1.5.7
+- **Release Date**: 2026-07-05 08:49 GMT+8
+- **Git Commit**: `926f7f5`
+- **Branch**: `main`
+- **Status**: Released for Testing
+- **Tested By**: Human QA - 2026-07-05
+- **Changelog**:
+  - Bug修复: 学生管理新增功能正常
 
----
 
 ## 🌐 Environment URLs
 

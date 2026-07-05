@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.5.7 (2026-07-05)
+
+### Changes
+Bug修复: 学生管理新增功能正常
+
+### Technical Details
+- Git Commit: `926f7f5`
+- Branch: `main`
+
+---
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
