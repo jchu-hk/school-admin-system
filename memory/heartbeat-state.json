@@ -1,12 +1,12 @@
 {
   "lastChecks": {
-    "heartbeat": 1783262400,
-    "github": 1752072300,
-    "services": 1783262400,
+    "heartbeat": 1783263300,
+    "github": 1783263300,
+    "services": 1783263300,
     "dashboard": 1752072300
   },
   "lastCheckDate": "2026-07-05",
-  "lastCheckTime": "20:05 GMT+8",
+  "lastCheckTime": "20:15 GMT+8",
   "githubSummary": {
     "P0": 0,
     "P1": 0,
@@ -15,5 +15,5 @@
     "totalCritical": 0,
     "notes": "所有Issue已关闭，系统稳定"
   },
-  "notes": "周日晚间20:05检查。所有Docker服务healthy运行中，Backend/Frontend/Prometheus/Grafana/Postgres/Redis/Kafka/Zookeeper均正常。Frontend 48分钟（19:17重启后稳定）。"
+  "notes": "周日晚间20:10检查。所有Docker服务healthy运行中，Frontend 53分钟稳定，Backend/Postgres/Redis/Kafka/Zookeeper/Prometheus/Grafana/Alertmanager均运行12小时+。"
 }
