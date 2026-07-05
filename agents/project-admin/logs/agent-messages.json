@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-06-30T02:15:51Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "Setup localtunnel for frontend (8080) and backend (3000) as free alternative to Cloudflare",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "协调 DEVOPS 设置 localtunnel"
-    }
-  },
-  {
     "timestamp": "2026-06-30T02:16:00Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1045,6 +1033,78 @@
       "agent": "PM",
       "status": "running",
       "task": "[部署请求] 重建前端镜像以显示 v1.5.7 版本信息"
+    }
+  },
+  {
+    "timestamp": "2026-07-05T03:14:38Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "清理状态，准备 v1.5.7 发布",
+    "type": "done",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "清理状态，准备 v1.5.7 发布"
+    }
+  },
+  {
+    "timestamp": "2026-07-05T03:14:50Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "部署 v1.5.7 到测试环境 - 重建前端镜像显示版本信息",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "部署 v1.5.7 到测试环境 - 重建前端镜像显示版本信息"
+    }
+  },
+  {
+    "timestamp": "2026-07-05T03:14:58Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "清理状态，准备 v1.5.7 发布",
+    "type": "done",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "清理状态，准备 v1.5.7 发布"
+    }
+  },
+  {
+    "timestamp": "2026-07-05T03:15:11Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "部署 v1.5.7 到测试环境 - 重建前端镜像显示版本信息",
+    "type": "spawn_check",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "部署 v1.5.7 到测试环境 - 重建前端镜像显示版本信息"
+    }
+  },
+  {
+    "timestamp": "2026-07-05T03:15:45Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "开始部署 v1.5.7",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "开始部署 v1.5.7"
+    }
+  },
+  {
+    "timestamp": "2026-07-05T03:19:07Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "v1.5.7 部署完成 - 前端镜像重建成功，版本信息显示 v1.5.7，容器正常运行在端口 8080",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "v1.5.7 部署完成 - 前端镜像重建成功，版本信息显示 v1.5.7，容器正常运行在端口 808"
     }
   }
 ]

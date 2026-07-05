@@ -1,14 +1,14 @@
 {
   "agents": {
     "PM": {
-      "status": "running",
-      "task": "[部署请求] 重建前端镜像以显示 v1.5.7 版本信息",
-      "lastUpdate": "2026-07-05T01:01:09Z"
+      "status": "idle",
+      "task": "清理状态，准备 v1.5.7 发布",
+      "lastUpdate": "2026-07-05T03:14:58Z"
     },
     "DEVOPS": {
       "status": "idle",
-      "task": "Cloudflare Tunnel 暂不可用，建议使用本地访问",
-      "lastUpdate": "2026-06-30T23:15:00+08:00"
+      "task": "v1.5.7 部署完成 - 前端镜像重建成功，版本信息显示 v1.5.7，容器正常运行在端口 8080",
+      "lastUpdate": "2026-07-05T03:19:07Z"
     },
     "ARCH": {
       "status": "idle",
