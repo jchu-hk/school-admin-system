@@ -1,0 +1,1 @@
+/workspace/projects/workspace/skills/pm-deploy/scripts/full-deploy.sh
