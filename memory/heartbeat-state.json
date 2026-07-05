@@ -1,18 +1,19 @@
 {
   "lastChecks": {
-    "heartbeat": 1752049700,
-    "github": 1752049100,
-    "services": 1752049700,
-    "dashboard": 1752049100
+    "heartbeat": 1752056755,
+    "github": 1752056755,
+    "services": 1752056755,
+    "dashboard": 1752056755
   },
   "lastCheckDate": "2026-07-05",
-  "lastCheckTime": "14:10 GMT+8",
+  "lastCheckTime": "14:45 GMT+8",
   "githubSummary": {
     "P0": 0,
     "P1": 0,
-    "P2": 7,
-    "P3": 5,
-    "totalCritical": 12,
-    "notes": "均为功能需求(F-前缀)，无阻塞Bug"
-  }
+    "P2": 0,
+    "P3": 0,
+    "totalCritical": 0,
+    "notes": "无open issue"
+  },
+  "notes": "备份权限问题: EACCES mkdir /var/backups/school_admin, 需修复"
 }
