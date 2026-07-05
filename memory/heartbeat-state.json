@@ -1,12 +1,12 @@
 {
   "lastChecks": {
-    "heartbeat": 1783252200,
+    "heartbeat": 1783253700,
     "github": 1752072300,
-    "services": 1783252200,
+    "services": 1783253700,
     "dashboard": 1752072300
   },
   "lastCheckDate": "2026-07-05",
-  "lastCheckTime": "19:30 GMT+8",
+  "lastCheckTime": "19:35 GMT+8",
   "githubSummary": {
     "P0": 0,
     "P1": 0,
@@ -15,5 +15,5 @@
     "totalCritical": 0,
     "notes": "所有Issue已关闭，系统稳定"
   },
-  "notes": "周日晚间19:30检查。Backend运行11小时+，Frontend刚重启约30分钟（19:01重启）。所有Docker服务healthy。"
+  "notes": "周日晚间19:35检查。Backend运行11小时，Frontend刚重启约18分钟（19:01重启）。所有Docker服务healthy。"
 }
