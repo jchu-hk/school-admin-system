@@ -33,7 +33,7 @@ async function login(page: any) {
 async function navigateToStudentPage(page: any) {
   await page.goto('/students');
   await page.waitForLoadState('networkidle');
-  await expect(page.getByText('学生管理')).toBeVisible({ timeout: 10000 });
+  await expect(page.getByRole('heading', { name: '学生管理' })).toBeVisible({ timeout: 10000 });
 }
 
 // ============ 基础功能测试 ============
@@ -46,7 +46,7 @@ test.describe('【基础功能】学生列表', () => {
 
   test('SM-001: 学生列表页面正确加载', async ({ page }) => {
     // 验证页面标题和新增按钮
-    await expect(page.getByText('学生管理')).toBeVisible();
+    await expect(page.getByRole('heading', { name: '学生管理' })).toBeVisible();
     await expect(page.getByRole('button', { name: /新增学生/i })).toBeVisible();
     
     // 验证筛选器区域
@@ -275,9 +275,12 @@ test.describe('【CRUD功能】创建学生', () => {
     await expect(page.getByText('新增学生').first()).toBeVisible({ timeout: 5000 });
     
     // 验证表单字段
-    await expect(page.getByLabel('用户名')).toBeVisible();
-    await expect(page.getByLabel('姓名')).toBeVisible();
-    await expect(page.getByLabel('密码')).toBeVisible();
+    await expect(page.getByTestId('field-name_zh')).toBeVisible();
+    await expect(page.getByTestId('field-name_zh')).toBeVisible();
+    await expect(page.getByTestId('field-gender')).toBeVisible();
+    await expect(page.getByTestId('field-birth_date')).toBeVisible();
+    await expect(page.getByTestId('field-name_zh')).toBeVisible();
+    await expect(page.getByTestId('btn-save')).toBeVisible();
     await expect(page.getByText('资助资格信息')).toBeVisible();
     
     // 关闭弹窗
@@ -292,10 +295,11 @@ test.describe('【CRUD功能】创建学生', () => {
     await page.waitForTimeout(500);
     
     // 填写表单
-    await page.getByLabel('用户名').fill(uniqueUsername);
-    await page.getByLabel('姓名').fill('自动化测试学生');
+    await page.getByTestId('field-name_zh').fill(uniqueUsername);
+    await page.getByTestId('field-name_zh').fill('自动化测试学生');
     await page.locator('select[id*="className"], select').first().selectOption('1A');
-    await page.getByLabel('密码').fill('Test123!');
+    await page.getByTestId('field-birth_date').fill('2010-01-15');
+    await page.getByTestId('field-admission_date').fill('2024-09-01');
     
     // 提交
     await page.getByRole('button', { name: /保存/i }).click();
@@ -315,9 +319,10 @@ test.describe('【CRUD功能】创建学生', () => {
     await page.waitForTimeout(500);
     
     // 填写基本信息
-    await page.getByLabel('用户名').fill(uniqueUsername);
-    await page.getByLabel('姓名').fill('资助测试学生');
-    await page.getByLabel('密码').fill('Test123!');
+    await page.getByTestId('field-name_zh').fill(uniqueUsername);
+    await page.getByTestId('field-name_zh').fill('资助测试学生');
+    await page.getByTestId('field-birth_date').fill('2010-01-15');
+    await page.getByTestId('field-admission_date').fill('2024-09-01');
     
     // 设置资助资格
     await page.locator('select').last().selectOption('full_subsidy');
@@ -435,9 +440,10 @@ test.describe('【CRUD功能】删除学生', () => {
     const uniqueUsername = `delete_test_${Date.now()}`;
     await page.getByRole('button', { name: /新增学生/i }).click();
     await page.waitForTimeout(500);
-    await page.getByLabel('用户名').fill(uniqueUsername);
+    await page.getByTestId('field-name_zh').fill(uniqueUsername);
     await page.getByLabel('姓名').fill('删除测试学生');
-    await page.getByLabel('密码').fill('Test123!');
+    await page.getByTestId('field-birth_date').fill('2010-01-15');
+    await page.getByTestId('field-admission_date').fill('2024-09-01');
     await page.getByRole('button', { name: /保存/i }).click();
     await page.waitForTimeout(2000);
     
@@ -564,7 +570,8 @@ test.describe('【边界情况】表单验证', () => {
   test('SM-027: 香港身份证格式验证', async ({ page }) => {
     await page.getByLabel('用户名').fill('test_user');
     await page.getByLabel('姓名').fill('测试用户');
-    await page.getByLabel('密码').fill('Test123!');
+    await page.getByTestId('field-birth_date').fill('2010-01-15');
+    await page.getByTestId('field-admission_date').fill('2024-09-01');
     
     // 输入格式错误的身份证
     const hkIdInput = page.locator('input[placeholder="例如：A123456(7)"]');
@@ -582,7 +589,8 @@ test.describe('【边界情况】表单验证', () => {
   test('SM-028: 手机号格式验证', async ({ page }) => {
     await page.getByLabel('用户名').fill('test_user');
     await page.getByLabel('姓名').fill('测试用户');
-    await page.getByLabel('密码').fill('Test123!');
+    await page.getByTestId('field-birth_date').fill('2010-01-15');
+    await page.getByTestId('field-admission_date').fill('2024-09-01');
     
     // 输入格式错误的手机号（不是852开头）
     const phoneInput = page.locator('input[placeholder="例如：85291234567"]');
@@ -615,7 +623,8 @@ test.describe('【边界情况】重复检测', () => {
       
       await page.getByLabel('用户名').fill(firstUsername.trim());
       await page.getByLabel('姓名').fill('重复测试');
-      await page.getByLabel('密码').fill('Test123!');
+      await page.getByTestId('field-birth_date').fill('2010-01-15');
+    await page.getByTestId('field-admission_date').fill('2024-09-01');
       
       await page.getByRole('button', { name: /保存/i }).click();
       await page.waitForTimeout(2000);
@@ -706,9 +715,10 @@ test.describe('【详情功能】学生详情', () => {
     await page.getByRole('button', { name: /新增学生/i }).click();
     await page.waitForTimeout(500);
     
-    await page.getByLabel('用户名').fill(uniqueUsername);
+    await page.getByTestId('field-name_zh').fill(uniqueUsername);
     await page.getByLabel('姓名').fill('资助测试');
-    await page.getByLabel('密码').fill('Test123!');
+    await page.getByTestId('field-birth_date').fill('2010-01-15');
+    await page.getByTestId('field-admission_date').fill('2024-09-01');
     
     // 设置资助信息
     await page.locator('select').last().selectOption('full_subsidy');
@@ -739,9 +749,10 @@ test.describe('【资助功能】资助资格管理', () => {
     await page.getByRole('button', { name: /新增学生/i }).click();
     await page.waitForTimeout(500);
     
-    await page.getByLabel('用户名').fill(uniqueUsername);
+    await page.getByTestId('field-name_zh').fill(uniqueUsername);
     await page.getByLabel('姓名').fill('资助资格测试');
-    await page.getByLabel('密码').fill('Test123!');
+    await page.getByTestId('field-birth_date').fill('2010-01-15');
+    await page.getByTestId('field-admission_date').fill('2024-09-01');
     
     // 选择半额资助
     await page.locator('select').last().selectOption('half_subsidy');
@@ -759,9 +770,10 @@ test.describe('【资助功能】资助资格管理', () => {
     await page.getByRole('button', { name: /新增学生/i }).click();
     await page.waitForTimeout(500);
     
-    await page.getByLabel('用户名').fill(uniqueUsername);
+    await page.getByTestId('field-name_zh').fill(uniqueUsername);
     await page.getByLabel('姓名').fill('资助编辑测试');
-    await page.getByLabel('密码').fill('Test123!');
+    await page.getByTestId('field-birth_date').fill('2010-01-15');
+    await page.getByTestId('field-admission_date').fill('2024-09-01');
     await page.locator('select').last().selectOption('pending');
     
     await page.getByRole('button', { name: /保存/i }).click();

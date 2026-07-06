@@ -1,17 +1,27 @@
 {
   "version": "v1.5.5",
-  "buildDate": "2026-07-05",
-  "gitCommit": "0e4753e",
+  "buildDate": "2026-07-06",
+  "gitCommit": "bba9948",
   "gitBranch": "main",
   "changelog": [
     {
-      "version": "build-2026-07-05",
-      "date": "2026-07-05",
+      "version": "build-2026-07-06",
+      "date": "2026-07-06",
       "changes": [
-        "heartbeat check 20:25 - all services healthy, no P0/P1 issues",
-        "heartbeat check 20:15 - all services healthy, no P0/P1 issues",
-        "dashboard update 17:41",
-        "dashboard update 17:15"
+        "dashboard update 17:11",
+        "dashboard update 17:11",
+        "dashboard update 15:00",
+        "dashboard update 14:03",
+        "dashboard update 14:00",
+        "fix(agent-comm): update recipient's status when PM assigns task",
+        "dashboard update 13:45",
+        "dashboard update 13:44",
+        "fix(e2e): align Playwright version in package.json with installed version (1.60.0)",
+        "dashboard update 13:44",
+        "fix(e2e): update baseURL from expired Cloudflare URL to Coze.dev URL",
+        "dashboard update 13:43",
+        "dashboard update 13:42",
+        "update test environment URLs - add Coze.dev external access"
       ]
     }
   ]

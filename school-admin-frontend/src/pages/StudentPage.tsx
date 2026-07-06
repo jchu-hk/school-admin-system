@@ -375,8 +375,8 @@ export default function StudentPage() {
             <p className="text-gray-700">确定要删除学生 <span className="font-semibold">{selectedStudent.name_zh}</span> 吗？</p>
             <p className="text-sm text-gray-500">此操作将软删除该学生档案。</p>
             <div className="flex justify-end gap-3 pt-4 border-t">
-              <button onClick={() => setShowDeleteConfirm(false)} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">取消</button>
-              <button onClick={handleDelete} className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700">确认删除</button>
+              <button onClick={() => setShowDeleteConfirm(false)} data-testid="btn-cancel" className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">取消</button>
+              <button onClick={handleDelete} data-testid="btn-confirm-delete" className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700">确认删除</button>
             </div>
           </div>
         </Modal>
@@ -433,32 +433,32 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
       </div>
       <div className="grid grid-cols-2 gap-4">
         <Field label="中文姓名" required error={errors.name_zh}>
-          <input type="text" {...register('name_zh')}
+          <input type="text" {...register('name_zh')} data-testid="field-name_zh"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.name_zh ? 'border-red-500' : 'border-gray-300'}`}
             placeholder="请输入中文姓名" />
         </Field>
         <Field label="英文姓名" error={errors.name_en}>
-          <input type="text" {...register('name_en')}
+          <input type="text" {...register('name_en')} data-testid="field-name_en"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="WONG SIU MING" />
         </Field>
         <Field label="性别" required error={errors.gender}>
-          <select {...register('gender')}
+          <select {...register('gender')} data-testid="field-gender"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.gender ? 'border-red-500' : 'border-gray-300'}`}>
             <option value="">请选择</option>
             {GENDER_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </Field>
         <Field label="出生日期" required error={errors.birth_date}>
-          <input type="date" {...register('birth_date')}
+          <input type="date" {...register('birth_date')} data-testid="field-birth_date"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.birth_date ? 'border-red-500' : 'border-gray-300'}`} />
         </Field>
         <Field label="入学日期" required error={errors.admission_date}>
-          <input type="date" {...register('admission_date')}
+          <input type="date" {...register('admission_date')} data-testid="field-admission_date"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.admission_date ? 'border-red-500' : 'border-gray-300'}`} />
         </Field>
         <Field label="香港身份证" error={errors.hk_id}>
-          <input type="text" {...register('hk_id')}
+          <input type="text" {...register('hk_id')} data-testid="field-hk_id"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="例如：A123456(7)" />
         </Field>
@@ -470,18 +470,18 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
       </div>
       <div className="grid grid-cols-2 gap-4">
         <Field label="联系电话" error={errors.phone}>
-          <input type="text" {...register('phone')}
+          <input type="text" {...register('phone')} data-testid="field-phone"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="例如：91234567" />
         </Field>
         <Field label="邮箱" error={errors.email}>
-          <input type="email" {...register('email')}
+          <input type="email" {...register('email')} data-testid="field-email"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="parent@example.com" />
         </Field>
         <div className="col-span-2">
           <Field label="家庭地址" error={errors.address}>
-            <input type="text" {...register('address')}
+            <input type="text" {...register('address')} data-testid="field-address"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="请输入家庭地址" />
           </Field>
@@ -494,17 +494,17 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
       </div>
       <div className="grid grid-cols-3 gap-4">
         <Field label="监护人姓名" error={errors.guardian_name}>
-          <input type="text" {...register('guardian_name')}
+          <input type="text" {...register('guardian_name')} data-testid="field-guardian_name"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="请输入监护人姓名" />
         </Field>
         <Field label="监护人电话" error={errors.guardian_phone}>
-          <input type="text" {...register('guardian_phone')}
+          <input type="text" {...register('guardian_phone')} data-testid="field-guardian_phone"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="例如：91234567" />
         </Field>
         <Field label="与学生关系" error={errors.guardian_relationship}>
-          <input type="text" {...register('guardian_relationship')}
+          <input type="text" {...register('guardian_relationship')} data-testid="field-guardian_relationship"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="例如：父亲/母亲" />
         </Field>
@@ -516,18 +516,18 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
       </div>
       <div className="grid grid-cols-2 gap-4">
         <Field label="紧急联系人" error={errors.emergency_contact}>
-          <input type="text" {...register('emergency_contact')}
+          <input type="text" {...register('emergency_contact')} data-testid="field-emergency_contact"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="请输入紧急联系人姓名" />
         </Field>
         <Field label="紧急联系电话" error={errors.emergency_phone}>
-          <input type="text" {...register('emergency_phone')}
+          <input type="text" {...register('emergency_phone')} data-testid="field-emergency_phone"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="例如：91234567" />
         </Field>
         <div className="col-span-2">
           <Field label="备注" error={errors.notes}>
-            <textarea {...register('notes')} rows={2}
+            <textarea {...register('notes')} data-testid="field-notes" rows={2}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               placeholder="其他备注信息（可选）" />
           </Field>
@@ -535,8 +535,8 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
       </div>
 
       <div className="flex justify-end gap-3 pt-4 border-t">
-        <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">取消</button>
-        <button type="submit" disabled={isSubmitting}
+        <button type="button" data-testid="btn-cancel" onClick={onCancel} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">取消</button>
+        <button type="submit" data-testid="btn-save" disabled={isSubmitting}
           className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50">
           {isSubmitting ? '提交中...' : '保存'}
         </button>
