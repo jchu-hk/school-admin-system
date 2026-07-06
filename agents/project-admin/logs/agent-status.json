@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[功能性测试] 重新测试 Student Management Module - 包含完整测试案例和测试报告",
-      "lastUpdate": "2026-07-06T02:52:43Z"
+      "task": "[Student Management] 重新执行完整E2E测试 - Playwright已修复",
+      "lastUpdate": "2026-07-06T05:44:46Z"
     },
     "DEVOPS": {
       "status": "idle",
@@ -22,8 +22,8 @@
     },
     "DEV": {
       "status": "idle",
-      "task": "[Issue #140] 修复完成: inquiry.entity.ts aiIntent字段已添加@Column装饰器",
-      "lastUpdate": "2026-07-06T01:26:59Z"
+      "task": "[Playwright Config] 修复完成\\n\\n变更内容:\\n- 更新 baseURL: trycloudflare → Coze.dev URL\\n-",
+      "lastUpdate": "2026-07-06T05:44:05Z"
     },
     "QA": {
       "status": "idle",
