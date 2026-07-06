@@ -1,29 +1,5 @@
 [
   {
-    "timestamp": "2026-06-30T11:55:04Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "Issue #190 完成: 面试安排与管理 (F-REC-003) - 面试创建/评分/完成/取消API, 提交 1201f65",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "Issue #190 完成: 面试安排与管理 (F-REC-003) - 面试创建/评分/完成/取消"
-    }
-  },
-  {
-    "timestamp": "2026-06-30T11:58:35Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "Issue #191 完成: 招聘流程状态跟踪 (F-REC-004) - 流程状态/漏斗概览/时间统计/时间线API, 提交 d2e4900",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "Issue #191 完成: 招聘流程状态跟踪 (F-REC-004) - 流程状态/漏斗概览/时间"
-    }
-  },
-  {
     "timestamp": "2026-06-30T12:01:31Z",
     "from": "DEV",
     "to": "PM",
@@ -1096,5 +1072,24 @@
       "status": "idle",
       "task": "[Student Management E2E] 测试完成但被阻塞: 0/35 通过\n\n**根本原因"
     }
+  },
+  {
+    "timestamp": "2026-07-06T09:11:08Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[Student Management] 使用localhost重新执行E2E测试",
+    "type": "assign",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[Student Management] 使用localhost重新执行E2E测试"
+    }
+  },
+  {
+    "timestamp": "2026-07-06T09:11:27Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Student Management E2E] 开始执行localhost测试",
+    "type": "received"
   }
 ]

@@ -1,10 +1,11 @@
 {
   "lastChecks": {
-    "system": 1751798700,
-    "github": 1751798700,
-    "dashboard": 1751798700
+    "system": 1751792400,
+    "github": 1751792400,
+    "ci": 1751792400,
+    "heartbeat": 1783329617
   },
-  "lastHeartbeat": "2026-07-06T16:25:00+08:00",
+  "lastHeartbeat": "2026-07-06T17:20:17.642556",
   "status": "HEARTBEAT_OK",
-  "notes": "系统运行32小时稳定，无P0/P1阻塞，所有Agent idle，14个Open Issues（均为P2/P3功能需求）"
+  "notes": "\u7cfb\u7edf\u8fd0\u884c33\u5c0f\u65f6\u7a33\u5b9a\uff0c\u65e0P0/P1\u963b\u585e\uff0c\u6240\u6709Agent idle\uff0c14\u4e2aOpen Issues\uff08\u5747\u4e3aP2/P3\u529f\u80fd\u9700\u6c42\uff09\uff0cCI Pipeline\u5931\u8d25\uff08\u5df2\u77e5\u95ee\u9898\u4e0d\u5f71\u54cd\u8fd0\u884c\uff09"
 }

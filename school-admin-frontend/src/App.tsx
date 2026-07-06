@@ -48,7 +48,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <ErrorBoundary>
-      <BrowserRouter basename="/school-admin">
+      <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/set-password" element={<SetPasswordPage />} />

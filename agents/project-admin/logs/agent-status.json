@@ -26,9 +26,9 @@
       "lastUpdate": "2026-07-06T05:44:05Z"
     },
     "QA": {
-      "status": "idle",
-      "task": "[Student Management E2E] 测试完成但被阻塞: 0/35 通过\n\n**根本原因**: Coze.dev 平台部署的应用在 headless",
-      "lastUpdate": "2026-07-06T06:03:43Z"
+      "status": "running",
+      "task": "[Student Management] 使用localhost重新执行E2E测试",
+      "lastUpdate": "2026-07-06T09:11:08Z"
     },
     "REQ": {
       "status": "idle",
