@@ -12,7 +12,7 @@ export default defineConfig({
   ],
   
   use: {
-    baseURL: process.env.BASE_URL || 'https://yang-wanna-dramatically-given.trycloudflare.com',
+    baseURL: process.env.BASE_URL || 'https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
