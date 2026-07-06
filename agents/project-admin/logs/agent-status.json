@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "idle",
-      "task": "清理状态，准备 v1.5.7 发布",
-      "lastUpdate": "2026-07-05T03:14:58Z"
+      "task": "[Bug #205] 已解决 - staff1 登录正常，问题是 DNS 缓存",
+      "lastUpdate": "2026-07-05T15:08:09Z"
     },
     "DEVOPS": {
       "status": "idle",
