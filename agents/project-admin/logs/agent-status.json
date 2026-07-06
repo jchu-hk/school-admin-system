@@ -21,14 +21,14 @@
       "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "[QA Support] 为E2E测试准备数据和修复前端",
-      "lastUpdate": "2026-07-06T13:23:14Z"
+      "status": "idle",
+      "task": "[前端修复] 完成：7个data-testid已全部补充",
+      "lastUpdate": "2026-07-06T15:15:45Z"
     },
     "QA": {
       "status": "idle",
-      "task": "[Student Management E2E] 测试执行中断: 8个测试执行，报告未完成，需要重新生成报告",
-      "lastUpdate": "2026-07-06T11:56:28Z"
+      "task": "[测试更新] 完成：18个选择器已更新，额外修复了分页测试异步语法错误",
+      "lastUpdate": "2026-07-06T15:17:01Z"
     },
     "REQ": {
       "status": "idle",

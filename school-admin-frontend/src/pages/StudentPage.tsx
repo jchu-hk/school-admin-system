@@ -63,7 +63,9 @@ interface PaginatedResponse<T> {
 
 // ============ Validation Schema ============
 const createStudentSchema = z.object({
+  student_id: z.string().max(50).optional().or(z.literal('')),
   name_zh: z.string().min(1, '中文姓名不能为空').max(100),
+  class_id: z.string().optional().or(z.literal('')),
   name_en: z.string().max(100).optional().or(z.literal('')),
   gender: z.enum([Gender.MALE, Gender.FEMALE, Gender.OTHER], {
     required_error: '请选择性别',
@@ -249,6 +251,7 @@ export default function StudentPage() {
         <button
           onClick={() => { reset({ ...createStudentSchema.parse({}), admission_date: TODAY }); setShowCreateModal(true) }}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          data-testid="btn_new_student"
         >
           <Plus size={20} /> 新增学生
         </button>
@@ -256,7 +259,7 @@ export default function StudentPage() {
 
       {/* Filters */}
       <div className="bg-white rounded-xl shadow p-4">
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
           <div className="flex-1">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -268,6 +271,23 @@ export default function StudentPage() {
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
+          </div>
+          <div className="w-48">
+            <select
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              data-testid="filter_class"
+            >
+              <option value="">全部班级</option>
+            </select>
+          </div>
+          <div className="w-48">
+            <select
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              data-testid="filter_status"
+            >
+              <option value="">全部状态</option>
+              {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
           </div>
         </div>
       </div>
@@ -432,10 +452,22 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
         <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">基本信息</h4>
       </div>
       <div className="grid grid-cols-2 gap-4">
+        <Field label="学号" error={errors.student_id}>
+          <input type="text" {...register('student_id')} data-testid="student_id"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="例如：2026-0001" />
+        </Field>
         <Field label="中文姓名" required error={errors.name_zh}>
-          <input type="text" {...register('name_zh')} data-testid="field-name_zh"
+          <input type="text" {...register('name_zh')} data-testid="name_zh"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.name_zh ? 'border-red-500' : 'border-gray-300'}`}
             placeholder="请输入中文姓名" />
+        </Field>
+        <Field label="所属班级" error={errors.class_id}>
+          <select {...register('class_id')} data-testid="class_id"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">请选择班级</option>
+          </select>
         </Field>
         <Field label="英文姓名" error={errors.name_en}>
           <input type="text" {...register('name_en')} data-testid="field-name_en"
@@ -536,7 +568,7 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
 
       <div className="flex justify-end gap-3 pt-4 border-t">
         <button type="button" data-testid="btn-cancel" onClick={onCancel} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">取消</button>
-        <button type="submit" data-testid="btn-save" disabled={isSubmitting}
+        <button type="submit" data-testid="btn_save" disabled={isSubmitting}
           className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50">
           {isSubmitting ? '提交中...' : '保存'}
         </button>

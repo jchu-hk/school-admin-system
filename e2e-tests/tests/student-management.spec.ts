@@ -47,7 +47,7 @@ test.describe('【基础功能】学生列表', () => {
   test('SM-001: 学生列表页面正确加载', async ({ page }) => {
     // 验证页面标题和新增按钮
     await expect(page.getByRole('heading', { name: '学生管理' })).toBeVisible();
-    await expect(page.getByRole('button', { name: /新增学生/i })).toBeVisible();
+    await expect(page.getByTestId('btn_new_student')).toBeVisible();
     
     // 验证筛选器区域
     await expect(page.getByPlaceholder('搜索学号或姓名...')).toBeVisible();
@@ -80,7 +80,8 @@ test.describe('【基础功能】学生列表', () => {
     // 如果有多个页面，测试翻页
     if (pageInfo && pageInfo.includes('20')) {
       // 点击下一页
-      const nextButton = page.locator('button[disabled]').count() === 0 
+      const disabledButtonsCount = await page.locator('button[disabled]').count();
+      const nextButton = disabledButtonsCount === 0 
         ? page.locator('button.rounded-r-md').last()
         : null;
       
@@ -127,7 +128,7 @@ test.describe('【基础功能】筛选功能', () => {
     await page.waitForSelector('select', { timeout: 5000 });
     
     // 获取班级筛选器（第二个select）
-    const classSelect = page.locator('select').nth(1);
+    const classSelect = page.getByTestId('filter_class');
     const options = await classSelect.locator('option').allTextContents();
     
     // 验证有"全部班级"选项
@@ -140,7 +141,7 @@ test.describe('【基础功能】筛选功能', () => {
 
   test('SM-006: 按班级筛选学生列表', async ({ page }) => {
     // 获取所有班级选项
-    const classSelect = page.locator('select').nth(1);
+    const classSelect = page.getByTestId('filter_class');
     const options = await classSelect.locator('option').allTextContents();
     
     if (options.length > 1) {
@@ -165,7 +166,7 @@ test.describe('【基础功能】筛选功能', () => {
 
   test('SM-007: 状态筛选器显示所有状态', async ({ page }) => {
     // 获取状态筛选器（第三个select）
-    const statusSelect = page.locator('select').nth(2);
+    const statusSelect = page.getByTestId('filter_status');
     const options = await statusSelect.locator('option').allTextContents();
     
     // 验证有"全部状态"选项
@@ -178,7 +179,7 @@ test.describe('【基础功能】筛选功能', () => {
 
   test('SM-008: 按状态筛选学生列表', async ({ page }) => {
     // 选择"活跃"状态
-    const statusSelect = page.locator('select').nth(2);
+    const statusSelect = page.getByTestId('filter_status');
     await statusSelect.selectOption('active');
     await page.waitForLoadState('networkidle');
     
@@ -194,7 +195,7 @@ test.describe('【基础功能】筛选功能', () => {
 
   test('SM-009: 组合筛选：班级+状态', async ({ page }) => {
     // 先选择班级
-    const classSelect = page.locator('select').nth(1);
+    const classSelect = page.getByTestId('filter_class');
     const classOptions = await classSelect.locator('option').allTextContents();
     
     if (classOptions.length > 1) {
@@ -202,7 +203,7 @@ test.describe('【基础功能】筛选功能', () => {
       await page.waitForLoadState('networkidle');
       
       // 再选择状态
-      const statusSelect = page.locator('select').nth(2);
+      const statusSelect = page.getByTestId('filter_status');
       await statusSelect.selectOption('active');
       await page.waitForLoadState('networkidle');
       
@@ -269,7 +270,7 @@ test.describe('【CRUD功能】创建学生', () => {
 
   test('SM-012: 打开新增学生弹窗', async ({ page }) => {
     // 点击新增按钮
-    await page.getByRole('button', { name: /新增学生/i }).click();
+    await page.getByTestId('btn_new_student').click();
     
     // 验证弹窗出现
     await expect(page.getByText('新增学生').first()).toBeVisible({ timeout: 5000 });
@@ -280,7 +281,7 @@ test.describe('【CRUD功能】创建学生', () => {
     await expect(page.getByTestId('field-gender')).toBeVisible();
     await expect(page.getByTestId('field-birth_date')).toBeVisible();
     await expect(page.getByTestId('field-name_zh')).toBeVisible();
-    await expect(page.getByTestId('btn-save')).toBeVisible();
+    await expect(page.getByTestId('btn_save')).toBeVisible();
     await expect(page.getByText('资助资格信息')).toBeVisible();
     
     // 关闭弹窗
@@ -291,7 +292,7 @@ test.describe('【CRUD功能】创建学生', () => {
     const uniqueUsername = `student_${Date.now()}`;
     
     // 打开新增弹窗
-    await page.getByRole('button', { name: /新增学生/i }).click();
+    await page.getByTestId('btn_new_student').click();
     await page.waitForTimeout(500);
     
     // 填写表单
@@ -302,7 +303,7 @@ test.describe('【CRUD功能】创建学生', () => {
     await page.getByTestId('field-admission_date').fill('2024-09-01');
     
     // 提交
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     
     // 等待结果
     await page.waitForTimeout(2000);
@@ -315,7 +316,7 @@ test.describe('【CRUD功能】创建学生', () => {
     const uniqueUsername = `student_${Date.now()}`;
     
     // 打开新增弹窗
-    await page.getByRole('button', { name: /新增学生/i }).click();
+    await page.getByTestId('btn_new_student').click();
     await page.waitForTimeout(500);
     
     // 填写基本信息
@@ -328,7 +329,7 @@ test.describe('【CRUD功能】创建学生', () => {
     await page.locator('select').last().selectOption('full_subsidy');
     
     // 提交
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     await page.waitForTimeout(2000);
     
     // 验证创建成功
@@ -353,8 +354,8 @@ test.describe('【CRUD功能】编辑学生', () => {
     await expect(page.getByText('编辑学生')).toBeVisible({ timeout: 5000 });
     
     // 验证表单预填充
-    await expect(page.getByLabel('用户名')).not.toBeEmpty();
-    await expect(page.getByLabel('姓名')).not.toBeEmpty();
+    await expect(page.getByTestId('field_username')).not.toBeEmpty();
+    await expect(page.getByTestId('field_name_zh')).not.toBeEmpty();
     
     // 关闭弹窗
     await page.locator('button[title], button.rounded').first().click();
@@ -367,11 +368,11 @@ test.describe('【CRUD功能】编辑学生', () => {
     
     // 修改姓名
     const newName = `编辑测试_${Date.now()}`;
-    await page.getByLabel('姓名').clear();
-    await page.getByLabel('姓名').fill(newName);
+    await page.getByTestId('field_name_zh').clear();
+    await page.getByTestId('field_name_zh').fill(newName);
     
     // 提交
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     await page.waitForTimeout(2000);
     
     // 验证修改成功 - 关闭弹窗后检查列表
@@ -438,13 +439,13 @@ test.describe('【CRUD功能】删除学生', () => {
   test('SM-020: 确认删除学生', async ({ page }) => {
     // 先创建一个测试学生
     const uniqueUsername = `delete_test_${Date.now()}`;
-    await page.getByRole('button', { name: /新增学生/i }).click();
+    await page.getByTestId('btn_new_student').click();
     await page.waitForTimeout(500);
     await page.getByTestId('field-name_zh').fill(uniqueUsername);
-    await page.getByLabel('姓名').fill('删除测试学生');
+    await page.getByTestId('field_name_zh').fill('删除测试学生');
     await page.getByTestId('field-birth_date').fill('2010-01-15');
     await page.getByTestId('field-admission_date').fill('2024-09-01');
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     await page.waitForTimeout(2000);
     
     // 验证新学生存在
@@ -467,16 +468,16 @@ test.describe('【边界情况】表单验证', () => {
   test.beforeEach(async ({ page }) => {
     await login(page);
     await navigateToStudentPage(page);
-    await page.getByRole('button', { name: /新增学生/i }).click();
+    await page.getByTestId('btn_new_student').click();
     await page.waitForTimeout(500);
   });
 
   test('SM-021: 必填字段验证 - 用户名', async ({ page }) => {
     // 清空用户名
-    await page.getByLabel('用户名').clear();
+    await page.getByTestId('field_username').clear();
     
     // 尝试提交
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     
     // 等待验证错误
     await page.waitForTimeout(500);
@@ -488,10 +489,10 @@ test.describe('【边界情况】表单验证', () => {
 
   test('SM-022: 必填字段验证 - 姓名', async ({ page }) => {
     // 清空姓名
-    await page.getByLabel('姓名').clear();
+    await page.getByTestId('field_name_zh').clear();
     
     // 尝试提交
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     
     // 等待验证错误
     await page.waitForTimeout(500);
@@ -503,14 +504,14 @@ test.describe('【边界情况】表单验证', () => {
 
   test('SM-023: 必填字段验证 - 密码', async ({ page }) => {
     // 填写用户名和姓名
-    await page.getByLabel('用户名').fill('test_user');
-    await page.getByLabel('姓名').fill('测试用户');
+    await page.getByTestId('field_username').fill('test_user');
+    await page.getByTestId('field_name_zh').fill('测试用户');
     
     // 清空密码
-    await page.getByLabel('密码').clear();
+    await page.getByTestId('field_password').clear();
     
     // 尝试提交
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     
     // 等待验证错误
     await page.waitForTimeout(500);
@@ -522,14 +523,14 @@ test.describe('【边界情况】表单验证', () => {
 
   test('SM-024: 密码强度验证 - 长度不足', async ({ page }) => {
     // 填写其他必填字段
-    await page.getByLabel('用户名').fill('test_user');
-    await page.getByLabel('姓名').fill('测试用户');
+    await page.getByTestId('field_username').fill('test_user');
+    await page.getByTestId('field_name_zh').fill('测试用户');
     
     // 输入弱密码（太短）
-    await page.getByLabel('密码').fill('Abc1!');
+    await page.getByTestId('field_password').fill('Abc1!');
     
     // 尝试提交
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     
     // 等待验证错误
     await page.waitForTimeout(500);
@@ -540,13 +541,13 @@ test.describe('【边界情况】表单验证', () => {
   });
 
   test('SM-025: 密码强度验证 - 缺少大写字母', async ({ page }) => {
-    await page.getByLabel('用户名').fill('test_user');
-    await page.getByLabel('姓名').fill('测试用户');
+    await page.getByTestId('field_username').fill('test_user');
+    await page.getByTestId('field_name_zh').fill('测试用户');
     
     // 输入缺少大写字母的密码
-    await page.getByLabel('密码').fill('test123!');
+    await page.getByTestId('field_password').fill('test123!');
     
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     await page.waitForTimeout(500);
     
     const pageContent = await page.content();
@@ -554,13 +555,13 @@ test.describe('【边界情况】表单验证', () => {
   });
 
   test('SM-026: 密码强度验证 - 缺少特殊字符', async ({ page }) => {
-    await page.getByLabel('用户名').fill('test_user');
-    await page.getByLabel('姓名').fill('测试用户');
+    await page.getByTestId('field_username').fill('test_user');
+    await page.getByTestId('field_name_zh').fill('测试用户');
     
     // 输入缺少特殊字符的密码
-    await page.getByLabel('密码').fill('Test12345');
+    await page.getByTestId('field_password').fill('Test12345');
     
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     await page.waitForTimeout(500);
     
     const pageContent = await page.content();
@@ -568,8 +569,8 @@ test.describe('【边界情况】表单验证', () => {
   });
 
   test('SM-027: 香港身份证格式验证', async ({ page }) => {
-    await page.getByLabel('用户名').fill('test_user');
-    await page.getByLabel('姓名').fill('测试用户');
+    await page.getByTestId('field_username').fill('test_user');
+    await page.getByTestId('field_name_zh').fill('测试用户');
     await page.getByTestId('field-birth_date').fill('2010-01-15');
     await page.getByTestId('field-admission_date').fill('2024-09-01');
     
@@ -578,7 +579,7 @@ test.describe('【边界情况】表单验证', () => {
     if (await hkIdInput.isVisible()) {
       await hkIdInput.fill('invalid-id');
       
-      await page.getByRole('button', { name: /保存/i }).click();
+      await page.getByTestId('btn_save').click();
       await page.waitForTimeout(500);
       
       const pageContent = await page.content();
@@ -587,8 +588,8 @@ test.describe('【边界情况】表单验证', () => {
   });
 
   test('SM-028: 手机号格式验证', async ({ page }) => {
-    await page.getByLabel('用户名').fill('test_user');
-    await page.getByLabel('姓名').fill('测试用户');
+    await page.getByTestId('field_username').fill('test_user');
+    await page.getByTestId('field_name_zh').fill('测试用户');
     await page.getByTestId('field-birth_date').fill('2010-01-15');
     await page.getByTestId('field-admission_date').fill('2024-09-01');
     
@@ -597,7 +598,7 @@ test.describe('【边界情况】表单验证', () => {
     if (await phoneInput.isVisible()) {
       await phoneInput.fill('12345678');
       
-      await page.getByRole('button', { name: /保存/i }).click();
+      await page.getByTestId('btn_save').click();
       await page.waitForTimeout(500);
       
       const pageContent = await page.content();
@@ -618,15 +619,15 @@ test.describe('【边界情况】重复检测', () => {
     
     if (firstUsername) {
       // 尝试创建同名用户
-      await page.getByRole('button', { name: /新增学生/i }).click();
+      await page.getByTestId('btn_new_student').click();
       await page.waitForTimeout(500);
       
-      await page.getByLabel('用户名').fill(firstUsername.trim());
-      await page.getByLabel('姓名').fill('重复测试');
+      await page.getByTestId('field_username').fill(firstUsername.trim());
+      await page.getByTestId('field_name_zh').fill('重复测试');
       await page.getByTestId('field-birth_date').fill('2010-01-15');
     await page.getByTestId('field-admission_date').fill('2024-09-01');
       
-      await page.getByRole('button', { name: /保存/i }).click();
+      await page.getByTestId('btn_save').click();
       await page.waitForTimeout(2000);
       
       // 验证出现错误提示（用户名已存在）
@@ -712,18 +713,18 @@ test.describe('【详情功能】学生详情', () => {
   test('SM-033: 详情弹窗显示资助信息', async ({ page }) => {
     // 先创建一个有资助信息的学生
     const uniqueUsername = `subsidy_${Date.now()}`;
-    await page.getByRole('button', { name: /新增学生/i }).click();
+    await page.getByTestId('btn_new_student').click();
     await page.waitForTimeout(500);
     
     await page.getByTestId('field-name_zh').fill(uniqueUsername);
-    await page.getByLabel('姓名').fill('资助测试');
+    await page.getByTestId('field_name_zh').fill('资助测试');
     await page.getByTestId('field-birth_date').fill('2010-01-15');
     await page.getByTestId('field-admission_date').fill('2024-09-01');
     
     // 设置资助信息
     await page.locator('select').last().selectOption('full_subsidy');
     
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     await page.waitForTimeout(2000);
     
     // 查看详情
@@ -746,18 +747,18 @@ test.describe('【资助功能】资助资格管理', () => {
   test('SM-034: 创建学生时设置资助资格', async ({ page }) => {
     const uniqueUsername = `subsidy_create_${Date.now()}`;
     
-    await page.getByRole('button', { name: /新增学生/i }).click();
+    await page.getByTestId('btn_new_student').click();
     await page.waitForTimeout(500);
     
     await page.getByTestId('field-name_zh').fill(uniqueUsername);
-    await page.getByLabel('姓名').fill('资助资格测试');
+    await page.getByTestId('field_name_zh').fill('资助资格测试');
     await page.getByTestId('field-birth_date').fill('2010-01-15');
     await page.getByTestId('field-admission_date').fill('2024-09-01');
     
     // 选择半额资助
     await page.locator('select').last().selectOption('half_subsidy');
     
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     await page.waitForTimeout(2000);
     
     // 验证创建成功
@@ -767,16 +768,16 @@ test.describe('【资助功能】资助资格管理', () => {
   test('SM-035: 编辑学生资助资格', async ({ page }) => {
     // 先创建一个测试学生
     const uniqueUsername = `subsidy_edit_${Date.now()}`;
-    await page.getByRole('button', { name: /新增学生/i }).click();
+    await page.getByTestId('btn_new_student').click();
     await page.waitForTimeout(500);
     
     await page.getByTestId('field-name_zh').fill(uniqueUsername);
-    await page.getByLabel('姓名').fill('资助编辑测试');
+    await page.getByTestId('field_name_zh').fill('资助编辑测试');
     await page.getByTestId('field-birth_date').fill('2010-01-15');
     await page.getByTestId('field-admission_date').fill('2024-09-01');
     await page.locator('select').last().selectOption('pending');
     
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     await page.waitForTimeout(2000);
     
     // 编辑该学生
@@ -786,7 +787,7 @@ test.describe('【资助功能】资助资格管理', () => {
     // 修改资助资格为无资助
     await page.locator('select').last().selectOption('none');
     
-    await page.getByRole('button', { name: /保存/i }).click();
+    await page.getByTestId('btn_save').click();
     await page.waitForTimeout(2000);
     
     // 验证修改成功
