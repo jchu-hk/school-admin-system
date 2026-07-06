@@ -1,32 +1,18 @@
-HEARTBEAT_OK
+## 12:05 GMT+8 - 周一中午心跳
 
-## 11:25 GMT+8 - 周一上午心跳
+**系统状态**: 稳定运行 ✅
 
-**系统状态**: 稳定运行
-- GitHub Issues: 14个Open，无P0/P1阻塞
-- Issue #140 TypeORM警告: ready-for-review，DEV/CHECKER处理中
-- Dashboard: 所有Agent idle
-- Git: 仅memory文件未提交
-
-**无阻塞，无紧急任务。系统稳定。**
-
----
-
-## 10:50 GMT+8 - 周一上午心跳
-
-**系统状态**: 所有Docker服务运行正常
-- Backend (Up 27h): 运行正常 ✅
-- Frontend (Up 11h): healthy ✅
-- Postgres/Redis/Kafka: Up 27h (healthy) ✅
-- Grafana/Prometheus/Alertmanager/Zookeeper: Up 27h ✅
+**Docker服务**:
+- Backend/Postgres/Redis/Kafka: Up 28h ✅
+- Frontend: Up 12h ✅
+- 监控栈 (Grafana/Prometheus/Alertmanager/Zookeeper): Up 28h ✅
 
 **GitHub Issues**: 14个Open Issue
-- Issue #140 [WARNING] TypeORM实体元数据警告 - ready-for-review，非阻塞
-- 无P0/P1阻塞
-- 其余为功能需求 (P2/P3)
+- #140 TypeORM警告: ready-for-review，等待DEV/CHECKER处理
+- 其余为功能需求 (P2/P3)，无P0/P1阻塞
 
-**Dashboard状态**: 所有Agent idle，最后一次活动是Bug #205修复完成
+**Dashboard**: 所有Agent idle
 
-**Git状态**: 工作区有未提交文件（agent日志、memory文件）
+**Git**: 已提交 (c78d3f5)
 
 **无阻塞，无紧急任务。系统稳定。**
