@@ -134,6 +134,8 @@ export class ParentInquiry {
   assignedTo: string;
 
   // 注意：assigned_to 存储团队名称（如 director_queue）而非用户UUID，不再使用 @ManyToOne
+  @ApiProperty({ description: 'AI分析结果-意图识别' })
+  @Column({ name: 'ai_intent', length: 50, nullable: true })
   aiIntent: string;
 
   @ApiProperty({ description: 'AI分析结果-情感倾向' })
