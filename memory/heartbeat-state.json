@@ -1,11 +1,11 @@
 {
   "lastChecks": {
-    "system": 1751806200,
-    "github": 1751806200,
-    "ci": 1751806200,
-    "heartbeat": 1751806200
+    "system": 1751809380,
+    "github": 1751809380,
+    "ci": 1751809380,
+    "heartbeat": 1751809380
   },
-  "lastHeartbeat": "2026-07-06T17:50:00",
+  "lastHeartbeat": "2026-07-06T18:03:00",
   "status": "HEARTBEAT_OK",
-  "notes": "系统运行34+小时稳定，无P0/P1阻塞，所有Agent idle，14个Open Issues（P2/P3功能需求），Backend/Frontend/DB/Redis/Kafka均healthy"
+  "notes": "系统运行稳定。Backend Up 34h，Frontend 30min前有重启（无影响），14个Open Issues（P2/P3），无P0/P1阻塞，所有Agent idle。"
 }
