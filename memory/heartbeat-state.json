@@ -1,11 +1,11 @@
 {
   "lastChecks": {
-    "system": 1751818200,
-    "github": 1751818200,
-    "ci": 1751818200,
-    "heartbeat": 1751818200
+    "system": 1751798429,
+    "github": 1751820240,
+    "ci": 1751820240,
+    "heartbeat": 1751798429
   },
-  "lastHeartbeat": "2026-07-06T18:50:00",
+  "lastHeartbeat": "2026-07-06T19:15:00",
   "status": "HEARTBEAT_OK",
-  "notes": "系统运行稳定。Backend Up ~20min (restarted at 10:30)，Backend健康检查返回200，Frontend返回200，9个容器运行中，14个Open Issues（P2/P3），无P0/P1阻塞，所有Agent idle。"
+  "notes": "系统运行稳定。Backend Up ~45min (restarted ~18:30)，Backend健康检查返回200，8个容器运行中，14个Open Issues（P2/P3），无P0/P1阻塞，所有Agent idle。"
 }
