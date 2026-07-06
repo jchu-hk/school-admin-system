@@ -1,13 +1,19 @@
 {
   "version": "v1.5.5",
   "buildDate": "2026-07-06",
-  "gitCommit": "bba9948",
+  "gitCommit": "6d8001c",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-06",
       "date": "2026-07-06",
       "changes": [
+        "dashboard update 21:25",
+        "dashboard update 21:23",
+        "dashboard update 21:23",
+        "E2E test for student management + version bump",
+        "dashboard update 19:56",
+        "update pnpm-lock.yaml for Playwright 1.60.0",
         "dashboard update 17:11",
         "dashboard update 17:11",
         "dashboard update 15:00",
@@ -16,12 +22,7 @@
         "fix(agent-comm): update recipient's status when PM assigns task",
         "dashboard update 13:45",
         "dashboard update 13:44",
-        "fix(e2e): align Playwright version in package.json with installed version (1.60.0)",
-        "dashboard update 13:44",
-        "fix(e2e): update baseURL from expired Cloudflare URL to Coze.dev URL",
-        "dashboard update 13:43",
-        "dashboard update 13:42",
-        "update test environment URLs - add Coze.dev external access"
+        "fix(e2e): align Playwright version in package.json with installed version (1.60.0)"
       ]
     }
   ]

@@ -155,6 +155,7 @@ export default function Login() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">验证码</label>
               <input
+                data-testid="otp-input"
                 {...registerOtp('otpCode')}
                 type="text"
                 maxLength={6}

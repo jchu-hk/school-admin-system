@@ -21,9 +21,9 @@
       "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
-      "status": "idle",
-      "task": "[Playwright Config] 修复完成\\n\\n变更内容:\\n- 更新 baseURL: trycloudflare → Coze.dev URL\\n-",
-      "lastUpdate": "2026-07-06T05:44:05Z"
+      "status": "running",
+      "task": "[QA Support] 为E2E测试准备数据和修复前端",
+      "lastUpdate": "2026-07-06T13:23:14Z"
     },
     "QA": {
       "status": "idle",

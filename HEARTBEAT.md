@@ -1,6 +1,6 @@
 # Heartbeat Status
 
-## 晚间心跳 (20:35 GMT+8)
+## 晚间心跳 (21:15 GMT+8)
 
 ### 系统状态 ✅
 - **Backend API**: `{"status":"ok"}` ✅
@@ -8,13 +8,11 @@
 - **Postgres/Redis**: healthy ✅
 - **所有服务**: stable ✅
 
-### Git 状态 ⚠️
-- **工作区**: 有未提交文件
-  - E2E测试修改 (student-management.spec.ts, auth.setup.ts)
-  - 前端修改 (StudentPage.tsx, version.json)
-  - Memory文件 (2026-07-06.md, heartbeat-state.json)
+### Git 状态 ✅
+- **工作区**: 已提交，已推送
+  - `055ab23` - feat: E2E test for student management + version bump
 - **Branch**: main
-- **上次提交**: `26c7d08` - fix: update pnpm-lock.yaml for Playwright 1.60.0
+- **推送状态**: ✅ 已同步到 origin
 
 ### GitHub Issues 状态 ✅
 - **Open Issues**: 14个（均为P2/P3功能需求）
@@ -26,8 +24,8 @@
 - Project Admin Cron Job 正常运行
 
 ### 最近活动
-- ✅ CI问题已修复（Playwright lockfile更新）
+- ✅ E2E测试已提交
+- ✅ CI问题已修复
 - ✅ 系统稳定运行
-- 🔄 E2E测试开发活动中
 
-**检查完成时间**: 2026-07-06 20:35 GMT+8 | **状态**: HEARTBEAT_OK ✅ | **间隔**: 15分钟（系统稳定）
+**检查完成时间**: 2026-07-06 21:15 GMT+8 | **状态**: HEARTBEAT_OK ✅ | **间隔**: 5分钟（稳定）
