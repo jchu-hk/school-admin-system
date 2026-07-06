@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-06-30T12:01:31Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "招聘模块5个任务全部完成 (#188-192), 提交到main. 包括: 职位发布/申请管理/面试管理/流程跟踪/数据看板",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "招聘模块5个任务全部完成 (#188-192), 提交到main. 包括: 职位发布/申请管理/面试"
-    }
-  },
-  {
     "timestamp": "2026-06-30T14:40:15Z",
     "from": "PM",
     "to": "DEVOPS",
@@ -1091,5 +1079,17 @@
     "to": "PM",
     "message": "[Student Management E2E] 开始执行localhost测试",
     "type": "received"
+  },
+  {
+    "timestamp": "2026-07-06T11:56:28Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Student Management E2E] 测试执行中断: 8个测试执行，报告未完成，需要重新生成报告",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Student Management E2E] 测试执行中断: 8个测试执行，报告未完成，需要重新"
+    }
   }
 ]

@@ -26,9 +26,9 @@
       "lastUpdate": "2026-07-06T05:44:05Z"
     },
     "QA": {
-      "status": "running",
-      "task": "[Student Management] 使用localhost重新执行E2E测试",
-      "lastUpdate": "2026-07-06T09:11:08Z"
+      "status": "idle",
+      "task": "[Student Management E2E] 测试执行中断: 8个测试执行，报告未完成，需要重新生成报告",
+      "lastUpdate": "2026-07-06T11:56:28Z"
     },
     "REQ": {
       "status": "idle",
