@@ -212,3 +212,35 @@ docker compose exec backend npm run migration:run
 cd /workspace/projects/workspace
 python3 skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/school-admin-system
 ```
+
+---
+
+## 🧪 QA Module Test Cases
+
+### Student Management Module (2026-07-06)
+
+| Module | Test Date | Status | Report |
+|--------|-----------|--------|--------|
+| Student Management (MOD-STU-001 ~ MOD-STU-011) | 2026-07-06 | ⚠️ Blocked (Tool Issue) | [查看报告](./qa_report/student-management-qa-report-2026-07-06.md) |
+
+**测试覆盖范围**:
+- 学生档案 CRUD (创建、查询、编辑、删除)
+- 班级分配管理
+- 学生状态管理
+- 搜索与筛选功能
+- 权限控制
+- 数据导入/导出
+
+**测试状态说明**:
+- ✅ **Passed**: 所有测试案例通过
+- ❌ **Failed**: 发现缺陷，需要修复
+- ⚠️ **Blocked**: 测试执行受阻（工具问题、环境问题等）
+- ⏳ **Pending**: 等待执行
+
+**测试案例文档**: [student-management-test-cases-2026-07-06.md](./qa_report/student-management-test-cases-2026-07-06.md)
+
+### Previous Test Results
+
+| Module | Test Date | Status | Notes |
+|--------|-----------|--------|-------|
+| 学生管理新增功能 | 2026-07-05 | ✅ Passed | Human QA 手动测试 |

@@ -1,9 +1,9 @@
 {
   "agents": {
     "PM": {
-      "status": "idle",
-      "task": "[Bug #205] 已解决 - staff1 登录正常，问题是 DNS 缓存",
-      "lastUpdate": "2026-07-05T15:08:09Z"
+      "status": "running",
+      "task": "[功能性测试] 重新测试 Student Management Module - 包含完整测试案例和测试报告",
+      "lastUpdate": "2026-07-06T02:52:43Z"
     },
     "DEVOPS": {
       "status": "idle",
@@ -17,18 +17,18 @@
     },
     "CHECKER": {
       "status": "idle",
-      "task": "等待任务",
-      "lastUpdate": "2026-06-30T23:15:00+08:00"
+      "task": "[Issue #140] 审查完成: CONDITIONAL PASS - 发现1个严重问题，2个中等问题，1个建议",
+      "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
       "status": "idle",
-      "task": "[Issue #196] 修复完成，commit: https://github.com/jchu-hk/school-admin-system/commit/",
-      "lastUpdate": "2026-07-04T11:31:45Z"
+      "task": "[Issue #140] 修复完成: inquiry.entity.ts aiIntent字段已添加@Column装饰器",
+      "lastUpdate": "2026-07-06T01:26:59Z"
     },
     "QA": {
-      "status": "terminated",
-      "task": "Issue #155验收超时 (17分钟)",
-      "lastUpdate": "2026-07-01T15:57:44Z"
+      "status": "idle",
+      "task": "[Student Management] 测试受阻: Playwright 配置错误导致无法执行自动化测试。已完成测试案例文档和测试报告。发现 1 个 P2 缺",
+      "lastUpdate": "2026-07-06T03:01:57Z"
     },
     "REQ": {
       "status": "idle",

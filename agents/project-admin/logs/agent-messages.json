@@ -1,96 +1,5 @@
 [
   {
-    "timestamp": "2026-06-30T02:20:30Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "开始验证 Dashboard 修复",
-    "type": "received",
-    "agent_status": {
-      "agent": "QA",
-      "status": "running",
-      "task": "验证 Dashboard 修复"
-    }
-  },
-  {
-    "timestamp": "2026-06-30T03:03:00Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "Tunnel URLs 生成完成，但 Cloudflare 530 问题仍存在，建议本地访问",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "idle",
-      "task": "Tunnel setup complete"
-    }
-  },
-  {
-    "timestamp": "2026-06-30T03:03:30Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "Dashboard 修复验证通过，DEVOPS 状态正确显示为 idle",
-    "type": "done",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "Dashboard fix verified"
-    }
-  },
-  {
-    "timestamp": "2026-06-30T03:34:00Z",
-    "from": "PM",
-    "to": "system",
-    "message": "所有任务完成，更新 Agent 模板，清理状态",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "All tasks completed"
-    }
-  },
-  {
-    "timestamp": "2026-06-30T06:23:43Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "Setup Docker images for Mac local testing environment",
-    "type": "assign"
-  },
-  {
-    "timestamp": "2026-06-30T06:24:44Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "Setup Docker images for Mac local testing environment",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "Setup Docker images for Mac local testing environm"
-    }
-  },
-  {
-    "timestamp": "2026-06-30T06:43:31Z",
-    "from": "PM",
-    "to": "CHECKER",
-    "message": "Review requirement doc for Issue #175: 教师招聘管理模块",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "Review requirement doc for Issue #175: 教师招聘管理模块"
-    }
-  },
-  {
-    "timestamp": "2026-06-30T06:48:16Z",
-    "from": "CHECKER",
-    "to": "PM",
-    "message": "REQ审查完成：PASS，需补充DB-SCHEMA/Data-Dictionary/API文档",
-    "type": "done",
-    "agent_status": {
-      "agent": "CHECKER",
-      "status": "idle",
-      "task": "REQ审查完成：PASS，需补充DB-SCHEMA/Data-Dictionary/API文档"
-    }
-  },
-  {
     "timestamp": "2026-06-30T06:49:38Z",
     "from": "CHECKER",
     "to": "PM",
@@ -1105,6 +1014,92 @@
       "agent": "PM",
       "status": "idle",
       "task": "[Bug #205] 已解决 - staff1 登录正常，问题是 DNS 缓存"
+    }
+  },
+  {
+    "timestamp": "2026-07-06T01:09:11Z",
+    "from": "PM",
+    "to": "CHECKER",
+    "message": "[Issue #140] TypeORM实体元数据警告审查 - 按行业标准检查",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #140] TypeORM实体元数据警告审查 - 按行业标准检查"
+    }
+  },
+  {
+    "timestamp": "2026-07-06T01:09:56Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #140] 开始TypeORM审查",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-06T01:11:37Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #140] 审查完成: CONDITIONAL PASS - 发现1个严重问题，2个中等问题，1个建议",
+    "type": "passed",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "idle",
+      "task": "[Issue #140] 审查完成: CONDITIONAL PASS - 发现1个严重问题，2个中"
+    }
+  },
+  {
+    "timestamp": "2026-07-06T01:26:12Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #140] 修复 inquiry.entity.ts - aiIntent字段缺少@Column装饰器",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #140] 修复 inquiry.entity.ts - aiIntent字段缺少@C"
+    }
+  },
+  {
+    "timestamp": "2026-07-06T01:26:59Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #140] 修复完成: inquiry.entity.ts aiIntent字段已添加@Column装饰器",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[Issue #140] 修复完成: inquiry.entity.ts aiIntent字段已添加"
+    }
+  },
+  {
+    "timestamp": "2026-07-06T02:52:43Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[功能性测试] 重新测试 Student Management Module - 包含完整测试案例和测试报告",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[功能性测试] 重新测试 Student Management Module - 包含完整测试案例和"
+    }
+  },
+  {
+    "timestamp": "2026-07-06T02:53:34Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Student Management] 开始功能性测试",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-06T03:01:57Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Student Management] 测试受阻: Playwright 配置错误导致无法执行自动化测试。已完成测试案例文档和测试报告。发现 1 个 P2 缺陷 (BUG-QA-001)。建议修复后重新执行。",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Student Management] 测试受阻: Playwright 配置错误导致无法执行自动"
     }
   }
 ]
