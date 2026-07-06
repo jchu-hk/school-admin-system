@@ -1,11 +1,11 @@
 {
   "lastChecks": {
-    "system": 1783306283,
-    "disk": 1751798100,
-    "dashboard": 1783306283,
-    "github": 1783306283
+    "system": 1751770800,
+    "github": 1751770800,
+    "dashboard": 1751770800,
+    "git": 1751770800
   },
-  "lastCheckTime": "2026-07-06T10:35:00+08:00",
-  "status": "ok",
-  "notes": "Monday 10:35 AM - all systems healthy, 14 open issues (P0/P1: 0), Dashboard updated, disk 84%, no blockers"
+  "lastCommit": "40d33f2",
+  "status": "HEARTBEAT_OK",
+  "notes": "周一上午11:40检查：系统运行稳定，14个Open Issue均为功能需求，无阻塞Bug"
 }
