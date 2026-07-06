@@ -27,8 +27,8 @@
     },
     "QA": {
       "status": "idle",
-      "task": "[Student Management] 测试受阻: Playwright 配置错误导致无法执行自动化测试。已完成测试案例文档和测试报告。发现 1 个 P2 缺",
-      "lastUpdate": "2026-07-06T03:01:57Z"
+      "task": "[Student Management E2E] 测试完成但被阻塞: 0/35 通过\n\n**根本原因**: Coze.dev 平台部署的应用在 headless",
+      "lastUpdate": "2026-07-06T06:03:43Z"
     },
     "REQ": {
       "status": "idle",

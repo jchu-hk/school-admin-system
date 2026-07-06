@@ -1,29 +1,5 @@
 [
   {
-    "timestamp": "2026-06-30T11:34:02Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "Issue #188 完成: 职位发布与管理 (F-REC-001) - 创建/发布/暂停/恢复/关闭职位API, 提交 abc0cf8",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "Issue #188 完成: 职位发布与管理 (F-REC-001) - 创建/发布/暂停/恢复/关"
-    }
-  },
-  {
-    "timestamp": "2026-06-30T11:41:17Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "Issue #189 完成: 简历收集与筛选 (F-REC-002) - 申请提交/状态更新/筛选/拒绝API, 提交 558cd88",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "Issue #189 完成: 简历收集与筛选 (F-REC-002) - 申请提交/状态更新/筛选/"
-    }
-  },
-  {
     "timestamp": "2026-06-30T11:55:04Z",
     "from": "DEV",
     "to": "PM",
@@ -1096,5 +1072,29 @@
     "to": "PM",
     "message": "[Student Management E2E] 开始执行完整测试",
     "type": "received"
+  },
+  {
+    "timestamp": "2026-07-06T06:00:54Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[Student Management E2E] 重新执行完整测试 - 请确认状态已更新",
+    "type": "assign",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[Student Management E2E] 重新执行完整测试 - 请确认状态已更新"
+    }
+  },
+  {
+    "timestamp": "2026-07-06T06:03:43Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Student Management E2E] 测试完成但被阻塞: 0/35 通过\n\n**根本原因**: Coze.dev 平台部署的应用在 headless Chromium 中无法执行 JavaScript\n- Vue Router 警告: No routes matched location \"/school-admin/\"\n- Root 元素为空，Vue 未挂载\n\n**技术分析**:\n- HTML/JS/CSS 资源均可正常下载 (HTTP 200)\n- JS bundle 1.5MB 下载成功\n- 但浏览器不执行模块脚本\n\n**QA报告**: /workspace/projects/workspace/qa_report/student-management-qa-report-2026-07-06.md\n\n**建议**:\n1. DEV 检查 Coze.dev 部署配置\n2. 或使用 headed 模式测试\n3. 或修复 Vue Router base path",
+    "type": "passed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Student Management E2E] 测试完成但被阻塞: 0/35 通过\n\n**根本原因"
+    }
   }
 ]

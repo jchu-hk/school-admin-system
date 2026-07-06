@@ -221,6 +221,7 @@ python3 skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/
 
 | Module | Test Date | Status | Report |
 |--------|-----------|--------|--------|
+| Student Management (E2E - 35 Cases) | 2026-07-06 | ⚠️ Blocked (Environment) | [查看报告](./qa_report/student-management-qa-report-2026-07-06.md) |
 | Student Management (MOD-STU-001 ~ MOD-STU-011) | 2026-07-06 | ⚠️ Blocked (Tool Issue) | [查看报告](./qa_report/student-management-qa-report-2026-07-06.md) |
 
 **测试覆盖范围**:

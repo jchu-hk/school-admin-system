@@ -1,211 +1,140 @@
-# 学生管理模块 QA 测试报告
-
-**报告日期**: 2026-07-06  
-**测试执行人**: QA Agent  
-**测试环境**: https://expenses-forests-collections-pad.trycloudflare.com  
-**后端地址**: http://localhost:3000  
-**前端地址**: http://localhost:8080  
-**测试账号**: staff1 / Admin123!  
-**模块版本**: v1.5.7  
+# Student Management E2E QA Report
+**测试日期**: 2026-07-06
+**测试人员**: QA Agent
+**测试环境**: Coze.dev Cloudflare Tunnel
+**Base URL**: https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/
 
 ---
 
-## 📊 执行摘要
+## 📊 测试统计
 
-本次测试针对 **学生管理模块 (Student Management Module)** 进行全面功能测试，涵盖学生档案管理、信息查询、编辑、删除、班级分配、状态管理、搜索与筛选等核心功能。
-
-### 测试目标
-- 验证模块核心功能是否符合 SPEC-COMPLETE.md 中的功能规格 (F-STU-001, F-STU-002)
-- 验证 UI/UX 交互流畅性
-- 验证数据一致性和权限控制
-- 验证边界条件和错误处理
-
-### 测试结论
-⚠️ **测试执行受阻** - 由于 E2E 测试框架 (Playwright) 配置问题，自动化测试未能完全执行。测试环境后端服务运行正常，前端服务运行正常，但测试工具存在技术故障，需要修复后重新执行。
+| 指标 | 数值 |
+|------|------|
+| 总测试用例 | 35 |
+| 已执行 | 0 |
+| 通过 | 0 |
+| 失败 | 0 |
+| 阻塞 | 1 (环境问题) |
+| 通过率 | N/A |
 
 ---
 
-## 📈 测试统计
+## 🔍 环境验证
 
-| 测试类型 | 计划数 | 已执行 | 通过 | 失败 | 受阻 (BLOCK) |
-|----------|--------|--------|------|------|--------------|
-| 功能测试 | 20 | 0 | 0 | 0 | 20 |
-| 界面测试 | 5 | 0 | 0 | 0 | 5 |
-| 集成测试 | 3 | 0 | 0 | 0 | 3 |
-| **总计** | **28** | **0** | **0** | **0** | **28** |
+### 基础连接
+| 检查项 | 结果 | 说明 |
+|--------|------|------|
+| HTTP连接 | ✅ 通过 | HTTP 200 OK |
+| HTML加载 | ✅ 通过 | 页面标题: 智慧校园管理系统 |
+| JS Bundle下载 | ✅ 通过 | 1.5MB, 下载成功 |
+| CSS加载 | ✅ 通过 | 200 OK |
+| 第三方资源 | ✅ 通过 | Coze CDN 资源正常 |
 
-- **测试通过率**: N/A (未执行)
-- **测试受阻率**: 100% (28/28)
-- **严重缺陷数**: 0 (未执行)
-- **建议缺陷数**: 1 (测试工具问题)
-
----
-
-## 🔍 详细测试结果
-
-### 功能测试 (20个测试案例)
-
-| 测试案例ID | 测试案例名称 | 优先级 | 预期结果 | 实际结果 | 状态 |
-|------------|--------------|--------|----------|----------|------|
-| TC-STU-001 | 学生档案列表页面加载 | P0 | UI元素正确显示 | 未执行 | BLOCK |
-| TC-STU-002 | 学生列表数据加载 | P0 | 数据正确加载 | 未执行 | BLOCK |
-| TC-STU-003 | 创建学生档案 - 基本信息填写 | P0 | 自动生成学号并创建成功 | 未执行 | BLOCK |
-| TC-STU-004 | 创建学生档案 - 完整信息 | P0 | 所有字段正确保存 | 未执行 | BLOCK |
-| TC-STU-005 | 创建学生档案 - 表单验证 | P0 | 必填字段验证通过 | 未执行 | BLOCK |
-| TC-STU-006 | 编辑学生档案 | P0 | 修改成功，学号不变 | 未执行 | BLOCK |
-| TC-STU-007 | 删除学生档案 | P0 | 软删除成功 | 未执行 | BLOCK |
-| TC-STU-008 | 学生搜索功能 | P0 | 搜索结果正确 | 未执行 | BLOCK |
-| TC-STU-009 | 班级筛选功能 | P0 | 筛选结果正确 | 未执行 | BLOCK |
-| TC-STU-010 | 状态筛选功能 | P0 | 筛选结果正确 | 未执行 | BLOCK |
-| TC-STU-011 | 组合筛选功能 | P0 | 组合筛选生效 | 未执行 | BLOCK |
-| TC-STU-012 | 查看学生详情 | P0 | 显示完整档案信息 | 未执行 | BLOCK |
-| TC-STU-013 | 班级分配 | P0 | 分配成功 | 未执行 | BLOCK |
-| TC-STU-014 | 修改学生状态 | P0 | 状态修改成功 | 未执行 | BLOCK |
-| TC-STU-015 | 分页功能 | P1 | 分页正常 | 未执行 | BLOCK |
-| TC-STU-016 | 学生数据导出 | P1 | 导出成功 | 未执行 | BLOCK |
-| TC-STU-017 | 学生数据导入 | P1 | 导入成功 | 未执行 | BLOCK |
-| TC-STU-018 | 学生照片上传 | P1 | 上传成功 | 未执行 | BLOCK |
-| TC-STU-019 | 权限控制 - 未登录访问 | P0 | 重定向到登录页 | 未执行 | BLOCK |
-| TC-STU-020 | 数据一致性验证 | P0 | 数据一致 | 未执行 | BLOCK |
-
-### 界面测试 (5个测试案例)
-
-| 测试案例ID | 测试案例名称 | 优先级 | 预期结果 | 实际结果 | 状态 |
-|------------|--------------|--------|----------|----------|------|
-| UI-STU-001 | 响应式布局 | P1 | 适配不同屏幕 | 未执行 | BLOCK |
-| UI-STU-002 | 表格排序 | P1 | 排序功能正常 | 未执行 | BLOCK |
-| UI-STU-003 | 加载状态显示 | P1 | 显示加载动画 | 未执行 | BLOCK |
-| UI-STU-004 | 错误提示样式 | P1 | 样式清晰易读 | 未执行 | BLOCK |
-| UI-STU-005 | 空状态页面 | P1 | 显示空状态提示 | 未执行 | BLOCK |
-
-### 集成测试 (3个测试案例)
-
-| 测试案例ID | 测试案例名称 | 优先级 | 预期结果 | 实际结果 | 状态 |
-|------------|--------------|--------|----------|----------|------|
-| INT-STU-001 | 学生-班级关联 | P0 | 关联正确 | 未执行 | BLOCK |
-| INT-STU-002 | 学生-用户关联 | P0 | 关联正确 | 未执行 | BLOCK |
-| INT-STU-003 | 学生-监护人关联 | P1 | 关联正确 | 未执行 | BLOCK |
+### 应用状态
+| 检查项 | 结果 | 说明 |
+|--------|------|------|
+| Vue组件挂载 | ❌ 失败 | Root元素为空 |
+| 路由匹配 | ❌ 失败 | 警告: No routes matched location |
+| 表单元素 | ❌ 失败 | 未找到登录表单 |
+| 模块执行 | ❌ 失败 | JS bundle 未被执行 |
 
 ---
 
-## 🐛 发现的缺陷
+## ⚠️ 阻塞问题
 
-| 缺陷ID | 测试案例 | 严重程度 | 描述 | 状态 |
-|--------|----------|----------|------|------|
-| BUG-QA-001 | 环境准备 | P2 | E2E 测试框架 (Playwright) 配置错误，导致无法执行测试。错误信息: "Playwright Test did not expect test.describe() to be called here." | 待修复 |
+### 问题 #1: Vue应用未挂载
 
-### 缺陷详情
+**严重程度**: P0 - 阻塞所有测试
 
-**BUG-QA-001: Playwright 测试框架配置错误**
-- **严重程度**: P2 (中等)
-- **影响范围**: 所有自动化 E2E 测试
-- **问题描述**: 执行 `npx playwright test` 时报错，提示 `test.describe()` 调用位置异常。可能是配置文件导入问题或依赖版本冲突。
-- **复现步骤**:
-  1. 进入 `e2e-tests` 目录
-  2. 执行 `npx playwright test tests/student-management.spec.ts`
-  3. 观察错误信息
-- **建议修复方案**:
-  - 检查 `playwright.config.ts` 是否有异常导入
-  - 验证 `@playwright/test` 版本一致性
-  - 隔离测试文件，确保没有全局配置污染
-  - 参考 Playwright 官方文档修复配置结构
-- **负责人**: DEV
-- **优先级**: P2 (建议在下次迭代前修复)
+**现象**:
+```
+Console: No routes matched location "/school-admin/"
+Root element: EMPTY
+JS module: loaded but not executed
+```
 
----
+**根本原因**:
+1. Coze.dev 平台部署的应用在 headless 浏览器中无法正常执行 JavaScript
+2. Vue Router 无法匹配 `/school-admin/` 路径
+3. 应用无法完成 hydration，导致 #root 元素保持为空
 
-## 🌍 环境状态
+**技术分析**:
+- HTML 和 JS bundle 均可正常下载（HTTP 200）
+- 浏览器控制台显示路由不匹配警告
+- `networkidle` 状态下等待 10 秒，Vue 组件仍未挂载
+- 模块脚本加载标记为 `loaded: false`
 
-### 服务状态
+**错误日志**:
+```
+[warn] No routes matched location "/school-admin/"
+[warn] [Console Bridge] Cannot send message: parent origin not allowed
+```
 
-| 服务 | 状态 | 备注 |
-|------|------|------|
-| Frontend (Nginx) | ✅ 运行中 | 端口 8080 |
-| Backend (NestJS) | ✅ 运行中 | 端口 3000 |
-| PostgreSQL | ✅ 运行中 | 端口 5432 |
-| Redis | ✅ 运行中 | 端口 6379 |
-| Kafka | ✅ 运行中 | 端口 9092 |
-
-### 访问地址
-
-- **测试环境**: https://expenses-forests-collections-pad.trycloudflare.com
-- **本地前端**: http://localhost:8080
-- **本地后端**: http://localhost:3000
-- **测试账号**: staff1 / Admin123!
-
-### 数据库版本
-
-- **数据库**: school_admin
-- **Schema 版本**: 最新 (通过 Docker 容器同步)
-- **测试数据**: 包含示例学生数据和班级数据
+**测试执行日志位置**: `/workspace/projects/workspace/e2e-tests/test-execution.log`
 
 ---
 
-## 📝 风险评估
+## 🔧 建议修复方案
 
-| 风险项 | 风险等级 | 描述 | 缓解措施 |
-|--------|----------|------|----------|
-| 测试工具故障 | 高 | Playwright 配置错误导致无法执行自动化测试 | 修复配置后重新执行；可临时转为手动测试 |
-| 环境稳定性 | 低 | Cloudflare Tunnel 可能不稳定 | 定期检查 Tunnel 状态，准备备用访问方式 |
-| 数据一致性 | 中 | 测试数据可能污染生产环境 | 使用独立测试数据库；测试后清理数据 |
+### 方案 1: 修复 Coze.dev 平台部署配置
+**优先级**: P1
+**负责人**: DEV
 
----
+1. 检查 Coze.dev 平台是否需要特殊配置来启用 JavaScript
+2. 确认 Cloudflare Tunnel 配置是否正确
+3. 查看 Coze.dev 部署文档是否有 headless 浏览器兼容性说明
 
-## ✅ 验收标准参考
+### 方案 2: 使用真实浏览器测试
+**优先级**: P2
+**负责人**: QA
 
-本次测试依据以下文档设计测试案例：
+考虑使用 headed 模式或真实浏览器环境测试，而非 headless Chromium。
 
-- **功能规格**: SPEC-COMPLETE.md Module 16: 学生管理模块 (MOD-STU-001 ~ MOD-STU-011)
-- **功能定义**: 
-  - F-STU-001: 学生档案 CRUD (学号自动生成、软删除)
-  - F-STU-002: 班级分配管理 (按学年动态调整)
-  - F-STU-003: 学生-用户关联
-- **E2E 测试**: e2e-tests/tests/student-management.spec.ts
-- **相关 Issues**: #153, #154, #155 (P0 缺陷已修复)
+### 方案 3: 修复路由配置
+**优先级**: P2
+**负责人**: DEV
 
-### 关键验收点 (AC)
-
-- [ ] AC-01: 系统自动生成学号 `2026000001`（2026年第1个入学学生）
-- [ ] AC-02: 系统生成学号 `2026000123`（第123个学生）
-- [ ] AC-03: 更新地址时 student_id 保持不变
-- [ ] AC-04: 退学后 status=withdrawn，学号保留不重复使用
-- [ ] AC-05: 新学生立即显示在列表中
-- [ ] AC-06: 班级下拉框显示当前学年所有班级
-
-**注**: 由于测试执行受阻，以上验收点未经验证。
+检查 Vue Router 配置是否需要添加 base path:
+```typescript
+const router = createRouter({
+  history: createWebHistory('/school-admin'),
+  routes: [...]
+})
+```
 
 ---
 
-## 🔄 后续行动建议
+## 📋 测试用例状态
 
-1. **修复 Playwright 配置** (P0 - 阻塞项)
-   - 排查 `playwright.config.ts` 配置问题
-   - 验证依赖版本一致性
-   - 修复后重新运行 E2E 测试
-
-2. **执行手动测试** (P1 - 备选方案)
-   - 如果 E2E 短期内无法修复，转为手动验证
-   - 重点验证核心功能: TC-STU-003 ~ TC-STU-014
-
-3. **环境准备** (P2)
-   - 确认测试数据库包含完整测试数据
-   - 验证 Cloudflare Tunnel 稳定性
-
-4. **回归测试** (P1)
-   - 修复 BUG-QA-001 后，重新执行完整测试套件
-   - 确保所有 P0 测试案例通过
+| 用例ID | 用例名称 | 状态 | 说明 |
+|--------|----------|------|------|
+| SM-001 | 学生列表页面正确加载 | 🔴 阻塞 | 环境问题 |
+| SM-002 | 学生列表数据正确加载 | 🔴 阻塞 | 环境问题 |
+| SM-003 | 分页导航功能正常 | 🔴 阻塞 | 环境问题 |
+| SM-004 | 点击学生行可查看详情 | 🔴 阻塞 | 环境问题 |
+| SM-005 | 班级筛选器显示所有班级 | 🔴 阻塞 | 环境问题 |
+| SM-006 | 按班级筛选学生列表 | 🔴 阻塞 | 环境问题 |
+| SM-007 | 状态筛选器显示所有状态 | 🔴 阻塞 | 环境问题 |
+| ... | (其余28个用例) | 🔴 阻塞 | 环境问题 |
 
 ---
 
 ## 📎 附件
 
-- [测试案例文档](./student-management-test-cases-2026-07-06.md)
-- [SPEC-COMPLETE.md](../docs/school-admin-system/SPEC-COMPLETE.md)
-- [E2E 测试代码](../e2e-tests/tests/student-management.spec.ts)
-- [Playwright 配置](../e2e-tests/playwright.config.ts)
+- 测试执行日志: `/workspace/projects/workspace/e2e-tests/test-execution.log`
+- 测试截图: `/workspace/projects/workspace/e2e-tests/reports/screenshots/`
+- Playwright 报告: `/workspace/projects/workspace/e2e-tests/playwright-report/`
 
 ---
 
-**报告生成时间**: 2026-07-06 10:53 GMT+8  
-**文档版本**: v1.0  
-**测试状态**: ⚠️ 受阻 (Blocked by Test Tool Issue)
+## ✅ 后续行动计划
+
+1. **DEV**: 检查 Coze.dev 平台部署配置，修复 JavaScript 执行问题
+2. **DEV**: 确认 Vue Router base path 配置正确
+3. **QA**: 环境修复后重新执行完整 E2E 测试
+4. **PM**: 评估是否需要切换测试环境
+
+---
+
+**报告生成时间**: 2026-07-06 14:05 GMT+8
+**Agent**: QA
