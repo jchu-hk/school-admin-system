@@ -1,11 +1,10 @@
 {
   "lastChecks": {
-    "system": 1751799900,
-    "github": 1751799900,
-    "dashboard": 1751799900,
-    "git": 1751799900
+    "system": 1751798700,
+    "github": 1751798700,
+    "dashboard": 1751798700
   },
-  "lastCommit": "4bc1e27",
+  "lastHeartbeat": "2026-07-06T16:25:00+08:00",
   "status": "HEARTBEAT_OK",
-  "notes": "Mon 14:05 - system stable, backend healthy, all 10 containers up 30h+, last check 10min ago"
+  "notes": "系统运行32小时稳定，无P0/P1阻塞，所有Agent idle，14个Open Issues（均为P2/P3功能需求）"
 }
