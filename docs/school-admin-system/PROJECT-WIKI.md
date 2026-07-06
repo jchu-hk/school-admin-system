@@ -79,29 +79,33 @@ python skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/s
 
 ## 🧪 测试环境
 
-> ⚠️ **最后更新**: 2026-07-03 08:11 (GMT+8)
-> ✅ **本地测试环境已刷新** (Commit: 78f4138)
-> ❌ Cloudflare Quick Tunnel **不可用** - Docker Hub 在中国网络受限
-> ✅ **推荐使用本地访问** (localhost)
+> ⚠️ **最后更新**: 2026-07-06 13:41 (GMT+8)
+> ✅ **外部访问可用** - Coze.dev 环境
+> ✅ **本地测试环境可用** - localhost
 
-| 服务 | 本地URL (本机) | 外部URL | 状态 |
-|------|----------------|---------|------|
-| **后端API** | http://localhost:3000/api | https://phentermine-tobacco-broader-requirement.trycloudflare.com | ✅ 已恢复 |
-| **前端** | http://localhost:8080 | https://april-full-detected-cut.trycloudflare.com | ✅ 已恢复 |
-| **健康检查** | http://localhost:3000/api/health | - | ✅ 本地可用 |
+### 🌐 外部访问 (Coze.dev)
 
-**访问方式说明**:
-- **本地访问** (✅ 推荐): 直接访问 `http://localhost:8080` 和 `http://localhost:3000`
-- **外部访问** (✅ 已恢复): Cloudflare Quick Tunnel 已重启
+| 服务 | URL |
+|------|-----|
+| **学校管理系统** | https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/ |
+| **学校管理系统 API** | https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/api/ |
+
+> 💡 **推荐使用此链接访问** - 稳定且无需本地运行
+
+### 🏠 本地访问
+
+| 服务 | URL | 状态 |
+|------|-----|------|
+| **后端API** | http://localhost:3000/api | ✅ |
+| **前端** | http://localhost:8080 | ✅ |
+| **健康检查** | http://localhost:3000/api/health | ✅ |
 
 **常见错误**:
 - `DNS_PROBE_FINISHED_NXDOMAIN` - URL 过期或未注册
 - `ERR_CONNECTION_CLOSED` - Tunnel 连接被关闭
-- `Error 1016` - Cloudflare 无法连接到源服务器
 
 **解决方案**:
-1. 使用本地访问（本机上最可靠）
-2. 配置 Cloudflare Named Tunnel（需要 Cloudflare 账号，更稳定）
+使用上方 Coze.dev 外部访问链接（推荐）或本地访问。
 | Grafana | [https://navigator-new-imaging-elections.trycloudflare.com](https://navigator-new-imaging-elections.trycloudflare.com) | ✅ 已配置 |
 
 ### 🍎 Mac 本地测试环境 (Docker镜像)
