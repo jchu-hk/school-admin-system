@@ -1,29 +1,5 @@
 [
   {
-    "timestamp": "2026-07-03T14:00:44Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "Issue #197 + #198: 修复完成, commit: 019d8db, 1文件 +25/-7",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "Issue #197 + #198: 修复完成, commit: 019d8db, 1文件 +25/"
-    }
-  },
-  {
-    "timestamp": "2026-07-03T14:01:01Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "Issue #197 + #198: 验收修复 (currentClass + 学号唯一性)",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "Issue #197 + #198: 验收修复 (currentClass + 学号唯一性)"
-    }
-  },
-  {
     "timestamp": "2026-07-03T14:01:33Z",
     "from": "QA",
     "to": "PM",
@@ -1083,5 +1059,19 @@
     "to": "PM",
     "message": "[回归验证] 开始执行学生管理完整测试（配置修正后）",
     "type": "received"
+  },
+  {
+    "timestamp": "2026-07-07T01:05:23Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "[Heartbeat] 2026-07-07 09:05 - 开始PM检查",
+    "type": "info"
+  },
+  {
+    "timestamp": "2026-07-07T01:15:50Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "[Heartbeat] 2026-07-07 09:15 - 系统稳定，无阻塞任务，完成 Dashboard 自动提交",
+    "type": "info"
   }
 ]
