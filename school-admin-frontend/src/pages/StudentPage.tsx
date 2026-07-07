@@ -67,6 +67,30 @@ const createStudentSchema = z.object({
   name_zh: z.string().min(1, '中文姓名不能为空').max(100),
   class_id: z.string().optional().or(z.literal('')),
   name_en: z.string().max(100).optional().or(z.literal('')),
+  gender: z.string(), // Allow empty string for form, validate on submit
+
+  birth_date: z.string().min(1, '请选择出生日期'),
+  admission_date: z.string().min(1, '请选择入学日期'),
+  hk_id: z.string().regex(/^[A-Z][0-9]{6}\([0-9A]\)$/, '香港身份证格式不正确').optional().or(z.literal('')),
+  phone: z.string().max(20).optional().or(z.literal('')),
+  email: z.string().email('邮箱格式不正确').optional().or(z.literal('')),
+  address: z.string().max(255).optional().or(z.literal('')),
+  guardian_name: z.string().max(100).optional().or(z.literal('')),
+  guardian_phone: z.string().max(20).optional().or(z.literal('')),
+  guardian_relationship: z.string().max(50).optional().or(z.literal('')),
+  emergency_contact: z.string().max(100).optional().or(z.literal('')),
+  emergency_phone: z.string().max(20).optional().or(z.literal('')),
+  notes: z.string().optional().or(z.literal('')),
+})
+
+const editStudentSchema = createStudentSchema
+
+// Submission validation schema (enforces required fields)
+const studentSubmissionSchema = z.object({
+  student_id: z.string().max(50).optional().or(z.literal('')),
+  name_zh: z.string().min(1, '中文姓名不能为空').max(100),
+  class_id: z.string().optional().or(z.literal('')),
+  name_en: z.string().max(100).optional().or(z.literal('')),
   gender: z.enum([Gender.MALE, Gender.FEMALE, Gender.OTHER], {
     required_error: '请选择性别',
   }),
@@ -83,8 +107,6 @@ const createStudentSchema = z.object({
   emergency_phone: z.string().max(20).optional().or(z.literal('')),
   notes: z.string().optional().or(z.literal('')),
 })
-
-const editStudentSchema = createStudentSchema
 
 type StudentFormData = z.infer<typeof createStudentSchema>
 
@@ -106,12 +128,12 @@ const STATUS_OPTIONS = [
 
 const TODAY = new Date().toISOString().split('T')[0]
 
-const DEFAULT_FORM_VALUES: StudentFormData = {
+const DEFAULT_FORM_VALUES = {
   student_id: '',
   name_zh: '',
   class_id: '',
   name_en: '',
-  gender: undefined,
+  gender: '',
   birth_date: '',
   admission_date: TODAY,
   hk_id: '',
@@ -401,22 +423,26 @@ export default function StudentPage() {
 
   // Handlers
   const handleCreate = async (data: StudentFormData) => {
+    // Validate with strict schema before submission
+    const validated = studentSubmissionSchema.parse(data)
     const token = getToken()
     await apiClient.post('/api/students', {
-      ...data,
+      ...validated,
       create_user_account: false,   // 学生档案 ≠ 系统账户
     }, {
       headers: { Authorization: `Bearer ${token}` },
     })
     setShowCreateModal(false)
-    reset({ ...createStudentSchema.parse({}), admission_date: TODAY })
+    reset(DEFAULT_FORM_VALUES)
     fetchStudents()
   }
 
   const handleUpdate = async (data: StudentFormData) => {
     if (!selectedStudent) return
+    // Validate with strict schema before submission
+    const validated = studentSubmissionSchema.parse(data)
     const token = getToken()
-    await apiClient.patch(`/api/students/${selectedStudent.id}`, data, {
+    await apiClient.patch(`/api/students/${selectedStudent.id}`, validated, {
       headers: { Authorization: `Bearer ${token}` },
     })
     setShowEditModal(false)
