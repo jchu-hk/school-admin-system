@@ -21,9 +21,9 @@
       "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
-      "status": "idle",
-      "task": "[Issue #205] 修复完成: Zod验证schema类型不匹配导致按钮点击无反应",
-      "lastUpdate": "2026-07-07T04:51:07Z"
+      "status": "running",
+      "task": "[Issue #206/#207] 修复新增学生页面的两个缺陷: 1) 所属班级下拉框无数据 2) 保存失败返回400错误",
+      "lastUpdate": "2026-07-07T06:22:02Z"
     },
     "QA": {
       "status": "idle",
