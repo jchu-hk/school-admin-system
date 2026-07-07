@@ -1,7 +1,7 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-05 23:42 GMT+8
-> Updated by: PM (automated tunnel refresh)
+> Last updated: 2026-07-06 00:30 GMT+8
+> Updated by: QA (automated test report refresh)
 
 ---
 
@@ -221,6 +221,7 @@ python3 skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/
 
 | Module | Test Date | Status | Report |
 |--------|-----------|--------|--------|
+| Student Management (E2E Regression - 35 Cases) | 2026-07-06 | ❌ Failed (28.57% Pass Rate) | [查看报告](./qa_report/student-management-regression-report-20260706.md) |
 | Student Management (E2E - 35 Cases) | 2026-07-06 | ⚠️ Blocked (Environment) | [查看报告](./qa_report/student-management-qa-report-2026-07-06.md) |
 | Student Management (MOD-STU-001 ~ MOD-STU-011) | 2026-07-06 | ⚠️ Blocked (Tool Issue) | [查看报告](./qa_report/student-management-qa-report-2026-07-06.md) |
 

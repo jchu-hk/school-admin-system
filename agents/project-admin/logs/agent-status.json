@@ -22,13 +22,13 @@
     },
     "DEV": {
       "status": "idle",
-      "task": "[前端修复] 完成：7个data-testid已全部补充",
-      "lastUpdate": "2026-07-06T15:15:45Z"
+      "task": "[P0排查] 完成：根因已找到并修复，页面渲染时间从32秒优化到2秒内，Playwright baseURL配置错误已修正",
+      "lastUpdate": "2026-07-06T16:00:14Z"
     },
     "QA": {
-      "status": "idle",
-      "task": "[测试更新] 完成：18个选择器已更新，额外修复了分页测试异步语法错误",
-      "lastUpdate": "2026-07-06T15:17:01Z"
+      "status": "running",
+      "task": "[回归验证] Playwright baseURL已修正，重新执行学生管理完整测试",
+      "lastUpdate": "2026-07-06T16:00:14Z"
     },
     "REQ": {
       "status": "idle",

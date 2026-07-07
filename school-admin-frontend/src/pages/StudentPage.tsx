@@ -106,303 +106,24 @@ const STATUS_OPTIONS = [
 
 const TODAY = new Date().toISOString().split('T')[0]
 
-// ============ Main Component ============
-export default function StudentPage() {
-  const [students, setStudents] = useState<Student[]>([])
-  const [loading, setLoading] = useState(true)
-  const [total, setTotal] = useState(0)
-  const [page, setPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [totalPages, setTotalPages] = useState(0)
-
-  // Modal states
-  const [showCreateModal, setShowCreateModal] = useState(false)
-  const [showEditModal, setShowEditModal] = useState(false)
-  const [showDetailModal, setShowDetailModal] = useState(false)
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
-
-  // Form
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<StudentFormData>({
-    resolver: zodResolver(editStudentSchema),
-    defaultValues: {
-      name_zh: '',
-      name_en: '',
-      gender: undefined,
-      birth_date: '',
-      admission_date: TODAY,
-      hk_id: '',
-      phone: '',
-      email: '',
-      address: '',
-      guardian_name: '',
-      guardian_phone: '',
-      guardian_relationship: '',
-      emergency_contact: '',
-      emergency_phone: '',
-      notes: '',
-    },
-  })
-
-  const fetchStudents = useCallback(async () => {
-    setLoading(true)
-    try {
-      const token = getToken()
-      if (!token) { window.location.href = '/login'; return }
-
-      const params = new URLSearchParams({ page: page.toString(), pageSize: PAGE_SIZE.toString() })
-      if (searchTerm) params.append('search', searchTerm)
-
-      const response = await apiClient.get<{ data: PaginatedResponse<Student> }>(
-        `/api/students?${params}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-
-      const { items, pagination } = response.data.data
-      setStudents(items || [])
-      setTotal(pagination.total)
-      setTotalPages(pagination.totalPages)
-    } catch (error) {
-      console.error('Failed to fetch students:', error)
-      if (isAxiosError(error) && error.response?.status === 401) {
-        window.location.href = '/login'
-      }
-    } finally {
-      setLoading(false)
-    }
-  }, [page, searchTerm])
-
-  useEffect(() => { fetchStudents() }, [fetchStudents])
-
-  // Handlers
-  const handleCreate = async (data: StudentFormData) => {
-    const token = getToken()
-    await apiClient.post('/api/students', {
-      ...data,
-      create_user_account: false,   // 学生档案 ≠ 系统账户
-    }, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    setShowCreateModal(false)
-    reset({ ...createStudentSchema.parse({}), admission_date: TODAY })
-    fetchStudents()
-  }
-
-  const handleUpdate = async (data: StudentFormData) => {
-    if (!selectedStudent) return
-    const token = getToken()
-    await apiClient.patch(`/api/students/${selectedStudent.id}`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    setShowEditModal(false)
-    reset()
-    fetchStudents()
-  }
-
-  const handleDelete = async () => {
-    if (!selectedStudent) return
-    const token = getToken()
-    await apiClient.delete(`/api/students/${selectedStudent.id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    setShowDeleteConfirm(false)
-    setSelectedStudent(null)
-    fetchStudents()
-  }
-
-  const openEditModal = (student: Student) => {
-    setSelectedStudent(student)
-    reset({
-      name_zh: student.name_zh,
-      name_en: student.name_en || '',
-      gender: student.gender,
-      birth_date: student.birth_date,
-      admission_date: student.admission_date,
-      hk_id: student.hk_id || '',
-      phone: student.phone || '',
-      email: student.email || '',
-      address: student.address || '',
-      guardian_name: student.guardian_name || '',
-      guardian_phone: student.guardian_phone || '',
-      guardian_relationship: student.guardian_relationship || '',
-      emergency_contact: student.emergency_contact || '',
-      emergency_phone: student.emergency_phone || '',
-      notes: student.notes || '',
-    })
-    setShowEditModal(true)
-  }
-
-  const openDetailModal = (student: Student) => {
-    setSelectedStudent(student)
-    setShowDetailModal(true)
-  }
-
-  // Render
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">学生管理</h2>
-        <button
-          onClick={() => { reset({ ...createStudentSchema.parse({}), admission_date: TODAY }); setShowCreateModal(true) }}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          data-testid="btn_new_student"
-        >
-          <Plus size={20} /> 新增学生
-        </button>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white rounded-xl shadow p-4">
-        <div className="flex gap-4 items-center">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <input
-                type="text"
-                placeholder="搜索学号或姓名..."
-                value={searchTerm}
-                onChange={(e) => { setSearchTerm(e.target.value); setPage(1) }}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-          <div className="w-48">
-            <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              data-testid="filter_class"
-            >
-              <option value="">全部班级</option>
-            </select>
-          </div>
-          <div className="w-48">
-            <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              data-testid="filter_status"
-            >
-              <option value="">全部状态</option>
-              {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">学号</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">姓名</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">性别</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">班级</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {loading ? (
-                <tr><td colSpan={6} className="px-4 py-12 text-center text-gray-500">加载中...</td></tr>
-              ) : students.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-12 text-center text-gray-500">暂无数据</td></tr>
-              ) : students.map((s) => (
-                <tr key={s.id} className="hover:bg-gray-50 cursor-pointer">
-                  <td className="px-4 py-3 text-sm text-gray-900">{s.student_id || '-'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{s.name_zh}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">
-                    {GENDER_OPTIONS.find(g => g.value === s.gender)?.label || s.gender}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{s.class_name || '-'}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${
-                      STATUS_OPTIONS.find(o => o.value === s.status)?.color || 'bg-gray-100'
-                    }`}>
-                      {STATUS_OPTIONS.find(o => o.value === s.status)?.label || s.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1">
-                      <button onClick={(e) => { e.stopPropagation(); openDetailModal(s) }}
-                        className="p-1.5 text-gray-500 hover:text-blue-600 rounded" title="查看"><Eye size={16} /></button>
-                      <button onClick={(e) => { e.stopPropagation(); openEditModal(s) }}
-                        className="p-1.5 text-gray-500 hover:text-green-600 rounded" title="编辑"><Edit2 size={16} /></button>
-                      <button onClick={(e) => { e.stopPropagation(); setSelectedStudent(s); setShowDeleteConfirm(true) }}
-                        className="p-1.5 text-gray-500 hover:text-red-600 rounded" title="删除"><Trash2 size={16} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-          <p className="text-sm text-gray-700">
-            显示第 {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} 条，共 {total} 条
-          </p>
-          <div className="flex gap-1">
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-              className="p-2 border rounded hover:bg-gray-50 disabled:opacity-40">
-              <ChevronLeft size={16} />
-            </button>
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              let num = totalPages <= 5 ? i + 1 : page <= 3 ? i + 1 : page >= totalPages - 2 ? totalPages - 4 + i : page - 2 + i
-              return (
-                <button key={num} onClick={() => setPage(num)}
-                  className={`w-9 h-9 border rounded text-sm ${num === page ? 'bg-blue-50 border-blue-500 text-blue-600' : 'hover:bg-gray-50'}`}>
-                  {num}
-                </button>
-              )
-            })}
-            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-              className="p-2 border rounded hover:bg-gray-50 disabled:opacity-40">
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Modals */}
-      {showCreateModal && (
-        <Modal title="新增学生" onClose={() => setShowCreateModal(false)}>
-          <StudentForm onSubmit={handleCreate} onCancel={() => setShowCreateModal(false)}
-            isSubmitting={isSubmitting} register={register} errors={errors}
-            handleSubmit={handleSubmit} />
-        </Modal>
-      )}
-      {showEditModal && selectedStudent && (
-        <Modal title="编辑学生" onClose={() => setShowEditModal(false)}>
-          <StudentForm onSubmit={handleUpdate} onCancel={() => setShowEditModal(false)}
-            isSubmitting={isSubmitting} register={register} errors={errors}
-            handleSubmit={handleSubmit} />
-        </Modal>
-      )}
-      {showDetailModal && selectedStudent && (
-        <Modal title="学生详情" onClose={() => setShowDetailModal(false)}>
-          <StudentDetail student={selectedStudent} />
-        </Modal>
-      )}
-      {showDeleteConfirm && selectedStudent && (
-        <Modal title="删除确认" onClose={() => setShowDeleteConfirm(false)}>
-          <div className="space-y-4">
-            <p className="text-gray-700">确定要删除学生 <span className="font-semibold">{selectedStudent.name_zh}</span> 吗？</p>
-            <p className="text-sm text-gray-500">此操作将软删除该学生档案。</p>
-            <div className="flex justify-end gap-3 pt-4 border-t">
-              <button onClick={() => setShowDeleteConfirm(false)} data-testid="btn-cancel" className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">取消</button>
-              <button onClick={handleDelete} data-testid="btn-confirm-delete" className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700">确认删除</button>
-            </div>
-          </div>
-        </Modal>
-      )}
-    </div>
-  )
+const DEFAULT_FORM_VALUES: StudentFormData = {
+  student_id: '',
+  name_zh: '',
+  class_id: '',
+  name_en: '',
+  gender: undefined,
+  birth_date: '',
+  admission_date: TODAY,
+  hk_id: '',
+  phone: '',
+  email: '',
+  address: '',
+  guardian_name: '',
+  guardian_phone: '',
+  guardian_relationship: '',
+  emergency_contact: '',
+  emergency_phone: '',
+  notes: '',
 }
 
 // ============ Sub-components ============
@@ -423,15 +144,6 @@ function Modal({ title, children, onClose }: { title: string; children: React.Re
   )
 }
 
-interface StudentFormProps {
-  onSubmit: (data: StudentFormData) => Promise<void>
-  handleSubmit: ReturnType<typeof useForm<StudentFormData>['handleSubmit']>
-  onCancel: () => void
-  isSubmitting: boolean
-  register: ReturnType<typeof useForm<StudentFormData>>['register']
-  errors: ReturnType<typeof useForm<StudentFormData>>['formState']['errors']
-}
-
 function Field({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
     <div>
@@ -444,6 +156,15 @@ function Field({ label, required, error, children }: { label: string; required?:
   )
 }
 
+interface StudentFormProps {
+  onSubmit: (data: StudentFormData) => Promise<void>
+  handleSubmit: ReturnType<typeof useForm<StudentFormData>['handleSubmit']>
+  onCancel: () => void
+  isSubmitting: boolean
+  register: ReturnType<typeof useForm<StudentFormData>>['register']
+  errors: ReturnType<typeof useForm<StudentFormData>>['formState']['errors']
+}
+
 function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register, errors }: StudentFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -453,17 +174,17 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
       </div>
       <div className="grid grid-cols-2 gap-4">
         <Field label="学号" error={errors.student_id}>
-          <input type="text" {...register('student_id')} data-testid="student_id"
+          <input type="text" {...register('student_id')} data-testid="field-student_id"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="例如：2026-0001" />
         </Field>
         <Field label="中文姓名" required error={errors.name_zh}>
-          <input type="text" {...register('name_zh')} data-testid="name_zh"
+          <input type="text" {...register('name_zh')} data-testid="field-name_zh"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.name_zh ? 'border-red-500' : 'border-gray-300'}`}
             placeholder="请输入中文姓名" />
         </Field>
         <Field label="所属班级" error={errors.class_id}>
-          <select {...register('class_id')} data-testid="class_id"
+          <select {...register('class_id')} data-testid="field-class_id"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="">请选择班级</option>
@@ -617,6 +338,289 @@ function StudentDetail({ student }: { student: Student }) {
       <div className="flex justify-end pt-3 border-t">
         <button onClick={() => window.close()} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">关闭</button>
       </div>
+    </div>
+  )
+}
+
+// ============ Main Component ============
+export default function StudentPage() {
+  const [students, setStudents] = useState<Student[]>([])
+  const [loading, setLoading] = useState(true)
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [totalPages, setTotalPages] = useState(0)
+
+  // Modal states
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showDetailModal, setShowDetailModal] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
+
+  // Form
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<StudentFormData>({
+    resolver: zodResolver(editStudentSchema),
+    defaultValues: DEFAULT_FORM_VALUES,
+  })
+
+  const fetchStudents = useCallback(async () => {
+    setLoading(true)
+    try {
+      const token = getToken()
+      if (!token) { window.location.href = '/login'; return }
+
+      const params = new URLSearchParams({ page: page.toString(), pageSize: PAGE_SIZE.toString() })
+      if (searchTerm) params.append('search', searchTerm)
+
+      const response = await apiClient.get<{ data: PaginatedResponse<Student> }>(
+        `/api/students?${params}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+
+      const { items, pagination } = response.data.data
+      setStudents(items || [])
+      setTotal(pagination.total)
+      setTotalPages(pagination.totalPages)
+    } catch (error) {
+      console.error('Failed to fetch students:', error)
+      if (isAxiosError(error) && error.response?.status === 401) {
+        window.location.href = '/login'
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [page, searchTerm])
+
+  useEffect(() => { fetchStudents() }, [fetchStudents])
+
+  // Handlers
+  const handleCreate = async (data: StudentFormData) => {
+    const token = getToken()
+    await apiClient.post('/api/students', {
+      ...data,
+      create_user_account: false,   // 学生档案 ≠ 系统账户
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    setShowCreateModal(false)
+    reset({ ...createStudentSchema.parse({}), admission_date: TODAY })
+    fetchStudents()
+  }
+
+  const handleUpdate = async (data: StudentFormData) => {
+    if (!selectedStudent) return
+    const token = getToken()
+    await apiClient.patch(`/api/students/${selectedStudent.id}`, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    setShowEditModal(false)
+    reset()
+    fetchStudents()
+  }
+
+  const handleDelete = async () => {
+    if (!selectedStudent) return
+    const token = getToken()
+    await apiClient.delete(`/api/students/${selectedStudent.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    setShowDeleteConfirm(false)
+    setSelectedStudent(null)
+    fetchStudents()
+  }
+
+  const openEditModal = (student: Student) => {
+    setSelectedStudent(student)
+    reset({
+      name_zh: student.name_zh,
+      name_en: student.name_en || '',
+      gender: student.gender,
+      birth_date: student.birth_date,
+      admission_date: student.admission_date,
+      hk_id: student.hk_id || '',
+      phone: student.phone || '',
+      email: student.email || '',
+      address: student.address || '',
+      guardian_name: student.guardian_name || '',
+      guardian_phone: student.guardian_phone || '',
+      guardian_relationship: student.guardian_relationship || '',
+      emergency_contact: student.emergency_contact || '',
+      emergency_phone: student.emergency_phone || '',
+      notes: student.notes || '',
+    })
+    setShowEditModal(true)
+  }
+
+  const openDetailModal = (student: Student) => {
+    setSelectedStudent(student)
+    setShowDetailModal(true)
+  }
+
+  // Render
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-gray-800">学生管理</h2>
+        <button
+          onClick={() => { reset(DEFAULT_FORM_VALUES); setShowCreateModal(true) }}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          data-testid="btn_new_student"
+        >
+          <Plus size={20} /> 新增学生
+        </button>
+      </div>
+
+      {/* Filters */}
+      <div className="bg-white rounded-xl shadow p-4">
+        <div className="flex gap-4 items-center">
+          <div className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              <input
+                type="text"
+                placeholder="搜索学号或姓名..."
+                value={searchTerm}
+                onChange={(e) => { setSearchTerm(e.target.value); setPage(1) }}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+          <div className="w-48">
+            <select
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              data-testid="filter_class"
+            >
+              <option value="">全部班级</option>
+            </select>
+          </div>
+          <div className="w-48">
+            <select
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              data-testid="filter_status"
+            >
+              <option value="">全部状态</option>
+              {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white rounded-xl shadow overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">学号</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">姓名</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">性别</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">班级</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {loading ? (
+                <tr><td colSpan={6} className="px-4 py-12 text-center text-gray-500">加载中...</td></tr>
+              ) : students.length === 0 ? (
+                <tr><td colSpan={6} className="px-4 py-12 text-center text-gray-500">暂无数据</td></tr>
+              ) : students.map((s) => (
+                <tr key={s.id} className="hover:bg-gray-50 cursor-pointer">
+                  <td className="px-4 py-3 text-sm text-gray-900">{s.student_id || '-'}</td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{s.name_zh}</td>
+                  <td className="px-4 py-3 text-sm text-gray-900">
+                    {GENDER_OPTIONS.find(g => g.value === s.gender)?.label || s.gender}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{s.class_name || '-'}</td>
+                  <td className="px-4 py-3">
+                    <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${
+                      STATUS_OPTIONS.find(o => o.value === s.status)?.color || 'bg-gray-100'
+                    }`}>
+                      {STATUS_OPTIONS.find(o => o.value === s.status)?.label || s.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-1">
+                      <button onClick={(e) => { e.stopPropagation(); openDetailModal(s) }}
+                        className="p-1.5 text-gray-500 hover:text-blue-600 rounded" title="查看"><Eye size={16} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); openEditModal(s) }}
+                        className="p-1.5 text-gray-500 hover:text-green-600 rounded" title="编辑"><Edit2 size={16} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); setSelectedStudent(s); setShowDeleteConfirm(true) }}
+                        className="p-1.5 text-gray-500 hover:text-red-600 rounded" title="删除"><Trash2 size={16} /></button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+          <p className="text-sm text-gray-700">
+            显示第 {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} 条，共 {total} 条
+          </p>
+          <div className="flex gap-1">
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+              className="p-2 border rounded hover:bg-gray-50 disabled:opacity-40">
+              <ChevronLeft size={16} />
+            </button>
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              let num = totalPages <= 5 ? i + 1 : page <= 3 ? i + 1 : page >= totalPages - 2 ? totalPages - 4 + i : page - 2 + i
+              return (
+                <button key={num} onClick={() => setPage(num)}
+                  className={`w-9 h-9 border rounded text-sm ${num === page ? 'bg-blue-50 border-blue-500 text-blue-600' : 'hover:bg-gray-50'}`}>
+                  {num}
+                </button>
+              )
+            })}
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+              className="p-2 border rounded hover:bg-gray-50 disabled:opacity-40">
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Modals */}
+      {showCreateModal && (
+        <Modal title="新增学生" onClose={() => setShowCreateModal(false)}>
+          <StudentForm onSubmit={handleCreate} onCancel={() => setShowCreateModal(false)}
+            isSubmitting={isSubmitting} register={register} errors={errors}
+            handleSubmit={handleSubmit} />
+        </Modal>
+      )}
+      {showEditModal && selectedStudent && (
+        <Modal title="编辑学生" onClose={() => setShowEditModal(false)}>
+          <StudentForm onSubmit={handleUpdate} onCancel={() => setShowEditModal(false)}
+            isSubmitting={isSubmitting} register={register} errors={errors}
+            handleSubmit={handleSubmit} />
+        </Modal>
+      )}
+      {showDetailModal && selectedStudent && (
+        <Modal title="学生详情" onClose={() => setShowDetailModal(false)}>
+          <StudentDetail student={selectedStudent} />
+        </Modal>
+      )}
+      {showDeleteConfirm && selectedStudent && (
+        <Modal title="删除确认" onClose={() => setShowDeleteConfirm(false)}>
+          <div className="space-y-4">
+            <p className="text-gray-700">确定要删除学生 <span className="font-semibold">{selectedStudent.name_zh}</span> 吗？</p>
+            <p className="text-sm text-gray-500">此操作将软删除该学生档案。</p>
+            <div className="flex justify-end gap-3 pt-4 border-t">
+              <button onClick={() => setShowDeleteConfirm(false)} data-testid="btn-cancel" className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">取消</button>
+              <button onClick={handleDelete} data-testid="btn-confirm-delete" className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700">确认删除</button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   )
 }

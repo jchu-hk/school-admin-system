@@ -54,11 +54,11 @@ test.describe('【基础功能】学生列表', () => {
     await expect(page.locator('select').first()).toBeVisible();
     
     // 验证表格头部
-    await expect(page.getByText('学号')).toBeVisible();
-    await expect(page.getByText('姓名')).toBeVisible();
-    await expect(page.getByText('班级')).toBeVisible();
-    await expect(page.getByText('状态')).toBeVisible();
-    await expect(page.getByText('操作')).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: '学号' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: '姓名' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: '班级' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: '状态' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: '操作' })).toBeVisible();
   });
 
   test('SM-002: 学生列表数据正确加载', async ({ page }) => {
@@ -275,17 +275,18 @@ test.describe('【CRUD功能】创建学生', () => {
     // 验证弹窗出现
     await expect(page.getByText('新增学生').first()).toBeVisible({ timeout: 5000 });
     
-    // 验证表单字段
+    // 验证表单字段（学生档案表单）
+    await expect(page.getByTestId('field-student_id')).toBeVisible();
     await expect(page.getByTestId('field-name_zh')).toBeVisible();
-    await expect(page.getByTestId('field-name_zh')).toBeVisible();
+    await expect(page.getByTestId('field-class_id')).toBeVisible();
     await expect(page.getByTestId('field-gender')).toBeVisible();
     await expect(page.getByTestId('field-birth_date')).toBeVisible();
-    await expect(page.getByTestId('field-name_zh')).toBeVisible();
+    await expect(page.getByTestId('field-admission_date')).toBeVisible();
     await expect(page.getByTestId('btn_save')).toBeVisible();
-    await expect(page.getByText('资助资格信息')).toBeVisible();
+    await expect(page.getByTestId('btn-cancel')).toBeVisible();
     
     // 关闭弹窗
-    await page.locator('button[title], button.rounded').first().click();
+    await page.getByTestId('btn-cancel').click();
   });
 
   test('SM-013: 成功创建新学生', async ({ page }) => {

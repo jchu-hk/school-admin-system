@@ -1,13 +1,33 @@
 {
   "version": "v1.5.5",
   "buildDate": "2026-07-06",
-  "gitCommit": "cd7c141",
+  "gitCommit": "4e708e4",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-06",
       "date": "2026-07-06",
       "changes": [
+        "dashboard update 23:49",
+        "dashboard update 23:49",
+        "dashboard update 23:48",
+        "dashboard update 23:48",
+        "dashboard update 23:36",
+        "dashboard update 23:36",
+        "dashboard update 23:36",
+        "dashboard update 23:35",
+        "dashboard update 23:32",
+        "dashboard update 23:32",
+        "dashboard update 23:32",
+        "dashboard update 23:31",
+        "dashboard update 23:18",
+        "dashboard update 23:17",
+        "dashboard update 23:17",
+        "完成测试选择器更新 + 前端data-testid修复 + 分析报告生成",
+        "dashboard update 23:17",
+        "dashboard update 23:17",
+        "dashboard update 23:16",
+        "dashboard update 23:15",
         "dashboard update 23:14",
         "dashboard update 23:14",
         "dashboard update 23:14",
@@ -17,22 +37,7 @@
         "dashboard update 23:13",
         "dashboard update 23:12",
         "dashboard update 23:12",
-        "dashboard update 23:12",
-        "dashboard update 23:04",
-        "dashboard update 23:03",
-        "dashboard update 23:03",
-        "dashboard update 23:03",
-        "dashboard update 22:50",
-        "dashboard update 22:50",
-        "dashboard update 22:50",
-        "dashboard update 22:03",
-        "dashboard update 21:33",
-        "dashboard update 21:25",
-        "dashboard update 21:23",
-        "dashboard update 21:23",
-        "E2E test for student management + version bump",
-        "dashboard update 19:56",
-        "update pnpm-lock.yaml for Playwright 1.60.0"
+        "dashboard update 23:12"
       ]
     }
   ]
