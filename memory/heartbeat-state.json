@@ -1,9 +1,7 @@
 {
   "lastChecks": {
-    "email": 1703275200,
-    "calendar": 1703260800,
-    "weather": null,
-    "backendHeartbeat": 1719705600,
-    "systemHealth": 1720338900
-  }
+    "systemHealth": 1783391400,
+    "backendHeartbeat": 1719705600
+  },
+  "checkCount": 12
 }
