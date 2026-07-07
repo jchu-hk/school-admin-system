@@ -405,8 +405,7 @@ export default function StudentPage() {
       if (searchTerm) params.append('search', searchTerm)
 
       const response = await apiClient.get<{ data: PaginatedResponse<Student> }>(
-        `/api/students?${params}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `/students?${params}`
       )
 
       const { items, pagination } = response.data.data
@@ -428,8 +427,7 @@ export default function StudentPage() {
       const token = getToken()
       if (!token) return
       const response = await apiClient.get<ClassApiResponse>(
-        '/api/classes',
-        { headers: { Authorization: `Bearer ${token}` } }
+        '/classes'
       )
       setClasses(response.data.data || [])
     } catch (error) {
@@ -444,7 +442,6 @@ export default function StudentPage() {
   const handleCreate = async (data: StudentFormData) => {
     // Validate with strict schema before submission
     const validated = studentSubmissionSchema.parse(data)
-    const token = getToken()
     // Build payload: strip class_id (not in CreateStudentDto — class allocation is separate)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { class_id, ...payload } = {
@@ -452,9 +449,7 @@ export default function StudentPage() {
       gender: validated.gender || undefined,
       create_user_account: false,
     }
-    await apiClient.post('/api/students', payload, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    await apiClient.post('/students', payload)
     setShowCreateModal(false)
     reset(DEFAULT_FORM_VALUES)
     fetchStudents()
@@ -464,12 +459,9 @@ export default function StudentPage() {
     if (!selectedStudent) return
     // Validate with strict schema before submission
     const validated = studentSubmissionSchema.parse(data)
-    const token = getToken()
-    await apiClient.patch(`/api/students/${selectedStudent.id}`, {
+    await apiClient.patch(`/students/${selectedStudent.id}`, {
       ...validated,
       gender: validated.gender || undefined, // send undefined instead of empty string
-    }, {
-      headers: { Authorization: `Bearer ${token}` },
     })
     setShowEditModal(false)
     reset()
@@ -479,9 +471,7 @@ export default function StudentPage() {
   const handleDelete = async () => {
     if (!selectedStudent) return
     const token = getToken()
-    await apiClient.delete(`/api/students/${selectedStudent.id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    await apiClient.delete(`/students/${selectedStudent.id}`)
     setShowDeleteConfirm(false)
     setSelectedStudent(null)
     fetchStudents()
