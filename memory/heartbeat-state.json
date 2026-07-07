@@ -1,19 +1,20 @@
 {
   "lastChecks": {
-    "system": 1783410300,
-    "git": 1751877300,
-    "github": 1751877300,
-    "dashboard": 1751877300
+    "system": 1783413300,
+    "git": 1783413300,
+    "github": 1783413300,
+    "dashboard": 1783413300
   },
   "currentStatus": {
-    "issue206": "ready-for-review-code-done",
-    "issue207": "ready-for-review-code-done",
+    "issue206": "ready-for-review",
+    "issue207": "ready-for-review",
+    "issue205": "ready-for-review",
     "qaPending": true,
     "systemHealth": "stable",
     "activeAgents": 0,
     "backendVersion": "10.1.0",
-    "backendContainer": "Up ~15 hours",
-    "notes": "#206/#207后端修复已部署生效，待QA验收"
-  },
-  "notes": "#206/#207待QA验收"
+    "backendContainer": "Up 2 hours",
+    "frontendContainer": "Up 2 hours",
+    "notes": "3 issues (#205/#206/#207) ready-for-review, pending QA验收"
+  }
 }
