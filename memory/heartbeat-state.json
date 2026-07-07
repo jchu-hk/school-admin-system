@@ -1,9 +1,9 @@
 {
   "lastChecks": {
-    "system": 1783414200,
-    "git": 1783414200,
-    "github": 1783414200,
-    "dashboard": 1783414200
+    "system": 1783417210,
+    "git": 1783417210,
+    "github": 1783417210,
+    "dashboard": 1783417210
   },
   "currentStatus": {
     "issue206": "ready-for-review",
@@ -14,8 +14,6 @@
     "systemHealth": "stable",
     "activeAgents": 0,
     "backendVersion": "10.1.0",
-    "backendContainer": "Up 2 hours",
-    "frontendContainer": "Up 3 hours",
-    "notes": "3 P1 issues (#205/#206/#207) ready-for-review, pending QA验收"
+    "notes": "3 P1 issues ready-for-review, pending QA验收"
   }
 }
