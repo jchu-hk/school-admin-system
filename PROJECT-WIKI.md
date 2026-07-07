@@ -1,7 +1,7 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-06 00:30 GMT+8
-> Updated by: QA (automated test report refresh)
+> Last updated: 2026-07-07 22:31 GMT+8
+> Updated by: PM (added E2E test report link)
 
 ---
 
@@ -127,6 +127,12 @@ These are known issues that do not currently impact operations:
 | `AGENTS.md` | Agent operating rules |
 | `multi-agent-dashboard.html` | Real-time agent dashboard |
 
+## 🧪 QA Test Reports
+
+| Report | Type | Date | Link |
+|--------|------|------|------|
+| Student Management E2E Test | End-to-End | 2026-06-27 | [TEST-REPORT.md](e2e-tests/TEST-REPORT.md) |
+
 ---
 
 ## 🤖 Multi-Agent Dashboard
@@ -147,6 +153,24 @@ Live dashboard: [multi-agent-dashboard.html](multi-agent-dashboard.html)
 ---
 
 ## 🔄 Recent Activity
+
+### 2026-07-07 — Student Management Testing Data & E2E Report
+
+**测试数据创建** (22:05 GMT+8):
+- 60个测试学生（12个班级 × 5个学生/班）
+- 60个家长账户
+- 60个班级分配
+- 120条考勤记录（昨天+今天）
+
+**E2E测试报告**:
+- 报告位置: `e2e-tests/TEST-REPORT.md`
+- 测试用例: 35个学生管理测试用例
+- 覆盖范围: 列表、筛选、搜索、CRUD、表单验证
+- 测试状态: ✅ 已完成
+
+**Wiki更新**: 添加了E2E测试报告链接到PROJECT-WIKI.md
+
+---
 
 ### 2026-07-04 — Production Release Deployed
 
