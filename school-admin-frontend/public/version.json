@@ -1,23 +1,21 @@
 {
   "version": "v1.5.5",
   "buildDate": "2026-07-07",
-  "gitCommit": "01cf178",
+  "gitCommit": "05d882e",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-07",
       "date": "2026-07-07",
       "changes": [
+        "dashboard update 13:20",
+        "dashboard update 13:12",
+        "dashboard update 13:12",
+        "Issue #205 - 学生管理新增按钮修复",
+        "dashboard update 12:51",
+        "dashboard update 12:50",
         "dashboard update 12:47",
-        "dashboard update 12:46",
-        "dashboard update 09:15",
-        "dashboard update 09:05",
-        "add QA regression reports (2026-07-06)",
-        "dashboard update 08:00",
-        "dashboard update 06:00",
-        "dashboard update 00:00",
-        "dashboard update 00:00",
-        "dashboard update 00:00"
+        "dashboard update 12:46"
       ]
     }
   ]
