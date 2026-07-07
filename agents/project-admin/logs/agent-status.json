@@ -26,9 +26,9 @@
       "lastUpdate": "2026-07-07T04:51:07Z"
     },
     "QA": {
-      "status": "running",
-      "task": "[Issue #205] DEV修复完成，请验收学生管理新增按钮功能",
-      "lastUpdate": "2026-07-07T05:12:13Z"
+      "status": "idle",
+      "task": "[Issue #205] QA验收通过: Zod validation schema修复正确，API测试验证成功",
+      "lastUpdate": "2026-07-07T05:20:27Z"
     },
     "REQ": {
       "status": "idle",

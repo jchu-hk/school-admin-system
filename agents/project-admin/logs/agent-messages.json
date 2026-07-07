@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-03T14:51:23Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "Issue #197+#198: QA 失败重试 - DEV 已重建 Docker 镜像，测试凭证: qa_student/*** (student角色无需OTP)",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "Issue #197+#198: QA 失败重试 - DEV 已重建 Docker 镜像，测试凭证:"
-    }
-  },
-  {
     "timestamp": "2026-07-03T14:51:25Z",
     "from": "QA",
     "to": "PM",
@@ -1073,5 +1061,17 @@
     "to": "PM",
     "message": "[Issue #205] QA开始验收",
     "type": "received"
+  },
+  {
+    "timestamp": "2026-07-07T05:20:27Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #205] QA验收通过: Zod validation schema修复正确，API测试验证成功",
+    "type": "passed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Issue #205] QA验收通过: Zod validation schema修复正确，API"
+    }
   }
 ]
