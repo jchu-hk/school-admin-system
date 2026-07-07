@@ -61,6 +61,8 @@ interface PaginatedResponse<T> {
   }
 }
 
+type ClassApiResponse = { id: string; name: string; grade?: string }[]
+
 // ============ Validation Schema ============
 const createStudentSchema = z.object({
   student_id: z.string().max(50).optional().or(z.literal('')),
@@ -210,6 +212,7 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="">请选择班级</option>
+            {classes.map(c => <option key={c.id} value={c.id}>{c.grade ? `${c.grade} - ${c.name}` : c.name}</option>)}
           </select>
         </Field>
         <Field label="英文姓名" error={errors.name_en}>
@@ -372,6 +375,7 @@ export default function StudentPage() {
   const [page, setPage] = useState(1)
   const [searchTerm, setSearchTerm] = useState('')
   const [totalPages, setTotalPages] = useState(0)
+  const [classes, setClasses] = useState<{ id: string; name: string; grade?: string }[]>([])
 
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -419,17 +423,36 @@ export default function StudentPage() {
     }
   }, [page, searchTerm])
 
+  const fetchClasses = useCallback(async () => {
+    try {
+      const token = getToken()
+      if (!token) return
+      const response = await apiClient.get<ClassApiResponse>(
+        '/api/classes',
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      setClasses(response.data.data || [])
+    } catch (error) {
+      console.error('Failed to fetch classes:', error)
+    }
+  }, [])
+
   useEffect(() => { fetchStudents() }, [fetchStudents])
+  useEffect(() => { fetchClasses() }, [fetchClasses])
 
   // Handlers
   const handleCreate = async (data: StudentFormData) => {
     // Validate with strict schema before submission
     const validated = studentSubmissionSchema.parse(data)
     const token = getToken()
-    await apiClient.post('/api/students', {
+    // Build payload: strip class_id (not in CreateStudentDto — class allocation is separate)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { class_id, ...payload } = {
       ...validated,
-      create_user_account: false,   // 学生档案 ≠ 系统账户
-    }, {
+      gender: validated.gender || undefined,
+      create_user_account: false,
+    }
+    await apiClient.post('/api/students', payload, {
       headers: { Authorization: `Bearer ${token}` },
     })
     setShowCreateModal(false)
@@ -442,7 +465,10 @@ export default function StudentPage() {
     // Validate with strict schema before submission
     const validated = studentSubmissionSchema.parse(data)
     const token = getToken()
-    await apiClient.patch(`/api/students/${selectedStudent.id}`, validated, {
+    await apiClient.patch(`/api/students/${selectedStudent.id}`, {
+      ...validated,
+      gender: validated.gender || undefined, // send undefined instead of empty string
+    }, {
       headers: { Authorization: `Bearer ${token}` },
     })
     setShowEditModal(false)
@@ -479,6 +505,7 @@ export default function StudentPage() {
       emergency_contact: student.emergency_contact || '',
       emergency_phone: student.emergency_phone || '',
       notes: student.notes || '',
+      class_id: (student as any).currentClass?.class_id || '',
     })
     setShowEditModal(true)
   }
@@ -564,7 +591,7 @@ export default function StudentPage() {
                   <td className="px-4 py-3 text-sm text-gray-900">
                     {GENDER_OPTIONS.find(g => g.value === s.gender)?.label || s.gender}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{s.class_name || '-'}</td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{(s as any).currentClass?.class_name || '-'}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${
                       STATUS_OPTIONS.find(o => o.value === s.status)?.color || 'bg-gray-100'
@@ -620,14 +647,14 @@ export default function StudentPage() {
         <Modal title="新增学生" onClose={() => setShowCreateModal(false)}>
           <StudentForm onSubmit={handleCreate} onCancel={() => setShowCreateModal(false)}
             isSubmitting={isSubmitting} register={register} errors={errors}
-            handleSubmit={handleSubmit} />
+            handleSubmit={handleSubmit} classes={classes} />
         </Modal>
       )}
       {showEditModal && selectedStudent && (
         <Modal title="编辑学生" onClose={() => setShowEditModal(false)}>
           <StudentForm onSubmit={handleUpdate} onCancel={() => setShowEditModal(false)}
             isSubmitting={isSubmitting} register={register} errors={errors}
-            handleSubmit={handleSubmit} />
+            handleSubmit={handleSubmit} classes={classes} />
         </Modal>
       )}
       {showDetailModal && selectedStudent && (

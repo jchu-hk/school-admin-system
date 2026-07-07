@@ -166,6 +166,25 @@ export class StudentController {
 export class ClassStudentController {
   constructor(private readonly studentService: StudentService) {}
 
+  @Get()
+  @ApiOperation({ summary: '获取班级列表' })
+  async findClasses() {
+    const classes = await this.studentService.findClasses();
+    return {
+      code: 0,
+      message: 'success',
+      data: classes.map((c) => ({
+        id: c.id,
+        name: c.name,
+        grade: c.grade,
+        classCode: c.classCode,
+        room: c.room,
+        capacity: c.capacity,
+        isActive: c.isActive,
+      })),
+    };
+  }
+
   @Get(':id/students')
   @ApiOperation({ summary: '获取班级学生列表（按学年筛选）' })
   async getClassStudents(
