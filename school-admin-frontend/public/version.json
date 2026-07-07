@@ -1,13 +1,19 @@
 {
   "version": "v1.5.5",
   "buildDate": "2026-07-07",
-  "gitCommit": "05d882e",
+  "gitCommit": "446b5f6",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-07",
       "date": "2026-07-07",
       "changes": [
+        "fix(#206,#207): add GET /classes endpoint and wire class dropdown in StudentPage",
+        "dashboard update 14:25",
+        "dashboard update 14:22",
+        "dashboard update 14:22",
+        "dashboard update 14:21",
+        "dashboard update 14:20",
         "dashboard update 13:20",
         "dashboard update 13:12",
         "dashboard update 13:12",
