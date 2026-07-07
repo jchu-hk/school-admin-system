@@ -224,15 +224,16 @@ def update_dashboard():
     messages = read_agent_messages(hours=72)
     html = build_html(status, messages)
 
-    dashboard_path = REPO_PATH / "docs" / "multi-agent-dashboard.html"
-    dashboard_path.write_text(html)
-    print(f"✅ Dashboard written: {len(messages)} messages, {len(status.get('agents', {}))} agents")
-
     import subprocess
     try:
-        subprocess.run(["git", "add", "docs/multi-agent-dashboard.html"], cwd=REPO_PATH, check=True, capture_output=True)
+        # Write to both root and docs/ for compatibility
+        (REPO_PATH / "multi-agent-dashboard.html").write_text(html)
+        (REPO_PATH / "docs" / "multi-agent-dashboard.html").write_text(html)
+        
+        subprocess.run(["git", "add", "multi-agent-dashboard.html", "docs/multi-agent-dashboard.html"], cwd=REPO_PATH, check=True, capture_output=True)
         subprocess.run(["git", "commit", "-m", "skill: dashboard update " + datetime.now().strftime("%H:%M")], cwd=REPO_PATH, check=True, capture_output=True)
         subprocess.run(["git", "push", "origin", "main"], cwd=REPO_PATH, check=True, capture_output=True)
+        print(f"✅ Dashboard written: {len(messages)} messages, {len(status.get('agents', {}))} agents")
         print("✅ Pushed to GitHub")
     except subprocess.CalledProcessError as e:
         print(f"⚠️ Git: {e}")
