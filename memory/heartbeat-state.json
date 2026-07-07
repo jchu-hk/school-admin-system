@@ -1,7 +1,8 @@
 {
   "lastChecks": {
-    "systemHealth": 1783392300,
+    "systemHealth": 1783392120,
     "backendHeartbeat": 1719705600
   },
-  "checkCount": 13
+  "checkCount": 15,
+  "lastHeartbeat": 1783393501
 }
