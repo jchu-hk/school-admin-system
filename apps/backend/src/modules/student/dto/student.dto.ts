@@ -114,6 +114,11 @@ export class CreateStudentDto {
   @IsBoolean()
   @IsOptional()
   create_user_account?: boolean;
+
+  @ApiPropertyOptional({ description: '班级ID（可选，创建后将通过班级分配接口分配班级）' })
+  @IsString()
+  @IsOptional()
+  class_id?: string;
 }
 
 export class UpdateStudentDto {
@@ -201,6 +206,11 @@ export class UpdateStudentDto {
   @IsEnum(StudentStatus)
   @IsOptional()
   status?: StudentStatus;
+
+  @ApiPropertyOptional({ description: '班级ID' })
+  @IsString()
+  @IsOptional()
+  class_id?: string;
 }
 
 export class StudentQueryDto {

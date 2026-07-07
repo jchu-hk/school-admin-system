@@ -149,7 +149,28 @@ export class StudentService {
       createdBy: userId,
     });
 
-    return this.studentRepo.save(student);
+    const savedStudent = await this.studentRepo.save(student);
+
+    // If class_id is provided, create a class allocation
+    if (dto.class_id) {
+      // Find the current academic year
+      const academicYear = await this.academicYearRepo.findOne({
+        where: { isCurrent: true },
+      });
+      if (academicYear) {
+        const allocation = this.allocationRepo.create({
+          studentId: savedStudent.id,
+          classId: dto.class_id,
+          academicYearId: academicYear.id,
+          academicYearStr: academicYear.year,
+          allocationType: AllocationType.MAIN,
+          effectiveDate: new Date(),
+        });
+        await this.allocationRepo.save(allocation);
+      }
+    }
+
+    return savedStudent;
   }
 
   async findAll(query: StudentQueryDto): Promise<{
