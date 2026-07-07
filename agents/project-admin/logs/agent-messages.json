@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-04T02:59:09Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[Issue #200] 人工录入出勤记录 - 4项Bug (P1, attendance): 1)出勤概览无数据显示 2)生成确认预览无响应 3)日期默认值非当天 4)重置按钮无响应",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #200] 人工录入出勤记录 - 4项Bug (P1, attendance): 1)"
-    }
-  },
-  {
     "timestamp": "2026-07-04T02:59:55Z",
     "from": "DEV",
     "to": "PM",
@@ -1063,5 +1051,12 @@
       "status": "idle",
       "task": "[Issue #206+207] 修复完成: 添加了GET /classes接口+前端获取班级列表+"
     }
+  },
+  {
+    "timestamp": "2026-07-07T09:10:59Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "17:10 心跳检查完成",
+    "type": "info"
   }
 ]
