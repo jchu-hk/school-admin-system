@@ -1,6 +1,6 @@
 {
   "lastChecks": {
-    "system": 1783409124,
+    "system": 1783410300,
     "git": 1751877300,
     "github": 1751877300,
     "dashboard": 1751877300
@@ -13,7 +13,7 @@
     "activeAgents": 0,
     "backendVersion": "10.1.0",
     "backendContainer": "Up ~15 hours",
-    "notes": "#206/#207\u540e\u7aef\u4fee\u590d\u5df2\u90e8\u7f72\u751f\u6548\uff0c\u5f85QA\u9a8c\u6536"
+    "notes": "#206/#207后端修复已部署生效，待QA验收"
   },
-  "notes": "#206/#207\u5f85QA\u9a8c\u6536"
+  "notes": "#206/#207待QA验收"
 }
