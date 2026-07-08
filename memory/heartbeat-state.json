@@ -1,19 +1,19 @@
 {
   "lastChecks": {
-    "system": 1783480845,
-    "git": 1783480845,
-    "github": 1783480845,
-    "dashboard": 1783480845,
-    "heartbeat": 1783480845,
-    "backendLocalHealth": 1783480845
+    "system": 1783482620,
+    "git": 1783482620,
+    "github": 1783482206,
+    "dashboard": 1783482206,
+    "heartbeat": 1783482620,
+    "backendLocalHealth": 1783482620
   },
   "currentStatus": {
-    "backendLocalHealth": "recovered",
+    "backendLocalHealth": "healthy",
     "backendTunnelHealth": "unverified",
     "backendInstability": "recovered",
     "qaPending": true,
     "systemHealth": "stable",
-    "activeAgents": 0,
-    "notes": "Backend已恢复运行 - 容器重启于11:24，应用正常响应API请求(返回401认证正常) | 端口配置: 宿主机3000映射容器3000 | 5个Issue待QA验收(#206/#207/#208/#209/#140) | 需要催办QA验收工作"
+    "activeAgents": 3,
+    "notes": "Backend已恢复稳定运行 - 容器重启于11:24，连续12次心跳检查通过 | 3个Issue活跃中(#206/#207/#208) | 5个Issue待QA验收"
   }
 }
