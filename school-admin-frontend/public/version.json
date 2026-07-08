@@ -1,13 +1,20 @@
 {
   "version": "v1.5.5",
   "buildDate": "2026-07-08",
-  "gitCommit": "6e26678",
+  "gitCommit": "6405552",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-08",
       "date": "2026-07-08",
       "changes": [
+        "heartbeat 2026-07-08 12:40",
+        "heartbeat state update",
+        "update PROJECT-WIKI with QA reports and latest deployment info",
+        "dashboard update 12:33",
+        "dashboard update 12:33",
+        "dashboard update 12:33",
+        "dashboard update 12:29",
         "dashboard update 12:03",
         "Backend端口映射修复 - 重启后恢复API访问",
         "dashboard update 11:16",
@@ -19,14 +26,7 @@
         "dashboard update 11:06",
         "dashboard update 11:05",
         "dashboard update 11:04",
-        "dashboard update 11:03",
-        "dashboard update 09:35",
-        "dashboard update 09:31",
-        "dashboard update 09:02",
-        "dashboard update 08:10",
-        "dashboard update 08:10",
-        "dashboard update 08:00",
-        "dashboard update 06:40"
+        "dashboard update 11:03"
       ]
     }
   ]

@@ -187,9 +187,10 @@ interface StudentFormProps {
   isSubmitting: boolean
   register: ReturnType<typeof useForm<StudentFormData>>['register']
   errors: ReturnType<typeof useForm<StudentFormData>>['formState']['errors']
+  classes: { id: string; name: string; grade?: string }[]
 }
 
-function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register, errors }: StudentFormProps) {
+function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register, errors, classes }: StudentFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* 基本信息 */}
