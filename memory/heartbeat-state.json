@@ -1,11 +1,11 @@
 {
   "lastChecks": {
-    "system": 1783477800,
-    "git": 1783477800,
-    "github": 1783477800,
-    "dashboard": 1783477800,
-    "heartbeat": 1783477800,
-    "backendHealth": 1783477800
+    "system": 1783479000,
+    "git": 1783479000,
+    "github": 1783479000,
+    "dashboard": 1783479000,
+    "heartbeat": 1783479000,
+    "backendHealth": 1783479000
   },
   "currentStatus": {
     "issue206": "ready-for-review",
@@ -14,13 +14,14 @@
     "issue209": "ready-for-review",
     "qaPending": true,
     "systemHealth": "stable",
-    "backendHealth": "stable",
+    "backendLocalHealth": "stable",
+    "backendTunnelHealth": "intermittent",
     "activeAgents": 0,
     "backendVersion": "10.1.0",
     "backendCommit": "ff85ec33c5",
-    "notes": "#206/#207/#208/#209 待QA验收；Backend API连续正常（连续6次心跳检查通过）；所有Docker服务healthy；Dashboard已更新",
+    "notes": "#206/#207/#208/#209 待QA验收；Backend容器正常；Cloudflare Tunnel间歇性不可达（DNS解析失败）；Dashboard已更新",
     "frontendCommit": "ff85ec33c5",
     "backendTimeoutRecovered": false,
-    "backendInstability": "recovered"
+    "backendInstability": "tunnel-intermittent"
   }
 }
