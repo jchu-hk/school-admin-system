@@ -1,20 +1,7 @@
 {
   "lastChecks": {
-    "system": 1783540500,
-    "git": 1783540500,
-    "github": 1783540500,
-    "dashboard": 1783540500,
-    "heartbeat": 1783540500,
-    "backendLocalHealth": 1783540500,
-    "frontendStatus": 1783540500
-  },
-  "currentStatus": {
-    "backendLocalHealth": "healthy",
-    "backendTunnelHealth": "unreachable",
-    "backendInstability": "resolved",
-    "qaPending": true,
-    "systemHealth": "stable",
-    "activeAgents": 0,
-    "notes": "18:15心跳检查全部正常 ✅ | Backend/Frontend稳定 | HEARTBEAT.md未提交但工作区已清理（已commit）"
+    "backend": "2026-07-08T10:25:00+08:00",
+    "docker": "2026-07-08T18:25:00+08:00",
+    "github": "2026-07-08T14:35:00+08:00"
   }
 }
