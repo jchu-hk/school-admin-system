@@ -1,7 +1,7 @@
 {
   "version": "v1.5.7",
   "buildDate": "2026-07-08",
-  "gitCommit": "03a5ac0",
+  "gitCommit": "3f58df9",
   "gitBranch": "main",
   "changelog": [
     {
@@ -17,10 +17,7 @@
         "update environment URLs with ownership info - Coze is NOT managed by us",
         "update PROJECT-WIKI - Issue #206 #207 closed, QA passed",
         "dashboard update 13:02",
-        "dashboard update 13:00",
-        "update PROJECT-WIKI.md with Issue #206/#207 fix details",
-        "add nginx proxy routes for /students and /classes endpoints",
-        "fix wiki file confusion - update PROJECT_WIKI.md redirect and docs/school-admin-system/PROJECT-WIKI.md version info"
+        "dashboard update 13:00"
       ]
     }
   ]
