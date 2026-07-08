@@ -1,11 +1,11 @@
 {
   "lastChecks": {
-    "system": 1783574400,
-    "git": 1783574400,
-    "github": 1783574400,
-    "dashboard": 1783574400,
-    "heartbeat": 1783574400,
-    "backendHealth": 1783574400
+    "system": 1783473900,
+    "git": 1783473900,
+    "github": 1783473900,
+    "dashboard": 1783473900,
+    "heartbeat": 1783473900,
+    "backendHealth": 1783473900
   },
   "currentStatus": {
     "issue206": "ready-for-review",
@@ -14,12 +14,12 @@
     "issue209": "ready-for-review",
     "qaPending": true,
     "systemHealth": "normal",
-    "backendHealth": "recovered",
+    "backendHealth": "error",
     "activeAgents": 0,
     "backendVersion": "10.1.0",
     "backendCommit": "ff85ec33c5",
-    "notes": "#206/#207/#208/#209 待QA验收；Backend API从超时已恢复正常；需催办QA验收；所有Docker服务healthy",
+    "notes": "#206/#207/#208/#209 待QA验收；Backend API curl失败（连接错误）；所有Docker服务healthy；有未提交修改（心跳日志、Dashboard日志、version.json）",
     "frontendCommit": "ff85ec33c5",
-    "backendTimeoutRecovered": true
+    "backendTimeoutRecovered": false
   }
 }

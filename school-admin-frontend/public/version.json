@@ -1,27 +1,30 @@
 {
   "version": "v1.5.5",
   "buildDate": "2026-07-07",
-  "gitCommit": "446b5f6",
+  "gitCommit": "2c4b120",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-07",
       "date": "2026-07-07",
       "changes": [
-        "fix(#206,#207): add GET /classes endpoint and wire class dropdown in StudentPage",
-        "dashboard update 14:25",
-        "dashboard update 14:22",
-        "dashboard update 14:22",
-        "dashboard update 14:21",
-        "dashboard update 14:20",
-        "dashboard update 13:20",
-        "dashboard update 13:12",
-        "dashboard update 13:12",
-        "Issue #205 - 学生管理新增按钮修复",
-        "dashboard update 12:51",
-        "dashboard update 12:50",
-        "dashboard update 12:47",
-        "dashboard update 12:46"
+        "sync dashboard to root",
+        "dashboard update 23:17",
+        "dashboard update 23:17",
+        "dashboard update 23:16",
+        "dashboard update 23:16",
+        "dashboard update 23:16",
+        "dashboard update 23:15",
+        "dashboard update 23:14",
+        "dashboard update 23:12",
+        "dashboard update 23:12",
+        "dashboard update 23:12",
+        "add E2E student management test report link to PROJECT-WIKI",
+        "dashboard update 22:23",
+        "dashboard update 22:22",
+        "dashboard update 22:12",
+        "dashboard update 22:11",
+        "dashboard update 20:35"
       ]
     }
   ]
