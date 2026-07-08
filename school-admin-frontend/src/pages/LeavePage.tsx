@@ -251,12 +251,7 @@ export default function LeavePage() {
   // Fetch teachers for substitute teacher selection
   const fetchTeachers = useCallback(async () => {
     try {
-      const token = getToken()
-      if (!token) return
-
-      const response = await apiClient.get('/api/users?role=teacher&pageSize=100', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const response = await apiClient.get('/users?role=teacher&pageSize=100')
       setTeachers(response.data || [])
     } catch (error) {
       console.error('Failed to fetch teachers:', error)
@@ -270,12 +265,6 @@ export default function LeavePage() {
     
     setLoading(true)
     try {
-      const token = getToken()
-      if (!token) {
-        window.location.href = '/login'
-        return
-      }
-
       const params = new URLSearchParams()
       params.append('page', page.toString())
       params.append('pageSize', PAGE_SIZE.toString())
@@ -290,9 +279,8 @@ export default function LeavePage() {
       // if (typeFilter) params.append('leaveType', typeFilter)
 
       const response = await apiClient.get<{ applications?: Leave[]; leaves?: Leave[]; data?: Leave[]; total?: number }>(
-        `/api/leaves?${params.toString()}`,
+        `/leaves?${params.toString()}`,
         {
-          headers: { Authorization: `Bearer ${token}` },
           signal: controller.signal, // 支持 AbortController
           timeout: 15000, // 15秒超时
         }
@@ -380,20 +368,17 @@ export default function LeavePage() {
   // Handlers
   const handleCreate = async (data: LeaveFormData) => {
     try {
-      const token = getToken()
       const user = getCurrentUser()
       
       if (!user) {
         throw new Error('用户未登录')
       }
 
-      await apiClient.post('/api/leaves', {
+      await apiClient.post('/leaves', {
         ...data,
         applicantId: user.id,
         totalDays,
         createdBy: user.id,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
       })
       setShowCreateModal(false)
       reset()
@@ -408,17 +393,14 @@ export default function LeavePage() {
     if (!selectedLeave) return
 
     try {
-      const token = getToken()
       const user = getCurrentUser()
       
-      await apiClient.post(`/api/leaves/${selectedLeave.id}/approve`, {
+      await apiClient.post(`/leaves/${selectedLeave.id}/approve`, {
         approved: true,
         approvalComment: data.comment,
         substituteTeacherId: data.substituteTeacherId,
         substituteTeacherClassHours: data.substituteTeacherClassHours,
         approverId: user?.id,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
       })
       setShowApproveModal(false)
       resetApproval()
@@ -433,14 +415,11 @@ export default function LeavePage() {
     if (!selectedLeave) return
 
     try {
-      const token = getToken()
       const user = getCurrentUser()
       
-      await apiClient.post(`/api/leaves/${selectedLeave.id}/reject`, {
+      await apiClient.post(`/leaves/${selectedLeave.id}/reject`, {
         rejectionReason: data.comment,
         approverId: user?.id,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
       })
       setShowRejectModal(false)
       resetApproval()
@@ -455,13 +434,10 @@ export default function LeavePage() {
     if (!selectedLeave) return
 
     try {
-      const token = getToken()
       const user = getCurrentUser()
       
-      await apiClient.post(`/api/leaves/${selectedLeave.id}/cancel`, {
+      await apiClient.post(`/leaves/${selectedLeave.id}/cancel`, {
         cancelledBy: user?.id,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
       })
       setShowCancelConfirm(false)
       fetchLeaves()

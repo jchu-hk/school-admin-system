@@ -189,12 +189,6 @@ export default function UserPage() {
   const fetchUsers = useCallback(async () => {
     setLoading(true)
     try {
-      const token = getToken()
-      if (!token) {
-        window.location.href = '/login'
-        return
-      }
-
       const params = new URLSearchParams()
       params.append('page', page.toString())
       params.append('pageSize', PAGE_SIZE.toString())
@@ -204,7 +198,7 @@ export default function UserPage() {
       if (departmentFilter) params.append('dept', departmentFilter)
       if (searchTerm) params.append('search', searchTerm)
 
-      const response = await apiClient.get<{ data: User[]; total: number }>(`/api/users?${params.toString()}`)
+      const response = await apiClient.get<{ data: User[]; total: number }>(`/users?${params.toString()}`)
 
       setUsers(Array.isArray(response.data?.data) ? response.data.data : [])
       setTotal(typeof response.data?.total === 'number' ? response.data.total : 0)
@@ -220,10 +214,7 @@ export default function UserPage() {
 
   const fetchRoles = useCallback(async () => {
     try {
-      const token = getToken()
-      const response = await apiClient.get<Role[]>('/api/roles', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const response = await apiClient.get<Role[]>('/roles')
       setRoles(Array.isArray(response.data) ? response.data : [])
     } catch (error) {
       console.error('Failed to fetch roles:', error)
@@ -238,12 +229,9 @@ export default function UserPage() {
   // Handlers
   const handleCreate = async (data: UserFormData) => {
     try {
-      const token = getToken()
-      await apiClient.post('/api/users', {
+      await apiClient.post('/users', {
         ...data,
         status: UserStatus.ACTIVE,
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
       })
       setShowCreateModal(false)
       reset()
@@ -258,7 +246,6 @@ export default function UserPage() {
     if (!selectedUser) return
     
     try {
-      const token = getToken()
       const updateData = { ...data }
       
       // Remove empty optional fields to avoid validation errors
@@ -276,9 +263,7 @@ export default function UserPage() {
         delete (updateData as Partial<UserFormData>).department
       }
       
-      await apiClient.patch(`/api/users/${selectedUser.id}`, updateData, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      await apiClient.patch(`/users/${selectedUser.id}`, updateData)
       setShowEditModal(false)
       reset()
       fetchUsers()
@@ -292,10 +277,7 @@ export default function UserPage() {
     if (!selectedUser) return
     
     try {
-      const token = getToken()
-      await apiClient.delete(`/api/users/${selectedUser.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      await apiClient.delete(`/users/${selectedUser.id}`)
       setShowDeleteConfirm(false)
       setSelectedUser(null)
       fetchUsers()
@@ -306,11 +288,8 @@ export default function UserPage() {
 
   const handleToggleStatus = async (user: User) => {
     try {
-      const token = getToken()
       const newStatus = user.status === UserStatus.ACTIVE ? UserStatus.DISABLED : UserStatus.ACTIVE
-      await apiClient.patch(`/api/users/${user.id}`, { status: newStatus }, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      await apiClient.patch(`/users/${user.id}`, { status: newStatus })
       fetchUsers()
     } catch (error) {
       console.error('Failed to toggle status:', error)
@@ -321,10 +300,7 @@ export default function UserPage() {
     if (!selectedUser || !newPassword) return
     
     try {
-      const token = getToken()
-      await apiClient.post(`/api/users/${selectedUser.id}/reset-password`, { password: newPassword }, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      await apiClient.post(`/users/${selectedUser.id}/reset-password`, { password: newPassword })
       setShowResetPasswordModal(false)
       setNewPassword('')
       setSelectedUser(null)
@@ -346,10 +322,8 @@ export default function UserPage() {
       formData.append('file', file)
       
       try {
-        const token = getToken()
-        await apiClient.post('/api/users/import', formData, {
-          headers: { 
-            Authorization: `Bearer ${token}`,
+        await apiClient.post('/users/import', formData, {
+          headers: {
             'Content-Type': 'multipart/form-data'
           },
         })
@@ -1235,10 +1209,7 @@ function PermissionModal({ role, onClose }: PermissionModalProps) {
   const handleSave = async () => {
     setIsSaving(true)
     try {
-      const token = getToken()
-      await apiClient.patch(`/api/roles/${role.id}`, { permissions: selectedPermissions }, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      await apiClient.patch(`/roles/${role.id}`, { permissions: selectedPermissions })
       onClose()
     } catch (error) {
       console.error('Failed to save permissions:', error)

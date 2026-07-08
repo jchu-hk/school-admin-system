@@ -53,20 +53,13 @@ export default function StudentProfilePage() {
   const fetchProfiles = useCallback(async () => {
     setLoading(true);
     try {
-      const token = getToken();
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
       const params = new URLSearchParams();
       params.append('page', page.toString());
       params.append('pageSize', PAGE_SIZE.toString());
       if (statusFilter) params.append('status', statusFilter);
 
       const response = await apiClient.get<{ data: StudentProfile[]; total: number }>(
-        `/api/student-profiles?${params.toString()}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `/student-profiles?${params.toString()}`
       );
 
       setProfiles(response.data.data || []);
@@ -88,11 +81,9 @@ export default function StudentProfilePage() {
     if (!selectedProfile) return;
     setActionLoading(true);
     try {
-      const token = getToken();
       await apiClient.post(
-        `/api/student-profiles/${selectedProfile.id}/archive`,
-        { reason: archiveReason },
-        { headers: { Authorization: `Bearer ${token}` } }
+        `/student-profiles/${selectedProfile.id}/archive`,
+        { reason: archiveReason }
       );
       setShowArchiveModal(false);
       setSelectedProfile(null);
@@ -108,11 +99,8 @@ export default function StudentProfilePage() {
   const handleUnarchive = async (profileId: string) => {
     setActionLoading(true);
     try {
-      const token = getToken();
       await apiClient.post(
-        `/api/student-profiles/${profileId}/unarchive`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        `/student-profiles/${profileId}/unarchive`
       );
       fetchProfiles();
     } catch (error) {
