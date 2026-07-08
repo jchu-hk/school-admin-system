@@ -50,7 +50,7 @@
 | Coze Frontend | `https://aade13aa-...dev.coze.site/school-admin/` | ❌ Coze | ⚠️ 部署时间未知 |
 | Coze API | `https://aade13aa-...dev.coze.site/api/` | ❌ Coze | ⚠️ 部署时间未知 |
 
-> ⚠️ **强烈建议使用本地测试环境验证所有修复** - Coze环境部署时间未知，可能缺少最新修复
+> 💡 **推荐使用本地测试环境** - 我们控制的，始终最新
 
 ---
 
