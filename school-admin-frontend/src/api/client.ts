@@ -11,7 +11,7 @@ export function setGlobalNavigate(navigate: (path: string) => void) {
 
 // 创建axios实例
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api/',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
