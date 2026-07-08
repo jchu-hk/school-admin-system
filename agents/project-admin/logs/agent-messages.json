@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-05T03:15:45Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "开始部署 v1.5.7",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "running",
-      "task": "开始部署 v1.5.7"
-    }
-  },
-  {
     "timestamp": "2026-07-05T03:19:07Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1063,5 +1051,17 @@
     "to": "PM",
     "message": "[Issue #206+#207] 开始验收",
     "type": "received"
+  },
+  {
+    "timestamp": "2026-07-08T05:00:08Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #206+#207] 验收通过\n\n**发现的Bug及修复**:\n\nIssue #206 - 班级下拉框无数据:\n1. 根本原因1: StudentFormProps接口缺少classes属性，但JSX中使用了classes.map()。这是原始修复commit 446b5f6的遗漏。\n2. 根本原因2: nginx配置只代理/api/路径，但frontend apiClient的baseURL为空，导致调用/students和/classes（无/api前缀），返回404。\n\n修复:\n- 在StudentFormProps接口添加classes属性\n- 添加nginx location规则代理/students → /api/students 和 /classes → /api/classes\n- 重新构建前端并部署\n\nIssue #207 - 新增学生保存返回400:\n- API层面已修复（gender字段处理）\n- 前端和nginx修复后保存成功返回201\n\n**验证结果**:\n- ✅ 班级下拉框显示12个班级选项（P1-P4, S1-S3等）\n- ✅ 新增学生成功保存，返回HTTP 201\n- ✅ 学生出现在学生列表中\n\n**部署情况**:\n- 前端重新构建（index-DheP9A8S-20260707.js）\n- nginx配置已更新并重新加载\n- Git提交: 8a66942 (nginx fix) + ff6886a (classes prop fix)\n- Wiki已更新\n\n**注意**: 日期选择器UI在自动化测试中需要特殊处理（spinbutton交互），但手动测试应无问题。",
+    "type": "passed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Issue #206+#207] 验收通过\n\n**发现的Bug及修复**:\n\nIssue #206"
+    }
   }
 ]

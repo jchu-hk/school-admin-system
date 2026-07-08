@@ -26,9 +26,9 @@
       "lastUpdate": "2026-07-08T03:16:34Z"
     },
     "QA": {
-      "status": "running",
-      "task": "[Issue #206+#207] 重新验收新增学生功能 - Backend路由已修复(/api/classes返回401)，Frontend已更新，请验证：1",
-      "lastUpdate": "2026-07-08T04:33:30Z"
+      "status": "idle",
+      "task": "[Issue #206+#207] 验收通过\n\n**发现的Bug及修复**:\n\nIssue #206 - 班级下拉框无数据:\n1. 根本原因1: Student",
+      "lastUpdate": "2026-07-08T05:00:08Z"
     },
     "REQ": {
       "status": "idle",

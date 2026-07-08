@@ -1,19 +1,19 @@
 {
   "lastChecks": {
-    "system": 1751952300,
-    "git": 1751952300,
-    "github": 1751952300,
-    "dashboard": 1751952300,
-    "heartbeat": 1751952300,
-    "backendLocalHealth": 1751952300
+    "system": 1751954700,
+    "git": 1751954700,
+    "github": 1751954700,
+    "dashboard": 1751954700,
+    "heartbeat": 1751954700,
+    "backendLocalHealth": 1751954700
   },
   "currentStatus": {
     "backendLocalHealth": "healthy",
     "backendTunnelHealth": "unknown",
-    "backendInstability": "stable",
-    "qaPending": false,
+    "backendInstability": "recovering",
+    "qaPending": true,
     "systemHealth": "stable",
     "activeAgents": 0,
-    "notes": "Backend稳定运行 | 本地3000正常 | Git已推送 | 无活跃Agent任务"
+    "notes": "Backend本地3000恢复(HTTP200) | Git有3个待提交文件 | 5个Issue待QA验收(#206/207/208/209/140)"
   }
 }
