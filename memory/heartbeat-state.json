@@ -1,20 +1,20 @@
 {
   "lastChecks": {
-    "system": 1783496440,
-    "git": 1751990128,
-    "github": 1751990128,
-    "dashboard": 1751990128,
-    "heartbeat": 1783496440,
-    "backendLocalHealth": 1783496440,
-    "frontendStatus": 1783496440
+    "system": 1751967300,
+    "git": 1751967300,
+    "github": 1751967300,
+    "dashboard": 1751967300,
+    "heartbeat": 1751967300,
+    "backendLocalHealth": 1751967300,
+    "frontendStatus": 1751967300
   },
   "currentStatus": {
     "backendLocalHealth": "healthy",
-    "backendTunnelHealth": "unknown",
+    "backendTunnelHealth": "unreachable",
     "backendInstability": "resolved",
-    "qaPending": false,
+    "qaPending": true,
     "systemHealth": "stable",
     "activeAgents": 0,
-    "notes": "Backend localhost:3000 /api/health=200 ✅ | Frontend localhost:8080=200 ✅"
+    "notes": "Backend localhost:3000 /api/health=200 ✅ | Frontend localhost:8080=200 ✅ | Tunnel unreachable (expected in sandbox)"
   }
 }
