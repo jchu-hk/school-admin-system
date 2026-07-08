@@ -1,13 +1,15 @@
 {
-  "version": "v1.5.5",
+  "version": "v1.5.7",
   "buildDate": "2026-07-08",
-  "gitCommit": "e7d7dda",
+  "gitCommit": "ce1d336",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-08",
       "date": "2026-07-08",
       "changes": [
+        "add test environment refresh process to PROJECT-WIKI",
+        "fix - Coze is just proxy, localhost IS our environment",
         "emphasize Coze environment is NOT guaranteed to have latest code",
         "add v1.5.7 changelog - all commits since v1.5.6 that need testing",
         "update docs/PROJECT-WIKI with Coze environment warning",
@@ -22,10 +24,7 @@
         "heartbeat state update",
         "update PROJECT-WIKI with QA reports and latest deployment info",
         "dashboard update 12:33",
-        "dashboard update 12:33",
-        "dashboard update 12:33",
-        "dashboard update 12:29",
-        "dashboard update 12:03"
+        "dashboard update 12:33"
       ]
     }
   ]
