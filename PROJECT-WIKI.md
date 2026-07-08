@@ -135,7 +135,7 @@ These are known issues that do not currently impact operations:
 |--------|------|------|--------|------|
 | Student Management E2E Test | End-to-End | 2026-06-27 | ✅ Pass | [TEST-REPORT.md](e2e-tests/TEST-REPORT.md) |
 | Student Management E2E Regression | End-to-End | 2026-07-06 | ❌ Failed (28.57%) | [Regression Report](./qa_report/student-management-regression-report-20260706.md) |
-| Student Management E2E Regression Fix | End-to-End | 2026-07-06 | ❌ Failed | [Fix Report](./qa_report/student-management-regression-fix-report-20260706.md) |
+| Student Management E2E Regression Fix | End-to-End | 2026-07-06 | ✅ Fixed & Closed | [Fix Report](./qa_report/student-management-regression-fix-report-20260706.md) |
 | Student Management Full | Full QA | 2026-07-06 | ⚠️ Blocked | [Full Report](./qa_report/student-management-full-report-20260706.md) |
 | Student Management Root Cause | Analysis | 2026-07-06 | 📋 Analysis | [Root Cause](./qa_report/student-page-performance-root-cause.md) |
 
@@ -159,6 +159,26 @@ Live dashboard: [multi-agent-dashboard.html](multi-agent-dashboard.html)
 ---
 
 ## 🔄 Recent Activity
+
+### 2026-07-08 — Issue #206 #207 QA验收通过
+
+**时间**: 12:55 GMT+8
+
+**验收结果**: ✅ 通过
+
+**修复内容**:
+- #206: 班级下拉框现在显示12个班级 ✅
+- #207: 新增学生保存返回 HTTP 201 ✅
+
+**额外修复** (QA验收中发现):
+1. `classes` 属性缺失 → 已添加到 StudentFormProps 接口 (commit ff6886a)
+2. nginx路由配置缺失 → 已添加 /students 和 /classes 路由 (commit 8a66942)
+
+**Issue状态**:
+- #206 ✅ 已关闭
+- #207 ✅ 已关闭
+
+---
 
 ### 2026-07-08 — QA Re-verification Task Dispatched
 
