@@ -1,7 +1,7 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-08 12:33 GMT+8
-> Updated by: PM (added QA verification task + fixed Wiki)
+> Last updated: 2026-07-08 12:56 GMT+8
+> Updated by: QA Agent (fix: missing classes prop in StudentFormProps + nginx proxy fix)
 
 ---
 
@@ -9,12 +9,14 @@
 
 - **Version**: v1.5.7
 - **Release Date**: 2026-07-05 08:49 GMT+8
-- **Git Commit**: `926f7f5`
+- **Git Commit**: `8a66942`
 - **Branch**: `main`
 - **Status**: Released for Testing
-- **Tested By**: Human QA - 2026-07-05
+- **Tested By**: QA Agent - 2026-07-08
 - **Changelog**:
-  - Bug修复: 学生管理新增功能正常
+  - Bug修复: Issue #206 - 修复StudentFormProps缺失classes属性导致班级下拉框报错
+  - Bug修复: Issue #207 - 修复nginx配置缺失/students和/classes路由导致API请求404
+  - 前端重新构建并部署
 
 
 ## 🌐 Environment URLs
