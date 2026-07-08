@@ -1,30 +1,32 @@
 {
   "version": "v1.5.5",
-  "buildDate": "2026-07-07",
-  "gitCommit": "2c4b120",
+  "buildDate": "2026-07-08",
+  "gitCommit": "6e26678",
   "gitBranch": "main",
   "changelog": [
     {
-      "version": "build-2026-07-07",
-      "date": "2026-07-07",
+      "version": "build-2026-07-08",
+      "date": "2026-07-08",
       "changes": [
-        "sync dashboard to root",
-        "dashboard update 23:17",
-        "dashboard update 23:17",
-        "dashboard update 23:16",
-        "dashboard update 23:16",
-        "dashboard update 23:16",
-        "dashboard update 23:15",
-        "dashboard update 23:14",
-        "dashboard update 23:12",
-        "dashboard update 23:12",
-        "dashboard update 23:12",
-        "add E2E student management test report link to PROJECT-WIKI",
-        "dashboard update 22:23",
-        "dashboard update 22:22",
-        "dashboard update 22:12",
-        "dashboard update 22:11",
-        "dashboard update 20:35"
+        "dashboard update 12:03",
+        "Backend端口映射修复 - 重启后恢复API访问",
+        "dashboard update 11:16",
+        "dashboard update 11:14",
+        "fix(#209): remove duplicate Authorization headers in UserPage, LeavePage, StudentProfilePage",
+        "dashboard update 11:11",
+        "dashboard update 11:10",
+        "dashboard update 11:06",
+        "dashboard update 11:06",
+        "dashboard update 11:05",
+        "dashboard update 11:04",
+        "dashboard update 11:03",
+        "dashboard update 09:35",
+        "dashboard update 09:31",
+        "dashboard update 09:02",
+        "dashboard update 08:10",
+        "dashboard update 08:10",
+        "dashboard update 08:00",
+        "dashboard update 06:40"
       ]
     }
   ]
