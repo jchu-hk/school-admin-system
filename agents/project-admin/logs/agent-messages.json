@@ -1,29 +1,5 @@
 [
   {
-    "timestamp": "2026-07-05T03:14:58Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "清理状态，准备 v1.5.7 发布",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "清理状态，准备 v1.5.7 发布"
-    }
-  },
-  {
-    "timestamp": "2026-07-05T03:15:11Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "部署 v1.5.7 到测试环境 - 重建前端镜像显示版本信息",
-    "type": "spawn_check",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "部署 v1.5.7 到测试环境 - 重建前端镜像显示版本信息"
-    }
-  },
-  {
     "timestamp": "2026-07-05T03:15:45Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1068,5 +1044,24 @@
       "status": "idle",
       "task": "[PM自主工作] Backend路由修复完成 - /api/classes返回401(需认证)而非4"
     }
+  },
+  {
+    "timestamp": "2026-07-08T04:33:30Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[Issue #206+#207] 重新验收新增学生功能 - Backend路由已修复(/api/classes返回401)，Frontend已更新，请验证：1)班级下拉框有数据 2)新增对话框正常打开 3)保存不再报错",
+    "type": "assign",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[Issue #206+#207] 重新验收新增学生功能 - Backend路由已修复(/api/c"
+    }
+  },
+  {
+    "timestamp": "2026-07-08T04:33:52Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #206+#207] 开始验收",
+    "type": "received"
   }
 ]

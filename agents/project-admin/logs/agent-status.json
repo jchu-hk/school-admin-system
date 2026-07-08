@@ -26,9 +26,9 @@
       "lastUpdate": "2026-07-08T03:16:34Z"
     },
     "QA": {
-      "status": "idle",
-      "task": "[Issue #206+#207] 验收失败 - #206班级下拉框仍无数据，#207新增对话框报错'ReferenceError: classes is no",
-      "lastUpdate": "2026-07-08T03:11:38Z"
+      "status": "running",
+      "task": "[Issue #206+#207] 重新验收新增学生功能 - Backend路由已修复(/api/classes返回401)，Frontend已更新，请验证：1",
+      "lastUpdate": "2026-07-08T04:33:30Z"
     },
     "REQ": {
       "status": "idle",
