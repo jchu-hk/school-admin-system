@@ -8,15 +8,31 @@
 ## 📦 Current Version
 
 - **Version**: v1.5.7
-- **Release Date**: 2026-07-05 08:49 GMT+8
-- **Git Commit**: `8a66942`
+- **Release Date**: 2026-07-08 13:49 GMT+8
+- **Git Commit**: `f887343`
 - **Branch**: `main`
 - **Status**: Released for Testing
 - **Tested By**: QA Agent - 2026-07-08
-- **Changelog**:
-  - Bug修复: Issue #206 - 修复StudentFormProps缺失classes属性导致班级下拉框报错
-  - Bug修复: Issue #207 - 修复nginx配置缺失/students和/classes路由导致API请求404
-  - 前端重新构建并部署
+
+### v1.5.7 vs v1.5.6 代码变更 (需要测试验证)
+
+| Commit | 描述 | 模块 |
+|--------|------|------|
+| `8a66942` | 修复nginx代理路由 /students, /classes | Backend |
+| `ff6886a` | 修复StudentFormProps classes属性 | Frontend |
+| `d9d10c5` | 移除UserPage/LeavePage/StudentProfilePage重复Authorization | Frontend |
+| `c09b357` | 移除StudentPage重复Authorization header | Frontend |
+| `e14b160` | 添加class_id字段和自动分配 | Backend |
+| `446b5f6` | 添加GET /classes接口和班级下拉框 | Backend+Frontend |
+| `d8707c0` | 修复学生管理新增按钮 | Frontend |
+| `1542bb9` | 修复student.entity循环依赖 | Backend |
+| `78df39d` | 修复资产管理崩溃+用户管理筛选/保存 | Frontend |
+| `d0c3e21` | 修复人工录入出勤记录Bug | Frontend |
+| `3f207a2` | 修复出勤记录按钮无响应 | Frontend |
+| `24787b4` | 添加inquiry实体@Column装饰器 | Backend |
+| `83358fe` | API分页参数limit改为pageSize | Backend |
+
+**注意**: Coze环境可能未包含以上所有修复
 
 
 ## 🌐 Environment URLs

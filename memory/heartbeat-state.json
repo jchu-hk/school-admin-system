@@ -15,6 +15,6 @@
     "qaPending": true,
     "systemHealth": "stable",
     "activeAgents": 0,
-    "notes": "Backend healthy | Git clean | #208 ready-for-review | Frontend healthy"
+    "notes": "Backend healthy | Git clean | #208 ready-for-review | Frontend healthy | CI/CD Railway deploy failing (invalid token)"
   }
 }
