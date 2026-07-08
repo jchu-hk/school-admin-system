@@ -35,12 +35,62 @@
 **注意**: Coze环境可能未包含以上所有修复
 
 
+## 🌐 测试环境刷新流程
+
+### 何时刷新测试环境
+
+| 场景 | 操作 |
+|------|------|
+| DEV完成修复，需要QA验收 | **必须刷新** |
+| 代码合并到main后 | **必须刷新** |
+| QA开始新任务前 | **必须验证版本号** |
+| 每次部署后 | **必须检查About页面版本** |
+
+### 如何刷新测试环境
+
+```bash
+# 1. 拉取最新代码
+git pull origin main
+
+# 2. 构建后端
+cd apps/backend && npm run build
+
+# 3. 部署后端到容器
+docker cp dist/. school-admin-backend:/app/dist/
+docker restart school-admin-backend
+
+# 4. 构建前端
+cd ../../school-admin-frontend && npm run build
+
+# 5. 部署前端到容器
+docker cp dist/. school-admin-frontend:/usr/share/nginx/html/
+
+# 6. 验证 - 检查About页面版本号
+curl http://localhost:8080/school-admin/about | grep version
+```
+
+### QA验收前检查清单
+
+- [ ] About页面版本号正确（应为当前版本）
+- [ ] Backend API正常响应
+- [ ] 登录功能正常
+- [ ] 被测功能可访问
+
+### 版本号验证点
+
+**About页面** (`/school-admin/about`) 显示的版本号必须与：
+1. 当前Git commit版本一致
+2. PROJECT-WIKI中记录的版本一致
+
+**不一致 = 测试环境未正确刷新**
+
+---
+
 ## 🌐 Environment URLs
 
-> ⚠️ **环境说明**:
-> - **本地测试环境** (localhost) - 我们管理的，始终是最新代码 ✅
-> - **Cloudflare Tunnel** - 我们管理的，URL可能变化
-> - **Coze环境** - ❌ **不是我们管理的**，部署时间未知，可能不是最新代码
+> 💡 **测试环境说明**:
+> - **localhost** = 测试环境（Coze只是代理转发到localhost）
+> - About页面版本号 = 测试环境的实际代码版本
 
 | Service | URL | 管理方 | 状态 |
 |---------|-----|--------|------|
@@ -51,6 +101,12 @@
 | Coze API | `https://aade13aa-...dev.coze.site/api/` | ❌ Coze | ⚠️ 部署时间未知 |
 
 > 💡 **推荐使用本地测试环境** - 我们控制的，始终最新
+
+### ⚠️ About页面版本号的重要性
+**About页面显示的版本号反映代码库的实际版本**。每次刷新测试环境后，必须：
+1. 验证About页面版本号是否正确
+2. 如果版本号不对，说明测试环境没有正确刷新
+3. 这是确保QA测试的是正确代码的关键步骤
 
 ---
 
