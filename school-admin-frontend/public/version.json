@@ -1,13 +1,14 @@
 {
   "version": "v1.5.7",
   "buildDate": "2026-07-08",
-  "gitCommit": "ce1d336",
+  "gitCommit": "03a5ac0",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-08",
       "date": "2026-07-08",
       "changes": [
+        "bump package.json version to 1.5.7 for About page",
         "add test environment refresh process to PROJECT-WIKI",
         "fix - Coze is just proxy, localhost IS our environment",
         "emphasize Coze environment is NOT guaranteed to have latest code",
@@ -19,12 +20,7 @@
         "dashboard update 13:00",
         "update PROJECT-WIKI.md with Issue #206/#207 fix details",
         "add nginx proxy routes for /students and /classes endpoints",
-        "fix wiki file confusion - update PROJECT_WIKI.md redirect and docs/school-admin-system/PROJECT-WIKI.md version info",
-        "heartbeat 2026-07-08 12:40",
-        "heartbeat state update",
-        "update PROJECT-WIKI with QA reports and latest deployment info",
-        "dashboard update 12:33",
-        "dashboard update 12:33"
+        "fix wiki file confusion - update PROJECT_WIKI.md redirect and docs/school-admin-system/PROJECT-WIKI.md version info"
       ]
     }
   ]
