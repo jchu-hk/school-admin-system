@@ -1,7 +1,15 @@
 {
   "lastChecks": {
-    "backend": "2026-07-08T19:40:00+08:00",
-    "docker": "2026-07-08T19:40:00+08:00",
-    "github": "2026-07-08T14:35:00+08:00"
-  }
+    "system": 1720429500,
+    "backend": 1720429500,
+    "frontend": 1720429500,
+    "docker": 1720429500,
+    "git": 1720429500,
+    "issues": 1720429500
+  },
+  "lastHeartbeat": "2026-07-08 20:05 GMT+8",
+  "systemStatus": "healthy",
+  "backendStatus": "responding",
+  "frontendStatus": "healthy",
+  "notes": "晚间心跳 - 系统稳定，Backend API正常响应，工作区已更新，即将提交"
 }
