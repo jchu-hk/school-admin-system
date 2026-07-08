@@ -1,7 +1,7 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-07 22:31 GMT+8
-> Updated by: PM (added E2E test report link)
+> Last updated: 2026-07-08 12:33 GMT+8
+> Updated by: PM (added QA verification task + fixed Wiki)
 
 ---
 
@@ -129,9 +129,13 @@ These are known issues that do not currently impact operations:
 
 ## 🧪 QA Test Reports
 
-| Report | Type | Date | Link |
-|--------|------|------|------|
-| Student Management E2E Test | End-to-End | 2026-06-27 | [TEST-REPORT.md](e2e-tests/TEST-REPORT.md) |
+| Report | Type | Date | Status | Link |
+|--------|------|------|--------|------|
+| Student Management E2E Test | End-to-End | 2026-06-27 | ✅ Pass | [TEST-REPORT.md](e2e-tests/TEST-REPORT.md) |
+| Student Management E2E Regression | End-to-End | 2026-07-06 | ❌ Failed (28.57%) | [Regression Report](./qa_report/student-management-regression-report-20260706.md) |
+| Student Management E2E Regression Fix | End-to-End | 2026-07-06 | ❌ Failed | [Fix Report](./qa_report/student-management-regression-fix-report-20260706.md) |
+| Student Management Full | Full QA | 2026-07-06 | ⚠️ Blocked | [Full Report](./qa_report/student-management-full-report-20260706.md) |
+| Student Management Root Cause | Analysis | 2026-07-06 | 📋 Analysis | [Root Cause](./qa_report/student-page-performance-root-cause.md) |
 
 ---
 
@@ -153,6 +157,38 @@ Live dashboard: [multi-agent-dashboard.html](multi-agent-dashboard.html)
 ---
 
 ## 🔄 Recent Activity
+
+### 2026-07-08 — QA Re-verification Task Dispatched
+
+**时间**: 12:33 GMT+8
+
+**派发内容**: Issue #206 + #207 QA重新验收
+- #206: 新增学生页面所属班级下拉框无数据
+- #207: 新增学生保存失败返回400错误
+
+**修复内容**:
+- Backend路由 `/api/classes` 已修复（之前404，现返回401需认证）
+- Frontend已重新构建并部署
+
+**QA验收状态**: 🔄 进行中
+
+---
+
+### 2026-07-08 — Backend & Frontend Deployment
+
+**时间**: 12:25-12:33 GMT+8
+
+**问题发现**:
+- Backend容器使用旧编译输出，`/api/classes` 路由返回404
+- 虽然源代码正确，但dist文件缺失
+
+**修复措施**:
+- 重新构建Backend并部署到容器
+- 重启容器
+- 验证 `/api/classes` 返回401（正常需认证）
+- 重新构建Frontend并部署
+
+---
 
 ### 2026-07-07 — Student Management Testing Data & E2E Report
 
