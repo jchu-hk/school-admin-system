@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-05T03:14:38Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "清理状态，准备 v1.5.7 发布",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "清理状态，准备 v1.5.7 发布"
-    }
-  },
-  {
     "timestamp": "2026-07-05T03:14:50Z",
     "from": "PM",
     "to": "DEVOPS",
@@ -1067,6 +1055,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[Issue #206+#207] 验收失败需要重新修复 - #206班级下拉框仍无数据，#207新"
+    }
+  },
+  {
+    "timestamp": "2026-07-08T04:03:38Z",
+    "from": "PM",
+    "to": "ALL",
+    "message": "Heartbeat 12:03 - Backend稳定运行(12次连续检查通过) | 3个P0缺陷处理中(#206/#207/#208) | 5个Issue待QA验收",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "Heartbeat 12:03 - Backend稳定运行(12次连续检查通过) | 3个P0缺陷处"
     }
   }
 ]

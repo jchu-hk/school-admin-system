@@ -1,11 +1,11 @@
 {
   "lastChecks": {
-    "system": 1783482620,
-    "git": 1783482620,
-    "github": 1783482206,
-    "dashboard": 1783482206,
-    "heartbeat": 1783482620,
-    "backendLocalHealth": 1783482620
+    "system": 1783485900,
+    "git": 1783485900,
+    "github": 1783485900,
+    "dashboard": 1783485900,
+    "heartbeat": 1783485900,
+    "backendLocalHealth": 1783485900
   },
   "currentStatus": {
     "backendLocalHealth": "healthy",
@@ -13,7 +13,7 @@
     "backendInstability": "recovered",
     "qaPending": true,
     "systemHealth": "stable",
-    "activeAgents": 3,
-    "notes": "Backend已恢复稳定运行 - 容器重启于11:24，连续12次心跳检查通过 | 3个Issue活跃中(#206/#207/#208) | 5个Issue待QA验收"
+    "activeAgents": 0,
+    "notes": "Backend稳定运行 | 无活跃Agent任务 | Git有未提交修改待推送"
   }
 }
