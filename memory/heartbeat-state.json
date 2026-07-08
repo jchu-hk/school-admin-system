@@ -1,19 +1,19 @@
 {
   "lastChecks": {
-    "system": 1783480072,
-    "git": 1783480072,
-    "github": 1783480072,
-    "dashboard": 1783480072,
-    "heartbeat": 1783480072,
-    "backendLocalHealth": 1783480072
+    "system": 1783480845,
+    "git": 1783480845,
+    "github": 1783480845,
+    "dashboard": 1783480845,
+    "heartbeat": 1783480845,
+    "backendLocalHealth": 1783480845
   },
   "currentStatus": {
-    "backendLocalHealth": "failed",
-    "backendTunnelHealth": "intermittent",
-    "backendInstability": "both-failed",
+    "backendLocalHealth": "recovered",
+    "backendTunnelHealth": "unverified",
+    "backendInstability": "recovered",
     "qaPending": true,
     "systemHealth": "stable",
     "activeAgents": 0,
-    "notes": "Local backend: curl 000 (连续失败) | Cloudflare Tunnel: 间歇性失败 | 5个Issue待QA验收(#206/#207/#208/#209/#140) | 需要紧急调查Backend容器"
+    "notes": "Backend已恢复运行 - 容器重启于11:24，应用正常响应API请求(返回401认证正常) | 端口配置: 宿主机3000映射容器3000 | 5个Issue待QA验收(#206/#207/#208/#209/#140) | 需要催办QA验收工作"
   }
 }
