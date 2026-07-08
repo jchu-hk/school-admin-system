@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-04T03:09:47Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[Issue #199] PM正在直接修复: 新增学生页面字段更新",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #199] PM正在直接修复: 新增学生页面字段更新"
-    }
-  },
-  {
     "timestamp": "2026-07-04T03:10:35Z",
     "from": "DEV",
     "to": "PM",
@@ -1072,6 +1060,18 @@
       "agent": "PM",
       "status": "idle",
       "task": "[Heartbeat 09:30] Backend API已恢复正常 ✅ 所有服务运行正常"
+    }
+  },
+  {
+    "timestamp": "2026-07-08T03:03:32Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #209] 批量修复3个页面的重复Authorization header问题 - UserPage.tsx(7处) + LeavePage.tsx(6处) + StudentProfilePage.tsx(3处)，参考Issue #208的commit c09b357修复模式",
+    "type": "assign",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[Issue #209] 批量修复3个页面的重复Authorization header问题 - U"
     }
   }
 ]

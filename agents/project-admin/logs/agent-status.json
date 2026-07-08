@@ -21,9 +21,9 @@
       "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
-      "status": "idle",
-      "task": "[Issue #208] 认证问题已修复 - 代码已提交并推送\n\n**根本原因**: StudentPage.tsx 中的 apiClient 调用存在双重 A",
-      "lastUpdate": "2026-07-07T15:19:16Z"
+      "status": "running",
+      "task": "[Issue #209] 批量修复3个页面的重复Authorization header问题 - UserPage.tsx(7处) + LeavePage.ts",
+      "lastUpdate": "2026-07-08T03:03:32Z"
     },
     "QA": {
       "status": "idle",
