@@ -1,19 +1,19 @@
 {
   "lastChecks": {
-    "system": 1751946016,
-    "git": 1751946016,
-    "github": 1751946016,
-    "dashboard": 1751946016,
-    "heartbeat": 1751946016,
-    "backendLocalHealth": 1751946016
+    "system": 1751952300,
+    "git": 1751952300,
+    "github": 1751952300,
+    "dashboard": 1751952300,
+    "heartbeat": 1751952300,
+    "backendLocalHealth": 1751952300
   },
   "currentStatus": {
     "backendLocalHealth": "healthy",
-    "backendTunnelHealth": "healthy",
-    "backendInstability": "recovered",
-    "qaPending": true,
+    "backendTunnelHealth": "unknown",
+    "backendInstability": "stable",
+    "qaPending": false,
     "systemHealth": "stable",
     "activeAgents": 0,
-    "notes": "Backend稳定运行 | 本地3000和tunnel均正常 | 无活跃Agent任务 | Git已推送"
+    "notes": "Backend稳定运行 | 本地3000正常 | Git已推送 | 无活跃Agent任务"
   }
 }
