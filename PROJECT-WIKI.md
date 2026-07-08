@@ -1,7 +1,7 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-08 12:56 GMT+8
-> Updated by: QA Agent (fix: missing classes prop in StudentFormProps + nginx proxy fix)
+> Last updated: 2026-07-08 13:44 GMT+8
+> Updated by: PM (环境说明 - Coze不是我们管理的)
 
 ---
 
@@ -21,18 +21,20 @@
 
 ## 🌐 Environment URLs
 
-| Service | URL | Status |
-|---------|-----|--------|
-| Frontend (Cloudflare Tunnel) | `https://expenses-forests-collections-pad.trycloudflare.com` | ✅ Active |
-| Backend API (Cloudflare Tunnel) | `https://meaning-harvey-clearly-automobiles.trycloudflare.com` | ✅ Active |
-| Coze Frontend | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/` | ✅ Active |
-| Coze API | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/api/` | ✅ Active |
-| Local Backend | `http://localhost:3000` | ✅ Healthy (`{"status":"ok"}`) |
-| PostgreSQL | `localhost:5432` | ✅ Healthy |
-| Redis | `localhost:6379` | ✅ Healthy |
-| OPA | `localhost:8181` | ✅ Healthy |
+> ⚠️ **环境说明**:
+> - **本地测试环境** (localhost) - 我们管理的，始终是最新代码 ✅
+> - **Cloudflare Tunnel** - 我们管理的，URL可能变化
+> - **Coze环境** - ❌ **不是我们管理的**，部署时间未知，可能不是最新代码
 
-> **Note**: Tunnel URLs may change after tunnel restart. Verify connectivity if frontend/backend become unreachable.
+| Service | URL | 管理方 | 状态 |
+|---------|-----|--------|------|
+| Local Frontend | http://localhost:8080 | ✅ 我们 | ✅ 最新代码 |
+| Local Backend | http://localhost:3000 | ✅ 我们 | ✅ 最新代码 |
+| Cloudflare Tunnel Frontend | `https://...trycloudflare.com` | ✅ 我们 | ⚠️ URL会变化 |
+| Coze Frontend | `https://aade13aa-...dev.coze.site/school-admin/` | ❌ Coze | ⚠️ 部署时间未知 |
+| Coze API | `https://aade13aa-...dev.coze.site/api/` | ❌ Coze | ⚠️ 部署时间未知 |
+
+> 💡 **推荐使用本地测试环境** - 确保代码是最新的
 
 ---
 

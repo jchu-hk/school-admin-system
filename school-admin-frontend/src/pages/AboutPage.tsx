@@ -47,7 +47,7 @@ export default function AboutPage() {
         setLoading(false)
         // Fallback to default version info
         setVersionInfo({
-          version: 'v1.5.6',
+          version: 'v1.5.7',
           buildNumber: 'build-20260704-01',
           buildDate: '2026-07-04',
           gitCommit: 'unknown',
