@@ -1,84 +1,5 @@
 [
   {
-    "timestamp": "2026-07-04T03:10:35Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[Issue #199+#200] 修复完成，commit已推送",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[Issue #199+#200] 修复完成，commit已推送"
-    }
-  },
-  {
-    "timestamp": "2026-07-04T03:11:49Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[Issues #199+200+201+202+203] 全部修复完成并推送 #199(b29dbcd) #200(3f207a2) #201-203(78df39d)",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[Issues #199+200+201+202+203] 全部修复完成并推送 #199(b29db"
-    }
-  },
-  {
-    "timestamp": "2026-07-04T07:24:20Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[Issue #196] 循环依赖Bug - student.class_id 和 class_entity 相互引用导致编译错误",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #196] 循环依赖Bug - student.class_id 和 class_en"
-    }
-  },
-  {
-    "timestamp": "2026-07-04T07:25:16Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[Issue #196] Test label fix - should add dev label, not pm",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #196] Test label fix - should add dev label"
-    }
-  },
-  {
-    "timestamp": "2026-07-04T11:29:00Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[Issue #196] 开始修复: 循环依赖Bug",
-    "type": "received"
-  },
-  {
-    "timestamp": "2026-07-04T11:31:45Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[Issue #196] 修复完成，commit: https://github.com/jchu-hk/school-admin-system/commit/1542bb9",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[Issue #196] 修复完成，commit: https://github.com/jchu-"
-    }
-  },
-  {
-    "timestamp": "2026-07-05T01:01:09Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "[部署请求] 重建前端镜像以显示 v1.5.7 版本信息",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[部署请求] 重建前端镜像以显示 v1.5.7 版本信息"
-    }
-  },
-  {
     "timestamp": "2026-07-05T03:14:38Z",
     "from": "PM",
     "to": "PM",
@@ -1072,6 +993,80 @@
       "agent": "DEV",
       "status": "running",
       "task": "[Issue #209] 批量修复3个页面的重复Authorization header问题 - U"
+    }
+  },
+  {
+    "timestamp": "2026-07-08T03:04:58Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #209] 开始修复",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-08T03:05:17Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[Issue #206+#207] 验收新增学生功能 - 修复代码已提交并合并：1) 班级下拉框现在有数据(#206) 2) 保存不再返回400错误(#207)，测试账号: staff1/Admin123!",
+    "type": "assign",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[Issue #206+#207] 验收新增学生功能 - 修复代码已提交并合并：1) 班级下拉框现在"
+    }
+  },
+  {
+    "timestamp": "2026-07-08T03:06:12Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #206+#207] 开始验收",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-08T03:10:11Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #206+#207] 验收失败: 两个问题\\n1. Issue #206: 班级筛选下拉框只有'全部班级'选项，没有12个班级列表\\n2. Issue #207: 点击'新增学生'出现 ReferenceError: classes is not defined 错误，无法打开对话框测试保存功能",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Issue #206+#207] 验收失败: 两个问题\\n1. Issue #206: 班级筛选下"
+    }
+  },
+  {
+    "timestamp": "2026-07-08T03:11:38Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #206+#207] 验收失败 - #206班级下拉框仍无数据，#207新增对话框报错'ReferenceError: classes is not defined'",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Issue #206+#207] 验收失败 - #206班级下拉框仍无数据，#207新增对话框报错"
+    }
+  },
+  {
+    "timestamp": "2026-07-08T03:14:18Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #209] 完成: 修复UserPage.tsx (7处)、LeavePage.tsx (6处)、StudentProfilePage.tsx (3处)的重复Authorization header问题",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[Issue #209] 完成: 修复UserPage.tsx (7处)、LeavePage.tsx"
+    }
+  },
+  {
+    "timestamp": "2026-07-08T03:16:34Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #206+#207] 验收失败需要重新修复 - #206班级下拉框仍无数据，#207新增对话框报错'ReferenceError: classes is not defined'。之前提交的修复代码有问题，需要重新开发",
+    "type": "assign",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[Issue #206+#207] 验收失败需要重新修复 - #206班级下拉框仍无数据，#207新"
     }
   }
 ]

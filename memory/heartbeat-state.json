@@ -1,20 +1,19 @@
 {
   "lastChecks": {
-    "system": 1783480520,
-    "git": 1783480520,
-    "github": 1783480520,
-    "dashboard": 1783480520,
-    "heartbeat": 1783480520,
-    "backendLocalHealth": 1783480520,
-    "backendTunnelHealth": 1783480520
+    "system": 1783480072,
+    "git": 1783480072,
+    "github": 1783480072,
+    "dashboard": 1783480072,
+    "heartbeat": 1783480072,
+    "backendLocalHealth": 1783480072
   },
   "currentStatus": {
-    "backendLocalHealth": "stable",
+    "backendLocalHealth": "failed",
     "backendTunnelHealth": "intermittent",
-    "backendInstability": "tunnel-intermittent",
+    "backendInstability": "both-failed",
     "qaPending": true,
     "systemHealth": "stable",
     "activeAgents": 0,
-    "notes": "Local backend: HTTP 200 ✅ (连续10次) | Cloudflare Tunnel: 间歇性失败 (curl 000) | 5个Issue待QA验收(#206/#207/#208/#209/#140)"
+    "notes": "Local backend: curl 000 (连续失败) | Cloudflare Tunnel: 间歇性失败 | 5个Issue待QA验收(#206/#207/#208/#209/#140) | 需要紧急调查Backend容器"
   }
 }

@@ -22,13 +22,13 @@
     },
     "DEV": {
       "status": "running",
-      "task": "[Issue #209] 批量修复3个页面的重复Authorization header问题 - UserPage.tsx(7处) + LeavePage.ts",
-      "lastUpdate": "2026-07-08T03:03:32Z"
+      "task": "[Issue #206+#207] 验收失败需要重新修复 - #206班级下拉框仍无数据，#207新增对话框报错'ReferenceError: classes",
+      "lastUpdate": "2026-07-08T03:16:34Z"
     },
     "QA": {
       "status": "idle",
-      "task": "[Issue #205] QA验收通过: Zod validation schema修复正确，API测试验证成功",
-      "lastUpdate": "2026-07-07T05:20:27Z"
+      "task": "[Issue #206+#207] 验收失败 - #206班级下拉框仍无数据，#207新增对话框报错'ReferenceError: classes is no",
+      "lastUpdate": "2026-07-08T03:11:38Z"
     },
     "REQ": {
       "status": "idle",
