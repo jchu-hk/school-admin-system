@@ -8,6 +8,38 @@
 
 **详细内容见**: `CRITICAL_RULES.md` - 必须遵守的规则清单
 
+## -1. Dashboard 更新强制规则 (NEW - 2026-07-09)
+
+**所有 Agent 必须使用 `write_message.py` 更新状态**
+
+**规则**:
+- ✅ 任务启动/完成时必须调用 `write_message.py`
+- ✅ 脚本会自动更新 Dashboard (推送到 GitHub)
+- ❌ 禁止直接编辑 `agent-messages.json` 或 `agent-status.json`
+- ❌ 禁止手动调用 `update_dashboard.py`
+
+**调用方式**:
+```bash
+# 任务开始
+python3 skills/agent-communication/scripts/write_message.py \
+  --from {AGENT} --to PM --message "开始任务 {desc}" \
+  --type received --status running
+
+# 任务完成 (通过)
+python3 skills/agent-communication/scripts/write_message.py \
+  --from {AGENT} --to PM --message "任务完成: {结果}" \
+  --type passed --status idle
+
+# 任务完成 (失败)
+python3 skills/agent-communication/scripts/write_message.py \
+  --from {AGENT} --to PM --message "任务失败: {原因}" \
+  --type failed --status idle
+```
+
+**验证**: PM 在心跳时检查 Dashboard 是否与实际状态一致
+
+---
+
 ## 0. Before ANY sessions_spawn - MUST DO THIS FIRST
 
 ```bash

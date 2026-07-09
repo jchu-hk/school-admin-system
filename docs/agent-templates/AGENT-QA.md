@@ -116,26 +116,40 @@ python3 skills/agent-communication/scripts/write_message.py \
 - {remaining_time}
 ```
 
-### 3.3 完成时 (REQUIRED)
+### 3.3 完成时 (REQUIRED - 必须使用 write_message.py)
 
-**Must call dashboard update BEFORE reporting results:**
+**⚠️ 强制规则: 必须调用 write_message.py 而非直接修改文件**
+
+`write_message.py` 会自动:
+- ✅ 记录消息到 agent-messages.json
+- ✅ 更新 Dashboard (推送至 GitHub)
+- ✅ 更新 Agent 状态
+
+**通过验证时**:
 ```bash
-# If PASS:
 python3 skills/agent-communication/scripts/write_message.py \
   --from QA \
   --to PM \
-  --message "Issue #{id} 验收通过" \
-  --type done \
+  --message "Issue #{id} 验收通过 - {验证结果摘要}" \
+  --type passed \
   --status idle
+```
 
-# If FAIL:
+**验收失败时**:
+```bash
 python3 skills/agent-communication/scripts/write_message.py \
   --from QA \
   --to PM \
-  --message "Issue #{id} 验收失败，发现 {n} 个Bug" \
+  --message "Issue #{id} 验收失败 - 发现 {n} 个Bug: {bug摘要}" \
   --type failed \
   --status idle
 ```
+
+**🚫 禁止行为**:
+- ❌ 直接编辑 agent-messages.json
+- ❌ 直接编辑 agent-status.json
+- ❌ 手动调用 update_dashboard.py
+- ✅ 只使用 write_message.py
 
 **验收通过:**
 ```markdown
