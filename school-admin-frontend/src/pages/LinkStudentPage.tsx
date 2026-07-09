@@ -46,7 +46,7 @@ export default function LinkStudentPage() {
   const fetchStudents = async (page = 1) => {
     try {
       setLoading(true)
-      const res = await apiClient.get('/api/auth/linked-students', {
+      const res = await apiClient.get('/auth/linked-students', {
         params: { page, pageSize: 20 },
       })
       if (res.data.success) {
@@ -81,7 +81,7 @@ export default function LinkStudentPage() {
     try {
       setSubmitting(true)
       setError('')
-      const res = await apiClient.post('/api/auth/link-student', {
+      const res = await apiClient.post('/auth/link-student', {
         studentId: data.studentId,
         relationship: data.relationship,
         isPrimary: data.isPrimary,
@@ -106,7 +106,7 @@ export default function LinkStudentPage() {
 
   const handleUnlink = async (linkId: string) => {
     try {
-      const res = await apiClient.delete(`/api/auth/link-student/${linkId}`)
+      const res = await apiClient.delete(`/auth/link-student/${linkId}`)
       if (res.data.success) {
         setConfirmUnlink(null)
         fetchStudents()

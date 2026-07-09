@@ -63,7 +63,7 @@ export default function Login() {
     setToken(token)
     // Check password status
     apiClient
-      .get('/api/auth/password-status')
+      .get('/auth/password-status')
       .then((res) => {
         if (res.data.success && res.data.data.mustSetPassword === true) {
           navigate('/set-password')
@@ -81,7 +81,7 @@ export default function Login() {
     try {
       setError('')
       setIsSubmitting(true)
-      const res = await apiClient.post<LoginResponse>('/api/auth/login', data)
+      const res = await apiClient.post<LoginResponse>('/auth/login', data)
 
       // 如果需要OTP验证
       if (res.data.requiresOtp) {
@@ -111,7 +111,7 @@ export default function Login() {
       setError('')
       setIsSubmitting(true)
 
-      const res = await apiClient.post<{ access_token: string }>('/api/auth/verify-otp', {
+      const res = await apiClient.post<{ access_token: string }>('/auth/verify-otp', {
         tempToken: loginData?.temp_token,
         code: data.otpCode,
         otpType: loginData?.otpType || 'email',

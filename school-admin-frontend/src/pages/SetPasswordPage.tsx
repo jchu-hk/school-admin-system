@@ -67,7 +67,7 @@ export default function SetPasswordPage() {
       setError('')
       setIsSubmitting(true)
 
-      const res = await apiClient.post('/api/auth/set-password', {
+      const res = await apiClient.post('/auth/set-password', {
         oldPassword: data.oldPassword || undefined,
         newPassword: data.newPassword,
         confirmPassword: data.confirmPassword,
