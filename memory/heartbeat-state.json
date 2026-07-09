@@ -1,14 +1,11 @@
 {
   "lastChecks": {
-    "email": null,
-    "calendar": null,
-    "weather": null,
     "system": 1783577132,
-    "stuckTasks": 1783575332,
-    "issues": 1783575332,
+    "backend": 1783577132,
     "git": 1783577132,
-    "heartbeat": 1783577132,
-    "backend": 1783577132
+    "heartbeat": 1783576800,
+    "stuckTasks": 1783575332,
+    "issues": 1783575332
   },
   "stuckTasks": {
     "lastCheck": "2026-07-09 12:55 GMT+8",
