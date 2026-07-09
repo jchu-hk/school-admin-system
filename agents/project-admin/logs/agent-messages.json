@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-06T02:52:43Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[功能性测试] 重新测试 Student Management Module - 包含完整测试案例和测试报告",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[功能性测试] 重新测试 Student Management Module - 包含完整测试案例和"
-    }
-  },
-  {
     "timestamp": "2026-07-06T02:53:34Z",
     "from": "QA",
     "to": "PM",
@@ -1067,6 +1055,18 @@
       "agent": "PM",
       "status": "idle",
       "task": "[Issue #211] PM直接修复 - notification.ts /api prefix "
+    }
+  },
+  {
+    "timestamp": "2026-07-09T09:10:42Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #211] 任务已关闭 - PM自主修复完成，清理Dashboard状态",
+    "type": "done",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "[Issue #211] 任务已关闭 - PM自主修复完成，清理Dashboard状态"
     }
   }
 ]
