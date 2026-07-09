@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-06T01:26:12Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[Issue #140] 修复 inquiry.entity.ts - aiIntent字段缺少@Column装饰器",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #140] 修复 inquiry.entity.ts - aiIntent字段缺少@C"
-    }
-  },
-  {
     "timestamp": "2026-07-06T01:26:59Z",
     "from": "DEV",
     "to": "PM",
@@ -1067,6 +1055,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[Issue #211] P1 - 修复前端API路径重复 - /api/api/ 路径导致404 "
+    }
+  },
+  {
+    "timestamp": "2026-07-09T08:23:34Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #211] P1 提醒 - 前端API路径重复导致404 - staff1登录后所有API调用失败 - 请立即修复",
+    "type": "assign",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[Issue #211] P1 提醒 - 前端API路径重复导致404 - staff1登录后所有A"
     }
   }
 ]
