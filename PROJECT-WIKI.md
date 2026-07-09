@@ -145,11 +145,12 @@ Browser → Cloudflare Tunnel → Frontend (Next.js :3001)
 
 | 角色 | 用户名 | 密码 | OTP | 权限 | 验证状态 |
 |------|--------|------|-----|------|---------|
-| 教师 | **teacher1** | `Admin123!` | ✅ | 教学管理 | ✅ **已验证** |
-| 家长 | **parent1** | `Admin123!` | ❌ | 家长门户 | ✅ **已验证** |
-| 学生 | **student1** | `Admin123!` | ❌ | 学生门户 | ✅ **已验证** |
+| **系统管理员** | **qa_test** | `Admin123!` | ❌ | **全部功能** | ✅ **推荐** |
+| 教师 | teacher1 | `Admin123!` | ✅ | 教学管理 | ⚠️ 需 OTP |
+| 家长 | parent1 | `Admin123!` | ❌ | 家长门户 | ✅ 功能有限 |
+| 学生 | student1 | `Admin123!` | ❌ | 学生门户 | ✅ 功能有限 |
 
-> ⚠️ **重要**: admin 和 staff1 账号密码不是 `Admin123!`，无法登录
+> ✅ **推荐测试账号**: `qa_test` / `Admin123!` (system_admin，无 OTP，完整权限)
 > 📍 **唯一信息来源**: docs/school-admin-system/PROJECT-WIKI.md
 
 ### 🛠️ 系统服务账号
