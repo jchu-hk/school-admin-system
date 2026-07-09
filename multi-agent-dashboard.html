@@ -54,7 +54,7 @@
                 <button class="tab-btn" id="btn-t1" onclick="showTab('t1')">📅 T-1 昨日</button>
             </div>
             <div id="tab-t0" class="tab-panel active">
-                <div class="message-list"><div class="message-item msg-assign"><div class="message-time">11:42</div><div class="message-content">PM → QA: [Issue #208] 请求 QA 验收 - 学生管理页面认证修复</div></div><div class="message-item msg-info"><div class="message-time">09:30</div><div class="message-content">PM → HEARTBEAT: 09:30 早间心跳检查</div></div></div>
+                <div class="message-list"><div class="message-item msg-passed"><div class="message-time">12:01</div><div class="message-content">QA → PM: [Issue #208] 验收完成: 学生认证问题已修复并通过验证</div></div><div class="message-item msg-assign"><div class="message-time">11:42</div><div class="message-content">PM → QA: [Issue #208] 请求 QA 验收 - 学生管理页面认证修复</div></div><div class="message-item msg-info"><div class="message-time">09:30</div><div class="message-content">PM → HEARTBEAT: 09:30 早间心跳检查</div></div></div>
             </div>
             <div id="tab-t1" class="tab-panel">
                 <div class="message-list"><div class="message-item msg-passed"><div class="message-time">13:00</div><div class="message-content">QA → PM: [Issue #206+#207] 验收通过
@@ -65,7 +65,7 @@ Issue #206 - 班级下拉框无数</div></div><div class="message-item msg-recei
             </div>
         </div>
 
-        <div class="refresh">Updated: 2026-07-09 12:00:47 (GMT+8) | Source: agent-status.json</div>
+        <div class="refresh">Updated: 2026-07-09 12:01:09 (GMT+8) | Source: agent-status.json</div>
     </div>
     <script>var _btns=document.querySelectorAll('.tab-btn');function showTab(id){var ps=document.querySelectorAll('.tab-panel');for(var i=0;i<ps.length;i++)ps[i].classList.remove('active');for(var i=0;i<_btns.length;i++)_btns[i].classList.remove('active');document.getElementById('tab-'+id).classList.add('active');for(var i=0;i<_btns.length;i++){var oc=_btns[i].getAttribute('onclick')||'';if(oc.indexOf(id)>=0){_btns[i].classList.add('active');break}}}</script>
 </body>
