@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-06T01:11:37Z",
-    "from": "CHECKER",
-    "to": "PM",
-    "message": "[Issue #140] 审查完成: CONDITIONAL PASS - 发现1个严重问题，2个中等问题，1个建议",
-    "type": "passed",
-    "agent_status": {
-      "agent": "CHECKER",
-      "status": "idle",
-      "task": "[Issue #140] 审查完成: CONDITIONAL PASS - 发现1个严重问题，2个中"
-    }
-  },
-  {
     "timestamp": "2026-07-06T01:26:12Z",
     "from": "PM",
     "to": "DEV",
@@ -1067,6 +1055,18 @@
       "agent": "PM",
       "status": "idle",
       "task": "[Issue #210] P0修复完成 - 登录路径重复问题已解决"
+    }
+  },
+  {
+    "timestamp": "2026-07-09T07:42:37Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #211] P1 - 修复前端API路径重复 - /api/api/ 路径导致404 - 需要移除所有API调用中的/api前缀",
+    "type": "assign",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[Issue #211] P1 - 修复前端API路径重复 - /api/api/ 路径导致404 "
     }
   }
 ]

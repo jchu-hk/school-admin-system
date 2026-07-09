@@ -52,7 +52,7 @@ export const dashboardApi = {
   // 获取仪表盘统计数据
   getStats: async (): Promise<DashboardStats> => {
     // 后端直接返回 DashboardStats 对象（无 ApiResponse 包装）
-    const response = await apiClient.get<DashboardStats>('/api/dashboard/stats');
+    const response = await apiClient.get<DashboardStats>('/dashboard/stats');
     return response.data || {
       studentCount: 0,
       todayAttendance: { total: 0, present: 0, absent: 0, late: 0, leave: 0, attendanceRate: 0 },
@@ -66,7 +66,7 @@ export const dashboardApi = {
   getAttendanceTrend: async (period: 'week' | 'month' = 'week'): Promise<AttendanceTrend[]> => {
     const days = period === 'week' ? 7 : 30;
     // 后端直接返回 AttendanceTrend[] 数组（无 ApiResponse 包装）
-    const response = await apiClient.get<AttendanceTrend[]>('/api/dashboard/attendance-trend', {
+    const response = await apiClient.get<AttendanceTrend[]>('/dashboard/attendance-trend', {
       params: { period, days }
     });
     return response.data || [];
@@ -75,7 +75,7 @@ export const dashboardApi = {
   // 获取请假统计
   getLeaveStats: async (): Promise<LeaveStats> => {
     // 后端直接返回 LeaveStats 对象（无 ApiResponse 包装）
-    const response = await apiClient.get<LeaveStats>('/api/dashboard/leave-stats');
+    const response = await apiClient.get<LeaveStats>('/dashboard/leave-stats');
     return response.data || { totalLeaves: 0, pendingLeaves: 0, approvedLeaves: 0, rejectedLeaves: 0 };
   }
 };

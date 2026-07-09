@@ -188,49 +188,49 @@ export const recruitmentApi = {
     page?: number;
     limit?: number;
   }): Promise<{ positions: RecruitmentPosition[]; total: number }> => {
-    const res = await apiClient.get('/api/recruitment/positions', { params });
+    const res = await apiClient.get('/recruitment/positions', { params });
     return res.data;
   },
 
   // GET /api/recruitment/positions/:id
   getPosition: async (id: string): Promise<RecruitmentPosition> => {
-    const res = await apiClient.get(`/api/recruitment/positions/${id}`);
+    const res = await apiClient.get(`/recruitment/positions/${id}`);
     return res.data;
   },
 
   // POST /api/recruitment/positions
   createPosition: async (data: Partial<RecruitmentPosition>): Promise<RecruitmentPosition> => {
-    const res = await apiClient.post('/api/recruitment/positions', data);
+    const res = await apiClient.post('/recruitment/positions', data);
     return res.data;
   },
 
   // PUT /api/recruitment/positions/:id
   updatePosition: async (id: string, data: Partial<RecruitmentPosition>): Promise<RecruitmentPosition> => {
-    const res = await apiClient.put(`/api/recruitment/positions/${id}`, data);
+    const res = await apiClient.put(`/recruitment/positions/${id}`, data);
     return res.data;
   },
 
   // POST /api/recruitment/positions/:id/publish
   publishPosition: async (id: string): Promise<RecruitmentPosition> => {
-    const res = await apiClient.post(`/api/recruitment/positions/${id}/publish`);
+    const res = await apiClient.post(`/recruitment/positions/${id}/publish`);
     return res.data;
   },
 
   // POST /api/recruitment/positions/:id/pause
   pausePosition: async (id: string): Promise<RecruitmentPosition> => {
-    const res = await apiClient.post(`/api/recruitment/positions/${id}/pause`);
+    const res = await apiClient.post(`/recruitment/positions/${id}/pause`);
     return res.data;
   },
 
   // POST /api/recruitment/positions/:id/close
   closePosition: async (id: string): Promise<RecruitmentPosition> => {
-    const res = await apiClient.post(`/api/recruitment/positions/${id}/close`);
+    const res = await apiClient.post(`/recruitment/positions/${id}/close`);
     return res.data;
   },
 
   // DELETE /api/recruitment/positions/:id
   deletePosition: async (id: string): Promise<void> => {
-    await apiClient.delete(`/api/recruitment/positions/${id}`);
+    await apiClient.delete(`/recruitment/positions/${id}`);
   },
 
   // --- Applications ---
@@ -242,19 +242,19 @@ export const recruitmentApi = {
     page?: number;
     limit?: number;
   }): Promise<{ applications: RecruitmentApplication[]; total: number }> => {
-    const res = await apiClient.get('/api/recruitment/applications', { params });
+    const res = await apiClient.get('/recruitment/applications', { params });
     return res.data;
   },
 
   // GET /api/recruitment/applications/:id
   getApplication: async (id: string): Promise<RecruitmentApplication> => {
-    const res = await apiClient.get(`/api/recruitment/applications/${id}`);
+    const res = await apiClient.get(`/recruitment/applications/${id}`);
     return res.data;
   },
 
   // POST /api/recruitment/applications (public portal)
   submitApplication: async (data: Partial<RecruitmentApplication>): Promise<RecruitmentApplication> => {
-    const res = await apiClient.post('/api/recruitment/applications', data);
+    const res = await apiClient.post('/recruitment/applications', data);
     return res.data;
   },
 
@@ -264,7 +264,7 @@ export const recruitmentApi = {
     status: ApplicationStatus,
     notes?: string
   ): Promise<RecruitmentApplication> => {
-    const res = await apiClient.patch(`/api/recruitment/applications/${id}/status`, { status, notes });
+    const res = await apiClient.patch(`/recruitment/applications/${id}/status`, { status, notes });
     return res.data;
   },
 
@@ -276,25 +276,25 @@ export const recruitmentApi = {
     page?: number;
     limit?: number;
   }): Promise<{ interviews: RecruitmentInterview[]; total: number }> => {
-    const res = await apiClient.get('/api/recruitment/interviews', { params });
+    const res = await apiClient.get('/recruitment/interviews', { params });
     return res.data;
   },
 
   // GET /api/recruitment/interviews/:id
   getInterview: async (id: string): Promise<RecruitmentInterview> => {
-    const res = await apiClient.get(`/api/recruitment/interviews/${id}`);
+    const res = await apiClient.get(`/recruitment/interviews/${id}`);
     return res.data;
   },
 
   // POST /api/recruitment/interviews
   createInterview: async (data: Partial<RecruitmentInterview>): Promise<RecruitmentInterview> => {
-    const res = await apiClient.post('/api/recruitment/interviews', data);
+    const res = await apiClient.post('/recruitment/interviews', data);
     return res.data;
   },
 
   // PUT /api/recruitment/interviews/:id
   updateInterview: async (id: string, data: Partial<RecruitmentInterview>): Promise<RecruitmentInterview> => {
-    const res = await apiClient.put(`/api/recruitment/interviews/${id}`, data);
+    const res = await apiClient.put(`/recruitment/interviews/${id}`, data);
     return res.data;
   },
 
@@ -303,7 +303,7 @@ export const recruitmentApi = {
     interviewId: string,
     data: { criterion: string; score: number; comment?: string }
   ): Promise<InterviewScore> => {
-    const res = await apiClient.post(`/api/recruitment/interviews/${interviewId}/scores`, data);
+    const res = await apiClient.post(`/recruitment/interviews/${interviewId}/scores`, data);
     return res.data;
   },
 
@@ -314,13 +314,13 @@ export const recruitmentApi = {
     page?: number;
     limit?: number;
   }): Promise<{ offers: RecruitmentOffer[]; total: number }> => {
-    const res = await apiClient.get('/api/recruitment/offers', { params });
+    const res = await apiClient.get('/recruitment/offers', { params });
     return res.data;
   },
 
   // POST /api/recruitment/offers
   createOffer: async (data: Partial<RecruitmentOffer>): Promise<RecruitmentOffer> => {
-    const res = await apiClient.post('/api/recruitment/offers', data);
+    const res = await apiClient.post('/recruitment/offers', data);
     return res.data;
   },
 
@@ -329,7 +329,7 @@ export const recruitmentApi = {
     id: string,
     status: 'ACCEPTED' | 'DECLINED'
   ): Promise<RecruitmentOffer> => {
-    const res = await apiClient.patch(`/api/recruitment/offers/${id}/respond`, { status });
+    const res = await apiClient.patch(`/recruitment/offers/${id}/respond`, { status });
     return res.data;
   },
 
@@ -340,13 +340,13 @@ export const recruitmentApi = {
     page?: number;
     limit?: number;
   }): Promise<{ onboardingList: RecruitmentOnboarding[]; total: number }> => {
-    const res = await apiClient.get('/api/recruitment/onboarding', { params });
+    const res = await apiClient.get('/recruitment/onboarding', { params });
     return res.data;
   },
 
   // GET /api/recruitment/onboarding/:id
   getOnboarding: async (id: string): Promise<RecruitmentOnboarding> => {
-    const res = await apiClient.get(`/api/recruitment/onboarding/${id}`);
+    const res = await apiClient.get(`/recruitment/onboarding/${id}`);
     return res.data;
   },
 
@@ -355,7 +355,7 @@ export const recruitmentApi = {
     id: string,
     checklist: OnboardingItem[]
   ): Promise<RecruitmentOnboarding> => {
-    const res = await apiClient.put(`/api/recruitment/onboarding/${id}/checklist`, { checklist });
+    const res = await apiClient.put(`/recruitment/onboarding/${id}/checklist`, { checklist });
     return res.data;
   },
 
@@ -364,13 +364,13 @@ export const recruitmentApi = {
     id: string,
     data: { email: string; name: string }
   ): Promise<RecruitmentOnboarding> => {
-    const res = await apiClient.post(`/api/recruitment/onboarding/${id}/create-account`, data);
+    const res = await apiClient.post(`/recruitment/onboarding/${id}/create-account`, data);
     return res.data;
   },
 
   // POST /api/recruitment/onboarding/:id/complete
   completeOnboarding: async (id: string): Promise<RecruitmentOnboarding> => {
-    const res = await apiClient.post(`/api/recruitment/onboarding/${id}/complete`);
+    const res = await apiClient.post(`/recruitment/onboarding/${id}/complete`);
     return res.data;
   },
 };

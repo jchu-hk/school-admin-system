@@ -54,13 +54,13 @@ const inquiryApi = {
       channel: data.channel || 'app'
     }
     
-    const response = await apiClient.post('/api/inquiries', payload)
+    const response = await apiClient.post('/inquiries', payload)
     return response.data
   },
 
   // 获取查询回复列表
   getReplies: async (inquiryId: string): Promise<InquiryReply[]> => {
-    const response = await apiClient.get(`/api/inquiries/${inquiryId}/replies`)
+    const response = await apiClient.get(`/inquiries/${inquiryId}/replies`)
     return response.data
   },
 
@@ -77,7 +77,7 @@ const inquiryApi = {
     }
 
     const response = await apiClient.post(
-      `/api/inquiries/${data.inquiryId}/replies`,
+      `/inquiries/${data.inquiryId}/replies`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     )
@@ -86,14 +86,14 @@ const inquiryApi = {
 
   // 关闭查询
   closeInquiry: async (id: string): Promise<Inquiry> => {
-    const response = await apiClient.patch(`/api/inquiries/${id}/close`)
+    const response = await apiClient.patch(`/inquiries/${id}/close`)
     return response.data
   },
 
   // 提交评价
   submitRating: async (data: SubmitRatingRequest): Promise<Inquiry> => {
     const response = await apiClient.post(
-      `/api/inquiries/${data.inquiryId}/rating`,
+      `/inquiries/${data.inquiryId}/rating`,
       { rating: data.rating, comment: data.comment }
     )
     return response.data
@@ -101,13 +101,13 @@ const inquiryApi = {
 
   // 获取待处理查询（校务处视角）
   getPendingInquiries: async (): Promise<Inquiry[]> => {
-    const response = await apiClient.get('/api/inquiries/pending')
+    const response = await apiClient.get('/inquiries/pending')
     return response.data
   },
 
   // 标记为已解决
   resolveInquiry: async (id: string): Promise<Inquiry> => {
-    const response = await apiClient.patch(`/api/inquiries/${id}/resolve`)
+    const response = await apiClient.patch(`/inquiries/${id}/resolve`)
     return response.data
   },
 
@@ -132,49 +132,49 @@ const inquiryApi = {
     if (params?.page) queryParams.append('page', params.page.toString())
     if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString())
 
-    const response = await apiClient.get(`/api/inquiries/queue?${queryParams}`)
+    const response = await apiClient.get(`/inquiries/queue?${queryParams}`)
     return response.data
   },
 
   // 获取超时警告列表 (AC-04)
   getTimeoutWarnings: async (): Promise<TimeoutWarningsResponse> => {
-    const response = await apiClient.get('/api/inquiries/timeout-warnings')
+    const response = await apiClient.get('/inquiries/timeout-warnings')
     return response.data
   },
 
   // 快速回复 (AC-05)
   quickReply: async (inquiryId: string, data: QuickReplyRequest): Promise<InquiryReply> => {
-    const response = await apiClient.post(`/api/inquiries/${inquiryId}/quick-reply`, data)
+    const response = await apiClient.post(`/inquiries/${inquiryId}/quick-reply`, data)
     return response.data
   },
 
   // AI自动回复 (AC-07)
   autoReply: async (inquiryId: string): Promise<{ success: boolean; replyId?: string }> => {
-    const response = await apiClient.post(`/api/inquiries/${inquiryId}/auto-reply`)
+    const response = await apiClient.post(`/inquiries/${inquiryId}/auto-reply`)
     return response.data
   },
 
   // 转交查询 (AC-06)
   transferInquiry: async (inquiryId: string, data: TransferRequest): Promise<Inquiry> => {
-    const response = await apiClient.post(`/api/inquiries/${inquiryId}/transfer`, data)
+    const response = await apiClient.post(`/inquiries/${inquiryId}/transfer`, data)
     return response.data
   },
 
   // 接受转交
   acceptTransfer: async (inquiryId: string): Promise<Inquiry> => {
-    const response = await apiClient.patch(`/api/inquiries/${inquiryId}/transfer/accept`)
+    const response = await apiClient.patch(`/inquiries/${inquiryId}/transfer/accept`)
     return response.data
   },
 
   // 拒绝转交
   rejectTransfer: async (inquiryId: string): Promise<Inquiry> => {
-    const response = await apiClient.patch(`/api/inquiries/${inquiryId}/transfer/reject`)
+    const response = await apiClient.patch(`/inquiries/${inquiryId}/transfer/reject`)
     return response.data
   },
 
   // 记录来电通话 (AC-01)
   recordCallLog: async (inquiryId: string, data: CallLogRequest): Promise<Inquiry> => {
-    const response = await apiClient.post(`/api/inquiries/${inquiryId}/call-log`, data)
+    const response = await apiClient.post(`/inquiries/${inquiryId}/call-log`, data)
     return response.data
   },
 }

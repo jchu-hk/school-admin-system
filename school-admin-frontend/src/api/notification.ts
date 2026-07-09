@@ -83,13 +83,13 @@ const notificationApi = {
 
   // 获取班级列表（用于选择接收人）
   async getClasses(): Promise<{ id: string; name: string; studentCount: number }[]> {
-    const response = await apiClient.get('/api/classes')
+    const response = await apiClient.get('/classes')
     return response.data
   },
 
   // 获取角色列表（用于选择接收人）
   async getRoles(): Promise<{ id: string; name: string; userCount: number }[]> {
-    const response = await apiClient.get('/api/roles')
+    const response = await apiClient.get('/roles')
     return response.data
   },
 
