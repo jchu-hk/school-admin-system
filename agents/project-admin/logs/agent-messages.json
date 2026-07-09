@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-05T03:19:07Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "v1.5.7 部署完成 - 前端镜像重建成功，版本信息显示 v1.5.7，容器正常运行在端口 8080",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "idle",
-      "task": "v1.5.7 部署完成 - 前端镜像重建成功，版本信息显示 v1.5.7，容器正常运行在端口 808"
-    }
-  },
-  {
     "timestamp": "2026-07-05T14:14:34Z",
     "from": "PM",
     "to": "DEV",
@@ -1062,6 +1050,18 @@
       "agent": "QA",
       "status": "idle",
       "task": "[Issue #206+#207] 验收通过\n\n**发现的Bug及修复**:\n\nIssue #206"
+    }
+  },
+  {
+    "timestamp": "2026-07-09T01:30:17Z",
+    "from": "PM",
+    "to": "HEARTBEAT",
+    "message": "09:30 早间心跳检查",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "09:30 早间心跳检查"
     }
   }
 ]
