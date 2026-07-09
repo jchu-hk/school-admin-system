@@ -1,14 +1,14 @@
 {
   "lastChecks": {
-    "system": 1752068460,
-    "backend": 1752068460,
-    "git": 1752068460,
-    "heartbeat": 1752068460,
-    "stuckTasks": 1752068460,
-    "issues": 1752068460
+    "system": 1752070500,
+    "backend": 1752070500,
+    "git": 1752070500,
+    "heartbeat": 1752070500,
+    "stuckTasks": 1752070500,
+    "issues": 1752070500
   },
   "stuckTasks": {
-    "lastCheck": "2026-07-09 21:01 GMT+8",
+    "lastCheck": "2026-07-09 21:15 GMT+8",
     "detected": [],
     "resolved": [
       {
@@ -21,7 +21,8 @@
         "issue": 211,
         "type": "P1_frontend_api_path_duplicate",
         "resolvedAt": "2026-07-09 16:45 GMT+8",
-        "resolution": "PM直接修复并关闭Issue（脚本误报忽略）"
+        "resolution": "PM直接修复并关闭Issue（脚本误报忽略）",
+        "githubConfirmed": "closedAt: 2026-07-09T08:45:28Z"
       }
     ]
   }
