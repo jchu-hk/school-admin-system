@@ -6,7 +6,9 @@
     "system": 1720497300,
     "stuckTasks": 1720497300,
     "issues": 1720497300,
-    "git": 1720497300
+    "git": 1720497300,
+    "heartbeat": 1752039900,
+    "backend": 1752039900
   },
   "stuckTasks": {
     "lastCheck": "2026-07-09 12:55 GMT+8",
