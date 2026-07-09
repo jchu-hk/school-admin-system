@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-06T01:26:59Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[Issue #140] 修复完成: inquiry.entity.ts aiIntent字段已添加@Column装饰器",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[Issue #140] 修复完成: inquiry.entity.ts aiIntent字段已添加"
-    }
-  },
-  {
     "timestamp": "2026-07-06T02:52:43Z",
     "from": "PM",
     "to": "QA",
@@ -1067,6 +1055,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[Issue #211] P1 提醒 - 前端API路径重复导致404 - staff1登录后所有A"
+    }
+  },
+  {
+    "timestamp": "2026-07-09T08:45:33Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "[Issue #211] PM直接修复 - notification.ts /api prefix bug - DEV stuck task无响应",
+    "type": "done",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "[Issue #211] PM直接修复 - notification.ts /api prefix "
     }
   }
 ]

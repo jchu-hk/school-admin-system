@@ -1,13 +1,14 @@
 {
   "version": "v1.5.7",
   "buildDate": "2026-07-09",
-  "gitCommit": "28d7a83",
+  "gitCommit": "435a5be",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-09",
       "date": "2026-07-09",
       "changes": [
+        "dashboard update 16:23",
         "dashboard update 15:45",
         "dashboard update 15:42",
         "add staff1 test account credentials",
@@ -15,12 +16,7 @@
         "correct test credentials in PROJECT-WIKI (single source of truth)",
         "dashboard update 14:12",
         "fix(#210): 修复登录路径重复 /api/api/auth/login 问题",
-        "dashboard update 13:55",
-        "enforce Dashboard update via write_message.py for all agents",
-        "dashboard update 12:03",
-        "dashboard update 12:01",
-        "dashboard update 12:00",
-        "dashboard update 11:42"
+        "dashboard update 13:55"
       ]
     }
   ]

@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "idle",
-      "task": "[Issue #210] P0修复完成 - 登录路径重复问题已解决",
-      "lastUpdate": "2026-07-09T06:12:06Z"
+      "task": "[Issue #211] PM直接修复 - notification.ts /api prefix bug - DEV stuck task无响应",
+      "lastUpdate": "2026-07-09T08:45:33Z"
     },
     "DEVOPS": {
       "status": "idle",
