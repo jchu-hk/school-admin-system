@@ -1,11 +1,11 @@
 {
   "lastChecks": {
-    "system": 1783596600,
-    "backend": 1783596600,
-    "git": 1783596600,
+    "system": 1783598700,
+    "backend": 1783598700,
+    "git": 1783598700,
     "heartbeat": 1752064200,
-    "stuckTasks": 1783596600,
-    "issues": 1783596600
+    "stuckTasks": 1783598700,
+    "issues": 1783598700
   },
   "stuckTasks": {
     "lastCheck": "2026-07-09 19:50 GMT+8",
@@ -15,7 +15,7 @@
         "issue": 210,
         "type": "P0_login_path_duplicate",
         "resolvedAt": "2026-07-09 14:12 GMT+8",
-        "resolution": "PM直接修复并关闭Issue"
+        "resolution": "PM\u76f4\u63a5\u4fee\u590d\u5e76\u5173\u95edIssue"
       }
     ]
   }

@@ -178,9 +178,88 @@
 - **时间**: 周四 20:00
 - **关注**: #140 (P3) TypeORM警告待CHECKER审查，系统已稳定运行6+小时
 
-**检查完成时间**: 2026-07-09 20:00 GMT+8 | **状态**: HEARTBEAT_OK ✅ | **间隔**: 10分钟 (Cron Event)
+**检查完成时间**: 2026-07-09 20:05 GMT+8 | **状态**: HEARTBEAT_OK ✅ | **间隔**: 5分钟 (Cron Event)
 
-**检查完成时间**: 2026-07-09 19:05 GMT+8 | **状态**: HEARTBEAT_OK ✅ | **间隔**: 15分钟 (Cron Event)
+---
+
+### 20:05 GMT+8 - 晚间心跳检查 ✅
+
+#### 系统状态 ✅
+- **Backend API**: `HTTP 401` ✅ 服务器可响应（认证拦截但应用健康，端口3000）
+- **Frontend**: `HTTP 200` ✅ 健康检查正常
+- **Docker**: 10个容器全部健康运行
+  - school-admin-backend: Up 5 hours (healthy) ✅
+  - school-admin-frontend: Up 3 hours ✅
+  - school-admin-postgres/redis/kafka: Up 33 hours (healthy) ✅
+  - school-admin-grafana/alertmanager/prometheus/zookeeper: Up 33+ hours ✅
+- **所有服务**: stable ✅
+
+#### GitHub Issues 状态 ✅
+- **Open Issues**: 14个
+- **Ready for Review**: 1个
+  - #140 (P3) - TypeORM实体元数据警告 [backend, p3, ready-for-review, checker, dev]
+- **已关闭**: #208 (P0) ✅, #210 (P0) ✅, #211 (P1) ✅
+
+#### Agent 状态 ✅
+- 所有Agent idle ✅
+
+#### Git 状态 ✅
+- **工作区**: Clean ✅ (已推送 25b7847)
+- **最近提交**: 25b7847 - heartbeat: 2026-07-09 20:05 state
+- **Branch**: main
+
+#### PM工作状态 ✅
+- **当前**: 系统健康稳定，晚间心跳
+- **时间**: 周四 20:05
+- **关注**: #140 (P3) TypeORM警告待CHECKER审查，系统已稳定运行33+小时
+
+**检查完成时间**: 2026-07-09 20:05 GMT+8 | **状态**: HEARTBEAT_OK ✅ | **间隔**: 15分钟 (Cron Event)
+
+---
+
+### 20:20 GMT+8 - 晚间心跳检查 ✅
+
+#### 系统状态 ✅
+- **Backend API**: `HTTP 200` ✅ 健康检查正常（端口3000）
+- **Frontend**: `HTTP 200` ✅ 健康检查正常
+- **Docker**: 10个容器全部健康运行
+  - school-admin-backend: Up 5 hours (healthy) ✅
+  - school-admin-frontend: Up 4 hours ✅
+  - school-admin-postgres/redis/kafka: Up 33 hours (healthy) ✅
+  - school-admin-grafana/alertmanager/prometheus/zookeeper: Up 33+ hours ✅
+- **所有服务**: stable ✅
+
+#### GitHub Issues 状态 ✅
+- **Open Issues**: 14个
+- **Ready for Review**: 1个
+  - #140 (P3) - TypeORM实体元数据警告 [backend, p3, ready-for-review, checker, dev]
+- **已关闭**: #208 (P0) ✅, #210 (P0) ✅, #211 (P1) ✅ (已于16:40修复关闭)
+
+#### Agent 状态 ✅
+- **Stuck Tasks**: ⚠️ 历史残留误报 (Issue #211)
+  - Issue #211 已于 16:40 由 PM 修复并关闭（状态: CLOSED）
+  - 脚本误报：实际状态 DEV idle，无活跃任务
+  - Dashboard 已同步更新
+- 所有Agent idle ✅
+
+#### Git 状态 ⚠️
+- **工作区**: Dirty (HEARTBEAT.md, memory/2026-07-09.md, heartbeat-state.json 未提交)
+- **最近提交**: 25b7847 - heartbeat: 2026-07-09 20:05 state
+- **Branch**: main
+
+#### PM工作状态 ✅
+- **当前**: 系统健康稳定，晚间心跳
+- **时间**: 周四 20:20
+- **关注**: 
+  - #140 (P3) TypeORM警告待CHECKER审查
+  - 系统已稳定运行33+小时
+  - Issue #211 已关闭（脚本误报，忽略）
+
+**检查完成时间**: 2026-07-09 20:20 GMT+8 | **状态**: HEARTBEAT_OK ✅ | **间隔**: 15分钟 (Cron Event)
+
+---
+
+### 20:00 GMT+8 - 晚间心跳检查 ✅
 
 ---
 
