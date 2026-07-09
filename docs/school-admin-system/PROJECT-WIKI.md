@@ -254,11 +254,12 @@ docker compose -f infra/docker-compose.local.yml up -d
 | 角色 | 用户名 | 密码 | OTP | 权限 | 验证状态 |
 |------|--------|------|-----|------|---------|
 | **系统管理员** | **qa_test** | `Admin123!` | ❌ | **全部功能** | ✅ **推荐** |
+| **校务人员** | **staff1** | `Admin123!` | ❌ | 日常管理 | ✅ **可用** |
 | 教师 | teacher1 | `Admin123!` | ✅ | 教学管理 | ⚠️ 需 OTP |
 | 家长 | parent1 | `Admin123!` | ❌ | 家长门户 | ✅ 功能有限 |
 | 学生 | student1 | `Admin123!` | ❌ | 学生门户 | ✅ 功能有限 |
 
-> ✅ **推荐测试账号**: `qa_test` / `Admin123!` (system_admin，无 OTP，完整权限)
+> ✅ **推荐**: `qa_test` (完整权限) 或 `staff1` (日常管理)
 > 📍 **唯一信息来源**: 本 PROJECT-WIKI.md
 
 ---
