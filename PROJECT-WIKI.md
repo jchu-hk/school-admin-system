@@ -141,6 +141,19 @@ Browser → Cloudflare Tunnel → Frontend (Next.js :3001)
 
 ## 🔑 Credentials
 
+### 👤 测试账号 (2026-07-09 验证)
+
+| 角色 | 用户名 | 密码 | OTP | 权限 | 验证状态 |
+|------|--------|------|-----|------|---------|
+| 教师 | **teacher1** | `Admin123!` | ✅ | 教学管理 | ✅ **已验证** |
+| 家长 | **parent1** | `Admin123!` | ❌ | 家长门户 | ✅ **已验证** |
+| 学生 | **student1** | `Admin123!` | ❌ | 学生门户 | ✅ **已验证** |
+
+> ⚠️ **重要**: admin 和 staff1 账号密码不是 `Admin123!`，无法登录
+> 📍 **唯一信息来源**: docs/school-admin-system/PROJECT-WIKI.md
+
+### 🛠️ 系统服务账号
+
 | Service | Username | Notes |
 |---------|----------|-------|
 | PostgreSQL | `postgres` | See `.env` for password |

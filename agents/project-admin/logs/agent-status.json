@@ -2,37 +2,37 @@
   "agents": {
     "PM": {
       "status": "idle",
-      "task": "\u7b49\u5f85\u4efb\u52a1",
-      "lastUpdate": "2026-07-09T04:00:47.495574+00:00"
+      "task": "[Issue #210] P0修复完成 - 登录路径重复问题已解决",
+      "lastUpdate": "2026-07-09T06:12:06Z"
     },
     "DEVOPS": {
       "status": "idle",
-      "task": "[Dashboard\u6e05\u7406] \u6d4b\u8bd5\u73af\u5883\u5237\u65b0\u4efb\u52a1\u5df2\u5b8c\u6210 - \u4fee\u590d\u5df2\u5e94\u7528\uff08c09b357\uff09\uff0c\u670d\u52a1\u8fd0\u884c\u6b63\u5e38",
+      "task": "[Dashboard清理] 测试环境刷新任务已完成 - 修复已应用（c09b357），服务运行正常",
       "lastUpdate": "2026-07-07T22:40:47Z"
     },
     "ARCH": {
       "status": "idle",
-      "task": "\u7b49\u5f85\u4efb\u52a1",
+      "task": "等待任务",
       "lastUpdate": "2026-06-30T23:15:00+08:00"
     },
     "CHECKER": {
       "status": "idle",
-      "task": "[Issue #140] \u5ba1\u67e5\u5b8c\u6210: CONDITIONAL PASS - \u53d1\u73b01\u4e2a\u4e25\u91cd\u95ee\u9898\uff0c2\u4e2a\u4e2d\u7b49\u95ee\u9898\uff0c1\u4e2a\u5efa\u8bae",
+      "task": "[Issue #140] 审查完成: CONDITIONAL PASS - 发现1个严重问题，2个中等问题，1个建议",
       "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
       "status": "idle",
-      "task": "\u7b49\u5f85\u4efb\u52a1",
+      "task": "等待任务",
       "lastUpdate": "2026-07-09T06:06:44.524657+00:00"
     },
     "QA": {
       "status": "idle",
-      "task": "\u7b49\u5f85\u4efb\u52a1",
+      "task": "等待任务",
       "lastUpdate": "2026-07-09T04:00:47.495595+00:00"
     },
     "REQ": {
       "status": "idle",
-      "task": "\u7b49\u5f85\u4efb\u52a1",
+      "task": "等待任务",
       "lastUpdate": "2026-06-30T23:15:00+08:00"
     }
   }
