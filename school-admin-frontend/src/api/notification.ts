@@ -95,7 +95,7 @@ const notificationApi = {
 
   // 搜索用户（用于选择特定接收人）
   async searchUsers(query: string): Promise<{ id: string; name: string; type: string }[]> {
-    const response = await apiClient.get(`/api/users/search?q=${encodeURIComponent(query)}`)
+    const response = await apiClient.get(`/users/search?q=${encodeURIComponent(query)}`)
     return response.data
   },
 
