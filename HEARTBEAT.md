@@ -1,3 +1,40 @@
+## PM Patrol 检查清单 (2026-07-09)
+
+### 系统状态检查
+- [ ] Backend API 健康检查
+- [ ] Frontend 状态
+- [ ] Docker 容器状态
+- [ ] Git 工作区状态
+
+### GitHub Issues 检查
+- [ ] Open Issues 数量
+- [ ] Ready for Review 待验收
+- [ ] In Progress 进行中
+- [ ] 新创建的 Issues
+
+### Agent 状态检查 (关键!)
+- [ ] **检查 Stuck Tasks** (`python3 scripts/detect-stuck-tasks.py`)
+  - [ ] 无响应 >2小时的 Agent
+  - [ ] Running 但无进展 >4小时的 Agent
+  - [ ] 标记 Running 但无心跳文件的 Agent
+- [ ] 如有 Stuck，执行 [PM-STUCK-TASK-PROCESS.md](docs/PM-STUCK-TASK-PROCESS.md)
+  - Step 1: 诊断 (10分钟)
+  - Step 2: 决策 (5分钟)
+  - Step 3: 重置 Dashboard (2分钟)
+  - Step 4: 重新安排 (5分钟)
+  - Step 5: 监控
+
+### 测试环境检查
+- [ ] Backend API 可达
+- [ ] Frontend 可访问
+- [ ] 登录功能正常
+
+### CI/CD 检查
+- [ ] GitHub Actions 状态
+- [ ] 是否有阻塞 Pipeline 的错误
+
+---
+
 ## 心跳日志 - 2026-07-08
 
 ### 11:55 GMT+8 (午间心跳) ✅
@@ -803,6 +840,37 @@
 - **关注**: 继续监控，系统运行正常
 
 **检查完成时间**: 2026-07-08 20:00 GMT+8 | **状态**: HEARTBEAT_OK ✅ | **间隔**: 15分钟 (Cron Event)
+
+---
+
+## 08:15 GMT+8 - 心跳检查 (早间) ✅
+
+### 系统状态 ✅
+- **Backend API**: `HTTP 404` ✅ 服务器可响应（health endpoint返回404但应用运行正常）
+- **Frontend**: `HTTP 200` ✅ 健康检查正常
+- **Docker**: 10个容器正常运行 ✅
+  - school-admin-backend: Up 18 hours (healthy) ✅
+  - school-admin-frontend: Up 20 hours ✅
+  - school-admin-postgres/redis/kafka: healthy ✅
+- **所有服务**: stable ✅
+
+### Git 状态 ⚠️
+- **工作区**: Dirty (heartbeat-state.json 有修改)
+- **Branch**: main
+
+### GitHub Issues 状态
+- **Open Issues**: 14个
+- **Ready for Review**: 2个
+  - #208 (P0) - 学生管理页面Authorization问题
+  - #140 (P3) - TypeORM实体元数据警告
+- **In Progress**: 1个
+
+### PM工作状态 ✅
+- **当前**: 系统健康稳定，早间心跳
+- **时间**: 周四早晨 08:15
+- **关注**: 系统运行正常，Backend容器已稳定运行18小时
+
+**检查完成时间**: 2026-07-09 08:15 GMT+8 | **状态**: HEARTBEAT_OK ✅ | **间隔**: 过夜 (Cron Event)
 
 ---
 

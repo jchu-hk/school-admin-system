@@ -1,46 +1,39 @@
 {
   "agents": {
     "PM": {
-      "status": "running",
-      "task": "协调 DEVOPS 设置 localtunnel",
-      "updated_at": "2026-06-30T10:20:00+08:00"
+      "status": "idle",
+      "task": "[PM自主工作] Backend路由修复完成 - /api/classes返回401(需认证)而非404，Frontend已重新部署",
+      "lastUpdate": "2026-07-08T04:29:08Z"
     },
     "DEVOPS": {
-      "status": "running",
-      "task": "Setup localtunnel for frontend",
-      "updated_at": "2026-06-30T10:20:00+08:00"
-    },
-    "DEV": {
       "status": "idle",
-      "task": "等待任务",
-      "updated_at": "2026-06-30T10:20:00+08:00"
-    },
-    "QA": {
-      "status": "idle",
-      "task": "Dashboard验证完成",
-      "updated_at": "2026-06-30T10:20:00+08:00"
-    },
-    "CHECKER": {
-      "status": "idle",
-      "task": "等待任务",
-      "updated_at": "2026-06-30T10:20:00+08:00"
+      "task": "[Dashboard清理] 测试环境刷新任务已完成 - 修复已应用（c09b357），服务运行正常",
+      "lastUpdate": "2026-07-07T22:40:47Z"
     },
     "ARCH": {
       "status": "idle",
       "task": "等待任务",
-      "updated_at": "2026-06-30T10:20:00+08:00"
+      "lastUpdate": "2026-06-30T23:15:00+08:00"
+    },
+    "CHECKER": {
+      "status": "idle",
+      "task": "[Issue #140] 审查完成: CONDITIONAL PASS - 发现1个严重问题，2个中等问题，1个建议",
+      "lastUpdate": "2026-07-06T01:11:37Z"
+    },
+    "DEV": {
+      "status": "idle",
+      "task": "等待任务",
+      "lastUpdate": "2026-07-09T08:43:00Z"
+    },
+    "QA": {
+      "status": "idle",
+      "task": "[Issue #206+#207] 验收通过\n\n**发现的Bug及修复**:\n\nIssue #206 - 班级下拉框无数据:\n1. 根本原因1: Student",
+      "lastUpdate": "2026-07-08T05:00:08Z"
     },
     "REQ": {
       "status": "idle",
       "task": "等待任务",
-      "updated_at": "2026-06-30T10:20:00+08:00"
-    }
-  },
-  "verification": {
-    "qa_dashboard_check": {
-      "status": "PASS",
-      "checked_at": "2026-06-30T10:20:00+08:00",
-      "url": "https://jchu-hk.github.io/school-admin-system/multi-agent-dashboard.html"
+      "lastUpdate": "2026-06-30T23:15:00+08:00"
     }
   }
 }

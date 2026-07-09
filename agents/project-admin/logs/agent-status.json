@@ -21,9 +21,9 @@
       "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "[Issue #206+#207] 验收失败需要重新修复 - #206班级下拉框仍无数据，#207新增对话框报错'ReferenceError: classes",
-      "lastUpdate": "2026-07-08T03:16:34Z"
+      "status": "idle",
+      "task": "等待任务",
+      "lastUpdate": "2026-07-09T08:43:00Z"
     },
     "QA": {
       "status": "idle",
