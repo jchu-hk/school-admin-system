@@ -1,15 +1,15 @@
 {
   "lastChecks": {
-    "system": 1752067800,
-    "backend": 1752067800,
-    "frontend": 1752067800,
-    "docker": 1752067800,
-    "git": 1752067800,
-    "issues": 1752067800
+    "email": null,
+    "calendar": null,
+    "weather": null,
+    "system": 1720497300,
+    "stuckTasks": 1720497300,
+    "issues": 1720497300,
+    "git": 1720497300
   },
-  "lastHeartbeat": "2026-07-09 11:50 GMT+8",
-  "systemStatus": "healthy",
-  "backendStatus": "healthy",
-  "frontendStatus": "healthy",
-  "notes": "11:50 心跳检查 - Backend HTTP 200, Frontend HTTP 200, 10个Docker容器全部健康运行21+小时"
+  "stuckTasks": {
+    "lastCheck": "2026-07-09 12:55 GMT+8",
+    "detected": []
+  }
 }
