@@ -1,3 +1,23 @@
+## Coze Proxy Configuration (Important!)
+
+**Document Location**: `/workspace/projects/workspace/COZE_PROXY_CONFIG.md`
+
+**Key Points for School Admin System**:
+- External URL: `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site`
+- School Admin Frontend: `/school-admin/` → localhost:8080
+- School Admin API: `/school-admin/api/*` → localhost:3000/api/*
+- Static Assets: `/school-admin/assets/*` → localhost:8080/assets/*
+- OpenClaw Gateway: `/*` → localhost:5001
+
+**Frontend basename**: `/school-admin` (React Router configured)
+
+**When working on school-admin**:
+1. Frontend uses relative API paths that resolve to `/school-admin/api/*`
+2. After frontend changes: rebuild and copy to Docker container
+3. Check COZE_PROXY_CONFIG.md for full details
+
+---
+
 ## 2026-06-30 — PM发现CI阻塞问题并主动修复
 
 **问题**: 心跳检查发现CI/CD Pipeline持续失败
