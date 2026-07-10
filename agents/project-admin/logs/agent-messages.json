@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-07-06T02:53:34Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[Student Management] 开始功能性测试",
-    "type": "received"
-  },
-  {
     "timestamp": "2026-07-06T03:01:57Z",
     "from": "QA",
     "to": "PM",
@@ -1067,6 +1060,18 @@
       "agent": "PM",
       "status": "idle",
       "task": "[Issue #211] 任务已关闭 - PM自主修复完成，清理Dashboard状态"
+    }
+  },
+  {
+    "timestamp": "2026-07-10T00:21:15Z",
+    "from": "PM",
+    "to": "SYSTEM",
+    "message": "早间心跳检查完成 2026-07-10 08:20。系统稳定运行9+小时。#212 P1根因已确认(frontend网络隔离), #211已关闭(脚本误报已忽略), CI/CD bcrypt缺失(已知问题)。",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "早间心跳检查完成 2026-07-10 08:20。系统稳定运行9+小时。#212 P1根因已确认("
     }
   }
 ]

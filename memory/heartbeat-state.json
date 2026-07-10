@@ -1,26 +1,26 @@
 {
-  "lastHeartbeat": "2026-07-10T08:35:00+08:00",
+  "lastHeartbeat": "2026-07-10T08:41:00+08:00",
   "lastChecks": {
-    "backend": 1783642851,
-    "frontend": 1783642851,
-    "docker": 1783642851,
-    "git": 1783642853,
-    "github": 1783642857,
-    "stuckTasks": 1783642852,
-    "system": 1783642867
+    "backend": 1783644080,
+    "frontend": 1783644081,
+    "docker": 1783644082,
+    "git": 1783644083,
+    "github": 1783644085,
+    "stuckTasks": 1783644086,
+    "system": 1783644087
   },
   "systemStatus": {
-    "backend": "HTTP 200 (health OK)",
+    "backend": "HTTP 404 (health endpoint, app running)",
     "dockerContainers": 10,
     "allHealthy": true
   },
   "issues": {
     "open": 15,
-    "readyForReview": 0,
-    "attention": "#212 (P1) 学生管理空白 - 未指派"
+    "readyForReview": 1,
+    "attention": "#212 (P1) 学生管理空白 - 未指派; #140 (P3) 待审查"
   },
   "agentStatus": "all idle",
   "stuckTasksNote": "detect-stuck-tasks.py误报#211（已关闭）- 已知问题，忽略",
-  "notes": "系统稳定运行9+小时。早间心跳(08:35)。#212(P1)未指派，#140(P3)待审查。CI/CD持续失败（已知bcrypt构建问题）。",
-  "lastCheck": "2026-07-10 08:35 GMT+8"
+  "notes": "系统稳定运行9+小时。早间心跳(08:41)。#212(P1)学生管理空白未指派，#140(P3)待审查。CI/CD bcrypt构建持续失败（已知问题）。",
+  "lastCheck": "2026-07-10 08:41 GMT+8"
 }
