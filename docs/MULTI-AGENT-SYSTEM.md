@@ -22,12 +22,22 @@
 │   开发执行       │         │   测试验收      │         │   需求分析      │
 └─────────────────┘         └─────────────────┘         └─────────────────┘
          │                           │                           │
-         └───────────────────────────┴───────────────────────────┘
+         └───────────────────────────┼───────────────────────────┘
                                      │
-                         ┌─────────────────┐         ┌─────────────────┐
-                         │  agent-DEVOPS   │         │  agent-CHECKER   │
-                         │  部署运维        │         │  代码审查        │
-                         └─────────────────┘         └─────────────────┘
+                    ┌────────────────┼────────────────┐
+                    ▼                ▼                ▼
+              ┌───────────┐   ┌───────────┐   ┌───────────┐
+              │ agent-    │   │ agent-    │   │ agent-    │
+              │ DEVOPS    │   │ CHECKER   │   │ ARCH      │
+              │ 部署运维   │   │ 代码审查   │   │ 架构设计   │
+              └───────────┘   └───────────┘   └───────────┘
+                    │
+                    ▼
+              ┌───────────┐
+              │ agent-    │
+              │ OPS       │
+              │ 系统监控   │
+              └───────────┘
 ```
 
 ---
@@ -41,8 +51,9 @@
 | **agent-QA** | `agent:main:subagent:qa-*` | DEV交付 | 测试报告 | PM, DEV |
 | **agent-DEVOPS** | `agent:main:subagent:devops-*` | PR合并 | 部署状态 | PM |
 | **agent-CHECKER** | `agent:main:subagent:checker-*` | PR创建 | 审查报告 | DEV, PM |
-| **agent-ARCH** | `agent:main:subagent:arch-*` | 新需求 | 技术方案 | PM |
-| **agent-OPS** | `agent:main:subagent:ops-*` | 系统监控 | 告警、报告 | PM |
+| **agent-ARCH** | `agent:main:subagent:arch-*` | REQ需求文档 | 技术方案、DB设计、API设计 | PM, DEV |
+| **agent-REQ** | `agent:main:subagent:req-*` | 用户需求 | 功能规格、用户故事 | PM, ARCH |
+| **agent-OPS** | `agent:main:subagent:ops-*` | 系统监控、告警 | 监控报告、故障报告 | PM |
 
 ---
 

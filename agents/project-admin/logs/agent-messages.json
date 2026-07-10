@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-06T03:01:57Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[Student Management] 测试受阻: Playwright 配置错误导致无法执行自动化测试。已完成测试案例文档和测试报告。发现 1 个 P2 缺陷 (BUG-QA-001)。建议修复后重新执行。",
-    "type": "failed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[Student Management] 测试受阻: Playwright 配置错误导致无法执行自动"
-    }
-  },
-  {
     "timestamp": "2026-07-06T05:42:53Z",
     "from": "PM",
     "to": "DEV",
@@ -1072,6 +1060,18 @@
       "agent": "PM",
       "status": "idle",
       "task": "早间心跳检查完成 2026-07-10 08:20。系统稳定运行9+小时。#212 P1根因已确认("
+    }
+  },
+  {
+    "timestamp": "2026-07-10T01:00:21Z",
+    "from": "PM",
+    "to": "USER",
+    "message": "开始生成每日状态汇报 (2026-07-10 09:00)",
+    "type": "received",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "开始生成每日状态汇报 (2026-07-10 09:00)"
     }
   }
 ]
