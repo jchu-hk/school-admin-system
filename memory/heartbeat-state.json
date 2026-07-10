@@ -1,25 +1,26 @@
 {
-  "lastHeartbeat": "2026-07-10T08:00:00+08:00",
+  "lastHeartbeat": "2026-07-10T08:15:00+08:00",
   "lastChecks": {
     "backend": 1752076800,
     "frontend": 1752076800,
     "docker": 1752076800,
     "git": 1752076800,
-    "github": 1752076800,
-    "stuckTasks": 1752071100
+    "github": 1783642867,
+    "stuckTasks": 1752071100,
+    "system": 1783642867
   },
   "systemStatus": {
-    "backend": "HTTP 200 OK",
-    "frontend": "HTTP 200 OK",
+    "backend": "HTTP 401 (auth required, service up)",
     "dockerContainers": 10,
     "allHealthy": true
   },
   "issues": {
-    "open": 14,
+    "open": 15,
     "readyForReview": 0,
-    "attention": "#212 (P1) \u5b66\u751f\u7ba1\u7406\u7a7a\u767d - \u65b0\u589eIssue\u9700\u8c03\u67e5"
+    "attention": "#212 (P1) \u5b66\u751f\u7ba1\u7406\u7a7a\u767d - \u7f51\u7edc\u914d\u7f6e\u6839\u56e0\u5df2\u8bca\u65ad"
   },
   "agentStatus": "all idle",
   "stuckTasksNote": "\u65e0\u963b\u585e\u4efb\u52a1",
-  "notes": "\u7cfb\u7edf\u7a33\u5b9a\u8fd0\u884c9+\u5c0f\u65f6\uff0c\u65e9\u95f4\u5fc3\u8df3\u3002\u65b0\u589eIssue #212 (P1)"
+  "notes": "\u7cfb\u7edf\u7a33\u5b9a\u8fd0\u884c9\u5c0f\u65f6\u3002\u4eca\u65e9\u5df2\u5b8c\u62102\u6b21\u5fc3\u8df3\u68c0\u67e5(08:00, 08:05)\u3002\u540c\u4e00\u6279\u6b21\u7684\u7b2c\u4e09\u6b21\u68c0\u67e5\uff0c\u5feb\u901f\u786e\u8ba4\u65e0\u53d8\u5316\u3002",
+  "lastCheck": "2026-07-10 08:20 GMT+8"
 }
