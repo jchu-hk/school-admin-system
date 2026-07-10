@@ -1,5 +1,5 @@
 {
-  "lastHeartbeat": "2026-07-10T08:31:00+08:00",
+  "lastHeartbeat": "2026-07-10T08:35:00+08:00",
   "lastChecks": {
     "backend": 1783642851,
     "frontend": 1783642851,
@@ -17,10 +17,10 @@
   "issues": {
     "open": 15,
     "readyForReview": 0,
-    "attention": "#212 (P1) 学生管理空白 - 网络配置根因已诊断，无人指派"
+    "attention": "#212 (P1) 学生管理空白 - 未指派"
   },
   "agentStatus": "all idle",
   "stuckTasksNote": "detect-stuck-tasks.py误报#211（已关闭）- 已知问题，忽略",
-  "notes": "系统稳定运行9+小时。早间第三次心跳(08:31)。CI/CD bcrypt构建失败（已知问题）。#212(P1)待处理，#140(P3)待审查。",
-  "lastCheck": "2026-07-10 08:31 GMT+8"
+  "notes": "系统稳定运行9+小时。早间心跳(08:35)。#212(P1)未指派，#140(P3)待审查。CI/CD持续失败（已知bcrypt构建问题）。",
+  "lastCheck": "2026-07-10 08:35 GMT+8"
 }
