@@ -1,29 +1,25 @@
 {
+  "lastHeartbeat": "2026-07-10T08:00:00+08:00",
   "lastChecks": {
-    "system": 1752070500,
-    "backend": 1752070500,
-    "git": 1752070500,
-    "heartbeat": 1752070500,
-    "stuckTasks": 1752070500,
-    "issues": 1752070500
+    "backend": 1752076800,
+    "frontend": 1752076800,
+    "docker": 1752076800,
+    "git": 1752076800,
+    "github": 1752076800,
+    "stuckTasks": 1752071100
   },
-  "stuckTasks": {
-    "lastCheck": "2026-07-09 21:15 GMT+8",
-    "detected": [],
-    "resolved": [
-      {
-        "issue": 210,
-        "type": "P0_login_path_duplicate",
-        "resolvedAt": "2026-07-09 14:12 GMT+8",
-        "resolution": "PM直接修复并关闭Issue"
-      },
-      {
-        "issue": 211,
-        "type": "P1_frontend_api_path_duplicate",
-        "resolvedAt": "2026-07-09 16:45 GMT+8",
-        "resolution": "PM直接修复并关闭Issue（脚本误报忽略）",
-        "githubConfirmed": "closedAt: 2026-07-09T08:45:28Z"
-      }
-    ]
-  }
+  "systemStatus": {
+    "backend": "HTTP 200 OK",
+    "frontend": "HTTP 200 OK",
+    "dockerContainers": 10,
+    "allHealthy": true
+  },
+  "issues": {
+    "open": 14,
+    "readyForReview": 0,
+    "attention": "#212 (P1) \u5b66\u751f\u7ba1\u7406\u7a7a\u767d - \u65b0\u589eIssue\u9700\u8c03\u67e5"
+  },
+  "agentStatus": "all idle",
+  "stuckTasksNote": "\u65e0\u963b\u585e\u4efb\u52a1",
+  "notes": "\u7cfb\u7edf\u7a33\u5b9a\u8fd0\u884c9+\u5c0f\u65f6\uff0c\u65e9\u95f4\u5fc3\u8df3\u3002\u65b0\u589eIssue #212 (P1)"
 }
