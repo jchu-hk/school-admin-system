@@ -1,20 +1,50 @@
 # Changelog
 
-## v1.5.7 (2026-07-05)
-
-### Changes
-Bug修复: 学生管理新增功能正常
-
-### Technical Details
-- Git Commit: `926f7f5`
-- Branch: `main`
-
----
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [1.5.7] - 2026-07-10
+
+### Fixed
+
+**Core Bug Fixes**
+- Fix #210: 修复登录路径重复 `/api/api/auth/login` 问题
+- Fix #211: 修复 notification endpoint `/api` prefix 问题
+- Fix nginx proxy routes for `/students` and `/classes` endpoints
+- Fix baseURL 设为 `/api/` 生产环境配置
+
+**UI/UX Fixes**
+- Fix #206: 新增学生页面所属班级下拉框无数据
+- Fix #207: 新增学生保存返回400错误
+
+**Authentication**
+- Fix #209: 移除 UserPage, LeavePage, StudentProfilePage 中的重复 Authorization header
+- Fix #208: 移除 StudentPage 中的重复 Authorization header
+
+### Changed
+
+**Testing & Credentials**
+- 添加 staff1 测试账号
+- 更新测试凭证文档
+- 验证 superuser 账号可用
+
+**Documentation**
+- 更新 PROJECT-WIKI 测试环境说明
+- 添加 Coze 环境警告（Coze非我们管理）
+- 添加测试环境刷新流程文档
+
+**AI Team**
+- 完善 OPS 角色定义
+- 增强 PM-WORKFLOW 独立验收体系
+- 添加新项目设置流程文档
+
+### Technical Details
+- Git Commit: `3788682`
+- Branch: `main`
 
 ---
 

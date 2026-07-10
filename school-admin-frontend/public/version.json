@@ -1,22 +1,20 @@
 {
   "version": "v1.5.7",
-  "buildDate": "2026-07-09",
-  "gitCommit": "435a5be",
+  "buildDate": "2026-07-10",
+  "gitCommit": "3788682",
   "gitBranch": "main",
   "changelog": [
     {
-      "version": "build-2026-07-09",
-      "date": "2026-07-09",
+      "version": "v1.5.7",
+      "date": "2026-07-10",
       "changes": [
-        "dashboard update 16:23",
-        "dashboard update 15:45",
-        "dashboard update 15:42",
-        "add staff1 test account credentials",
-        "update test credentials with verified superuser account",
-        "correct test credentials in PROJECT-WIKI (single source of truth)",
-        "dashboard update 14:12",
-        "fix(#210): 修复登录路径重复 /api/api/auth/login 问题",
-        "dashboard update 13:55"
+        "Fix #210: 登录路径重复 /api/api/auth/login",
+        "Fix #211: notification endpoint prefix问题",
+        "Fix nginx proxy routes for /students and /classes",
+        "Fix #206/#207: 学生管理班级下拉框和保存问题",
+        "Fix #208/#209: 移除重复 Authorization header",
+        "Enhanced AI team documentation (OPS role, Wiki rules)",
+        "Added NEW-PROJECT-SETUP.md for new project initialization"
       ]
     }
   ]
