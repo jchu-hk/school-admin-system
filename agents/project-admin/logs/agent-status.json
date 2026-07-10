@@ -1,9 +1,9 @@
 {
   "agents": {
     "PM": {
-      "status": "running",
-      "task": "开始生成每日状态汇报 (2026-07-10 09:00)",
-      "lastUpdate": "2026-07-10T01:00:21Z"
+      "status": "idle",
+      "task": "09:30 早间心跳: 系统健康。Docker 10/10运行，#212 (P1)待分配，#140 (P3)待审查。Stuck检测误报#211（已CLOSED）",
+      "lastUpdate": "2026-07-10T01:30:18Z"
     },
     "DEVOPS": {
       "status": "idle",

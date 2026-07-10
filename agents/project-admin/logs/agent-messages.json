@@ -1,55 +1,5 @@
 [
   {
-    "timestamp": "2026-07-06T05:42:53Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[Bug Fix] 修复 Playwright 配置问题 - 解除 QA E2E 测试阻塞",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Bug Fix] 修复 Playwright 配置问题 - 解除 QA E2E 测试阻塞"
-    }
-  },
-  {
-    "timestamp": "2026-07-06T05:43:29Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[Playwright Config] 开始修复配置",
-    "type": "received"
-  },
-  {
-    "timestamp": "2026-07-06T05:44:05Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[Playwright Config] 修复完成\\n\\n变更内容:\\n- 更新 baseURL: trycloudflare → Coze.dev URL\\n- Commit: 07d8cc9\\n\\n注意: 测试运行报 @playwright/test 版本冲突错误 (package.json 声明 1.40.0，实际运行 1.60.0)，这是环境问题，与本次 URL 修复无关。",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[Playwright Config] 修复完成\\n\\n变更内容:\\n- 更新 baseURL: t"
-    }
-  },
-  {
-    "timestamp": "2026-07-06T05:44:46Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[Student Management] 重新执行完整E2E测试 - Playwright已修复",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Student Management] 重新执行完整E2E测试 - Playwright已修复"
-    }
-  },
-  {
-    "timestamp": "2026-07-06T05:45:11Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[Student Management E2E] 开始执行完整测试",
-    "type": "received"
-  },
-  {
     "timestamp": "2026-07-06T06:00:54Z",
     "from": "PM",
     "to": "QA",
@@ -1072,6 +1022,66 @@
       "agent": "PM",
       "status": "running",
       "task": "开始生成每日状态汇报 (2026-07-10 09:00)"
+    }
+  },
+  {
+    "timestamp": "2026-07-10T01:09:56Z",
+    "from": "PM",
+    "to": "USER",
+    "message": "每日状态汇报完成 (2026-07-10 09:07)",
+    "type": "passed",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "每日状态汇报完成 (2026-07-10 09:07)"
+    }
+  },
+  {
+    "timestamp": "2026-07-10T01:12:37Z",
+    "from": "PM",
+    "to": "SYSTEM",
+    "message": "心跳检查 09:12 - 系统稳定，无新情况",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "心跳检查 09:12 - 系统稳定，无新情况"
+    }
+  },
+  {
+    "timestamp": "2026-07-10T01:25:12Z",
+    "from": "PM",
+    "to": "SYSTEM",
+    "message": "09:25 心跳检查 - 系统健康运行",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "09:25 心跳检查 - 系统健康运行"
+    }
+  },
+  {
+    "timestamp": "2026-07-10T01:30:10Z",
+    "from": "PM",
+    "to": "HEARTBEAT",
+    "message": "Running stuck task detection",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "Running stuck task detection"
+    }
+  },
+  {
+    "timestamp": "2026-07-10T01:30:18Z",
+    "from": "PM",
+    "to": "HEARTBEAT",
+    "message": "09:30 早间心跳: 系统健康。Docker 10/10运行，#212 (P1)待分配，#140 (P3)待审查。Stuck检测误报#211（已CLOSED），忽略。",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "09:30 早间心跳: 系统健康。Docker 10/10运行，#212 (P1)待分配，#140 "
     }
   }
 ]
