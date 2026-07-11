@@ -575,6 +575,9 @@ export default function AttendancePage() {
             onClick={() => {
               setError(null);
               setSubmitSuccess(null);
+              setShowPreview(false);
+              setPreviewData(null);
+              setBatchId(null);
               const today = new Date().toISOString().split('T')[0];
               setManualDate(today);
               initManualRecords(today);
@@ -615,6 +618,8 @@ export default function AttendancePage() {
               value={manualDate}
               onChange={(e) => {
                 setManualDate(e.target.value);
+                setShowPreview(false);
+                setPreviewData(null);
                 initManualRecords(e.target.value);
               }}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"

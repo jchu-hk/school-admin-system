@@ -195,7 +195,7 @@ export default function UserPage() {
       
       if (roleFilter) params.append('role', roleFilter)
       if (statusFilter) params.append('status', statusFilter)
-      if (departmentFilter) params.append('dept', departmentFilter)
+      if (departmentFilter) params.append('className', departmentFilter)
       if (searchTerm) params.append('search', searchTerm)
 
       const response = await apiClient.get<{ data: User[]; total: number }>(`/users?${params.toString()}`)
