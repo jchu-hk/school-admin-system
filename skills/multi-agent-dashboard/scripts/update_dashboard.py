@@ -236,7 +236,9 @@ def update_dashboard():
         print(f"✅ Dashboard written: {len(messages)} messages, {len(status.get('agents', {}))} agents")
         print("✅ Pushed to GitHub")
     except subprocess.CalledProcessError as e:
-        print(f"⚠️ Git: {e}")
+        stderr = e.stderr.decode() if isinstance(e.stderr, bytes) else (e.stderr or '')
+        print(f"⚠️ Git push failed (exit {e.returncode}): {stderr[:200]}")
+        raise  # re-raise so write_message knows dashboard update failed
 
 
 if __name__ == "__main__":

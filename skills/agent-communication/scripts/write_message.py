@@ -186,8 +186,12 @@ def write_message(
                 print("✅ Dashboard auto-updated")
             else:
                 print(f"⚠️  Dashboard update failed: {result.stderr[:100]}")
+        except subprocess.CalledProcessError as e:
+            stderr = e.stderr.decode() if isinstance(e.stderr, bytes) else (e.stderr or '')
+            print(f"❌ Dashboard UPDATE FAILED (exit {e.returncode})")
+            print(f"   stderr: {stderr[:150]}")
         except Exception as e:
-            print(f"⚠️  Dashboard auto-update error: {e}")
+            print(f"⚠️  Dashboard auto-update error: {type(e).__name__}: {e}")
     elif auto_update_dashboard:
         print(f"⚠️  Dashboard script not found: {DASHBOARD_SCRIPT}")
 
