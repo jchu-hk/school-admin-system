@@ -13,9 +13,6 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
-      - uses: GitHub/login@v3
-        with:
-          GH_TOKEN: ${{ github.token }}
       
       - name: Check Issues Status
         run: |
