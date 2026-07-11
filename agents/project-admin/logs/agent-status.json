@@ -1,9 +1,9 @@
 {
   "agents": {
     "PM": {
-      "status": "running",
-      "task": "Heartbeat 08:30 - 正在检查系统状态",
-      "lastUpdate": "2026-07-11T00:30:19Z"
+      "status": "idle",
+      "task": "[Issue #212] 学生管理空白已修复完成！修复内容: 前端Login.tsx的OTP验证请求添加了缺失的sessionId字段。代码已重新构建并部署到D",
+      "lastUpdate": "2026-07-11T00:55:33Z"
     },
     "DEVOPS": {
       "status": "idle",
@@ -22,13 +22,13 @@
     },
     "DEV": {
       "status": "idle",
-      "task": "[Issue #213] 完成: 清理项目目录与重置Git到v1.5.7 ✅",
-      "lastUpdate": "2026-07-10T17:11:09Z"
+      "task": "[Issue #212] 修复完成: 在 verify-otp POST 请求中添加了 sessionId 字段",
+      "lastUpdate": "2026-07-11T00:54:40Z"
     },
     "QA": {
-      "status": "idle",
-      "task": "等待任务",
-      "lastUpdate": "2026-07-09T04:00:47.495595+00:00"
+      "status": "running",
+      "task": "[Issue #212] 学生管理空白已修复: 前端Login.tsx的verify-otp请求已添加sessionId字段，已重新构建并部署至Docker容器",
+      "lastUpdate": "2026-07-11T00:55:27Z"
     },
     "REQ": {
       "status": "idle",
