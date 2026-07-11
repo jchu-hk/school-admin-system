@@ -1,9 +1,9 @@
 {
   "agents": {
     "PM": {
-      "status": "idle",
-      "task": "09:30 早间心跳: 系统健康。Docker 10/10运行，#212 (P1)待分配，#140 (P3)待审查。Stuck检测误报#211（已CLOSED）",
-      "lastUpdate": "2026-07-10T01:30:18Z"
+      "status": "running",
+      "task": "Heartbeat 08:30 - 正在检查系统状态",
+      "lastUpdate": "2026-07-11T00:30:19Z"
     },
     "DEVOPS": {
       "status": "idle",
@@ -21,9 +21,9 @@
       "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "[Issue #211] P1 提醒 - 前端API路径重复导致404 - staff1登录后所有API调用失败 - 请立即修复",
-      "lastUpdate": "2026-07-09T08:23:34Z"
+      "status": "idle",
+      "task": "[Issue #213] 完成: 清理项目目录与重置Git到v1.5.7 ✅",
+      "lastUpdate": "2026-07-10T17:11:09Z"
     },
     "QA": {
       "status": "idle",

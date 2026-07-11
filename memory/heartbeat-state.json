@@ -1,27 +1,24 @@
 {
-  "lastHeartbeat": "2026-07-10T09:39:00+08:00",
+  "lastHeartbeat": "2026-07-11T08:15:00+08:00",
   "lastChecks": {
-    "backend": 1783647540,
-    "frontend": 1783647541,
-    "docker": 1783647542,
-    "git": 1783647543,
-    "github": 1783647545,
-    "stuckTasks": 1783647546,
-    "system": 1783647547
+    "backend": 1783728900,
+    "frontend": 1783728901,
+    "docker": 1783728902,
+    "git": 1783728903,
+    "github": 1783728904,
+    "system": 1783728905
   },
   "systemStatus": {
-    "backend": "HTTP 404/401 (应用运行正常)",
-    "frontend": "HTTP 200 (nginx 8080)",
+    "backend": "HTTP 404 (healthy, no health endpoint)",
+    "frontend": "HTTP 200 (healthy)",
     "dockerContainers": 10,
     "allHealthy": true
   },
   "issues": {
     "open": 15,
-    "readyForReview": 1,
-    "attention": "#212 (P1) 学生管理空白 - 未指派; #140 (P3) 待审查"
+    "attention": "#212 (P1) 学生管理空白; #213-#216 环境清理; #140 (P3) 待审查"
   },
   "agentStatus": "all idle",
-  "stuckTasksNote": "detect-stuck-tasks.py误报#211（已关闭）- 已知问题",
-  "notes": "系统稳定运行10+小时。早间心跳。Git工作区dirty(agent logs+HEARTBEAT)。#212(P1)-#140(P3)均无更新。",
-  "lastCheck": "2026-07-10 09:39 GMT+8"
+  "notes": "周六早间心跳(08:15)。系统稳定。周末休整期。",
+  "lastCheck": "2026-07-11 08:15 GMT+8"
 }

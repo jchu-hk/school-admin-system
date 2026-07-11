@@ -1,5 +1,24 @@
 [
   {
+    "timestamp": "2026-07-06T05:44:46Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[Student Management] 重新执行完整E2E测试 - Playwright已修复",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Student Management] 重新执行完整E2E测试 - Playwright已修复"
+    }
+  },
+  {
+    "timestamp": "2026-07-06T05:45:11Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Student Management E2E] 开始执行完整测试",
+    "type": "received"
+  },
+  {
     "timestamp": "2026-07-06T06:00:54Z",
     "from": "PM",
     "to": "QA",
@@ -1025,63 +1044,39 @@
     }
   },
   {
-    "timestamp": "2026-07-10T01:09:56Z",
-    "from": "PM",
-    "to": "USER",
-    "message": "每日状态汇报完成 (2026-07-10 09:07)",
+    "timestamp": "2026-07-10T17:11:09Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #213] 完成: 清理项目目录与重置Git到v1.5.7 ✅",
     "type": "passed",
     "agent_status": {
-      "agent": "PM",
+      "agent": "DEV",
       "status": "idle",
-      "task": "每日状态汇报完成 (2026-07-10 09:07)"
+      "task": "[Issue #213] 完成: 清理项目目录与重置Git到v1.5.7 ✅"
     }
   },
   {
-    "timestamp": "2026-07-10T01:12:37Z",
+    "timestamp": "2026-07-10T23:27:45Z",
     "from": "PM",
-    "to": "SYSTEM",
-    "message": "心跳检查 09:12 - 系统稳定，无新情况",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "心跳检查 09:12 - 系统稳定，无新情况"
-    }
-  },
-  {
-    "timestamp": "2026-07-10T01:25:12Z",
-    "from": "PM",
-    "to": "SYSTEM",
-    "message": "09:25 心跳检查 - 系统健康运行",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "09:25 心跳检查 - 系统健康运行"
-    }
-  },
-  {
-    "timestamp": "2026-07-10T01:30:10Z",
-    "from": "PM",
-    "to": "HEARTBEAT",
-    "message": "Running stuck task detection",
+    "to": "USER",
+    "message": "[检查] 用户查询 DEV 凌晨01:10任务状态",
     "type": "info",
     "agent_status": {
       "agent": "PM",
       "status": "running",
-      "task": "Running stuck task detection"
+      "task": "[检查] 用户查询 DEV 凌晨01:10任务状态"
     }
   },
   {
-    "timestamp": "2026-07-10T01:30:18Z",
+    "timestamp": "2026-07-11T00:30:19Z",
     "from": "PM",
-    "to": "HEARTBEAT",
-    "message": "09:30 早间心跳: 系统健康。Docker 10/10运行，#212 (P1)待分配，#140 (P3)待审查。Stuck检测误报#211（已CLOSED），忽略。",
-    "type": "info",
+    "to": "SYSTEM",
+    "message": "Heartbeat 08:30 - 正在检查系统状态",
+    "type": "received",
     "agent_status": {
       "agent": "PM",
-      "status": "idle",
-      "task": "09:30 早间心跳: 系统健康。Docker 10/10运行，#212 (P1)待分配，#140 "
+      "status": "running",
+      "task": "Heartbeat 08:30 - 正在检查系统状态"
     }
   }
 ]
