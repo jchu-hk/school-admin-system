@@ -1,24 +1,10 @@
 {
-  "lastHeartbeat": "2026-07-11T08:40:00+08:00",
   "lastChecks": {
-    "backend": 1783729200,
-    "frontend": 1783729201,
-    "docker": 1783729202,
-    "git": 1783729203,
-    "github": 1783729204,
-    "system": 1783729205
+    "system": 1720681800000,
+    "github_issues": 1720681800000,
+    "docker": 1720681800000
   },
-  "systemStatus": {
-    "backend": "HTTP 200 (healthy)",
-    "frontend": "HTTP 200 (healthy)",
-    "dockerContainers": 10,
-    "allHealthy": true
-  },
-  "issues": {
-    "open": 15,
-    "attention": "#212 (P1) 学生管理空白; #213-#216 环境清理; #140 (P3) 待审查"
-  },
-  "agentStatus": "all idle",
-  "notes": "周六早间心跳(08:40)。系统稳定，无变化。持续周末休整期。",
-  "lastCheck": "2026-07-11 08:40 GMT+8"
+  "lastHeartbeat": "2026-07-11T09:50:00+08:00",
+  "status": "HEARTBEAT_OK",
+  "uptime": "~11h"
 }
