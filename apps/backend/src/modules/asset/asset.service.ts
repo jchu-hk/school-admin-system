@@ -30,17 +30,20 @@ export class AssetService {
   // ============ Asset Methods ============
 
   async createAsset(createDto: CreateAssetDto): Promise<Asset> {
-    // Check for duplicate code
-    const existing = await this.assetRepository.findOne({
-      where: { code: createDto.code, schoolId: createDto.schoolId },
-    });
+    // Check for duplicate code (if code is provided)
+    if (createDto.code) {
+      const existing = await this.assetRepository.findOne({
+        where: { code: createDto.code, schoolId: createDto.schoolId },
+      });
 
-    if (existing) {
-      throw new ConflictException(`资产编号 ${createDto.code} 已存在`);
+      if (existing) {
+        throw new ConflictException(`资产编号 ${createDto.code} 已存在`);
+      }
     }
 
     const asset = this.assetRepository.create({
       ...createDto,
+      code: createDto.code || `ASSET-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
       purchaseDate: createDto.purchaseDate
         ? new Date(createDto.purchaseDate)
         : null,
@@ -69,7 +72,15 @@ export class AssetService {
 
     const where: FindOptionsWhere<Asset> = {};
 
-    if (schoolId) where.schoolId = schoolId;
+    if (schoolId) {
+      // Only apply schoolId filter if it's a valid UUID
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        schoolId,
+      );
+      if (isUUID) {
+        where.schoolId = schoolId;
+      }
+    }
     if (category) where.category = category;
     if (status) where.status = status;
     if (location) where.location = location;
@@ -141,7 +152,12 @@ export class AssetService {
     byStatus: Record<string, number>;
     byCategory: Record<string, number>;
   }> {
-    const assets = await this.assetRepository.find({ where: { schoolId } });
+    // Validate UUID to prevent PostgreSQL error on non-UUID schoolId
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      schoolId,
+    );
+    const where = isUUID ? { schoolId } : {};
+    const assets = await this.assetRepository.find({ where });
 
     const totalAssets = assets.length;
     const totalValue = assets.reduce(

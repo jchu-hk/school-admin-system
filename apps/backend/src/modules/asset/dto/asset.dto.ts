@@ -23,9 +23,10 @@ export class CreateAssetDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ description: '资产编号' })
+  @ApiPropertyOptional({ description: '资产编号' })
   @IsString()
-  code: string;
+  @IsOptional()
+  code?: string;
 
   @ApiPropertyOptional({ enum: AssetCategory, description: '资产类别' })
   @IsEnum(AssetCategory)
