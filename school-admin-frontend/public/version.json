@@ -1,42 +1,43 @@
 {
   "version": "v1.5.7",
   "buildDate": "2026-07-11",
-  "gitCommit": "756c961",
+  "gitCommit": "5eeec86",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-11",
       "date": "2026-07-11",
       "changes": [
-        "dashboard update 08:53",
-        "dashboard update 08:52",
-        "dashboard update 08:52",
-        "dashboard update 08:31",
-        "remove broken GitHub/login action from project-status workflow",
-        "dashboard update 01:10",
-        "dashboard update 01:09",
-        "dashboard update 01:08",
-        "dashboard update 01:08",
-        "dashboard update 01:08"
-      ]
-    },
-    {
-      "version": "build-2026-07-10",
-      "date": "2026-07-10",
-      "changes": [
-        "dashboard update 21:50",
-        "dashboard update 20:00",
-        "dashboard update 18:03",
-        "dashboard update 18:00",
-        "dashboard update 16:10",
-        "dashboard update 11:20",
-        "dashboard update 09:30",
-        "dashboard update 09:30",
-        "dashboard update 09:25",
-        "dashboard update 09:12",
-        "dashboard update 09:09",
-        "complete AI team documentation update",
-        "dashboard update 09:00"
+        "dashboard update 19:32",
+        "dashboard update 19:32",
+        "dashboard update 19:31",
+        "dashboard update 19:31",
+        "dashboard update 19:31",
+        "dashboard update 19:31",
+        "dashboard update 19:30",
+        "dashboard update 18:50",
+        "Add GH_TOKEN env to project-status workflow to fix gh CLI auth",
+        "dashboard update 17:35",
+        "dashboard update 17:30",
+        "dashboard update 17:05",
+        "dashboard update 16:38",
+        "dashboard update 16:37",
+        "dashboard update 16:29",
+        "dashboard update 16:20",
+        "dashboard update 16:20",
+        "dashboard update 16:19",
+        "dashboard update 16:19",
+        "dashboard update 16:11",
+        "dashboard update 16:07",
+        "dashboard update 16:07",
+        "dashboard update 16:02",
+        "dashboard update 16:01",
+        "dashboard update 15:58",
+        "dashboard update 15:58",
+        "dashboard update 15:31",
+        "dashboard update 15:31",
+        "dashboard update 15:18",
+        "dashboard update 14:46"
       ]
     }
   ]

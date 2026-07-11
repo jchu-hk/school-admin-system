@@ -45,6 +45,26 @@
 
 ## 📋 我的工作过 & 我知道的 Bug 背景
 
+### 2026-07-11 — #222: 新增学生报 Internal Server Error (student_id 字段长度超限)
+- **根因**: 数据库 `students.student_id` 列 `varchar(10)`, 前端 Zod schema 允许 `max(50)`。输入超10字符时 PostgreSQL 报 `value too long for type character varying(10)`，后端返回 500
+- **修复**: 在 `StudentPage.tsx` 中更改 3 个位置:
+  1. `createStudentSchema` 和 `studentSubmissionSchema` 中的 `student_id: z.string().max(50)` → `max(10)`
+  2. Form input 添加 `maxLength={10}` 属性
+- **涉及文件**: `StudentPage.tsx`
+- **构建部署**: `npx vite build` → `docker cp dist/. school-admin-frontend:/usr/share/nginx/html/`
+- **验证**:
+  - 11字符 → 后端 500（前端 Zod 会拦截）
+  - 10字符 → 创建成功
+  - 留空 → 自动生成（如 `20260022`）
+
+### 2026-07-11 — #220: 编辑学生后保存无效（前端PATCH但后端只接受PUT）
+- **根因**: `StudentPage.tsx` 第467行 `apiClient.patch(...)` 发 PATCH 请求，但后端 controller 只定义 `@Put(':id')`（只接受 PUT）。PATCH 返回 404，修改从未写入数据库。
+- **修复**: 改 `apiClient.patch` 为 `apiClient.put`
+- **涉及文件**: `StudentPage.tsx`（第467行）
+- **构建部署**: `npx vite build` → `docker cp dist/. school-admin-frontend:/usr/share/nginx/html/`
+- **验证**: 用 `parent_chen` + `Admin123!` 登录，验证 `PUT /api/students/:id` 正常工作
+- **注意**: `testuser` 密码与记忆中的 `schooladmin2024` 不匹配，实际可用测试账号是 `parent_chen` + `Admin123!`
+
 ### 2026-07-11 — #218 #219: 学生管理筛选 Bug 修复
 
 **Issue #218: 班级下拉框空白**
@@ -71,10 +91,68 @@
 - 前端重新构建并部署(使用 `vite build` 配合 `docker cp`)
 - 数据库迁移同步 (21个migrations)
 
-### 之前已知的教训
-- 前端不传数据时，JS不报错，只是fetch不到数据→页面空白
-- 在容器中无法git pull（容器装的是构建产物），需要在宿主机操作
-- Docker Hub在中国受限，无法`docker build`，用`docker cp`替代
+### 2026-07-11 — #223: 编辑学生时班级分配不保存
+- **根因**: 前端 PUT 请求携带 `class_id`，但后端 `studentService.update()` 不处理班级分配
+- **修复**: 在 `update()` 方法末尾添加班级分配逻辑：
+  1. 如果 `dto.class_id` 存在 → 关闭旧的 main allocation + 创建新的
+  2. 如果 `dto.class_id` 为空字符串 → 关闭旧的 main allocation（清除班级）
+  3. 默认使用当前学年（`isCurrent: true`）
+- **涉及文件**:
+  - `student.service.ts` — `update()` 方法追加班级分配逻辑
+  - `student.dto.ts` — `UpdateStudentDto` 添加 `academic_year_id` 字段
+- **构建部署**: `pnpm --filter @school-admin/backend build` → `docker cp apps/backend/dist/. school-admin-backend:/app/apps/backend/dist/` → `docker restart school-admin-backend`
+- **教训**: 容器中后端实际运行路径是 `/app/apps/backend/dist/main.js`，不是 `/app/dist/main.js`。需要确认`ps aux | grep node`看实际路径
+- **验证结果**:
+  - 编辑学生 → 选班级(1A班) → 保存 → 重开显示1A班 ✅
+  - 改班级(2A班) → 保存 → 显示2A班 ✅
+  - 清除班级(``) → 保存 → 无班级显示 ✅
+
+### 2026-07-11 — Test-03: 修复 6 个前端缺陷（#224 #229 #227 #228 #225）
+
+**Issue #224: 学生出勤概览 -> 人工录入按钮无响应**
+- **根因**: 出勤概览页(`AttendancePage.tsx`)没有独立的"人工录入"导航按钮在概要视图内，用户必须在页顶标签栏切换
+- **修复**: 在概要视图(`renderOverviewTab`)中添加了一个醒目的大按钮"人工录入出勤"，点击后通过 `handleTabChange('manual')` 切换到人工录入页签
+- **涉及文件**: `AttendancePage.tsx` (overview tab 底部新增按钮)
+
+**Issue #229: 人工录入出勤 -> 日期下拉框选择无效果**
+- **根因**: 日期和班级下拉框使用 `setSelectedDate(e.target.value)` 直接更新 state，依赖 `useCallback(loadData, [selectedDate, selectedClass])` + `useEffect([loadData])` 链隐式触发数据重载。但如果回调引用更新不及时，数据可能不刷新
+- **修复**: 将 onChange 改为 `handleDateChange` / `handleClassChange` 包装函数以提高可靠性
+- **涉及文件**: `AttendancePage.tsx` (新增 handleDateChange/handleClassChange 函数)
+
+**Issue #228: 人工录入出勤 -> 缺少出勤日期标签**
+- **根因**: 人工录入页面顶部没有显示当前操作的出勤日期
+- **修复**: 在手动录入模块的表单上方添加一个蓝色标签"📅 出勤日期: YYYY-MM-DD"
+- **涉及文件**: `AttendancePage.tsx` (manual tab 新增日期标签)
+
+**Issue #227: 人工录入出勤 -> 重置按钮无响应**
+- **根因**: 重置按钮只调用 `initManualRecords()` 但不重置日期到当天，导致用户感觉"没重置"
+- **修复**: 重置按钮现在额外调用 `setManualDate(today)` 和 `initManualRecords(today)`，将日期和记录一起重置到当天
+- **涉及文件**: `AttendancePage.tsx` (重置按钮 onClick 扩展)
+
+**Issue #225: 用户管理 -> 搜索与下拉筛选不工作**
+- **根因 (Phase 1 - Frontend)**: 
+  1. MSW mock handler (`user.ts`) 使用 `className` 参数，但前端发送 `dept`
+  2. MSW mock handler 使用 `limit` 参数，但前端发送 `pageSize`
+  3. 前端代码逻辑正确，但 mock 不匹配导致筛选不生效
+  4. E2E 测试通过 `data-testid` 选择器定位元素，但 UserPage 没有这些 testid 属性
+- **修复 (Phase 1)**:
+  1. MSW: 同时接受 `dept`/`className`、`limit`/`pageSize`
+  2. UserPage: 添加 `data-testid` 属性
+- **根因 (Phase 2 - Backend API)**: QA 验收发现搜索功能仍不工作。`user.controller.ts` 的 `findAll()` 方法不接收 `@Query('keyword')` 参数，搜索时 keyword 被忽略，API 始终返回全部用户数据。
+- **修复 (Phase 2)**:
+  1. `user.controller.ts` 的 `findAll()` 添加 `@Query('keyword') keyword?: string` 参数，并传递给 service
+  2. `user.service.ts` 的 `findAll()` 添加 `keyword` 参数，查询时增加 `WHERE user.username LIKE '%keyword%' OR user.name LIKE '%keyword%'`
+  3. Swagger 添加 `@ApiQuery` 描述
+- **涉及文件**:
+  - `user.controller.ts` (4行变动: 参数签名+传递)
+  - `user.service.ts` (7行变动: 参数签名+LIKE查询)
+- **验证结果**: curl 测试通过 ✅
+  - `keyword=admin` → 1 个匹配用户
+  - `keyword=系统` → 1 个匹配用户（中文名模糊搜索）
+  - `keyword=nonexistent` → 0 结果
+  - 不传 keyword → 166 个用户（全部）
+
+**构建部署**: `vite build` → `docker cp dist/. school-admin-frontend:/usr/share/nginx/html/` → `nginx -s reload`
 
 ---
 
@@ -89,8 +167,8 @@ cd /workspace/school-admin-system/school-admin-frontend && npx vite build
 docker cp dist/. school-admin-frontend:/usr/share/nginx/html/
 
 # 后端重新编译
-cd /workspace/school-admin-system && npx nest build
-docker cp dist/. school-admin-backend:/app/dist/
+cd /workspace/school-admin-system && pnpm --filter @school-admin/backend build
+docker cp apps/backend/dist/. school-admin-backend:/app/apps/backend/dist/
 # 重启后端
 docker restart school-admin-backend
 ```

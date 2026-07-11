@@ -52,16 +52,18 @@ export const userHandlers = [
     await delay(MOCK_DELAY);
     const url = new URL(request.url);
     const role = url.searchParams.get('role');
-    const className = url.searchParams.get('className');
+    const dept = url.searchParams.get('dept');
     const status = url.searchParams.get('status');
     const search = url.searchParams.get('search');
     const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '20');
+    const pageSizeParam = url.searchParams.get('pageSize');
+    const limitParam = url.searchParams.get('limit');
+    const limit = parseInt(pageSizeParam || limitParam || '20');
 
     let filtered = [...userStore];
 
     if (role) filtered = filtered.filter(u => u.role === role);
-    if (className) filtered = filtered.filter(u => u.className === className);
+    if (dept) filtered = filtered.filter(u => u.department === dept);
     if (status) filtered = filtered.filter(u => u.status === status);
     if (search) {
       const q = search.toLowerCase();
