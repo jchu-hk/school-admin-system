@@ -44,8 +44,8 @@
 
         <div class="card">
             <h2 style="color:#4ade80;margin-bottom:15px">👥 Agents</h2>
-            <div class="agent-grid"><div class="agent"><div class="agent-icon">🧑💼</div><div class="agent-name">PM</div><div class="agent-task">21:02心跳检查: 系统稳定，11容器健康，28个open</div><span class="status-badge status-idle">idle</span></div><div class="agent"><div class="agent-icon">🔧</div><div class="agent-name">DEVOPS</div><div class="agent-task">资产租借管理修复完成 ✅ 
-① 路由顺序修复：@Get(':</div><span class="status-badge status-idle">idle</span></div><div class="agent"><div class="agent-icon">🤖</div><div class="agent-name">DEV</div><div class="agent-task">[#225] 搜索功能修复完成: user.controll</div><span class="status-badge status-idle">idle</span></div><div class="agent running"><div class="agent-icon">🔍</div><div class="agent-name">QA</div><div class="agent-task">[#226 #230] 资产管理最终修复 — 请验收: 
+            <div class="agent-grid"><div class="agent"><div class="agent-icon">🧑💼</div><div class="agent-name">PM</div><div class="agent-task">21:02心跳检查: 系统稳定，11容器健康，28个open</div><span class="status-badge status-idle">idle</span></div><div class="agent"><div class="agent-icon">🔧</div><div class="agent-name">DEVOPS</div><div class="agent-task">权限配置修复完成 ✅ 
+根因：PATCH /roles/{i</div><span class="status-badge status-idle">idle</span></div><div class="agent"><div class="agent-icon">🤖</div><div class="agent-name">DEV</div><div class="agent-task">[#225] 搜索功能修复完成: user.controll</div><span class="status-badge status-idle">idle</span></div><div class="agent running"><div class="agent-icon">🔍</div><div class="agent-name">QA</div><div class="agent-task">[#226 #230] 资产管理最终修复 — 请验收: 
  </div><span class="status-badge status-running">running</span></div><div class="agent"><div class="agent-icon">✓</div><div class="agent-name">CHECKER</div><div class="agent-task">[Issue #140] 审查完成: CONDITIONAL</div><span class="status-badge status-idle">idle</span></div><div class="agent"><div class="agent-icon">🏗️</div><div class="agent-name">ARCH</div><div class="agent-task">等待任务</div><span class="status-badge status-idle">idle</span></div><div class="agent"><div class="agent-icon">📝</div><div class="agent-name">REQ</div><div class="agent-task">等待任务</div><span class="status-badge status-idle">idle</span></div><div class="agent"><div class="agent-icon">🎨</div><div class="agent-name">UI_DESIGNER</div><div class="agent-task">等待任务</div><span class="status-badge status-idle">idle</span></div></div>
         </div>
 
@@ -56,7 +56,10 @@
                 <button class="tab-btn" id="btn-t1" onclick="showTab('t1')">📅 T-1 昨日</button>
             </div>
             <div id="tab-t0" class="tab-panel active">
-                <div class="message-list"><div class="message-item msg-done"><div class="message-time">21:34</div><div class="message-content">DEVOPS → PM: 资产租借管理修复完成 ✅ 
+                <div class="message-list"><div class="message-item msg-done"><div class="message-time">21:47</div><div class="message-content">DEVOPS → PM: 权限配置修复完成 ✅ 
+根因：PATCH /roles/{id} 路由不存在（Controller只有GET）
+修复：
+</div></div><div class="message-item msg-done"><div class="message-time">21:34</div><div class="message-content">DEVOPS → PM: 资产租借管理修复完成 ✅ 
 ① 路由顺序修复：@Get(':id')移至所有固定路由后 → rentals/overdu</div></div><div class="message-item msg-assign"><div class="message-time">21:23</div><div class="message-content">PM → QA: [#226 #230] 资产管理最终修复 — 请验收: 
   ① 打开资产管理页面是否不再500? 
   ② 添加资产-</div></div><div class="message-item msg-done"><div class="message-time">21:22</div><div class="message-content">DEVOPS → PM: [#226-#230] 资产管理最终修复完成 ✅ 
@@ -67,7 +70,7 @@
             </div>
         </div>
 
-        <div class="refresh">Updated: 2026-07-11 21:34:24 (GMT+8) | Source: agent-status.json</div>
+        <div class="refresh">Updated: 2026-07-11 21:47:13 (GMT+8) | Source: agent-status.json</div>
     </div>
     <script>var _btns=document.querySelectorAll('.tab-btn');function showTab(id){var ps=document.querySelectorAll('.tab-panel');for(var i=0;i<ps.length;i++)ps[i].classList.remove('active');for(var i=0;i<_btns.length;i++)_btns[i].classList.remove('active');document.getElementById('tab-'+id).classList.add('active');for(var i=0;i<_btns.length;i++){var oc=_btns[i].getAttribute('onclick')||'';if(oc.indexOf(id)>=0){_btns[i].classList.add('active');break}}}</script>
 </body>
