@@ -41,14 +41,22 @@ export class AssetService {
       }
     }
 
-    const asset = this.assetRepository.create({
-      ...createDto,
-      code: createDto.code || `ASSET-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-      purchaseDate: createDto.purchaseDate
-        ? new Date(createDto.purchaseDate)
-        : null,
-      availableQuantity: createDto.quantity || 1,
-    } as Asset);
+    const asset = new Asset();
+    asset.schoolId = createDto.schoolId;
+    asset.name = createDto.name;
+    asset.code = createDto.code || `ASSET-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+    asset.category = createDto.category || ('other' as any);
+    if (createDto.brand) asset.brand = createDto.brand;
+    if (createDto.model) asset.model = createDto.model;
+    if (createDto.serialNumber) asset.serialNumber = createDto.serialNumber;
+    if (createDto.quantity) asset.quantity = createDto.quantity;
+    asset.availableQuantity = (createDto as any).availableQuantity ?? createDto.quantity ?? 1;
+    if (createDto.unit) asset.unit = createDto.unit;
+    if (createDto.value !== undefined) asset.value = createDto.value;
+    if (createDto.purchaseDate) asset.purchaseDate = new Date(createDto.purchaseDate);
+    if (createDto.supplier) asset.supplier = createDto.supplier;
+    if (createDto.location) asset.location = createDto.location;
+    if (createDto.description) asset.description = createDto.description;
 
     return this.assetRepository.save(asset);
   }
