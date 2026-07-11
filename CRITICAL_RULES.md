@@ -18,12 +18,49 @@ python3 skills/agent-communication/scripts/write_message.py \
 **⚠️ 关键限制**：spawn 时**禁止传 agentId**，Gateway 只允许 `main`（传其他值返回 `forbidden`）
 
 ```bash
-# 2. 然后才能 spawn
+# 2. 然后**立刻** spawn
 # sessions_spawn(agentId="DEV")  ← ❌ 禁止！forbidden
 sessions_spawn(runtime="subagent")  ← ✅ 正确
 ```
 
 **违反这个规则 = Dashboard 不更新 = PM 失去对系统的可见性**
+
+---
+
+## 🚨 2026-07-11 新增规则：写消息后必须 spawn
+
+**问题**：PM 多次犯了以下错误：
+1. ✅ 调用了 `write_message --type assign --status running`
+2. ❌ **但没有随后 spawn subagent**
+3. ❌ 反而发了 `--type passed --to HUMAN`，导致脚本自动移除 `in-progress` 标签
+
+**后果**：DEV/QA 的 Dashboard 状态显示 `running`，但实际从未被分配工作；Issue 标签错误地标记为完成。
+
+**新规则**：
+```
+write_message --type assign → 必须立即 spawn subagent
+```
+
+```bash
+# ❌ 禁止：写了 assign 但不 spawn
+python3 skills/agent-communication/scripts/write_message.py \
+  --from PM --to DEV --message "[#217] 修复" --type assign --status running
+# (没有 sessions_spawn) ← 违规！
+
+# ✅ 正确：写消息 + 立即 spawn
+python3 skills/agent-communication/scripts/write_message.py \
+  --from PM --to DEV --message "[#217] 修复" --type assign --status running
+sessions_spawn(task="修复 #217")  # ← 紧跟着 spawn！
+```
+
+**禁止**：
+- ❌ 只 assign 不 spawn（DEV 不会被激活）
+- ❌ 先 `--to HUMAN --type passed` 后 assign（会移除 `in-progress`）
+- ❌ assign 后做其他事忘了 spawn
+
+**验证方法**：检查 spawn 后是否有 `DEV→PM type=received` 消息出现
+
+---
 
 ---
 
