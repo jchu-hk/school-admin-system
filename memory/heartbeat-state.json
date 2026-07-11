@@ -1,10 +1,8 @@
 {
   "lastChecks": {
-    "system": 1720681800000,
-    "github_issues": 1720681800000,
-    "docker": 1720681800000
+    "system": "2026-07-11T12:40:00+08:00"
   },
-  "lastHeartbeat": "2026-07-11T09:50:00+08:00",
+  "lastHeartbeat": "2026-07-11 12:40 GMT+8",
   "status": "HEARTBEAT_OK",
-  "uptime": "~11h"
+  "uptime": "~13h"
 }
