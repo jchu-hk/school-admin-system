@@ -1,14 +1,14 @@
 {
   "agents": {
     "PM": {
-      "status": "idle",
-      "task": "✅ #231 P0 已修复+部署，待QA验收。当前团队状态：DEV空闲 | QA正在验收#231 | DEVOPS空闲",
-      "lastUpdate": "2026-07-11T14:59:11Z"
+      "status": "running",
+      "task": "[Heartbeat 08:00] 系统例行巡检开始",
+      "lastUpdate": "2026-07-12T00:00:12Z"
     },
     "DEVOPS": {
-      "status": "running",
-      "task": "[#226 #230] 资产管理验证开始",
-      "lastUpdate": "2026-07-11T15:05:25Z"
+      "status": "idle",
+      "task": "[#226 #230] 资产管理验证通过：GET /api/asset → 200, POST /api/asset（schoolId=default-scho",
+      "lastUpdate": "2026-07-11T15:24:39Z"
     },
     "ARCH": {
       "status": "idle",
@@ -21,9 +21,9 @@
       "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "[#228 #140] 开始修复小问题",
-      "lastUpdate": "2026-07-11T15:05:30Z"
+      "status": "idle",
+      "task": "[#222 #223 #224 #225 #227 #229] 修复完成\n\n#222: 已验证 - Zod max(10) + maxLength={10} 已",
+      "lastUpdate": "2026-07-11T15:12:09Z"
     },
     "QA": {
       "status": "running",

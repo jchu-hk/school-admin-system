@@ -1,48 +1,5 @@
 [
   {
-    "timestamp": "2026-07-11T00:56:08Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "周六08:55心跳检查 - 系统稳定运行中",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "周六08:55心跳检查 - 系统稳定运行中"
-    }
-  },
-  {
-    "timestamp": "2026-07-11T01:33:34Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[Issue #217 P0] Coze代理环境下所有API请求返回400: Coze平台注入ecsInstanceID/gatewayInstanceID字段，后端ValidationPipe的forbidNonWhitelisted:true拒绝。需修复main.ts中的ValidationPipe配置或添加请求清洗中间件。",
-    "type": "assign",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[Issue #217 P0] Coze代理环境下所有API请求返回400: Coze平台注入ecs"
-    }
-  },
-  {
-    "timestamp": "2026-07-11T01:33:41Z",
-    "from": "PM",
-    "to": "HUMAN",
-    "message": "[P0 Defect #217] 已创建并确认根因: Coze平台在API请求中注入ecsInstanceID和gatewayInstanceID字段，后端ValidationPipe的forbidNonWhitelisted:true拦截了这些未定义字段，导致所有API返回400。已记录Bug并安排DEV修复。",
-    "type": "passed",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "[P0 Defect #217] 已创建并确认根因: Coze平台在API请求中注入ecsInsta"
-    }
-  },
-  {
-    "timestamp": "2026-07-11T01:55:21Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "debug check",
-    "type": "info"
-  },
-  {
     "timestamp": "2026-07-11T01:55:31Z",
     "from": "PM",
     "to": "DEV",
@@ -1177,6 +1134,54 @@
       "agent": "DEV",
       "status": "running",
       "task": "[#228 #140] 开始修复小问题"
+    }
+  },
+  {
+    "timestamp": "2026-07-11T15:07:01Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[#228] 修复完成: 人工录入页面添加出勤日期标签; [#140] 关闭: TypeORM警告为已知NestJS issue#12738, 仅串行化耗时11ms, 不影响功能",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[#228] 修复完成: 人工录入页面添加出勤日期标签; [#140] 关闭: TypeORM警告为"
+    }
+  },
+  {
+    "timestamp": "2026-07-11T15:12:09Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[#222 #223 #224 #225 #227 #229] 修复完成\n\n#222: 已验证 - Zod max(10) + maxLength={10} 已经存在，无需修改\n#223: 已验证 - UpdateStudentDto已有class_id/academic_year_id, service.update已处理班级分配逻辑\n#224: 已修复 - 考勤概览页添加'人工录入'大按钮（绿色），点击切换到manual tab\n#225: 已修复 - UserPage departmentFilter参数名'dept'→'className'（匹配后端）\n#227: 已修复 - 重置按钮提取为handleReset独立方法，清除全部state(包括preview/batchId)\n#229: 已修复 - 日期下拉onChange额外清除previewData/showPreview\ngit commit: aa7fa3d",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[#222 #223 #224 #225 #227 #229] 修复完成\n\n#222: 已验证 - "
+    }
+  },
+  {
+    "timestamp": "2026-07-11T15:24:20Z",
+    "from": "PM",
+    "to": "ALL",
+    "message": "✅ #226+#230 已验证关闭。当前所有Issues状态:\n已关闭(可测试): #212 #217 #218 #219 #220 #226 #230 #231\n待QA验收: #221 #222 #223 #224 #225 #227 #228 #229 (DEV已完成)\n待您测试: #212 #217 #218 #219 #220 #226 #230 #231",
+    "type": "done",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "✅ #226+#230 已验证关闭。当前所有Issues状态:\n已关闭(可测试): #212 #21"
+    }
+  },
+  {
+    "timestamp": "2026-07-12T00:00:12Z",
+    "from": "PM",
+    "to": "system",
+    "message": "[Heartbeat 08:00] 系统例行巡检开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Heartbeat 08:00] 系统例行巡检开始"
     }
   }
 ]
