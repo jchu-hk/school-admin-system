@@ -165,22 +165,63 @@ export default function AttendancePage() {
   }, [loadData]);
 
   // ============ Manual Entry Handlers ============
-  const initManualRecords = (dateOverride?: string) => {
+  const initManualRecords = async (dateOverride?: string) => {
     const targetDate = dateOverride ?? manualDate;
     const students = MOCK_STUDENTS[selectedClass] || [];
-    const initial: BatchRecordInput[] = students.map((s) => ({
-      studentId: s.id,
-      studentName: s.name,
-      classId: selectedClass,
-      status: AttendanceStatus.PRESENT,
-      checkInTime: '',
-      remark: '',
-    }));
-    setManualRecords(initial);
+    if (students.length === 0) {
+      setManualRecords([]);
+      setPreviewData(null);
+      setShowPreview(false);
+      setBatchId(null);
+      setError(null);
+      return;
+    }
+
+    // Try to load existing records for this date from API
+    try {
+      const existing = await attendanceApi.getByClassAndDate(selectedClass, targetDate);
+      if (existing.records && existing.records.length > 0) {
+        const mapped: BatchRecordInput[] = existing.records.map((r) => ({
+          studentId: r.student?.id || r.studentId,
+          studentName: r.student?.name || '',
+          classId: selectedClass,
+          status: r.status,
+          checkInTime: r.checkInTime || '',
+          remark: r.remark || '',
+        }));
+        setManualRecords(mapped);
+        setError(null);
+        setSubmitSuccess(`已加载 ${mapped.length} 条出勤记录`);
+        setTimeout(() => setSubmitSuccess(null), 3000);
+      } else {
+        // No existing records, initialize with default PRESENT
+        const initial: BatchRecordInput[] = students.map((s) => ({
+          studentId: s.id,
+          studentName: s.name,
+          classId: selectedClass,
+          status: AttendanceStatus.PRESENT,
+          checkInTime: '',
+          remark: '',
+        }));
+        setManualRecords(initial);
+        setError(null);
+      }
+    } catch {
+      // API unavailable, fall back to default initialization
+      const initial: BatchRecordInput[] = students.map((s) => ({
+        studentId: s.id,
+        studentName: s.name,
+        classId: selectedClass,
+        status: AttendanceStatus.PRESENT,
+        checkInTime: '',
+        remark: '',
+      }));
+      setManualRecords(initial);
+      setError(null);
+    }
     setPreviewData(null);
     setShowPreview(false);
     setBatchId(null);
-    setError(null);
   };
 
   // Explicitly re-fetch when date or class changes in overview (#229 fix: force data reload)
