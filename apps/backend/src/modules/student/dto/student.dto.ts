@@ -228,7 +228,7 @@ export class StudentQueryDto {
   search?: string;
 
   @ApiPropertyOptional({ description: '班级ID' })
-  @IsUUID()
+  @IsString()
   @IsOptional()
   class_id?: string;
 

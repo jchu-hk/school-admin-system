@@ -1,13 +1,19 @@
 {
   "version": "v1.5.7",
   "buildDate": "2026-07-12",
-  "gitCommit": "cb2c55e",
+  "gitCommit": "24ac0cf",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-12",
       "date": "2026-07-12",
       "changes": [
+        "dashboard update 17:49",
+        "dashboard update 17:48",
+        "dashboard update 17:45",
+        "dashboard update 17:40",
+        "dashboard update 17:38",
+        "fix(#233): student class filter parameter mismatch classId->class_id",
         "dashboard update 17:24",
         "dashboard update 17:23",
         "dashboard update 17:07",
@@ -29,13 +35,7 @@
         "dashboard update 13:00",
         "dashboard update 09:09",
         "dashboard update 08:35",
-        "dashboard update 08:01",
-        "Fix jq expression in project-status workflow (shell escaping issue with \\#)",
-        "dashboard update 08:00",
-        "dashboard update 08:00",
-        "dashboard update 06:00",
-        "dashboard update 23:25",
-        "dashboard update 23:24"
+        "dashboard update 08:01"
       ]
     }
   ]

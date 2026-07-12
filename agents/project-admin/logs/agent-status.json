@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "idle",
-      "task": "[Housekeeping] #232 与 #233 重复，已关闭 #232",
-      "lastUpdate": "2026-07-12T08:59:22Z"
+      "task": "[规则违反记录] 2026-07-12 09:38 - #233 Round 2 修复由PM直接执行，未 spawn DEV。违反SOUL.md及AGENTS.",
+      "lastUpdate": "2026-07-12T09:40:03Z"
     },
     "DEVOPS": {
       "status": "idle",
@@ -21,14 +21,14 @@
       "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
-      "status": "idle",
-      "task": "[#222 #223 #224 #225 #227 #229] 修复完成\n\n#222: 已验证 - Zod max(10) + maxLength={10} 已",
-      "lastUpdate": "2026-07-11T15:12:09Z"
+      "status": "running",
+      "task": "[Issue #234] 根因已明确（见Issue comment）。请修复: StudentQueryDto 中 class_id 的 @IsUUID() 改",
+      "lastUpdate": "2026-07-12T09:49:00Z"
     },
     "QA": {
       "status": "idle",
-      "task": "[Issue #233] QA验证通过:\\n\\n1. ✅ classes API 返回12条班级数据\\n2. ✅ status=active filter 返回",
-      "lastUpdate": "2026-07-12T09:24:41Z"
+      "task": "[Issue #233] QA再次验证通过。根因: 前端传 classId, 后端接 class_id. 已修正.",
+      "lastUpdate": "2026-07-12T09:38:25Z"
     },
     "REQ": {
       "status": "idle",
