@@ -396,6 +396,9 @@ export default function StudentPage() {
     defaultValues: DEFAULT_FORM_VALUES,
   })
 
+  const [statusFilter, setStatusFilter] = useState('')
+  const [classFilter, setClassFilter] = useState('')
+
   const fetchStudents = useCallback(async () => {
     setLoading(true)
     try {
@@ -404,6 +407,8 @@ export default function StudentPage() {
 
       const params = new URLSearchParams({ page: page.toString(), pageSize: PAGE_SIZE.toString() })
       if (searchTerm) params.append('search', searchTerm)
+      if (statusFilter) params.append('status', statusFilter)
+      if (classFilter) params.append('classId', classFilter)
 
       const response = await apiClient.get<{ data: PaginatedResponse<Student> }>(
         `/students?${params}`
@@ -421,7 +426,7 @@ export default function StudentPage() {
     } finally {
       setLoading(false)
     }
-  }, [page, searchTerm])
+  }, [page, searchTerm, statusFilter, classFilter])
 
   const fetchClasses = useCallback(async () => {
     try {
@@ -538,14 +543,19 @@ export default function StudentPage() {
           </div>
           <div className="w-48">
             <select
+              value={classFilter}
+              onChange={(e) => { setClassFilter(e.target.value); setPage(1) }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               data-testid="filter_class"
             >
               <option value="">全部班级</option>
+              {classes.map(c => <option key={c.id} value={c.id}>{c.grade ? `${c.grade} - ${c.name}` : c.name}</option>)}
             </select>
           </div>
           <div className="w-48">
             <select
+              value={statusFilter}
+              onChange={(e) => { setStatusFilter(e.target.value); setPage(1) }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               data-testid="filter_status"
             >

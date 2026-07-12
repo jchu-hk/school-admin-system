@@ -1,89 +1,5 @@
 [
   {
-    "timestamp": "2026-07-11T02:20:09Z",
-    "from": "PM",
-    "to": "SYSTEM",
-    "message": "心跳检查 10:20 - 系统稳定运行，周末休整",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "心跳检查 10:20 - 系统稳定运行，周末休整"
-    }
-  },
-  {
-    "timestamp": "2026-07-11T04:20:10Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "用户反馈2个问题需要修复：(1) 班级下拉框为空 (2) 学生状态筛选下拉不工作。开始分配任务",
-    "type": "assign",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "用户反馈2个问题需要修复：(1) 班级下拉框为空 (2) 学生状态筛选下拉不工作。开始分配任务"
-    }
-  },
-  {
-    "timestamp": "2026-07-11T04:21:12Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[Issue #218][Issue #219] 启动修复任务",
-    "type": "assign",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[Issue #218][Issue #219] 启动修复任务"
-    }
-  },
-  {
-    "timestamp": "2026-07-11T04:21:21Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "根因已查明: (1) #218 班级下拉框 - 前端fetchClasses期望{id,name,grade}对象，但后端/users/classes返回string[]（只有class名字）; (2) #219 状态筛选不工作 - filter没有onChange事件和状态变量。前后端都需要修改",
-    "type": "assign",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "根因已查明: (1) #218 班级下拉框 - 前端fetchClasses期望{id,name,g"
-    }
-  },
-  {
-    "timestamp": "2026-07-11T04:23:28Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#218][#219] 学生管理Bug修复完成",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#218][#219] 学生管理Bug修复完成"
-    }
-  },
-  {
-    "timestamp": "2026-07-11T04:40:17Z",
-    "from": "PM",
-    "to": "HUMAN",
-    "message": "心跳检查: 周六 12:40",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "心跳检查: 周六 12:40"
-    }
-  },
-  {
-    "timestamp": "2026-07-11T05:01:45Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[Issues #218 #219] DEV needed: Fix class filter param name and rebuild/redeploy frontend",
-    "type": "assign",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[Issues #218 #219] DEV needed: Fix class filter pa"
-    }
-  },
-  {
     "timestamp": "2026-07-11T05:02:08Z",
     "from": "DEV",
     "to": "PM",
@@ -1188,5 +1104,89 @@
     "to": "PM",
     "message": "[Issue #213-#216] 开始环境清理工作",
     "type": "received"
+  },
+  {
+    "timestamp": "2026-07-12T06:21:25Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #231] P0: 用户管理搜索框输入'staff'无效 - 前端search参数改为keyword",
+    "type": "assign",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[Issue #231] P0: 用户管理搜索框输入'staff'无效 - 前端search参数改为"
+    }
+  },
+  {
+    "timestamp": "2026-07-12T06:24:47Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Phase 1-2] Git reset + Docker images rebuilt (backend v1.5.7 healthy ✅)",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[Phase 1-2] Git reset + Docker images rebuilt (bac"
+    }
+  },
+  {
+    "timestamp": "2026-07-12T06:25:27Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #213-#216] 环境清理完成 - Git reset to v1.5.7, Docker images rebuilt, all services healthy ✅",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[Issue #213-#216] 环境清理完成 - Git reset to v1.5.7, Do"
+    }
+  },
+  {
+    "timestamp": "2026-07-12T06:25:55Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #213-#216] 最终状态：Git HEAD at 510adc1 (重置v1.5.7), Backend/frontend镜像重建, DB 15迁移已应用, 所有服务健康。Frontend通过port 8080, Backend通过port 3000/api运行中",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[Issue #213-#216] 最终状态：Git HEAD at 510adc1 (重置v1.5"
+    }
+  },
+  {
+    "timestamp": "2026-07-12T06:26:46Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #231] P0修复完成: User搜索前端传keyword参数。dist已部署到容器。详情: UserPage.tsx:199 search→keyword",
+    "type": "done",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "[Issue #231] P0修复完成: User搜索前端传keyword参数。dist已部署到容器"
+    }
+  },
+  {
+    "timestamp": "2026-07-12T08:35:18Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #233] 学生管理: class dropdown为空 + status filter失效 - 开始排查修复",
+    "type": "assign",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[Issue #233] 学生管理: class dropdown为空 + status filte"
+    }
+  },
+  {
+    "timestamp": "2026-07-12T08:36:32Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #233] 修复完成:\\n - StudentPage: 添加statusFilter/classFilter state + UI绑定 + API传参\\n - fetchStudents deps 更新\\n - 前端重建并部署到容器",
+    "type": "done",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "[Issue #233] 修复完成:\\n - StudentPage: 添加statusFilter"
+    }
   }
 ]
