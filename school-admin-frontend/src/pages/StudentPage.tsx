@@ -446,41 +446,74 @@ export default function StudentPage() {
 
   // Handlers
   const handleCreate = async (data: StudentFormData) => {
-    // Validate with strict schema before submission
-    const validated = studentSubmissionSchema.parse(data)
-    // Build payload: strip class_id (not in CreateStudentDto — class allocation is separate)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { class_id, ...payload } = {
-      ...validated,
-      gender: validated.gender || undefined,
-      create_user_account: false,
+    try {
+      // Validate with strict schema before submission
+      const validated = studentSubmissionSchema.parse(data)
+      const payload = {
+        ...validated,
+        gender: validated.gender || undefined,
+        create_user_account: false,
+      }
+      await apiClient.post('/students', payload)
+      setShowCreateModal(false)
+      reset(DEFAULT_FORM_VALUES)
+      setPage(1)
+      await fetchStudents()
+      alert('学生创建成功！')
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        alert(`表单验证失败: ${error.errors.map(e => e.message).join('; ')}`)
+      } else if (isAxiosError(error) && error.response?.data?.message) {
+        alert(`创建失败: ${JSON.stringify(error.response.data.message)}`)
+      } else {
+        console.error('Failed to create student:', error)
+        alert('创建失败，请检查网络或联系管理员')
+      }
     }
-    await apiClient.post('/students', payload)
-    setShowCreateModal(false)
-    reset(DEFAULT_FORM_VALUES)
-    fetchStudents()
   }
 
   const handleUpdate = async (data: StudentFormData) => {
     if (!selectedStudent) return
-    // Validate with strict schema before submission
-    const validated = studentSubmissionSchema.parse(data)
-    await apiClient.patch(`/students/${selectedStudent.id}`, {
-      ...validated,
-      gender: validated.gender || undefined, // send undefined instead of empty string
-    })
-    setShowEditModal(false)
-    reset()
-    fetchStudents()
+    try {
+      // Validate with strict schema before submission
+      const validated = studentSubmissionSchema.parse(data)
+      await apiClient.patch(`/students/${selectedStudent.id}`, {
+        ...validated,
+        gender: validated.gender || undefined, // send undefined instead of empty string
+      })
+      setShowEditModal(false)
+      reset()
+      await fetchStudents()
+      alert('学生信息更新成功！')
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        alert(`表单验证失败: ${error.errors.map(e => e.message).join('; ')}`)
+      } else if (isAxiosError(error) && error.response?.data?.message) {
+        alert(`更新失败: ${JSON.stringify(error.response.data.message)}`)
+      } else {
+        console.error('Failed to update student:', error)
+        alert('更新失败，请检查网络或联系管理员')
+      }
+    }
   }
 
   const handleDelete = async () => {
     if (!selectedStudent) return
-    const token = getToken()
-    await apiClient.delete(`/students/${selectedStudent.id}`)
-    setShowDeleteConfirm(false)
-    setSelectedStudent(null)
-    fetchStudents()
+    try {
+      const token = getToken()
+      await apiClient.delete(`/students/${selectedStudent.id}`)
+      setShowDeleteConfirm(false)
+      setSelectedStudent(null)
+      await fetchStudents()
+      alert('学生删除成功！')
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.data?.message) {
+        alert(`删除失败: ${JSON.stringify(error.response.data.message)}`)
+      } else {
+        console.error('Failed to delete student:', error)
+        alert('删除失败，请检查网络或联系管理员')
+      }
+    }
   }
 
   const openEditModal = (student: Student) => {
