@@ -187,6 +187,7 @@ export class UserService {
     limit: number = 10,
     role?: string,
     status?: string,
+    keyword?: string,
     className?: string,
     requester?: User,
   ): Promise<{ data: User[]; total: number }> {
@@ -200,6 +201,13 @@ export class UserService {
 
     if (status) {
       queryBuilder.andWhere('user.status = :status', { status });
+    }
+
+    if (keyword) {
+      queryBuilder.andWhere(
+        '(user.username LIKE :keyword OR user.name LIKE :keyword)',
+        { keyword: `%${keyword}%` },
+      );
     }
 
     if (className) {

@@ -79,6 +79,7 @@ export class UserController {
   @ApiQuery({ name: 'limit', required: false, description: '每页数量，默认10' })
   @ApiQuery({ name: 'role', required: false, description: '用户角色筛选' })
   @ApiQuery({ name: 'status', required: false, description: '用户状态筛选' })
+  @ApiQuery({ name: 'keyword', required: false, description: '搜索关键词(用户名/姓名)' })
   @ApiResponse({ status: 200, description: '获取用户列表成功' })
   @Roles(
     UserRole.SYSTEM_ADMIN,
@@ -94,6 +95,7 @@ export class UserController {
     @Query('pageSize') pageSize?: string,
     @Query('role') role?: string,
     @Query('status') status?: string,
+    @Query('keyword') keyword?: string,
     @Query('className') className?: string,
   ) {
     const effectiveLimit = parseInt(limit || pageSize || '10');
@@ -102,6 +104,7 @@ export class UserController {
       effectiveLimit,
       role,
       status,
+      keyword,
       className,
       req.user,
     );
@@ -156,6 +159,7 @@ export class UserController {
     @Query('limit') limit?: string,
     @Query('pageSize') pageSize?: string,
     @Query('status') status?: string,
+    @Query('keyword') keyword?: string,
     @Query('className') className?: string,
   ) {
     const effectiveLimit = parseInt(limit || pageSize || '10');
@@ -164,6 +168,7 @@ export class UserController {
       effectiveLimit,
       UserRole.STUDENT,
       status,
+      keyword,
       className,
       req.user,
     );
