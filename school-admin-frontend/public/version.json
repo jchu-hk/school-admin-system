@@ -1,43 +1,41 @@
 {
   "version": "v1.5.7",
   "buildDate": "2026-07-12",
-  "gitCommit": "ad51632",
+  "gitCommit": "cb2c55e",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-12",
       "date": "2026-07-12",
       "changes": [
+        "dashboard update 17:24",
+        "dashboard update 17:23",
+        "dashboard update 17:07",
+        "dashboard update 16:59",
+        "dashboard update 16:40",
+        "dashboard update 16:37",
+        "Merge remote-tracking branch 'origin/main'",
+        "fix(#233): StudentPage class dropdown + status filter",
+        "dashboard update 16:36",
         "dashboard update 16:35",
         "dashboard update 14:26",
         "dashboard update 14:26",
         "dashboard update 14:25",
         "dashboard update 14:24",
-        "dashboard update 14:21"
-      ]
-    },
-    {
-      "version": "build-2026-07-10",
-      "date": "2026-07-10",
-      "changes": [
-        "dashboard update 09:30",
-        "dashboard update 09:30",
-        "dashboard update 09:25",
-        "dashboard update 09:12",
+        "dashboard update 14:21",
+        "dashboard update 14:18",
+        "dashboard update 14:17",
+        "14:10 heartbeat - Sun steady, no changes",
+        "dashboard update 13:00",
         "dashboard update 09:09",
-        "complete AI team documentation update",
-        "dashboard update 09:00",
-        "dashboard update 08:21"
-      ]
-    },
-    {
-      "version": "build-2026-07-09",
-      "date": "2026-07-09",
-      "changes": [
-        "dashboard update 23:07",
-        "sync memory",
-        "memory sync: 2026-07-09 22:00",
-        "memory sync: 2026-07-09 21:30"
+        "dashboard update 08:35",
+        "dashboard update 08:01",
+        "Fix jq expression in project-status workflow (shell escaping issue with \\#)",
+        "dashboard update 08:00",
+        "dashboard update 08:00",
+        "dashboard update 06:00",
+        "dashboard update 23:25",
+        "dashboard update 23:24"
       ]
     }
   ]

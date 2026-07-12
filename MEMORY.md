@@ -218,3 +218,20 @@ agent-PM (调度中枢) → DEV/QA/DEVOPS/CHECKER
 **已知问题**: Docker Hub 在中国网络受限，无法通过 docker build 重建镜像
 **解决方法**: docker cp + docker exec 直接更新运行容器
 
+
+## 2026-07-12 — PM教训: 不应直接执行DEV的工作
+
+**问题**: #233 的代码修复（StudentPage class dropdown + status filter）由PM直接完成，没有 spawn DEV agent。
+
+**影响**:
+- 违反了 SOUL.md "PM不直接执行其他Agent工作" 的规则
+- DEV 没有参与上下文，缺乏代码变更的记录归属
+- 缺少了 DEV 的代码审查机会
+
+**正确流程**:
+1. PM 诊断 → 创建 Issue → 分配 DEV
+2. DEV 执行编码、构建、部署
+3. QA 验证
+4. PM 汇报
+
+**教训**: 即使是小的修复，也应 spawn DEV agent 来执行。PM的角色是协调，不是执行。

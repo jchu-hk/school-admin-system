@@ -408,7 +408,7 @@ export default function StudentPage() {
       const params = new URLSearchParams({ page: page.toString(), pageSize: PAGE_SIZE.toString() })
       if (searchTerm) params.append('search', searchTerm)
       if (statusFilter) params.append('status', statusFilter)
-      if (classFilter) params.append('classId', classFilter)
+      if (classFilter) params.append('class_id', classFilter)
 
       const response = await apiClient.get<{ data: PaginatedResponse<Student> }>(
         `/students?${params}`

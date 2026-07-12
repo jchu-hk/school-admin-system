@@ -1,9 +1,9 @@
 {
   "agents": {
     "PM": {
-      "status": "running",
-      "task": "[Heartbeat 08:00] 系统例行巡检开始",
-      "lastUpdate": "2026-07-12T00:00:12Z"
+      "status": "idle",
+      "task": "[Housekeeping] #232 与 #233 重复，已关闭 #232",
+      "lastUpdate": "2026-07-12T08:59:22Z"
     },
     "DEVOPS": {
       "status": "idle",
@@ -26,9 +26,9 @@
       "lastUpdate": "2026-07-11T15:12:09Z"
     },
     "QA": {
-      "status": "running",
-      "task": "[Issue #231 P0] 用户管理搜索已修复并部署 — 请前端验收:\n  ① 用户管理搜索'staff'→只显示staff1/staff2\n  ② 搜索中",
-      "lastUpdate": "2026-07-11T14:59:05Z"
+      "status": "idle",
+      "task": "[Issue #233] QA验证通过:\\n\\n1. ✅ classes API 返回12条班级数据\\n2. ✅ status=active filter 返回",
+      "lastUpdate": "2026-07-12T09:24:41Z"
     },
     "REQ": {
       "status": "idle",
