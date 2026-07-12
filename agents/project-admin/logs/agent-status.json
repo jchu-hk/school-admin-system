@@ -1,9 +1,9 @@
 {
   "agents": {
     "PM": {
-      "status": "idle",
-      "task": "[Issue #233] 修复完成:\\n - StudentPage: 添加statusFilter/classFilter state + UI绑定 + AP",
-      "lastUpdate": "2026-07-12T08:36:32Z"
+      "status": "running",
+      "task": "[Heartbeat 08:00] 系统例行巡检开始",
+      "lastUpdate": "2026-07-12T00:00:12Z"
     },
     "DEVOPS": {
       "status": "idle",
@@ -21,9 +21,9 @@
       "lastUpdate": "2026-07-06T01:11:37Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "[Issue #233] 学生管理: class dropdown为空 + status filter失效 - 开始排查修复",
-      "lastUpdate": "2026-07-12T08:35:18Z"
+      "status": "idle",
+      "task": "[#222 #223 #224 #225 #227 #229] 修复完成\n\n#222: 已验证 - Zod max(10) + maxLength={10} 已",
+      "lastUpdate": "2026-07-11T15:12:09Z"
     },
     "QA": {
       "status": "running",
