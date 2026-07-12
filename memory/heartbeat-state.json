@@ -1,26 +1,9 @@
 {
-  "lastHeartbeat": "2026-07-10T08:50:00+08:00",
   "lastChecks": {
-    "backend": 1783644080,
-    "frontend": 1783644081,
-    "docker": 1783644082,
-    "git": 1783644083,
-    "github": 1783644085,
-    "stuckTasks": 1783644086,
-    "system": 1783644087
+    "system": "2026-07-12T13:20:00+08:00",
+    "heartbeat": "2026-07-12T13:20+08:00"
   },
-  "systemStatus": {
-    "backend": "HTTP 404 (health endpoint, app running)",
-    "dockerContainers": 10,
-    "allHealthy": true
-  },
-  "issues": {
-    "open": 15,
-    "readyForReview": 1,
-    "attention": "#212 (P1) 学生管理空白 - 未指派; #140 (P3) 待审查"
-  },
-  "agentStatus": "all idle",
-  "stuckTasksNote": "detect-stuck-tasks.py误报#211（已关闭）- 已知问题，忽略",
-  "notes": "系统稳定运行9+小时。早间心跳(08:41)。#212(P1)学生管理空白未指派，#140(P3)待审查。CI/CD bcrypt构建持续失败（已知问题）。",
-  "lastCheck": "2026-07-10 08:41 GMT+8"
+  "lastHeartbeat": "2026-07-12 13:20 GMT+8",
+  "status": "HEARTBEAT_OK",
+  "uptime": "All stable"
 }

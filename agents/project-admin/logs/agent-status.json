@@ -1,14 +1,14 @@
 {
   "agents": {
     "PM": {
-      "status": "running",
-      "task": "开始生成每日状态汇报 (2026-07-10 09:00)",
-      "lastUpdate": "2026-07-10T01:00:21Z"
+      "status": "idle",
+      "task": "❤️ 13:00 心跳检查 - 系统稳定",
+      "lastUpdate": "2026-07-12T05:00:11Z"
     },
     "DEVOPS": {
       "status": "idle",
-      "task": "[Dashboard清理] 测试环境刷新任务已完成 - 修复已应用（c09b357），服务运行正常",
-      "lastUpdate": "2026-07-07T22:40:47Z"
+      "task": "[#226 #230] 资产管理验证通过：GET /api/asset → 200, POST /api/asset（schoolId=default-scho",
+      "lastUpdate": "2026-07-11T15:24:39Z"
     },
     "ARCH": {
       "status": "idle",
@@ -22,18 +22,23 @@
     },
     "DEV": {
       "status": "running",
-      "task": "[Issue #211] P1 提醒 - 前端API路径重复导致404 - staff1登录后所有API调用失败 - 请立即修复",
-      "lastUpdate": "2026-07-09T08:23:34Z"
+      "task": "[Issue #213-#216] 环境清理 Phase 1-4: 清理项目目录、重置Git到v1.5.7、重建Docker镜像、数据库重置、功能验证",
+      "lastUpdate": "2026-07-12T06:17:52Z"
     },
     "QA": {
-      "status": "idle",
-      "task": "等待任务",
-      "lastUpdate": "2026-07-09T04:00:47.495595+00:00"
+      "status": "running",
+      "task": "[Issue #231 P0] 用户管理搜索已修复并部署 — 请前端验收:\n  ① 用户管理搜索'staff'→只显示staff1/staff2\n  ② 搜索中",
+      "lastUpdate": "2026-07-11T14:59:05Z"
     },
     "REQ": {
       "status": "idle",
       "task": "等待任务",
       "lastUpdate": "2026-06-30T23:15:00+08:00"
+    },
+    "SYSTEM": {
+      "status": "running",
+      "task": "心beat检查: 开始系统巡检",
+      "lastUpdate": "2026-07-11T12:05:07Z"
     }
   }
 }

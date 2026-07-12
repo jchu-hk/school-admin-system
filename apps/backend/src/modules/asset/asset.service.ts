@@ -30,22 +30,33 @@ export class AssetService {
   // ============ Asset Methods ============
 
   async createAsset(createDto: CreateAssetDto): Promise<Asset> {
-    // Check for duplicate code
-    const existing = await this.assetRepository.findOne({
-      where: { code: createDto.code, schoolId: createDto.schoolId },
-    });
+    // Check for duplicate code (if code is provided)
+    if (createDto.code) {
+      const existing = await this.assetRepository.findOne({
+        where: { code: createDto.code, schoolId: createDto.schoolId },
+      });
 
-    if (existing) {
-      throw new ConflictException(`资产编号 ${createDto.code} 已存在`);
+      if (existing) {
+        throw new ConflictException(`资产编号 ${createDto.code} 已存在`);
+      }
     }
 
-    const asset = this.assetRepository.create({
-      ...createDto,
-      purchaseDate: createDto.purchaseDate
-        ? new Date(createDto.purchaseDate)
-        : null,
-      availableQuantity: createDto.quantity || 1,
-    } as Asset);
+    const asset = new Asset();
+    asset.schoolId = createDto.schoolId;
+    asset.name = createDto.name;
+    asset.code = createDto.code || `ASSET-${Date.now()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+    asset.category = createDto.category || ('other' as any);
+    if (createDto.brand) asset.brand = createDto.brand;
+    if (createDto.model) asset.model = createDto.model;
+    if (createDto.serialNumber) asset.serialNumber = createDto.serialNumber;
+    if (createDto.quantity) asset.quantity = createDto.quantity;
+    asset.availableQuantity = (createDto as any).availableQuantity ?? createDto.quantity ?? 1;
+    if (createDto.unit) asset.unit = createDto.unit;
+    if (createDto.value !== undefined) asset.value = createDto.value;
+    if (createDto.purchaseDate) asset.purchaseDate = new Date(createDto.purchaseDate);
+    if (createDto.supplier) asset.supplier = createDto.supplier;
+    if (createDto.location) asset.location = createDto.location;
+    if (createDto.description) asset.description = createDto.description;
 
     return this.assetRepository.save(asset);
   }
@@ -69,7 +80,15 @@ export class AssetService {
 
     const where: FindOptionsWhere<Asset> = {};
 
-    if (schoolId) where.schoolId = schoolId;
+    if (schoolId) {
+      // Only apply schoolId filter if it's a valid UUID
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        schoolId,
+      );
+      if (isUUID) {
+        where.schoolId = schoolId;
+      }
+    }
     if (category) where.category = category;
     if (status) where.status = status;
     if (location) where.location = location;
@@ -141,7 +160,12 @@ export class AssetService {
     byStatus: Record<string, number>;
     byCategory: Record<string, number>;
   }> {
-    const assets = await this.assetRepository.find({ where: { schoolId } });
+    // Validate UUID to prevent PostgreSQL error on non-UUID schoolId
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      schoolId,
+    );
+    const where = isUUID ? { schoolId } : {};
+    const assets = await this.assetRepository.find({ where });
 
     const totalAssets = assets.length;
     const totalValue = assets.reduce(

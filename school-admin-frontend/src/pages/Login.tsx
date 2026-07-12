@@ -115,6 +115,7 @@ export default function Login() {
         tempToken: loginData?.temp_token,
         code: data.otpCode,
         otpType: loginData?.otpType || 'email',
+        sessionId: loginData?.sessionId,
       })
 
       const token = res.data?.access_token

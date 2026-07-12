@@ -40,7 +40,32 @@ python3 skills/agent-communication/scripts/write_message.py \
 
 ---
 
-## 0. Before ANY sessions_spawn - MUST DO THIS FIRST
+## 0. Agent 持久化记忆规则 (NEW - 2026-07-11)
+
+**每个 Agent 拥有自己的长期记忆文件**，位于 `agents/{AGENT}/MEMORY.md`。
+
+### spawn 后 Agent 必须做
+
+当 Agent 被 spawn 时，应当：
+1. **读自己的 MEMORY.md** — 了解项目上下文和历史
+2. **读 AGENTS.md** — 了解最新规则
+3. **读 PM 的 task** — 理解当前任务
+4. **记录 received 到 Dashboard**
+5. **开始工作**
+6. **完成后更新自己的 MEMORY.md** — 追加新经验和知识
+7. **记录 done/ passed/ failed 到 Dashboard**
+
+### PM spawn 方式变化
+
+利用 Agent 持久化记忆后，PM 的 spawn task 可以**更简洁**：
+- 旧方式：写详细根因分析+修复步骤+部署命令
+- 新方式：只写任务描述和验收标准，让 Agent 自己查上下文
+
+详细规则见 `AGENTS-MEMORY.md`。
+
+---
+
+## 0b. Before ANY sessions_spawn - MUST DO THIS FIRST
 
 ```bash
 # 1️⃣ 使用 check_rules.py (推荐) - 自动记录 + 更新 Dashboard

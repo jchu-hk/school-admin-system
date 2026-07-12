@@ -183,6 +183,15 @@ export default function AttendancePage() {
     setError(null);
   };
 
+  // Explicitly re-fetch when date or class changes in overview (#229 fix: force data reload)
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+  };
+
+  const handleClassChange = (cls: string) => {
+    setSelectedClass(cls);
+  };
+
   // Sync manualDate to today when switching to manual tab
   const handleTabChange = (tab: typeof activeTab) => {
     if (tab === 'manual') {
@@ -367,7 +376,7 @@ export default function AttendancePage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">班级</label>
             <select
               value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
+              onChange={(e) => handleClassChange(e.target.value)}
               className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {MOCK_CLASSES.map((c) => (
@@ -380,7 +389,7 @@ export default function AttendancePage() {
             <input
               type="date"
               value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
+              onChange={(e) => handleDateChange(e.target.value)}
               className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -393,6 +402,23 @@ export default function AttendancePage() {
           </button>
         </div>
       </div>
+
+      {/* Quick Manual Entry Button (#224 fix) */}
+      <button
+        onClick={() => handleTabChange('manual')}
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl p-4 flex items-center justify-between shadow-sm transition active:bg-indigo-700"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <Plus size={20} className="text-white" />
+          </div>
+          <div className="text-left">
+            <div className="text-sm font-bold">📝 人工录入出勤</div>
+            <div className="text-xs text-indigo-200 mt-0.5">手动添加或修改出勤记录</div>
+          </div>
+        </div>
+        <div className="text-white/60">→</div>
+      </button>
 
       {/* Stats Cards */}
       {stats && (
@@ -546,12 +572,30 @@ export default function AttendancePage() {
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-lg font-semibold text-gray-800">📝 人工录入出勤记录</h3>
           <button
-            onClick={() => { setError(null); setSubmitSuccess(null); initManualRecords(); }}
+            onClick={() => {
+              setError(null);
+              setSubmitSuccess(null);
+              setShowPreview(false);
+              setPreviewData(null);
+              setBatchId(null);
+              const today = new Date().toISOString().split('T')[0];
+              setManualDate(today);
+              initManualRecords(today);
+            }}
             className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
           >
             <RefreshCw size={14} /> 重置
           </button>
         </div>
+
+        {/* Date Label (#228 fix) */}
+        {manualDate && (
+          <div className="mb-4 px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg inline-block">
+            <span className="text-sm font-medium text-blue-800">
+              📅 出勤日期: <span className="font-bold">{manualDate}</span>
+            </span>
+          </div>
+        )}
 
         {/* Entry Info */}
         <div className="grid grid-cols-2 gap-4 mb-5 bg-gray-50 rounded-lg p-4">
@@ -574,6 +618,8 @@ export default function AttendancePage() {
               value={manualDate}
               onChange={(e) => {
                 setManualDate(e.target.value);
+                setShowPreview(false);
+                setPreviewData(null);
                 initManualRecords(e.target.value);
               }}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
