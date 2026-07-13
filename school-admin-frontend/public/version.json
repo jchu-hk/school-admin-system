@@ -1,30 +1,28 @@
 {
   "version": "v1.6.0",
   "buildDate": "2026-07-13",
-  "gitCommit": "9241a83",
+  "gitCommit": "0cc866f",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "v1.6.0",
       "date": "2026-07-13",
       "changes": [
-        "[ALL BUGS CLOSED] 12 bugs fixed since v1.5.7",
-        "P0: #231 - User search (search→keyword param)",
-        "P0: #217 - Coze proxy compatibility (forbidNonWhitelisted)",
-        "P1: #230 - Asset creation 500 error",
-        "P1: #226 - Asset list 500 error",
-        "P1: #234 - Student class filter UUID validation",
-        "P1: #233 - Student class dropdown + status filter regression",
-        "P1: #232 - Student management regression (env cleanup revert)",
-        "P1: #222 - New student 500 error",
-        "P1: #223 - Edit student class not saving",
-        "P1: #224 - Attendance manual entry button unresponsive",
-        "P2: #229 - Attendance date picker",
-        "P2: #225 - User search/filter",
-        "P2: #227 - Attendance reset button",
-        "P3: #228 - Attendance date label",
-        "#213-#216: Complete environment cleanup (4 phases)",
-        "Agent persistent memory system"
+        "[全部Bug清零] 12个Bug修复",
+        "P0: #231 用户管理搜索无效 (search→keyword)",
+        "P0: #217 Coze代理兼容性 (forbidNonWhitelisted配置)",
+        "P1: #230 资产创建500错误",
+        "P1: #226 资产加载500错误",
+        "P1: #234 学生班级筛选UUID校验失败",
+        "P1: #233/#232 学生管理功能回归 (环境清理导致)",
+        "P1: #222 新增学生500错误",
+        "P1: #223 编辑学生班级不保存",
+        "P1: #224 出勤人工录入按钮无响应",
+        "P2: #229 出勤日期选择框无效果",
+        "P2: #225 用户搜索/筛选不工作",
+        "P2: #227 出勤重置按钮无响应",
+        "P3: #228 出勤日期显示标签",
+        "环境清理: #213-#216 完整4阶段环境重置"
       ]
     }
   ]
