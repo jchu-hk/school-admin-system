@@ -31,7 +31,7 @@
 | Phase 2 | 后端编码 (T08~T12) | ✅ 已完成 | CHECKER Code Review通过 |
 | Phase 3 | 前端编码 (T13~T19) | ✅ 已完成 | CHECKER Code Review通过 |
 | Phase 4 | QA验证 (T20~T23) | ✅ 已完成 | 所有测试通过 |
-| Phase 5 | **集成部署 (T24~T28)** | ⛔ 待启动 | 未分配Agent |
+| Phase 5 | **集成部署 (T24~T28)** | 🔄 进行中 | T25子任务完成✅（新前端容器已部署到8081）|
 | Phase 6 | 上线后 (T29~T30) | ⏳ 待启动 | 依赖Phase 5 |
 
 **完整计划**: `docs/CHANGE-REQUEST-PLAN-20260714.md`
@@ -40,20 +40,20 @@
 
 新功能代码在 `apps/frontend/` 目录下（独立的React前端应用），**尚未部署到Docker容器**。
 
-| 功能 | 路由 | 访问说明 |
-|------|------|---------|
-| QR考勤 — 学生展示 | `/attendance/qr` | 动态QR Code，学生入校扫码签到 |
-| QR考勤 — 教职工扫码 | `/attendance/scan` | 摄像头扫码，防重复签到 |
-| 学生门户 — 首页 | `/portal/student` | 学生专属概览（近日出勤等卡片） |
-| 学生门户 — 个人档案 | `/portal/student/profile` | 查看+编辑（姓名/电话/地址等解锁字段） |
-| 学生门户 — 电子请假 | `/portal/student/leave` | 提交/查看/撤回请假申请 |
-| 家长门户 — 孩子列表 | `/portal/parent/children` | 多孩子切换、脱敏数据展示 |
-| 家长门户 — 请假管理 | `/portal/parent/leaves` | 学生请假申请/审批 |
-| 家长门户 — 通知中心 | `/portal/parent/notifications` | 查看通知 |
-| 家长门户 — 账户设置 | `/portal/parent/settings` | 账户信息管理 |
+| 功能 | 路由 | 访问链接 (Coze) |
+|------|------|-----------------|
+| QR考勤 — 学生展示 | `/attendance/qr` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr) |
+| QR考勤 — 教职工扫码 | `/attendance/scan` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/scan](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/scan) |
+| 学生门户 — 首页 | `/portal/student` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student) |
+| 学生门户 — 个人档案 | `/portal/student/profile` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student/profile](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student/profile) |
+| 学生门户 — 电子请假 | `/portal/student/leave` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student/leave](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student/leave) |
+| 家长门户 — 孩子列表 | `/portal/parent/children` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/children](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/children) |
+| 家长门户 — 请假管理 | `/portal/parent/leaves` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/leaves](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/leaves) |
+| 家长门户 — 通知中心 | `/portal/parent/notifications` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/notifications](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/notifications) |
+| 家长门户 — 账户设置 | `/portal/parent/settings` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/settings](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/settings) |
 
-> ⚠️ **当前可访问的仅旧前端**: `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/` (v1.6.0)
-> 新功能路由(`/attendance/` 和 `/portal/`)在旧容器中不可用，需完成Phase 5部署后启用。
+> 🔗 **旧前端 (教职工后台)**: [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/)
+> ⚠️ 新功能链接在 Coze Nginx 路由已配置好（指向8081端口），但等新前端容器部署完成后才真正可用。
 
 ### Phase 5 待办任务 (P0)
 
@@ -82,6 +82,16 @@
 - **#235 P1**: `student`角色保存权限配置失败（未分配、未修复）
 
 ---
+
+## 🐳 Docker 服务清单
+
+| Container | Image | Port | Status |
+|-----------|-------|------|--------|
+| school-admin-frontend (旧) | school-admin-frontend:latest | 8080→80 | ✅ 运行中 — 教职工后台 |
+| **school-admin-frontend-v2 (新)** | **nginx:alpine** | **8081→80** | ✅ **已部署** — QR考勤+门户 |
+| school-admin-backend | school-admin-backend:v1.5.7 | 3000 | ✅ 运行中 |
+| school-admin-postgres | postgres:16-alpine | 5432 | ✅ 运行中 |
+| school-admin-redis | redis:7-alpine | 6379 | ✅ 运行中 |
 
 ## 🌐 测试环境刷新流程
 
@@ -143,12 +153,14 @@ curl http://localhost:8080/school-admin/about | grep version
 | Service | URL | 管理方 | 状态 |
 |---------|-----|--------|------|
 | Local Frontend (旧) | http://localhost:8080 | ✅ 我们 | ✅ v1.6.0 — 教职工后台管理 |
-| Local Frontend (新) | http://localhost:8081 | ✅ 我们 | ❌ **待部署** — QR考勤+门户 |
+| Local Frontend (新) | http://localhost:8081 | ✅ 我们 | 🔄 **正在部署** — QR考勤+门户 |
 | Local Backend | http://localhost:3000 | ✅ 我们 | ✅ v1.5.7 |
 | Cloudflare Tunnel Frontend | `https://...trycloudflare.com` | ✅ 我们 | ⚠️ URL会变化 |
-| Coze Frontend (旧) | `https://aade13aa-...dev.coze.site/school-admin/` | ❌ Coze | ⚠️ v1.6.0 |
-| Coze Frontend (新) | `https://aade13aa-...dev.coze.site/attendance/qr` | ❌ Coze | ❌ 待Phase5部署后可用 |
-| Coze API | `https://aade13aa-...dev.coze.site/api/` | ❌ Coze | ⚠️ 部署时间未知 |
+| Coze Frontend (旧) | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/) | ❌ Coze | ✅ v1.6.0 |
+| Coze Frontend (新) | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr) | ❌ Coze | 🔄 Nginx已配好，等容器部署 |
+| Coze API | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/api/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/api/) | ❌ Coze | ⚠️ 部署时间未知 |
+
+**Coze 基本 URL**: [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/)
 
 > 💡 **推荐使用本地测试环境** — 我们控制的，始终最新
 
