@@ -1,39 +1,87 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-08 13:44 GMT+8
-> Updated by: PM (环境说明 - Coze不是我们管理的)
+> Last updated: 2026-07-15 07:10 GMT+8
+> Updated by: PM (CR-20260714-001 Phase 1~4 完成, Phase 5 待部署)
 
 ---
 
 ## 📦 Current Version
 
-- **Version**: v1.5.7
-- **Release Date**: 2026-07-08 13:49 GMT+8
-- **Git Commit**: `f887343`
-- **Branch**: `main`
-- **Status**: Released for Testing
-- **Tested By**: QA Agent - 2026-07-08
+- **Version**: v1.6.0 → v2.0.0-draft.1
+- **Release Date (当前)**: 2026-07-13 (v1.6.0 — 全部Bug清零)
+- **开发中版本**: v2.0.0 (CR-20260714-001 — QR考勤 + 学生/家长门户)
+- **Git Commit (当前)**: `d81c25e` (main)
+- **Branch**: `main` (dashboard自动更新commit; 新功能代码在workspace未提交)
+- **Status**: Bug清零发布(v1.6.0) + 新功能开发完成(Phase 1~4) → 等待Phase 5集成部署
+- **Tested By**: QA Agent (Phase 4 验证通过)
 
-### v1.5.7 vs v1.5.6 代码变更 (需要测试验证)
-
-| Commit | 描述 | 模块 |
-|--------|------|------|
-| `8a66942` | 修复nginx代理路由 /students, /classes | Backend |
-| `ff6886a` | 修复StudentFormProps classes属性 | Frontend |
-| `d9d10c5` | 移除UserPage/LeavePage/StudentProfilePage重复Authorization | Frontend |
-| `c09b357` | 移除StudentPage重复Authorization header | Frontend |
-| `e14b160` | 添加class_id字段和自动分配 | Backend |
-| `446b5f6` | 添加GET /classes接口和班级下拉框 | Backend+Frontend |
-| `d8707c0` | 修复学生管理新增按钮 | Frontend |
-| `1542bb9` | 修复student.entity循环依赖 | Backend |
-| `78df39d` | 修复资产管理崩溃+用户管理筛选/保存 | Frontend |
-| `d0c3e21` | 修复人工录入出勤记录Bug | Frontend |
+## 🚀 CR-20260714-001 变更概览
 | `3f207a2` | 修复出勤记录按钮无响应 | Frontend |
 | `24787b4` | 添加inquiry实体@Column装饰器 | Backend |
 | `83358fe` | API分页参数limit改为pageSize | Backend |
 
 **注意**: Coze环境可能未包含以上所有修复
 
+
+### CR-20260714-001 变更内容
+
+| 编号 | 模块 | 状态 | 进度 |
+|------|------|------|------|
+| Phase 1 | 文档编制 (T01~T07) | ✅ 已完成 | CHECKER QC通过 |
+| Phase 2 | 后端编码 (T08~T12) | ✅ 已完成 | CHECKER Code Review通过 |
+| Phase 3 | 前端编码 (T13~T19) | ✅ 已完成 | CHECKER Code Review通过 |
+| Phase 4 | QA验证 (T20~T23) | ✅ 已完成 | 所有测试通过 |
+| Phase 5 | **集成部署 (T24~T28)** | ⛔ 待启动 | 未分配Agent |
+| Phase 6 | 上线后 (T29~T30) | ⏳ 待启动 | 依赖Phase 5 |
+
+**完整计划**: `docs/CHANGE-REQUEST-PLAN-20260714.md`
+
+### 新功能访问方式
+
+新功能代码在 `apps/frontend/` 目录下（独立的React前端应用），**尚未部署到Docker容器**。
+
+| 功能 | 路由 | 访问说明 |
+|------|------|---------|
+| QR考勤 — 学生展示 | `/attendance/qr` | 动态QR Code，学生入校扫码签到 |
+| QR考勤 — 教职工扫码 | `/attendance/scan` | 摄像头扫码，防重复签到 |
+| 学生门户 — 首页 | `/portal/student` | 学生专属概览（近日出勤等卡片） |
+| 学生门户 — 个人档案 | `/portal/student/profile` | 查看+编辑（姓名/电话/地址等解锁字段） |
+| 学生门户 — 电子请假 | `/portal/student/leave` | 提交/查看/撤回请假申请 |
+| 家长门户 — 孩子列表 | `/portal/parent/children` | 多孩子切换、脱敏数据展示 |
+| 家长门户 — 请假管理 | `/portal/parent/leaves` | 学生请假申请/审批 |
+| 家长门户 — 通知中心 | `/portal/parent/notifications` | 查看通知 |
+| 家长门户 — 账户设置 | `/portal/parent/settings` | 账户信息管理 |
+
+> ⚠️ **当前可访问的仅旧前端**: `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/` (v1.6.0)
+> 新功能路由(`/attendance/` 和 `/portal/`)在旧容器中不可用，需完成Phase 5部署后启用。
+
+### Phase 5 待办任务 (P0)
+
+| Issue | 任务 | 负责角色 | 依赖 |
+|-------|------|---------|------|
+| #259 | T24: 全系统回归测试 | QA | T20~T23完成 |
+| #261 | T25: 部署脚本 — DB迁移/Docker/环境变量 | DEVOPS | T07 |
+| #262 | T26: UAT准备 — 环境+用例+培训材料 | DEVOPS+Admin | T24+T25 |
+| #263 | T27: UAT执行 | Admin+QA | T26 |
+| #264 | T28: 生产发布 | DEVOPS | T27 |
+
+> 所有Phase 5 Issue已创建但**未分配**，需PM按流程分配并启动。
+
+### 测试账号 (v2.0.0新角色)
+
+| 角色 | 用户名 | 密码 | 说明 |
+|------|--------|------|------|
+| 系统管理员 | `qa_test` | `Admin123!` | 全部功能 |
+| 校务人员 | `staff1` | `Admin123!` | 日常管理 |
+| 教师 | `teacher1` | `Admin123!` | +需OTP |
+| **学生** | **`student1`** | **`Admin123!`** | **仅学生门户** (新) |
+| **家长** | **`parent1`** | **`Admin123!`** | **仅家长门户** (新) |
+
+### 已知问题
+
+- **#235 P1**: `student`角色保存权限配置失败（未分配、未修复）
+
+---
 
 ## 🌐 测试环境刷新流程
 
@@ -94,13 +142,28 @@ curl http://localhost:8080/school-admin/about | grep version
 
 | Service | URL | 管理方 | 状态 |
 |---------|-----|--------|------|
-| Local Frontend | http://localhost:8080 | ✅ 我们 | ✅ 最新代码 |
-| Local Backend | http://localhost:3000 | ✅ 我们 | ✅ 最新代码 |
+| Local Frontend (旧) | http://localhost:8080 | ✅ 我们 | ✅ v1.6.0 — 教职工后台管理 |
+| Local Frontend (新) | http://localhost:8081 | ✅ 我们 | ❌ **待部署** — QR考勤+门户 |
+| Local Backend | http://localhost:3000 | ✅ 我们 | ✅ v1.5.7 |
 | Cloudflare Tunnel Frontend | `https://...trycloudflare.com` | ✅ 我们 | ⚠️ URL会变化 |
-| Coze Frontend | `https://aade13aa-...dev.coze.site/school-admin/` | ❌ Coze | ⚠️ 部署时间未知 |
+| Coze Frontend (旧) | `https://aade13aa-...dev.coze.site/school-admin/` | ❌ Coze | ⚠️ v1.6.0 |
+| Coze Frontend (新) | `https://aade13aa-...dev.coze.site/attendance/qr` | ❌ Coze | ❌ 待Phase5部署后可用 |
 | Coze API | `https://aade13aa-...dev.coze.site/api/` | ❌ Coze | ⚠️ 部署时间未知 |
 
-> 💡 **推荐使用本地测试环境** - 我们控制的，始终最新
+> 💡 **推荐使用本地测试环境** — 我们控制的，始终最新
+
+### ⚠️ 双前端环境说明
+
+系统目前存在**两个独立前端应用**（非渐进增强，是独立SPA）：
+
+| 前端 | 代码位置 | 端口 | 功能 | 部署状态 |
+|------|---------|------|------|---------|
+| **旧** (v1.6.0) | `school-admin-frontend/` | 8080 | 教职工后台管理 | ✅ 运行中 |
+| **新** (CR-20260714-001) | `apps/frontend/` | 8081 | QR考勤 + 学生/家长门户 | ⛔ 待部署 |
+
+两个前端共享同一后端API (`school-admin-backend:3000`)，通过不同URL路径区分：
+- 旧前端: `/school-admin/*`
+- 新前端: `/attendance/*`, `/portal/*`
 
 ### ⚠️ About页面版本号的重要性
 **About页面显示的版本号反映代码库的实际版本**。每次刷新测试环境后，必须：
@@ -171,8 +234,8 @@ Browser → Cloudflare Tunnel → Frontend (Next.js :3001)
 
 | Priority | Count | Issues |
 |----------|-------|--------|
-| P0 | 0 | — |
-| P1 | 0 | — |
+| P0 | 6 | CR-20260714-001 Phase 5 (T24~T28 + T29) |
+| P1 | 1 | #235 student角色权限保存失败 |
 | P2 | ~10 | Core module backlog |
 | P3 | ~5 | AI features, TypeORM warnings |
 | P4 | 2 | Enhancements (teacher recruitment, meeting management) |
@@ -181,13 +244,15 @@ Browser → Cloudflare Tunnel → Frontend (Next.js :3001)
 
 | # | Title | Status | Priority |
 |---|-------|--------|----------|
+| #259 | T24: 全系统回归测试 | open (unassigned) | P0 |
+| #261 | T25: 部署脚本 | open (unassigned) | P0 |
+| #262 | T26: UAT准备 | open (unassigned) | P0 |
+| #263 | T27: UAT执行 | open (unassigned) | P0 |
+| #264 | T28: 生产发布 | open (unassigned) | P0 |
+| #235 | student角色权限保存失败 | open (unassigned) | P1 |
 | #140 | TypeORM warnings fix | ready-for-review | P3 |
 | #184 | Teacher recruitment module | backlog | P4 |
 | #182 | Meeting management module | backlog | P4 |
-| #56 | AI content generation | backlog | P3 |
-| #55 | AI homework analysis | backlog | P3 |
-| #54 | AI exam analysis | backlog | P3 |
-| #53 | AI student behavior analysis | backlog | P3 |
 
 ---
 
@@ -248,6 +313,22 @@ Live dashboard: [multi-agent-dashboard.html](multi-agent-dashboard.html)
 ---
 
 ## 🔄 Recent Activity
+
+### 2026-07-15 07:07 — CR-20260714-001 状态更新 & Wiki同步
+
+**CR-20260714-001 整体进度**: Phase 1~4（文档→后端→前端→QA验证）**全部完成** ✅
+
+**剩余**: Phase 5 集成部署（T24~T28）待启动 ⛔
+
+**关键变更**:
+- 系统新增两个大模块：Module 16 QR签到考勤 + Module 17 学生/家长门户
+- 新增独立前端应用 `apps/frontend/`（与旧 `school-admin-frontend/` 并行）
+- 新前端路由：`/attendance/*`（QR考勤）、`/portal/*`（学生/家长门户）
+- 新前端**尚未部署**到Docker，需Phase 5 T25完成
+- Coze Nginx需新增 `/attendance/` 和 `/portal/` 路由规则
+- 文档已同步更新：COZE_PROXY_CONFIG.md + PROJECT-WIKI.md
+
+---
 
 ### 2026-07-08 — Issue #206 #207 QA验收通过
 
@@ -417,3 +498,7 @@ python3 skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/
 | Module | Test Date | Status | Notes |
 |--------|-----------|--------|-------|
 | 学生管理新增功能 | 2026-07-05 | ✅ Passed | Human QA 手动测试 |
+
+---
+
+*Wiki last full update: 2026-07-15 07:10 GMT+8 (CR-20260714-001 sync)*
