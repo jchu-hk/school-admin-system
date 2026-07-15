@@ -36,6 +36,7 @@ export class CreateStudentDto {
   })
   @IsString()
   @IsOptional()
+  @MaxLength(10)
   student_id?: string;
 
   @ApiProperty({ description: '出生日期', example: '2011-03-15' })

@@ -285,6 +285,20 @@ Periodically (every few days), use a heartbeat to:
 3. Update `MEMORY.md` with distilled learnings
 4. Remove outdated info from MEMORY.md that's no longer relevant
 
+### 🔧 Wiki Maintenance Checklist (Every Heartbeat)
+
+When checking the project, always verify Wiki freshness:
+- [ ] `PROJECT-WIKI.md` 顶部时间戳是否过期 (>24h)?
+- [ ] 版本号是否匹配最新Release?
+- [ ] 模块完成度是否有更新?
+- [ ] 测试环境信息是否正确?
+- [ ] 最新Bug修复是否已记录?
+- [ ] 文档清单版本号是否同步?
+
+查看 `docs/MULTI-AGENT-WORKFLOW-RULES.md` 获取完整Wiki维护规则。
+
+---
+
 Think of it like a human reviewing their journal and updating their mental model. Daily files are raw notes; MEMORY.md is curated wisdom.
 
 The goal: Be helpful without being annoying. Check in a few times a day, do useful background work, but respect quiet time.

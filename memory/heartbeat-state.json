@@ -1,8 +1,9 @@
 {
   "lastChecks": {
-    "system": "2026-07-12T17:05:00+08:00"
+    "email": null,
+    "calendar": null,
+    "weather": null
   },
-  "lastHeartbeat": "2026-07-12 17:05 GMT+8",
-  "status": "HEARTBEAT_OK",
-  "uptime": "All stable"
+  "lastHeartbeat": "2026-07-15T11:10:00+08:00",
+  "heartbeatCount": 17
 }

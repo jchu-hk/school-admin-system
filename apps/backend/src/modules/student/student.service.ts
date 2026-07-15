@@ -378,7 +378,49 @@ export class StudentService {
       updatedBy: userId,
     });
 
-    return this.studentRepo.save(student);
+    const savedStudent = await this.studentRepo.save(student);
+
+    // If class_id is provided, update class allocation
+    if (dto.class_id) {
+      // Find the current academic year
+      const academicYear = await this.academicYearRepo.findOne({
+        where: { isCurrent: true },
+      });
+      if (academicYear) {
+        // Check existing active allocation
+        const currentAllocation = await this.allocationRepo.findOne({
+          where: {
+            studentId: id,
+            academicYearId: academicYear.id,
+            allocationType: AllocationType.MAIN,
+            endDate: IsNull(),
+          },
+        });
+
+        // Only update if class_id actually changed
+        if (!currentAllocation || currentAllocation.classId !== dto.class_id) {
+          // Close old allocation
+          if (currentAllocation) {
+            await this.allocationRepo.update(currentAllocation.id, {
+              endDate: new Date(),
+            });
+          }
+
+          // Create new allocation
+          const allocation = this.allocationRepo.create({
+            studentId: id,
+            classId: dto.class_id,
+            academicYearId: academicYear.id,
+            academicYearStr: academicYear.year,
+            allocationType: AllocationType.MAIN,
+            effectiveDate: new Date(),
+          });
+          await this.allocationRepo.save(allocation);
+        }
+      }
+    }
+
+    return savedStudent;
   }
 
   async remove(id: string): Promise<void> {

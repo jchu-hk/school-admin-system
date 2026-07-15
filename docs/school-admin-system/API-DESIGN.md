@@ -539,3 +539,348 @@
 | 版本 | 日期 | 变更 |
 |------|------|------|
 | v1.9.0 | 2026-07-02 | 新增学生管理 API（Issue #194）|
+| v2.0.0-draft.1 | 2026-07-14 | CR-20260714-001: 新增QR考勤API + 学生门户API + 家长门户API |
+
+---
+
+## 5. QR考勤模块 API
+
+### 5.1 QR码生成
+
+**POST /api/attendance/qr/generate**
+
+认证: Student JWT
+说明: 学生生成当日签到QR码
+
+**Request**
+```json
+{}
+```
+
+**Response 200**
+```json
+{
+  "qr_code_data": "SCHOOL_QR|1752378000|stu-uuid-1234|a1b2c3d4e5f6a7b8|abc123...sig",
+  "expires_at": "2026-07-14T08:30:30.000+08:00",
+  "nonce": "a1b2c3d4e5f6a7b8"
+}
+```
+
+**Error 400** — 当天已签到
+```json
+{ "error": "ALREADY_CHECKED_IN", "message": "今日已签到", "checked_in_at": "07:32:15" }
+```
+
+**Error 401** — 未登录
+**Error 429** — 30秒内只能生成一次
+
+### 5.2 QR码扫码签到
+
+**POST /api/attendance/qr/scan**
+
+认证: Staff/Teacher JWT
+说明: 教职工扫码记录学生签到
+
+**Request**
+```json
+{
+  "qr_code_data": "SCHOOL_QR|...",
+  "device_id": "device-001"
+}
+```
+
+**Response 200** — 签到成功
+```json
+{
+  "result": "success",
+  "student_id": "stu-uuid-1234",
+  "student_name": "张小明",
+  "class_name": "三年级一班",
+  "scanned_at": "2026-07-14T07:32:15.000+08:00"
+}
+```
+
+**Response 409** — 重复签到
+```json
+{ "error": "DUPLICATE_CHECKIN", "message": "该学生已签到", "checked_in_at": "07:28:00" }
+```
+
+**Response 400** — QR过期
+```json
+{ "error": "QR_EXPIRED", "message": "QR码已过期，请让学生刷新" }
+```
+
+**Response 400** — 签名无效(伪造)
+```json
+{ "error": "INVALID_SIGNATURE", "message": "伪造QR码", "alert": true }
+```
+
+### 5.3 离线批量同步
+
+**POST /api/attendance/qr/sync-batch**
+
+认证: Device Token (X-Device-Token header)
+说明: 离线设备网络恢复后批量同步签到数据
+
+**Request**
+```json
+{
+  "device_id": "device-001",
+  "batch": [
+    { "qr_raw": "SCHOOL_QR|...", "scanned_at": "2026-07-14T07:25:00.000+08:00" },
+    { "qr_raw": "SCHOOL_QR|...", "scanned_at": "2026-07-14T07:26:30.000+08:00" }
+  ]
+}
+```
+
+**Response 200**
+```json
+{
+  "synced_count": 2,
+  "failed_items": [
+    { "index": 0, "reason": "DUPLICATE", "message": "重复签到" }
+  ]
+}
+```
+
+### 5.4 日报查询
+
+**GET /api/attendance/qr/report/daily?class_id={uuid}&date={YYYY-MM-DD}**
+
+认证: Teacher JWT
+
+**Response 200**
+```json
+{
+  "class_name": "三年级一班",
+  "report_date": "2026-07-14",
+  "total_students": 35,
+  "present_count": 33,
+  "absent_list": ["王小明", "李小红"],
+  "makeup_list": [
+    { "student_name": "王小明", "reason": "已到校但未扫码(班主任补签)" }
+  ],
+  "generated_at": "2026-07-14T18:00:00.000+08:00"
+}
+```
+
+### 5.5 签到记录查询
+
+**GET /api/attendance/qr/record?student_id={uuid}&page=1&limit=20**
+
+认证: Student JWT (仅本人) / Parent JWT (仅关联子女) / Teacher JWT (本班)
+
+**Response 200**
+```json
+{
+  "records": [
+    { "date": "2026-07-14", "checkin_time": "07:32:15", "source": "qr_scan" },
+    { "date": "2026-07-13", "checkin_time": "07:28:00", "source": "qr_scan" }
+  ],
+  "total": 42,
+  "page": 1,
+  "limit": 20
+}
+```
+
+---
+
+## 6. 学生/家长门户 API
+
+### 6.1 门户菜单列表
+
+**GET /api/portal/menus**
+
+认证: Student JWT / Parent JWT
+说明: 根据角色返回可见菜单树
+
+**Response 200 (Student)**
+```json
+{
+  "role": "student",
+  "menus": [
+    { "id": "profile", "label": "我的档案", "icon": "user", "children": [
+      { "id": "profile-info", "label": "个人信息", "path": "/portal/profile" },
+      { "id": "profile-attendance", "label": "签到记录", "path": "/portal/attendance" },
+      { "id": "profile-grades", "label": "我的成绩", "path": "/portal/grades" },
+      { "id": "profile-timetable", "label": "我的课表", "path": "/portal/timetable" }
+    ]},
+    { "id": "leave", "label": "请假管理", "icon": "calendar", "children": [
+      { "id": "leave-create", "label": "提交请假", "path": "/portal/leave/create" },
+      { "id": "leave-records", "label": "请假记录", "path": "/portal/leave" }
+    ]},
+    { "id": "notifications", "label": "通知中心", "path": "/portal/notifications" },
+    { "id": "settings", "label": "账户设置", "path": "/portal/settings" }
+  ]
+}
+```
+
+### 6.2 个人档案查看
+
+**GET /api/portal/profile**
+
+认证: Student JWT
+
+**Response 200**
+```json
+{
+  "student_id": "stu-uuid-1234",
+  "name": "张小明",
+  "student_code": "2024010123",
+  "gender": "男",
+  "birth_date": "2016-03-15",
+  "class_name": "三年级一班",
+  "grade": "三年级",
+  "phone": "13800138000",
+  "email": "xm@school.com",
+  "emergency_contact": "张伟",
+  "emergency_phone": "13800139000",
+  "address": "XX路XX号",
+  "editable_fields": ["phone", "email", "emergency_contact", "emergency_phone", "address"]
+}
+```
+
+### 6.3 个人档案编辑
+
+**PUT /api/portal/profile**
+
+认证: Student JWT
+说明: 仅可编辑 editable_fields 中的字段，锁定字段提交会被忽略
+
+**Request**
+```json
+{
+  "phone": "13800138001",
+  "email": "xm_new@school.com"
+}
+```
+
+**Response 200**
+```json
+{
+  "updated_fields": ["phone", "email"],
+  "message": "个人信息已更新"
+}
+```
+
+### 6.4 提交请假
+
+**POST /api/portal/leave**
+
+认证: Student JWT / Parent JWT
+
+**Request**
+```json
+{
+  "leave_type": "SICK",
+  "start_date": "2026-07-15",
+  "end_date": "2026-07-15",
+  "reason": "身体不适，需在家休息",
+  "attachment_url": "https://..."
+}
+```
+
+**Response 201**
+```json
+{
+  "leave_id": "leave-uuid-5678",
+  "status": "PENDING",
+  "created_at": "2026-07-14T10:00:00.000+08:00"
+}
+```
+
+### 6.5 请假记录列表
+
+**GET /api/portal/leave?status={filter}&page=1&limit=20**
+
+认证: Student JWT / Parent JWT
+
+**Response 200**
+```json
+{
+  "records": [
+    {
+      "leave_id": "leave-uuid-5678",
+      "leave_type": "SICK",
+      "start_date": "2026-07-15",
+      "end_date": "2026-07-15",
+      "reason": "身体不适",
+      "status": "PENDING",
+      "created_at": "2026-07-14T10:00:00Z",
+      "can_cancel": true
+    },
+    {
+      "leave_id": "leave-uuid-1234",
+      "leave_type": "PERSONAL",
+      "start_date": "2026-07-10",
+      "end_date": "2026-07-11",
+      "reason": "家庭事务",
+      "status": "APPROVED",
+      "approved_by": "王老师",
+      "created_at": "2026-07-09T08:00:00Z",
+      "can_cancel": false
+    }
+  ],
+  "total": 5,
+  "page": 1
+}
+```
+
+### 6.6 请假详情
+
+**GET /api/portal/leave/:id**
+
+### 6.7 撤回请假
+
+**DELETE /api/portal/leave/:id**
+
+认证: Student JWT (仅本人)
+说明: 仅当 status=PENDING 时可撤回
+
+**Response 200**
+```json
+{ "status": "CANCELLED", "message": "请假已撤回" }
+```
+
+**Response 400** — 不能撤回
+```json
+{ "error": "CANNOT_CANCEL", "message": "该请假状态不允许撤回" }
+```
+
+### 6.8 审批请假
+
+**POST /api/portal/leave/:id/approve**
+
+认证: Teacher/Class Teacher JWT
+
+**Request**
+```json
+{
+  "action": "APPROVE",
+  "remark": "同意请假"
+}
+```
+
+**Response 200**
+```json
+{ "leave_id": "leave-uuid-5678", "status": "APPROVED", "approved_by": "王老师" }
+```
+
+### 6.9 错误码汇总（门户模块）
+
+| 状态码 | 错误码 | 说明 |
+|--------|--------|------|
+| 400 | LEAVE_TYPE_INVALID | 请假类型无效 |
+| 400 | DATE_RANGE_INVALID | 日期范围无效（结束<开始）| 
+| 400 | CANNOT_CANCEL | 不能撤回（非PENDING状态）| 
+| 403 | FORBIDDEN_PORTAL | 无门户访问权限 |
+| 403 | NOT_YOUR_STUDENT | 非关联子女数据 |
+| 409 | LEAVE_OVERLAP | 日期范围与已有请假冲突 |
+
+### 6.10 限流规则
+
+| API | 限制 | 窗口 |
+|-----|------|------|
+| /api/portal/profile PUT | 5次 | 1小时 |
+| /api/portal/leave POST | 10次 | 1天 |
+| /api/portal/leave/:id DELETE | 10次 | 1天 |

@@ -85,13 +85,13 @@
 
 ## 🐳 Docker 服务清单
 
-| Container | Image | Port | Status |
-|-----------|-------|------|--------|
-| school-admin-frontend (旧) | school-admin-frontend:latest | 8080→80 | ✅ 运行中 — 教职工后台 |
-| **school-admin-frontend-v2 (新)** | **nginx:alpine** | **8081→80** | ✅ **已部署** — QR考勤+门户 |
-| school-admin-backend | school-admin-backend:v1.5.7 | 3000 | ✅ 运行中 |
-| school-admin-postgres | postgres:16-alpine | 5432 | ✅ 运行中 |
-| school-admin-redis | redis:7-alpine | 6379 | ✅ 运行中 |
+| Container | Image | Port | 应用 | Status |
+|-----------|-------|------|------|--------|
+| school-admin-frontend | school-admin-frontend:latest | 8080→80 | **admin-app** (教职工后台) | ✅ 运行中 |
+| school-admin-frontend-v2 | nginx:alpine | 8081→80 | **portal-app** (QR考勤+门户) | ✅ 已部署 |
+| school-admin-backend | school-admin-backend:v1.5.7 | 3000 | 后端API | ✅ 运行中 |
+| school-admin-postgres | postgres:16-alpine | 5432 | 数据库 | ✅ 运行中 |
+| school-admin-redis | redis:7-alpine | 6379 | 缓存 | ✅ 运行中 |
 
 ## 🌐 测试环境刷新流程
 
@@ -150,15 +150,16 @@ curl http://localhost:8080/school-admin/about | grep version
 > - **localhost** = 测试环境（Coze只是代理转发到localhost）
 > - About页面版本号 = 测试环境的实际代码版本
 
-| Service | URL | 管理方 | 状态 |
-|---------|-----|--------|------|
-| Local Frontend (旧) | http://localhost:8080 | ✅ 我们 | ✅ v1.6.0 — 教职工后台管理 |
-| Local Frontend (新) | http://localhost:8081 | ✅ 我们 | 🔄 **正在部署** — QR考勤+门户 |
-| Local Backend | http://localhost:3000 | ✅ 我们 | ✅ v1.5.7 |
-| Cloudflare Tunnel Frontend | `https://...trycloudflare.com` | ✅ 我们 | ⚠️ URL会变化 |
-| Coze Frontend (旧) | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/) | ❌ Coze | ✅ v1.6.0 |
-| Coze Frontend (新) | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr) | ❌ Coze | 🔄 Nginx已配好，等容器部署 |
-| Coze API | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/api/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/api/) | ❌ Coze | ⚠️ 部署时间未知 |
+| Service | URL | 类型 | 状态 |
+|---------|-----|------|------|
+| **admin-app** (本地) | http://localhost:8080 | ✅ 自管 | ✅ v1.6.0 |
+| **portal-app** (本地) | http://localhost:8081 | ✅ 自管 | ✅ QR考勤+门户 |
+| Backend API (本地) | http://localhost:3000 | ✅ 自管 | ✅ v1.5.7 |
+| Coze — admin-app | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/) | ☁️ Coze | ✅ 教职工后台 |
+| Coze — portal-app | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr) | ☁️ Coze | ✅ 已连通 |
+| Coze — portal-app | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student) | ☁️ Coze | ✅ 已连通 |
+| Cloudflare Tunnel | `https://...trycloudflare.com` | ⚡ 临时代理 | ⚠️ URL会变化 |
+| Coze 入口 | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/) | ☁️ Coze | → OpenClaw Gateway |
 
 **Coze 基本 URL**: [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/)
 
@@ -168,14 +169,14 @@ curl http://localhost:8080/school-admin/about | grep version
 
 系统目前存在**两个独立前端应用**（非渐进增强，是独立SPA）：
 
-| 前端 | 代码位置 | 端口 | 功能 | 部署状态 |
+| 应用 | 代码位置 | 端口 | 功能 | 部署状态 |
 |------|---------|------|------|---------|
-| **旧** (v1.6.0) | `school-admin-frontend/` | 8080 | 教职工后台管理 | ✅ 运行中 |
-| **新** (CR-20260714-001) | `apps/frontend/` | 8081 | QR考勤 + 学生/家长门户 | ⛔ 待部署 |
+| **🧑‍🏫 admin-app** | `school-admin-frontend/` | 8080 | 教职工后台管理 | ✅ 运行中 |
+| **👨‍🎓 portal-app** | `apps/frontend/` | 8081 | QR考勤 + 学生/家长门户 | ✅ 已部署 |
 
-两个前端共享同一后端API (`school-admin-backend:3000`)，通过不同URL路径区分：
-- 旧前端: `/school-admin/*`
-- 新前端: `/attendance/*`, `/portal/*`
+两个应用共享同一后端API (`school-admin-backend:3000`)，通过不同URL路径区分：
+- admin-app: `/school-admin/*`
+- portal-app: `/attendance/*`, `/portal/*`
 
 ### ⚠️ About页面版本号的重要性
 **About页面显示的版本号反映代码库的实际版本**。每次刷新测试环境后，必须：

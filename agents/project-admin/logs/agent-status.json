@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "idle",
-      "task": "[规则违反记录] 2026-07-12 09:38 - #233 Round 2 修复由PM直接执行，未 spawn DEV。违反SOUL.md及AGENTS.",
-      "lastUpdate": "2026-07-12T09:40:03Z"
+      "task": "[Wiki更新] 移除了版本号+GIT+Release信息和Bug修复记录表，改为引用GitHub Release和Issues页面",
+      "lastUpdate": "2026-07-14T16:22:40Z"
     },
     "DEVOPS": {
       "status": "idle",
@@ -11,34 +11,49 @@
       "lastUpdate": "2026-07-11T15:24:39Z"
     },
     "ARCH": {
-      "status": "idle",
-      "task": "等待任务",
-      "lastUpdate": "2026-06-30T23:15:00+08:00"
+      "status": "running",
+      "task": "[CR-20260714-001] T07: PM 直接追加 API+DB 内容 (subagent未能写入文件)",
+      "lastUpdate": "2026-07-13T22:49:37Z"
     },
     "CHECKER": {
       "status": "idle",
-      "task": "[Issue #140] 审查完成: CONDITIONAL PASS - 发现1个严重问题，2个中等问题，1个建议",
-      "lastUpdate": "2026-07-06T01:11:37Z"
+      "task": "[CR-20260714-001] T07 CHECKER QC: PASS",
+      "lastUpdate": "2026-07-13T22:51:12Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "[Issue #234] 根因已明确（见Issue comment）。请修复: StudentQueryDto 中 class_id 的 @IsUUID() 改",
-      "lastUpdate": "2026-07-12T09:49:00Z"
+      "status": "idle",
+      "task": "[CR-20260714-001 T25] 部署完成 - 新前端已部署到8081，SPA路由全部正常(200)",
+      "lastUpdate": "2026-07-15T03:38:42Z"
     },
     "QA": {
       "status": "idle",
-      "task": "[Issue #233] QA再次验证通过。根因: 前端传 classId, 后端接 class_id. 已修正.",
-      "lastUpdate": "2026-07-12T09:38:25Z"
+      "task": "[CR-20260714-001] T23: 门户API+E2E+越权测试完成 (778行测试文件 + lint clean)",
+      "lastUpdate": "2026-07-13T23:21:01Z"
     },
     "REQ": {
-      "status": "idle",
-      "task": "等待任务",
-      "lastUpdate": "2026-06-30T23:15:00+08:00"
+      "status": "running",
+      "task": "[CR-20260714-001] T02: 修改 Functional Spec — QR考勤模块 FSD: 所有核心+边缘功能详细规格",
+      "lastUpdate": "2026-07-13T22:24:23Z"
     },
     "SYSTEM": {
       "status": "running",
       "task": "心beat检查: 开始系统巡检",
       "lastUpdate": "2026-07-11T12:05:07Z"
+    },
+    "UI": {
+      "status": "running",
+      "task": "[CR-20260714-001] T04 修复: SPEC-UI-PROTO.md Sections 18-21 内容缺失，需补充UI原型",
+      "lastUpdate": "2026-07-13T22:45:39Z"
+    },
+    "DEV-BE": {
+      "status": "running",
+      "task": "[CR-20260714-001] Phase 2 后端编码启动: T08 QR生成+T09 离线同步 | T10 RBAC+T11 CRUD+T12 审计脱敏",
+      "lastUpdate": "2026-07-13T22:51:29Z"
+    },
+    "DEV-FE": {
+      "status": "running",
+      "task": "[CR-20260714-001] T19: 启动 家长版请假+信息只读 (T15已完成，slot释放)",
+      "lastUpdate": "2026-07-13T23:08:30Z"
     }
   }
 }

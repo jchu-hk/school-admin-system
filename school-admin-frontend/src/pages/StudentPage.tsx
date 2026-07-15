@@ -65,7 +65,7 @@ type ClassApiResponse = { id: string; name: string; grade?: string }[]
 
 // ============ Validation Schema ============
 const createStudentSchema = z.object({
-  student_id: z.string().max(50).optional().or(z.literal('')),
+  student_id: z.string().max(10).optional().or(z.literal('')),
   name_zh: z.string().min(1, '中文姓名不能为空').max(100),
   class_id: z.string().optional().or(z.literal('')),
   name_en: z.string().max(100).optional().or(z.literal('')),
@@ -89,7 +89,7 @@ const editStudentSchema = createStudentSchema
 
 // Submission validation schema (enforces required fields)
 const studentSubmissionSchema = z.object({
-  student_id: z.string().max(50).optional().or(z.literal('')),
+  student_id: z.string().max(10).optional().or(z.literal('')),
   name_zh: z.string().min(1, '中文姓名不能为空').max(100),
   class_id: z.string().optional().or(z.literal('')),
   name_en: z.string().max(100).optional().or(z.literal('')),
@@ -199,7 +199,7 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
       </div>
       <div className="grid grid-cols-2 gap-4">
         <Field label="学号" error={errors.student_id}>
-          <input type="text" {...register('student_id')} data-testid="field-student_id"
+          <input type="text" {...register('student_id')} data-testid="field-student_id" maxLength={10}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="例如：2026-0001" />
         </Field>

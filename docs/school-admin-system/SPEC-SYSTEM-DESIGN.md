@@ -1,17 +1,18 @@
 <text_never_used_51bce0c785ca2f68081bfa7d91973934># 智能校务助理系统 — 系统架构设计
 ## Smart School Admin AI System — System Architecture Design
 
-**文档版本：** v1.7.0
+**文档版本：** v1.8.0-draft.1
 **创建日期：** 2026-05-25
-**最后更新：** 2026-06-06
+**最后更新：** 2026-07-14
 **审查标准：** NIST SP 800-53, OWASP, Cloud Native Best Practices, ISO/IEC 27001, PDPO 香港隐私条例
 **审查报告：** `/docs/school-admin-system/archive/ARCH-REVIEW-v1.0.0.md`
 **状态：** 草稿（待二轮审查）
 
-> **⚠️ 与 SPEC-COMPLETE v1.7.0 版本对齐说明**
+> **⚠️ 与 SPEC-COMPLETE v2.0.0-draft.1 版本对齐说明**
 > - 本架构文档原始版本标注为 v1.0.0（对应 SPEC-COMPLETE v1.0.0），现随 SPEC 演进更正为 v1.7.0
 > - 本次 P1 整改新增：Module 11（F-OPS 运维功能完整架构，覆盖全部 9 项）、Module 12（DSE/HKEAA SDP 对接技术规范）
 > - Module 11/12 为 v1.7.0 新增内容，其余章节已与 SPEC v1.7.0 对齐
+> - v1.8.0-draft.1 新增：Module 13（QR Code 校园签到考勤系统设计）和 Module 14（学生&家长门户权限管理系统），对应 CR-20260714-001
 > - 本版本状态为"草稿（待二轮审查）"，待架构评审委员会二轮通过后升为正式发布
 
 ---
@@ -28,8 +29,10 @@
 8. [运维与灾难恢复](#8-运维与灾难恢复)
 9. [Module 11: F-OPS 运维功能完整架构（9项全覆盖）](#9-module-11-f-ops-运维功能完整架构9项全覆盖)
 10. [Module 12: DSE放榜系统对接HKEAA SDP技术规范](#10-module-12-dse放榜系统对接hkeaa-sdp技术规范)
-11. [多语言支持架构](#11-多语言支持架构)
-12. [附录](#附录)
+11. [QR Code 校园签到考勤 — 系统设计 (High-Level Design)](#12-qr-code-校园签到考勤--系统设计-high-level-design)
+12. [Module 14: 学生&家长门户权限管理系统](#15-module-14-学生家长门户权限管理系统)
+13. [多语言支持架构](#14-多语言支持架构)
+14. [附录](#附录)
 
 ---
 
@@ -1976,9 +1979,405 @@ dse_data_pdpo_compliance:
 
 
 ---
-## 11. 多语言支持架构
+## 12. QR Code 校园签到考勤 — 系统设计 (High-Level Design)
 
-### 9.1 模块概述
+### 12.1 模块概述
+
+**Module 13 (QR Attendance Check-in)** 为学校提供基于动态 QR Code 的校园签到考勤方案，替代传统 IC 卡刷卡/人工签字模式，提升入校通行效率并实现考勤数据实时汇总。
+
+| 属性 | 描述 |
+|------|------|
+| 模块ID | MOD-ATT-QR-001 |
+| 功能函数 | F-ATTQR-001 ~ F-ATTQR-004（参考 [FSD-QR-ATT-001](./FUNCTIONAL-SPEC-QR-ATTENDANCE.md)） |
+| 优先级 | P1（核心补充功能） |
+| 用户 | 学生（展示QR码）、教职员工（扫码记录）、班主任（查看日报表）、校务处（全局管理） |
+| 依赖模块 | MOD-STU-001（学生档案）、MOD-USER-001（用户管理）、MOD-CLASS-001（班级管理） |
+
+---
+
+### 12.2 数据库表设计
+
+#### 12.2.1 qr\_codes（QR码生成记录）
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | UUID PK | |
+| student\_id | UUID FK → students.id | 学生档案ID |
+| nonce | VARCHAR(64) UNIQUE | 随机一次性nonce |
+| signature | VARCHAR(128) | HMAC-SHA256签名 |
+| key\_version | INT | 签名密钥版本号 |
+| generated\_at | TIMESTAMPTZ | 生成时间 |
+| expires\_at | TIMESTAMPTZ | 过期时间（= generated\_at + 30s） |
+| status | ENUM('active', 'used', 'expired') | 当前状态 |
+| INDEX | (student\_id, generated\_at) | 索引 |
+| INDEX | (nonce) UNIQUE | 防重放索引 |
+
+```sql
+CREATE TYPE qr_code_status AS ENUM ('active', 'used', 'expired');
+
+CREATE TABLE qr_codes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_id UUID NOT NULL REFERENCES students(id),
+  nonce VARCHAR(64) UNIQUE NOT NULL,
+  signature VARCHAR(128) NOT NULL,
+  key_version INTEGER NOT NULL,
+  generated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  expires_at TIMESTAMPTZ NOT NULL,
+  status qr_code_status NOT NULL DEFAULT 'active',
+  
+  CONSTRAINT fk_student FOREIGN KEY (student_id) REFERENCES students(id)
+);
+
+CREATE INDEX idx_qr_codes_student_time ON qr_codes(student_id, generated_at);
+CREATE UNIQUE INDEX idx_qr_codes_nonce ON qr_codes(nonce);
+```
+
+#### 12.2.2 attendance\_qr\_logs（扫码签到记录）
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | UUID PK | |
+| qr\_code\_id | UUID FK → qr\_codes.id | 关联QR码 |
+| student\_id | UUID FK → students.id | 签到学生 |
+| staff\_user\_id | UUID FK → users.id | 扫码教职工 |
+| scanned\_at | TIMESTAMPTZ | 扫码时间 |
+| source | ENUM('online', 'offline\_sync') | 来源 |
+| device\_id | VARCHAR(128) | 扫码设备标识 |
+| ip\_address | INET | 请求IP |
+| result | ENUM('success', 'expired', 'duplicate', 'forged') | 签到结果 |
+
+```sql
+CREATE TYPE scan_result AS ENUM ('success', 'expired', 'duplicate', 'forged');
+CREATE TYPE scan_source AS ENUM ('online', 'offline_sync');
+
+CREATE TABLE attendance_qr_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  qr_code_id UUID NOT NULL REFERENCES qr_codes(id),
+  student_id UUID NOT NULL REFERENCES students(id),
+  staff_user_id UUID NOT NULL REFERENCES users(id),
+  scanned_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  source scan_source NOT NULL DEFAULT 'online',
+  device_id VARCHAR(128) NOT NULL,
+  ip_address INET,
+  result scan_result NOT NULL,
+  
+  CONSTRAINT fk_qr_code FOREIGN KEY (qr_code_id) REFERENCES qr_codes(id),
+  CONSTRAINT fk_student FOREIGN KEY (student_id) REFERENCES students(id),
+  CONSTRAINT fk_staff FOREIGN KEY (staff_user_id) REFERENCES users(id)
+);
+
+CREATE INDEX idx_attendance_logs_student_date ON attendance_qr_logs(student_id, scanned_at);
+CREATE INDEX idx_attendance_logs_device ON attendance_qr_logs(device_id);
+```
+
+> **审计日志补充说明：** 本表记录每一次扫码操作及结果（包括失败原因），满足 PDPO 审计追踪要求。所有扫码操作与 `audit\_logs` 表配合构成完整的操作审计链路。
+
+#### 12.2.3 offline\_sync\_buffer（离线同步缓冲）
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | UUID PK | |
+| device\_id | VARCHAR(128) | 离线设备ID |
+| qr\_raw | TEXT | 原始QR码数据 |
+| scanned\_at | TIMESTAMPTZ | 本地扫描时间 |
+| synced | BOOLEAN DEFAULT false | 是否已同步 |
+| synced\_at | TIMESTAMPTZ | 同步时间 |
+| sync\_result | ENUM('success', 'duplicate', 'expired') | 同步结果 |
+
+```sql
+CREATE TYPE sync_result AS ENUM ('success', 'duplicate', 'expired');
+
+CREATE TABLE offline_sync_buffer (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  device_id VARCHAR(128) NOT NULL,
+  qr_raw TEXT NOT NULL,
+  scanned_at TIMESTAMPTZ NOT NULL,
+  synced BOOLEAN NOT NULL DEFAULT false,
+  synced_at TIMESTAMPTZ,
+  sync_result sync_result
+);
+
+CREATE INDEX idx_offline_sync_device ON offline_sync_buffer(device_id, synced);
+```
+
+#### 12.2.4 attendance\_daily\_reports（日报表）
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | UUID PK | |
+| class\_id | UUID FK → classes.id | 班级ID |
+| report\_date | DATE | 日报日期 |
+| total\_students | INT | 应签人数 |
+| present\_count | INT | 实签人数 |
+| absent\_list | UUID[] | 缺勤学生ID列表 |
+| makeup\_list | JSONB | 补签记录[{student\_id, reason, teacher\_id}] |
+| generated\_at | TIMESTAMPTZ | 生成时间 |
+
+```sql
+CREATE TABLE attendance_daily_reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  class_id UUID NOT NULL REFERENCES classes(id),
+  report_date DATE NOT NULL,
+  total_students INTEGER NOT NULL,
+  present_count INTEGER NOT NULL DEFAULT 0,
+  absent_list UUID[] NOT NULL DEFAULT '{}',
+  makeup_list JSONB NOT NULL DEFAULT '[]',
+  generated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  
+  CONSTRAINT fk_class FOREIGN KEY (class_id) REFERENCES classes(id),
+  UNIQUE(class_id, report_date)
+);
+
+CREATE INDEX idx_daily_reports_date ON attendance_daily_reports(report_date);
+```
+
+---
+
+### 12.3 QR码编码/签名流程
+
+#### 12.3.1 编码格式
+
+```
+编码: base64("SCHOOL_QR|{timestamp_epoch}|{student_uuid}|{nonce_16bytes_hex}") + "." + hmac_sha256_signature
+签名: HMAC-SHA256(base64_data, signing_key) → 截取前16字节 → hex编码
+```
+
+| 组件 | 长度 | 说明 |
+|------|------|------|
+| 协议前缀 | — | `SCHOOL_QR` 固定标识 |
+| timestamp\_epoch | 10 位 | Unix 时间戳（秒），UTC+8 |
+| student\_uuid | 36 字符 | 学生 UUID |
+| nonce\_16bytes\_hex | 32 字符 | 16 字节随机数，十六进制编码 |
+| base64\_data | ~84 字符 | 上述数据经 Base64 编码 |
+| signature | 32 字符 | HMAC-SHA256 签名前 16 字节的 hex 编码 |
+
+#### 12.3.2 密钥管理
+
+- **轮换周期：** `signing_key` 每 24 小时轮换一次，由系统自动生成
+- **密钥存储：** Redis 缓存（快速访问）+ DB 持久化（通过 `key_version` 字段关联）
+- **密钥版本：** `key_version` 递增，旧版本密钥在宽限期内仍可用于验证已生成的 QR 码（宽限期 = 密钥生效时间 + 30 秒 * 2 倍 TTL = 约 60 秒）
+- **密钥生成：** 使用系统级种子 + 日期派生（HMAC-SHA256(date_seed, master_key)），支持密钥推导校验
+
+#### 12.3.3 签名验证流程
+
+```
+服务端收到扫码请求
+    ↓
+1. 解析 QR 内容 ← 提取 base64_data 和 signature
+    ↓
+2. 计算预期签名（用当前 key_version 的密钥）
+    ↓
+3. 签名匹配？
+   ├── 否 → result = 'forged'，记录审计日志
+   └── 是 → 继续
+    ↓
+4. 查找 nonce（唯一索引）
+   ├── 已存在 → result = 'duplicate'，拒绝
+   └── 不存在 → 继续
+    ↓
+5. 检查 expires_at（服务器时间校验，拒绝客户端时间）
+   ├── 已过期 → result = 'expired'
+   └── 未过期 → 继续
+    ↓
+6. 写入 attendance_qr_logs，result = 'success'
+    ↓
+7. 标记 qr_codes.status = 'used'
+```
+
+---
+
+### 12.4 API 端点设计
+
+#### 12.4.1 POST /api/attendance/qr/generate
+
+生成学生本人的动态 QR Code。
+
+| 属性 | 值 |
+|------|-----|
+| Auth | Student JWT |
+| Request Body | `{}` |
+| Rate Limit | 同一学生 30 秒内仅能生成一次 |
+| Response | `{ qr_code_data, expires_at, nonce }` |
+
+**响应示例：**
+```json
+{
+  "qr_code_data": "U0NIT09MX1FSfDE3NTAzNzYwMDB8YWJjZDEyMzQt...",
+  "expires_at": "2026-07-14T08:00:30+08:00",
+  "nonce": "a1b2c3d4e5f6g7h8"
+}
+```
+
+#### 12.4.2 POST /api/attendance/qr/scan
+
+教职工/闸机扫码签到。
+
+| 属性 | 值 |
+|------|-----|
+| Auth | Staff/Teacher JWT |
+| Request Body | `{ qr_code_data, device_id }` |
+| Rate Limit | 同一教职工每分钟最多 60 次 |
+| Response | `{ result, student_name, student_class, scanned_at }` |
+
+**响应示例：**
+```json
+{
+  "result": "success",
+  "student_name": "王小明",
+  "student_class": "1A",
+  "scanned_at": "2026-07-14T08:00:15+08:00"
+}
+```
+
+**错误响应：**
+| HTTP Status | 场景 |
+|-------------|------|
+| 410 Gone | QR 码已过期 |
+| 409 Conflict | QR 码已被使用（重复扫码） |
+| 429 Too Many Requests | 5 分钟内重复签到或超过速率限制 |
+| 403 Forbidden | 签名伪造 / 权限不足 |
+
+#### 12.4.3 POST /api/attendance/qr/sync-batch
+
+离线设备批量同步签到数据。
+
+| 属性 | 值 |
+|------|-----|
+| Auth | Device Token（预注册扫码终端获取） |
+| Request Body | `{ device_id, batch: [{qr_raw, scanned_at}] }` |
+| Response | `{ synced_count, failed_items }` |
+
+**幂等处理：** 服务端逐条处理，对已存在的记录返回 `duplicate` 而非重复写入，整体保证 at-least-once 语义。
+
+#### 12.4.4 GET /api/attendance/qr/daily-report?class_id=&date=
+
+班主任查看班级考勤日报。
+
+| 属性 | 值 |
+|------|-----|
+| Auth | Class Teacher JWT（仅限本班数据） |
+| Query Params | `class_id`（班级ID）、`date`（日期，格式 YYYY-MM-DD） |
+| Response | `{ report }` |
+
+**权限控制：** 班主任只能查看自己管理的班级，校务处角色可查看全校班级。
+
+---
+
+### 12.5 安全机制
+
+| 安全维度 | 实现方式 | 说明 |
+|---------|----------|------|
+| **防伪造** | HMAC-SHA256 签名验证 + 密钥轮换 | 签名密钥每日轮换，旧密钥宽限期仅 60 秒 |
+| **防重放** | nonce 唯一性约束（DB UNIQUE INDEX） | 每个 QR 码携带唯一 nonce，一次使用后即失效 |
+| **过期保护** | 服务端严格校验 expires\_at | 使用服务器时间，拒绝客户端提交的时间，30 秒 TTL |
+| **权限隔离** | 学生只能生成自己的 QR | 学生 JWT 仅可调用 generate 接口，教职工 JWT 仅可调用 scan 接口 |
+| **速率限制** | 学生 30 秒内一次、教职工每分钟 60 次 | 通过 Redis 计数器实现，超过返回 429 |
+| **设备认证** | 扫码终端需预注册 | 离线同步接口使用 Device Token 认证，未注册设备拒绝 |
+| **传输安全** | 全链路 HTTPS | TLS 1.3 加密传输，网关层强制 |
+
+---
+
+### 12.6 离线同步机制
+
+#### 12.6.1 离线模式流程
+
+```
+闸机扫码枪检测网络中断
+    ↓
+1. 进入离线模式
+    ↓
+2. QR 扫码数据 → 本地加密存储（AES-256, LocalStorage / SQLite）
+    ↓
+3. 持续尝试网络探测（每 30 秒一次）
+    ↓
+4. 网络恢复 → 立即触发同步
+    ↓
+5. 调用 /api/attendance/qr/sync-batch（逐批上传，每批最多 50 条）
+    ↓
+6. 服务端逐条校验：签名 → nonce → 过期 → 结果
+    ↓
+7. 更新 offline_sync_buffer.synced = true
+```
+
+#### 12.6.2 冲突解决
+
+| 场景 | 处理方式 |
+|------|----------|
+| QR 码已过期 | sync\_result = 'expired'，记录日志不写入考勤 |
+| QR 码已被使用（在线期间已签到） | sync\_result = 'duplicate'，保留原始记录 |
+| QR 码有效且未被使用 | sync\_result = 'success'，实际写入考勤记录 |
+
+#### 12.6.3 数据一致性保证
+
+- **at-least-once 语义：** 离线设备确保每条记录至少上传一次
+- **幂等处理：** 服务端对已处理记录自动去重（基于 qr_raw + scanned_at 的哈希）
+- **数据完整性：** 离线数据使用 AES-256 加密存储，防止篡改
+
+---
+
+### 12.7 日报定时任务
+
+| 属性 | 值 |
+|------|-----|
+| **Cron 表达式** | `0 8 * * 1-5`（工作日 08:00 生成截至当前的签到日报） |
+| **迟到判定** | 08:00 之后签到记为迟到（可配置） |
+| **缺勤判定** | 08:00 仍未签到且无提前请假记录记为缺勤 |
+| **触发器** | 检查 `attendance_qr_logs` 当天记录与班级应签名单的对比 |
+| **输出** | `attendance_daily_reports` 表写入 + 推送通知到班主任 Dashboard |
+| **推送渠道** | 系统通知、飞书/钉钉消息、Web 后台仪表板 |
+
+**日报内容：** 应到人数、已签到人数、迟到人数、缺勤人数、未签到学生名单及请假状态。
+
+---
+
+### 12.8 集成架构概览
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    QR Attendance Service                         │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────────┐  │
+│  │ QR Generator  │   │   Scan       │   │ Offline Sync     │  │
+│  │ (Generate QR) │   │   Handler    │   │ Handler          │  │
+│  │ signing_key   │   │ verify + log │   │ batch process    │  │
+│  │ nonce + nonce │   │ result calc  │   │ dedup + result   │  │
+│  └──────┬───────┘   └──────┬───────┘   └────────┬─────────┘  │
+│         │                  │                     │            │
+│         └──────────────────┼─────────────────────┘            │
+│                            ▼                                   │
+│                    ┌──────────────┐                            │
+│                    │  Report      │                            │
+│                    │  Aggregator  │  Cron: 工作日 08:00        │
+│                    └──────┬───────┘                            │
+└───────────────────────────┼─────────────────────────────────────┘
+                            │
+             ┌──────────────┼──────────────┐
+             ▼              ▼              ▼
+       ┌─────────┐   ┌──────────┐   ┌────────────┐
+       │   DB    │   │  Redis   │   │ Kafka Event│
+       │ SQL DDL │   │ rate lmt │   │ bus (audit)│
+       └─────────┘   │ key mgmt │   └────────────┘
+                     └──────────┘
+```
+
+### 12.9 与现有架构的集成点
+
+| 现有架构组件 | 集成方式 |
+|-------------|----------|
+| **OPA 规则引擎** | QR 签到 API 的权限校验通过 OPA 引擎：学生 only generate、教职工 only scan、班主任 only daily-report |
+| **Kong API Gateway** | QR 签到 API 注册到 Kong，复用 JWT 验证、速率限制、WAF 等网关插件 |
+| **Audit Service** | 所有 QR 生成、扫码、同步操作通过 Kafka 事件总线发送到 Audit Service 持久化 |
+| **Notification Service** | 日报生成后通过 Kafka 触发 Notification Service 推送班主任 |
+| **Redis Cluster** | 速率限制计数器、签名密钥缓存、nonce 临时去重缓存 |
+| **PostgreSQL** | 所有业务数据持久化（qr_codes, attendance_qr_logs, offline_sync_buffer, attendance_daily_reports） |
+| **Vault** | 签名密钥 master_key 存储在 Vault，应用按需获取并缓存到 Redis |
+
+---
+
+
+## 14. 多语言支持架构
+
+### 14.1 模块概述
 
 **Module 8 (Multilingual Support / i18n)** 为所有功能模块提供多语言服务能力，符合香港多元语言环境要求。
 
@@ -1991,7 +2390,7 @@ dse_data_pdpo_compliance:
 | `zh-CN` | 简体中文 | 内地用户、新来港人士 |
 | `en` | 英语 | 国际用户、外籍教师、跨境学生 |
 
-### 9.2 技术实现
+### 14.2 技术实现
 
 | 组件 | 技术选型 | 说明 |
 |------|----------|------|
@@ -2001,7 +2400,7 @@ dse_data_pdpo_compliance:
 | **翻译缓存** | Redis Cluster | 分布式缓存，提升性能 |
 | **LLM 翻译** | Coze / OpenAI | 上下文感知翻译，符合教育场景术语，支持粤语口语翻译 |
 
-### 9.3 语言检测优先级
+### 14.3 语言检测优先级
 
 ```
 1. 用户保存偏好 (user.preferred_locale)
@@ -2010,6 +2409,292 @@ dse_data_pdpo_compliance:
 4. 浏览器 Accept-Language
 5. IP 地理位置
 6. 默认: zh-HK
+```
+
+---
+
+## 15. Module 14: 学生&家长门户权限管理系统
+
+### 15.1 模块概述
+
+| 属性 | 描述 |
+|------|------|
+| 模块名称 | Student & Parent Portal Access Control — 学生&家长门户权限管理系统 |
+| 模块ID | MOD-PORTAL-AC-001 |
+| 关联FSD | FUNCTIONAL-SPEC-STUDENT-PARENT-PORTAL.md（v2.0.0-draft.1） |
+| 关联CR | CR-20260714-001 T06 |
+| 用户角色 | Student（学生）、Parent（家长） |
+| 核心目标 | 建立 Student/Parent 角色分离的自主门户权限体系，实现角色差异化菜单、严格数据隔离与敏感字段脱敏 |
+
+---
+
+### 15.2 RBAC 权限矩阵设计
+
+#### 角色定义
+
+| 角色标识 | 角色名称 | 说明 |
+|---------|---------|------|
+| STUDENT | 学生 | 在校学生，只能查看/操作本人数据 |
+| PARENT | 家长 | 学生监护人，只能查看关联子女数据 |
+
+#### 权限集表（Student Role）
+
+| 权限标识 | 权限名称 | 范围 | 说明 |
+|---------|---------|------|------|
+| profile:view:self | 查看个人档案 | Self | |
+| profile:update:self | 有限修改个人信息 | Self | 仅可编辑联系方式/紧急联系人/地址 |
+| attendance:view:self | 查看本人考勤 | Self | |
+| attendance:qr:generate | 生成QR签到码 | Self | |
+| leave:create:self | 提交请假 | Self | |
+| leave:view:self | 查看请假记录 | Self | |
+| leave:cancel:self | 撤回请假 | Self | 仅当状态为pending |
+| grade:view:self | 查看本人成绩 | Self | |
+| timetable:view:self | 查看课表 | Self | |
+| notice:view | 查看校历/通告 | Global | |
+
+#### 权限集表（Parent Role）
+
+| 权限标识 | 权限名称 | 范围 | 说明 |
+|---------|---------|------|------|
+| profile:view:linked_children | 查看关联子女档案 | Children | 只读 |
+| attendance:view:linked_children | 查看关联子女考勤 | Children | |
+| leave:view:linked_children | 查看子女请假记录 | Children | |
+| leave:create:linked_children | 代子女提交请假 | Children | |
+| grade:view:linked_children | 查看子女成绩 | Children | |
+| payment:operate:linked_children | 校内缴费 | Children | |
+| notice:view | 查看校历/通告 | Global | |
+| emergency:update:linked_children | 更新子女紧急联系方式 | Children | |
+
+---
+
+### 15.3 权限校验中间件设计
+
+#### 请求处理流水线
+
+```
+请求 → AuthMiddleware(解析JWT) → RoleMiddleware(获取角色) → PermissionMiddleware(校验权限) → Controller
+```
+
+#### 实现路径
+
+NestJS Guard + Decorator `@RequirePermission('profile:view:self')`
+
+```typescript
+// 权限校验伪代码
+@RequirePermission('leave:create:self')
+@Post('/portal/leave')
+createLeave(@CurrentUser() user, @Body() dto) { ... }
+```
+
+#### 中间件职责划分
+
+| 中间件 | 职责 | 输出 |
+|--------|------|------|
+| AuthMiddleware | 解析JWT Token，验证签名与过期时间 | 用户身份上下文 |
+| RoleMiddleware | 从Token/Redis获取用户角色信息 | 角色集合 |
+| PermissionMiddleware | 根据角色+资源+操作调用OPA引擎校验权限 | 允许/拒绝决策 |
+
+---
+
+### 15.4 数据隔离层设计
+
+#### 核心关联表: parent_student_links
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | UUID PK | |
+| parent_user_id | UUID FK→users.id | 家长用户ID |
+| student_id | UUID FK→students.id | 关联学生档案ID |
+| relationship | ENUM(father, mother, guardian) | 关系类型 |
+| is_primary | BOOLEAN | 是否主联系人 |
+| created_at | TIMESTAMPTZ | |
+| UNIQUE(parent_user_id, student_id) | | |
+
+#### 查询拦截器
+
+在 Service 层/Repository 层自动追加权限过滤，所有涉及学生数据的查询必须 JOIN `parent_student_links` 表。
+
+```typescript
+// NestJS QueryInterceptor
+class DataIsolationInterceptor implements NestInterceptor {
+  intercept(context, next) {
+    const user = context.switchToHttp().getRequest().user;
+    if (user.role === 'parent') {
+      // 在查询中自动追加 parent_student_links 过滤
+      // 使用 Repository 的 QueryBuilder 动态拼接 WHERE
+      // e.g., WHERE student_id IN (SELECT student_id FROM parent_student_links WHERE parent_user_id = :userId)
+    }
+  }
+}
+```
+
+#### 查询示例
+
+```sql
+-- 家长查询子女考勤记录
+SELECT a.* FROM attendance a
+JOIN parent_student_links psl
+  ON a.student_id = psl.student_id
+  AND psl.parent_user_id = :current_user_id
+WHERE a.created_at >= :start_date AND a.created_at <= :end_date;
+
+-- 家长查询子女成绩
+SELECT g.* FROM grades g
+JOIN parent_student_links psl
+  ON g.student_id = psl.student_id
+  AND psl.parent_user_id = :current_user_id
+WHERE g.academic_year = :year;
+```
+
+#### 安全策略
+
+| 层 | 说明 |
+|------|------|
+| 数据层 | 基于 `parent_student_links` 表建立家长-学生关联 |
+| 服务层 | 所有查询必须 JOIN 该关联表进行权限过滤 |
+| API 层 | Repository/Service 层自动追加 `WHERE student_id IN (子查询)` |
+| 安全策略 | 后端二次验证为强制防线，不依赖前端路由隐藏 |
+
+---
+
+### 15.5 菜单权限过滤机制
+
+#### 前后端协作方案
+
+1. **后端提供菜单接口**：`GET /api/portal/menus` 根据角色返回可见菜单列表
+2. **前端动态渲染**：根据接口数据动态渲染侧边菜单
+3. **API 双重验证**：前端菜单过滤仅为 UI 层面，后端 API 权限校验为安全底线
+
+#### 接口定义
+
+```json
+GET /api/portal/menus
+Response: [
+  { "id": "profile", "label": "我的档案", "icon": "user", "children": [...] },
+  { "id": "leave", "label": "请假管理", "icon": "calendar", "children": [...] }
+]
+```
+
+#### 角色-菜单映射逻辑
+
+| 菜单模块 | Student | Parent | 说明 |
+|---------|:-------:|:------:|------|
+| 个人档案 | ✅ 查看+有限编辑 | ✅ 只读 | Student 可修改联系方式等 |
+| 我的QR码签入 | ✅ 使用 | ❌ | Student-only |
+| 电子请假 | ✅ 提交+查看 | ✅ 查看+代提交 | |
+| 考勤记录 | ✅ 查看本人 | ✅ 查看关联子女 | |
+| 成绩查询 | ✅ 查看本人 | ✅ 查看关联子女 | |
+| 课表查询 | ✅ 查看 | ❌ | Student-only |
+| 校历/通告 | ✅ 查看 | ✅ 查看 | 全校共享 |
+| 校内缴费 | ❌ | ✅ 操作 | Parent exclusive |
+
+---
+
+### 15.6 数据脱敏层设计
+
+#### 脱敏中间件位置
+
+在 Response 序列化前拦截，通过装饰器或拦截器对敏感字段自动脱敏。
+
+#### 配置规则（JSON config）
+
+```json
+{
+  "phone": { "pattern": "(\\d{4})\\d{4}", "replacement": "****$1" },
+  "email": { "pattern": "(\\w{1}).*@", "replacement": "$1***@" },
+  "address": { "strict_level": "street_only" },
+  "emergency_contact": { "pattern": "(.)", "replacement": "$1**" }
+}
+```
+
+#### 脱敏规则表
+
+| 字段 | Student端 | Parent端 |
+|------|-----------|----------|
+| phone | 完整显示 | ****后4位 |
+| email | 完整显示 | 首字母***@域名 |
+| address | 完整显示 | 街道级(门牌号掩码) |
+| emergency_contact | 完整显示 | 姓+** |
+| student_id | 完整显示 | 前6位+**** |
+
+#### 实现说明
+
+- 脱敏在 Response JSON 序列化前通过 NestJS Interceptor 统一处理
+- 规则配置可动态更新（从 DB 或配置中心加载），无需重启服务
+- Student 本人查阅时完整显示，Parent 查阅关联子女时按脱敏规则处理
+- 系统日志中的敏感字段同样执行脱敏后再记录
+
+---
+
+### 15.7 审计日志表设计
+
+#### 表: portal_audit_logs
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | UUID PK | |
+| event_type | ENUM | LOGIN/PROFILE_VIEW/PROFILE_UPDATE/LEAVE_CREATE/LEAVE_CANCEL/QR_GENERATE/QR_SCAN/UNAUTHORIZED_ACCESS |
+| actor_id | UUID | 操作人ID |
+| actor_role | ENUM(student, parent, staff) | |
+| target_id | UUID | 目标对象ID |
+| target_type | VARCHAR | students/leaves/qr_codes |
+| action | ENUM | CREATE/READ/UPDATE/DELETE/ACCESS_DENIED |
+| changes | JSONB | 变更详情(脱敏后) |
+| ip_address | INET | |
+| user_agent | TEXT | |
+| result | ENUM(SUCCESS, FAILURE, DENIED) | |
+| created_at | TIMESTAMPTZ | INDEX |
+| INDEX | (actor_id, created_at) | |
+| INDEX | (event_type, created_at) | |
+
+#### 审计事件清单
+
+| 事件类型 | 触发条件 | 关键记录内容 | 保留期限 |
+|---------|---------|-------------|---------|
+| LOGIN | 学生/家长登录门户 | 登录方式、IP、User-Agent | ≥ 1 年 |
+| PROFILE_VIEW | 查看个人/子女档案 | 查看人、目标对象、角色 | ≥ 1 年 |
+| PROFILE_UPDATE | 修改联系方式等可编辑字段 | 旧值→新值（脱敏） | ≥ 2 年 |
+| LEAVE_CREATE | 提交请假申请 | 请假类型、天数、提交人角色 | ≥ 3 年 |
+| LEAVE_CANCEL | 撤回请假 | 请假ID、原状态 | ≥ 3 年 |
+| QR_GENERATE | 生成 QR 签到码 | 学生ID、时间 | ≥ 6 个月 |
+| QR_SCAN | QR 码签入操作 | 学生ID、结果、失败原因 | ≥ 6 个月 |
+| UNAUTHORIZED_ACCESS | 越权访问尝试 | 尝试者、目标资源、来源IP | ≥ 1 年 |
+
+---
+
+### 15.8 整体架构交互图
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                       学生/家长门户前端                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐      │
+│  │ 个人档案  │  │ 请假管理  │  │ 考勤查询  │  │ 成绩查询  │      │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘      │
+│       └──────────┬──┴──────────────┴──────────────┘           │
+│                  │ 菜单动态渲染（根据 /api/portal/menus）       │
+└──────────────────┼─────────────────────────────────────────────┘
+                   │
+┌──────────────────┼─────────────────────────────────────────────┐
+│                  ▼                                             │
+│    API Gateway (Kong) — JWT验证 / Rate Limiting / WAF          │
+│                   │                                           │
+│                   ▼                                           │
+│    AuthMiddleware → RoleMiddleware → PermissionMiddleware      │
+│    (解析JWT Token)  (获取角色信息)   (OPA权限引擎校验)          │
+│                   │                                           │
+│         ┌─────────┴─────────┐                                │
+│         ▼                   ▼                                 │
+│   Service Layer      DataIsolationInterceptor                │
+│   (业务逻辑处理)      (自动追加行级权限过滤)                    │
+│         │                   │                                 │
+│         └─────────┬─────────┘                                │
+│                   ▼                                           │
+│   Response Serialization — SensitiveDataMaskInterceptor       │
+│   (按角色脱敏规则对敏感字段掩码处理)                            │
+│                   │                                           │
+│                   ▼                                           │
+│   Audit Service (异步写入 portal_audit_logs → Kafka → DB)     │
+└───────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -2055,11 +2740,15 @@ dse_data_pdpo_compliance:
 - [ ] 部署运维手册 (完整版)
 - [ ] 监控告警配置 (Grafana Dashboard + Alert Rules)
 - [ ] 灾备方案设计 (详细 DR Runbook)
+- [x] Module 13: QR Code 校园签到考勤系统设计（已完成 HLD）
+- [ ] Module 13: QR Code 校园签到考勤详细设计 — API OpenAPI 规范、前端组件设计
 
 ### 附录 C: 变更对比表
 
 | 版本 | 日期 | 变更类型 | 变更内容 |
 |------|------|----------|----------|
+| v1.8.0-draft.1 | 2026-07-14 | 草稿（CR-20260714-001） | CR-20260714-001 T05：新增 Module 13 QR Code 校园签到考勤 — 系统设计（HLD）。包括数据库表设计、QR码编码/签名流程、API端点设计、安全机制、离线同步机制、日报定时任务。关联 FSD-QR-ATT-001。 |
+| v1.8.0-draft.1 | 2026-07-14 | 草稿（CR-20260714-001） | CR-20260714-001 T06：新增 Module 14 学生&家长门户权限管理系统（RBAC权限矩阵、权限校验中间件、数据隔离层、菜单权限过滤、数据脱敏层、审计日志表设计）。版本状态：草稿（待二轮审查） |
 | v1.7.0 | 2026-06-06 | 草稿（P1整改） | P1整改：版本更正v1.7.0 + Module11运维架构（9项F-OPS全覆盖）+ Module12 DSE/HKEAA SDP对接方案。版本状态：草稿（待二轮审查） |
 | v1.0.0 | 2026-06-06 | 正式版本 | 依据SPEC-COMPLETE v1.7.0深化设计，新增运维监控/灾难恢复/OPA规则引擎/多渠道通知架构，更新系统集成，补充PDPO合规，升级技术栈版本，所有模块可投产 |
 | v0.4 | 2026-05-27 | Major Review | 架构审查: 21项差距修复；Scalability/Security/Maintainability 全面增强；新增第7-8节；完整CI/CD + DRP + 可观测性策略 |
@@ -2084,7 +2773,7 @@ dse_data_pdpo_compliance:
 ---
 
 **文档维护：** 系统架构团队
-**最后更新：** 2026-06-06
-**版本：** v1.7.0（草稿，待二轮审查）
+**最后更新：** 2026-07-14
+**版本：** v1.8.0-draft.1（草稿，待二轮审查）
 **文档链接：** https://github.com/jchu-hk/school-admin-system/blob/main/docs/school-admin-system/SPEC-SYSTEM-DESIGN.md
 </text_never_used_51bce0c785ca2f68081bfa7d91973934>

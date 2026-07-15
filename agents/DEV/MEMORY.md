@@ -237,3 +237,45 @@ r = json.loads(subprocess.check_output([
 1. 在 `## 📋 我的工作过` 下面追加新的工作记录
 2. 更新任何变化的知识（URL、端口、配置等）
 3. 如果学到了新的教训，添加到"教训"部分
+
+### 2026-07-13 — 周一工作: 诊断剩余Bugs + 环境清理
+
+**Working directory**: `/workspace/school-admin-system/`
+
+**Issue #229: 人工录入出勤 -> 日期下拉框选择无效果**
+- **根因**: `initManualRecords` 函数每次用默认 PRESENT 状态初始化表单，数据来自静态 MOCK_STUDENTS，用户更改日期后看不到任何变化
+- **修复**: 
+  1. `initManualRecords` 改为 async，日期变更时优先调用 `attendanceApi.getByClassAndDate()` 加载已有记录
+  2. 有记录 → 用实际出勤记录填充表单
+  3. 无记录 → 回退到默认初始化
+  4. 加载成功时显示临时提示 "已加载 N 条出勤记录"
+- **构建**: vite build → docker cp
+- **Commit**: 7ea4e86
+
+**Issue #225: 用户管理 -> 搜索与下拉筛选不工作**
+- **根因 (搜索)**: 前端 UserPage.tsx 传 `search` 参数名，后端只接受 `keyword` 参数名
+- **根因 (筛选)**: 后端 `findAll()` 控制器方法没有 `keyword` 参数，service 也没实现 LIKE 查询
+- **修复 (前端)**: `params.append('search', searchTerm)` → `params.append('keyword', searchTerm)` (此前已在某次dashboard更新中被修复)
+- **修复 (后端)**: 
+  1. `user.controller.ts`: `findAll()` 和 `getStudents()` 添加 `@Query('keyword')` 参数
+  2. `user.service.ts`: `findAll()` 添加 `keyword` 参数 + `WHERE (username LIKE %keyword% OR name LIKE %keyword%)`
+  3. Swagger 添加 `@ApiQuery` 描述
+- **部署**: `pnpm --filter @school-admin/backend build` → `docker cp dist/` → `docker restart`
+- **验证**: keyword=staff → 2结果, keyword=陈 → 4结果, 无keyword → 167结果
+- **Commit**: 5e5a1de
+
+**环境清理 (#213-#216)**
+- **关键发现**: 重置到 v1.5.7 会丢失 220 个 commit 的所有修复
+- **实际操作**: 
+  - 跳过破坏性 git reset，保留所有修复
+  - 后端容器从 `infra-backend` 切换到 `school-admin-backend:v1.5.7`
+  - 环境变量必须匹配旧容器（DB_HOST=postgres, REDIS_HOST=redis）
+  - 网络使用 `school-admin-network`
+  - 数据库种子数据完整: 170 users, 104 students, 12 classes, 169 attendances
+- **所有4个cleanup issues已关闭并注释根因**
+
+**重要教训**:
+- `school-admin-backend:v1.5.7` 镜像不含 hotpatch 的 keyword 等修复，必须重新构建部署
+- Docker 容器环境变量（DB_HOST=postgres vs school-admin-postgres）要匹配网络配置
+- 后端容器网络是 `school-admin-network` 不是 `school-admin-system_default`
+- 后端实际运行路径: `/app/apps/backend/dist/main.js`

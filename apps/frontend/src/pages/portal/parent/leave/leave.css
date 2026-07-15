@@ -1,0 +1,851 @@
+/* ══════════════════════════════════════════════════════════════
+   家长版请假管理 样式
+   ────────────────────────────────────────────────
+   与 T17 学生版请假风格一致，适配家长门户设计系统。
+   ════════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════════════════
+   顶部操作按钮
+   ════════════════════════════════════════════════════════════ */
+
+.pl-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.pl-submit-btn:hover {
+  background: linear-gradient(135deg, #4338ca, #3730a3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.pl-submit-btn:active {
+  transform: translateY(0);
+}
+
+.pl-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(79, 70, 229, 0.08);
+  color: #4f46e5;
+  border: 1px solid rgba(79, 70, 229, 0.2);
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.pl-view-btn:hover {
+  background: rgba(79, 70, 229, 0.12);
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+/* ════════════════════════════════════════════════════════════
+   Filters
+   ════════════════════════════════════════════════════════════ */
+
+.pl-filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 16px 0 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.pl-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.pl-filter-btn {
+  flex-shrink: 0;
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pl-filter-btn:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.pl-filter-btn--active {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+/* ════════════════════════════════════════════════════════════
+   List
+   ════════════════════════════════════════════════════════════ */
+
+.pl-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 160px;
+}
+
+/* ── Loading ──────────────────────────────────────── */
+
+.pl-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.pl-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: pl-spin 0.8s linear infinite;
+}
+
+@keyframes pl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Error ────────────────────────────────────────── */
+
+.pl-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 0;
+  color: #dc2626;
+  font-size: 14px;
+  text-align: center;
+}
+
+.pl-retry-btn {
+  background: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pl-retry-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* ── Empty State ──────────────────────────────────── */
+
+.pl-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 80px 0;
+  color: #64748b;
+  font-size: 15px;
+  text-align: center;
+}
+
+.pl-link-btn {
+  background: none;
+  color: #4f46e5;
+  border: 1px solid rgba(79, 70, 229, 0.25);
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pl-link-btn:hover {
+  background: rgba(79, 70, 229, 0.06);
+}
+
+/* ── Total Count ──────────────────────────────────── */
+
+.pl-total {
+  text-align: center;
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 16px;
+  padding-bottom: 8px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Leave Card
+   ════════════════════════════════════════════════════════════ */
+
+.pl-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  transition: all 0.15s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.pl-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Icon ─────────────────────────────────────────── */
+
+.pl-card__icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+/* ── Body ─────────────────────────────────────────── */
+
+.pl-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.pl-card__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pl-card__type-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.pl-card__date {
+  font-size: 13px;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+}
+
+.pl-card__days {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.pl-card__student {
+  font-size: 13px;
+  color: #4f46e5;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+.pl-card__reason {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 6px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pl-card__comment {
+  font-size: 12px;
+  color: #dc2626;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.pl-card__comment-label {
+  font-weight: 500;
+}
+
+.pl-card__teacher {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* ── Actions ──────────────────────────────────────── */
+
+.pl-card__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pl-card__cancel-btn {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.pl-card__cancel-btn:hover {
+  background: rgba(245, 158, 11, 0.18);
+}
+
+.pl-card__cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Status Badge
+   ════════════════════════════════════════════════════════════ */
+
+.pl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pl-badge__icon {
+  font-size: 12px;
+}
+
+.pl-badge__label {
+  font-size: 12px;
+}
+
+.badge--pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.badge--pending-director {
+  background: rgba(251, 146, 60, 0.12);
+  color: #ea580c;
+  border: 1px solid rgba(251, 146, 60, 0.2);
+}
+
+.badge--approved {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge--rejected {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.badge--cancelled {
+  background: rgba(148, 163, 184, 0.12);
+  color: #64748b;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.badge--checked-in {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.pl-badge--unknown {
+  background: rgba(148, 163, 184, 0.08);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+/* ════════════════════════════════════════════════════════════
+   Pagination
+   ════════════════════════════════════════════════════════════ */
+
+.pl-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 20px;
+}
+
+.pl-pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  background: #ffffff;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  padding: 0 8px;
+}
+
+.pl-pagination__btn:hover:not(:disabled) {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.pl-pagination__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pl-pagination__btn--active {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+  border-color: rgba(79, 70, 229, 0.3);
+  font-weight: 700;
+}
+
+.pl-pagination__dots {
+  color: #94a3b8;
+  font-size: 13px;
+  padding: 0 4px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Form Modal
+   ════════════════════════════════════════════════════════════ */
+
+.pl-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.pl-modal {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+.pl-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 0;
+}
+
+.pl-modal__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.pl-modal__close-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.pl-modal__close-btn:hover {
+  color: #475569;
+  background: #f1f5f9;
+}
+
+/* ── Form fields ──────────────────────────────────── */
+
+.pl-form {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pl-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pl-form__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* ── Child info ────────────────────────────────────── */
+
+.pl-form__child-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #f1f5f9;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.pl-form__child-icon {
+  font-size: 18px;
+}
+
+.pl-form__child-class {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 400;
+}
+
+/* ── Select ────────────────────────────────────────── */
+
+.pl-form__select {
+  width: 100%;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #1e293b;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.15s;
+  outline: none;
+  appearance: auto;
+}
+
+.pl-form__select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+/* ── Leave type selectors ─────────────────────────── */
+
+.pl-form__type-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.pl-form__type-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.pl-form__type-btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.pl-form__type-btn--active {
+  background: rgba(79, 70, 229, 0.08);
+  color: #4f46e5;
+  border-color: rgba(79, 70, 229, 0.3);
+}
+
+.pl-form__type-icon {
+  font-size: 20px;
+}
+
+.pl-form__type-text {
+  font-size: 14px;
+}
+
+/* ── Date row ─────────────────────────────────────── */
+
+.pl-form__date-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.pl-form__date-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pl-form__date-sep {
+  padding-top: 26px;
+  color: #94a3b8;
+  font-size: 16px;
+}
+
+/* ── Inputs ───────────────────────────────────────── */
+
+.pl-form__input {
+  width: 100%;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #1e293b;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.pl-form__input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+.pl-form__input::placeholder {
+  color: #94a3b8;
+}
+
+.pl-form__input[type='date'] {
+  color-scheme: light;
+}
+
+/* ── Textarea ─────────────────────────────────────── */
+
+.pl-form__textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #1e293b;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.pl-form__textarea:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+.pl-form__textarea::placeholder {
+  color: #94a3b8;
+}
+
+.pl-form__char-count {
+  text-align: right;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* ── Days hint ────────────────────────────────────── */
+
+.pl-form__days-hint {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: -8px;
+}
+
+.pl-form__days-warning {
+  color: #d97706;
+}
+
+/* ── Upload ───────────────────────────────────────── */
+
+.pl-form__upload {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pl-form__file-input {
+  display: none;
+}
+
+.pl-form__upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pl-form__upload-btn:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.pl-form__file-name {
+  font-size: 12px;
+  color: #4f46e5;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pl-form__file-remove {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 2px;
+}
+
+.pl-form__hint {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* ── Error messages ───────────────────────────────── */
+
+.pl-form__error {
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.pl-form__submit-error {
+  padding: 10px 14px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 13px;
+}
+
+/* ── Action buttons ───────────────────────────────── */
+
+.pl-form__actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.pl-form__cancel-btn {
+  flex: 1;
+  padding: 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pl-form__cancel-btn:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.pl-form__submit-btn {
+  flex: 2;
+  padding: 10px;
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pl-form__submit-btn:hover {
+  background: linear-gradient(135deg, #4338ca, #3730a3);
+}
+
+.pl-form__submit-btn:disabled,
+.pl-form__cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Media Queries
+   ════════════════════════════════════════════════════════════ */
+
+@media (max-width: 600px) {
+  .pl-form__type-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 480px) {
+  .pl-form__type-options {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

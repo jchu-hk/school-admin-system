@@ -1227,4 +1227,140 @@ temporary  — 临时
 **外键**: (student_id)→students(id), (user_id)→users(id)
 **说明**: 将学生档案（`students`）与系统用户（`users`）关联。一个学生档案可关联多个用户账户（如同时有学生账户和家长关联的学生视图），但 primary 仅一个。
 
+---
+
+# CR-20260714-001: QR考勤 + 门户数据库表 (v2.0.0-draft.1)
+
+> 以下表为 CR-20260714-001 新增，对应 QR Code 签到考勤和学生/家长门户模块。
+
+## 表: qr_codes — QR码生成记录
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | QR码记录ID |
+| student_id | UUID | FK→students, NOT NULL | 学生档案ID |
+| nonce | VARCHAR(64) | UNIQUE, NOT NULL | 随机一次性nonce |
+| key_version | INTEGER | NOT NULL | 签名密钥版本号 |
+| signature | VARCHAR(128) | NOT NULL | HMAC-SHA256签名（前16字节hex）|
+| generated_at | TIMESTAMPTZ | NOT NULL DEFAULT NOW() | 生成时间 |
+| expires_at | TIMESTAMPTZ | NOT NULL | 过期时间（generated_at + 30s）|
+| status | VARCHAR(20) | NOT NULL DEFAULT 'active' | active/used/expired |
+
+**索引**: PRIMARY KEY (id), UNIQUE (nonce), INDEX (student_id, generated_at), INDEX (status, expires_at)
+**外键**: (student_id)→students(id)
+
+## 表: attendance_qr_logs — 扫码签到记录
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 签到记录ID |
+| qr_code_id | UUID | FK→qr_codes | 关联QR码ID |
+| student_id | UUID | FK→students, NOT NULL | 签到学生 |
+| staff_user_id | UUID | FK→users, NOT NULL | 扫码教职工 |
+| scanned_at | TIMESTAMPTZ | NOT NULL DEFAULT NOW() | 扫码时间 |
+| source | VARCHAR(20) | NOT NULL DEFAULT 'online' | online/offline_sync |
+| device_id | VARCHAR(128) | | 扫码设备标识 |
+| ip_address | INET | | 请求IP |
+| result | VARCHAR(20) | NOT NULL | success/expired/duplicate/forged |
+| created_at | TIMESTAMPTZ | NOT NULL DEFAULT NOW() | 创建时间 |
+
+**索引**: PRIMARY KEY (id), INDEX (student_id, scanned_at), INDEX (staff_user_id, scanned_at), INDEX (result)
+**外键**: (qr_code_id)→qr_codes(id), (student_id)→students(id), (staff_user_id)→users(id)
+
+## 表: offline_sync_buffer — 离线同步缓冲
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 缓冲记录ID |
+| device_id | VARCHAR(128) | NOT NULL | 离线设备ID |
+| qr_raw | TEXT | NOT NULL | 原始QR码数据 |
+| scanned_at | TIMESTAMPTZ | NOT NULL | 本地扫描时间 |
+| synced | BOOLEAN | NOT NULL DEFAULT false | 是否已同步 |
+| synced_at | TIMESTAMPTZ | | 同步时间 |
+| sync_result | VARCHAR(20) | | success/duplicate/expired |
+| created_at | TIMESTAMPTZ | NOT NULL DEFAULT NOW() | 创建时间 |
+
+**索引**: PRIMARY KEY (id), INDEX (device_id, synced), INDEX (synced, created_at)
+
+## 表: attendance_daily_reports — 日报表
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 日报ID |
+| class_id | UUID | FK→classes, NOT NULL | 班级ID |
+| report_date | DATE | NOT NULL | 日报日期 |
+| total_students | INTEGER | NOT NULL | 应签人数 |
+| present_count | INTEGER | NOT NULL | 实签人数 |
+| absent_list | UUID[] | | 缺勤学生ID列表 |
+| makeup_list | JSONB | DEFAULT '[]' | [{student_id, reason, teacher_id}] |
+| generated_at | TIMESTAMPTZ | NOT NULL DEFAULT NOW() | 生成时间 |
+
+**索引**: PRIMARY KEY (id), UNIQUE (class_id, report_date), INDEX (report_date)
+**外键**: (class_id)→classes(id)
+
+## 表: parent_student_links — 家长学生关联
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 关联ID |
+| parent_user_id | UUID | FK→users, NOT NULL | 家长用户ID |
+| student_id | UUID | FK→students, NOT NULL | 学生档案ID |
+| relationship | VARCHAR(20) | NOT NULL | father/mother/guardian |
+| is_primary | BOOLEAN | DEFAULT false | 是否主联系人 |
+| created_at | TIMESTAMPTZ | NOT NULL DEFAULT NOW() | 创建时间 |
+
+**索引**: PRIMARY KEY (id), UNIQUE (parent_user_id, student_id), INDEX (student_id), INDEX (parent_user_id)
+**外键**: (parent_user_id)→users(id), (student_id)→students(id)
+
+## 表: portal_audit_logs — 门户审计日志
+
+| 列名 | 类型 | 约束 | 描述 |
+|------|------|------|------|
+| id | UUID | PK | 日志ID |
+| event_type | VARCHAR(50) | NOT NULL | LOGIN/PROFILE_VIEW/PROFILE_UPDATE/LEAVE_CREATE/LEAVE_CANCEL/QR_GENERATE/QR_SCAN/UNAUTHORIZED_ACCESS |
+| actor_id | UUID | NOT NULL | 操作人ID |
+| actor_role | VARCHAR(20) | NOT NULL | student/parent/staff |
+| target_id | UUID | | 目标对象ID |
+| target_type | VARCHAR(50) | | students/leaves/qr_codes |
+| action | VARCHAR(20) | NOT NULL | CREATE/READ/UPDATE/DELETE/ACCESS_DENIED |
+| changes | JSONB | | 变更详情（脱敏后）|
+| ip_address | INET | | |
+| user_agent | TEXT | | |
+| result | VARCHAR(10) | NOT NULL | SUCCESS/FAILURE/DENIED |
+| created_at | TIMESTAMPTZ | NOT NULL DEFAULT NOW() | 创建时间 |
+
+**索引**: PRIMARY KEY (id), INDEX (actor_id, created_at), INDEX (event_type, created_at), INDEX (result)
+
+---
+
+## 表: role_permissions (追加记录)
+
+向现有 role_permissions 表追加以下权限条目：
+
+**Student Role (10项):**
+| 权限标识 | 说明 |
+|---------|------|
+| profile:view:self | 查看个人档案 |
+| profile:update:self | 有限修改个人信息 |
+| attendance:view:self | 查看本人考勤 |
+| attendance:qr:generate | 生成QR签到码 |
+| leave:create:self | 提交请假 |
+| leave:view:self | 查看请假记录 |
+| leave:cancel:self | 撤回请假（仅pending）|
+| grade:view:self | 查看本人成绩 |
+| timetable:view:self | 查看课表 |
+| notice:view | 查看校历通告 |
+
+**Parent Role (8项):**
+| 权限标识 | 说明 |
+|---------|------|
+| profile:view:linked_children | 查看关联子女档案（只读）|
+| attendance:view:linked_children | 查看关联子女考勤 |
+| leave:view:linked_children | 查看子女请假记录 |
+| leave:create:linked_children | 代子女提交请假 |
+| grade:view:linked_children | 查看子女成绩 |
+| payment:operate:linked_children | 校内缴费 |
+| notice:view | 查看校历通告 |
+| emergency:update:linked_children | 更新子女紧急联系方式 |
+
 

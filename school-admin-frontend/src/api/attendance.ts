@@ -202,7 +202,7 @@ export const attendanceApi = {
 
   /** 获取受影响学生列表（数据源同步失败时）*/
   getAffectedStudents: async (date?: string) => {
-    const { data } = await apiClient.get('/attendances/affected-stududents', {
+    const { data } = await apiClient.get('/attendances/affected-students', {
       params: { date },
     });
     return data as AffectedStudentsResponse;

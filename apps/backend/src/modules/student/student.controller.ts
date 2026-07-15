@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Body,
   Param,
@@ -81,6 +82,21 @@ export class StudentController {
   @Put(':id')
   @ApiOperation({ summary: '更新学生档案' })
   async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateStudentDto,
+    @Query('userId') userId?: string,
+  ) {
+    const student = await this.studentService.update(id, dto, userId);
+    return {
+      code: 0,
+      message: 'success',
+      data: student,
+    };
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: '部分更新学生档案' })
+  async patch(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateStudentDto,
     @Query('userId') userId?: string,
