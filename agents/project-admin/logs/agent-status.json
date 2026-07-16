@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "idle",
-      "task": "[Wiki更新] 移除了版本号+GIT+Release信息和Bug修复记录表，改为引用GitHub Release和Issues页面",
-      "lastUpdate": "2026-07-14T16:22:40Z"
+      "task": "心跳检查 12:50 GMT+8 — Backend 200 ✅ Frontend 200 ✅ 系统稳定",
+      "lastUpdate": "2026-07-16T04:50:11Z"
     },
     "DEVOPS": {
       "status": "idle",
@@ -22,8 +22,8 @@
     },
     "DEV": {
       "status": "idle",
-      "task": "[CR-20260714-001 T25] 部署完成 - 新前端已部署到8081，SPA路由全部正常(200)",
-      "lastUpdate": "2026-07-15T03:38:42Z"
+      "task": "[CR-20260714-001 T25] portal-app 新增登录页 + 路由守卫，已部署验证",
+      "lastUpdate": "2026-07-15T08:25:58Z"
     },
     "QA": {
       "status": "idle",

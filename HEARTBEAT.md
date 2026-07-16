@@ -7,7 +7,7 @@
 - [x] GitHub — 24 open issues (P0 Phase 4/5, P1 #235, P2/P3 features)
 - [x] Agents — all idle
 - [x] check_rules verify — ✅
-- [x] Git branches — main clean (ae2ddea) ✅
+- [x] Git branches — main (ffdac7c), local dirty ✅
 
 ## 已关闭的Bugs (2026-07-13)
 - ✅ #222 P1 新增学生500错误 — 已修复关闭
@@ -22,4 +22,4 @@
 - #43-#56 P2/P3 功能需求 (资产管理/校车/通讯录/AI/自动化等)
 
 ## 工作区
-- Dirty: HEARTBEAT.md, memory/, agents/logs/, scripts/
+- Dirty: HEARTBEAT.md, memory/, agents/logs/, apps/ (QR签到/家长门户开发中)

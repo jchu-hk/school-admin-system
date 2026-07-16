@@ -68,14 +68,11 @@ export class QrScanService {
     scanned_at: string;
   }> {
     // ===== Step 1: 校验教职工存在 =====
-    const staffUser = await this.userRepository.findOne({
-      where: { id: staffUserId },
-    });
-
-    if (!staffUser) {
-      throw new ForbiddenException({
-        error: 'STAFF_NOT_FOUND',
-        message: '教职工用户不存在',
+    // 公开扫码端点允许匿名扫描，不强制绑定教职工账号
+    let staffUser: User | null = null;
+    if (staffUserId && staffUserId !== 'anonymous-scanner') {
+      staffUser = await this.userRepository.findOne({
+        where: { id: staffUserId },
       });
     }
 

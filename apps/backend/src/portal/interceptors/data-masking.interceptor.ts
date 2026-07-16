@@ -107,9 +107,7 @@ const MaskUtils = {
 export class DataMaskingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(DataMaskingInterceptor.name);
 
-  constructor(
-    private readonly customRules?: MaskRule[],
-  ) {}
+  constructor() {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
@@ -137,7 +135,7 @@ export class DataMaskingInterceptor implements NestInterceptor {
 
     // 如果是对象，递归处理字段
     if (typeof data === 'object' && !(data instanceof Date)) {
-      const rules = this.customRules || DEFAULT_MASK_RULES;
+      const rules = DEFAULT_MASK_RULES;
       const masked: Record<string, any> = {};
 
       for (const [key, value] of Object.entries(data)) {

@@ -140,19 +140,24 @@ location /portal/ {
 
 1. **旧前端 vs 新前端**:
    - 旧前端 (`school-admin-frontend/`) → 8080 → 教职工后台管理
-   - 新前端 (`apps/frontend/`) → 8081 → QR考勤 + 门户（待部署）
+   - 新前端 (`apps/frontend/`) → 8081 → QR考勤 + 门户
    - 两个前端共享同一后端API (`school-admin-backend:3000`)
 
-2. **QR+Portal代码已完成但未上线**: T13~T19 (Phase 3) 编码完成并通过CHECKER，但Docker镜像尚未构建也未部署。
+2. **部署状态**: ✅ `school-admin-frontend-v2` 已部署并running（bind mount from apps/frontend/dist）
 
-3. **URL路径变更**: 新前端路由以 `/attendance/` 和 `/portal/` 为前缀（不是 `/school-admin/`），这意味着：
-   - Coze Nginx需要新增路由规则
-   - QR考勤页: `/attendance/qr`
-   - 学生门户: `/portal/student/*`
-   - 家长门户: `/portal/parent/*`
-   - 旧管理系统: `/school-admin/*` (不变)
+3. **端口5000路由**: 主机nginx监听端口5000，Coze外网代理直接路由至此。
+   - `/attendance/*` → port 8081 (portal-app)
+   - `/portal/*` → port 8081 (portal-app)
+   - `/school-admin/*` → port 8080 (admin-app)
+   - `/api/*` → port 3000 (backend)
+   - `/*` → port 5001 (OpenClaw Gateway)
 
-4. **静态资源问题**: 新前端的静态资源在 `/assets/*` 路径下，与旧前端冲突。需通过独立容器+独立端口解决，或在Nginx层做区分。
+4. **路由权限**:
+   - `/attendance/scan` — **公开页面**，教职工扫码签到，无auth guard
+   - `/attendance/qr` — 需登录（学生考勤QR展示）
+   - `/portal/student` — 需登录
+   - `/portal/parent` — 需登录
+   - `/login` — 登录页（学生/家长，暂不支持教职工登录）
 
 5. **CDN caching**: The Coze CDN may cache files. Use timestamped filenames in vite config to bust cache.
 

@@ -50,8 +50,7 @@ export class DailyReportService {
     private readonly classRepository: Repository<Class>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    // NotificationService injected by the module via a provider/factory
-    private readonly notificationService?: ReportNotificationService,
+
   ) {}
 
   /**
@@ -292,63 +291,8 @@ export class DailyReportService {
       return false;
     }
 
-    if (!this.notificationService) {
-      this.logger.warn('通知服务未注入，跳过推送');
-      return false;
-    }
-
-    try {
-      const dateStr = report.reportDate.toISOString().split('T')[0];
-      const attendanceRate =
-        report.totalStudents > 0
-          ? Math.round((report.checkedIn / report.totalStudents) * 100)
-          : 0;
-
-      const title = `${dateStr} ${report.className} 签到日报`;
-      const content =
-        `📊 ${report.className} 签到日报\n` +
-        `📅 日期: ${dateStr}\n` +
-        `━━━━━━━━━━━━━━━━\n` +
-        `👥 应签人数: ${report.totalStudents}\n` +
-        `✅ 已签到: ${report.checkedIn}\n` +
-        `⏰ 迟到: ${report.lateCount}\n` +
-        `❌ 缺勤: ${report.absentCount}\n` +
-        `📋 已请假: ${report.leaveApproved}\n` +
-        `━━━━━━━━━━━━━━━━\n` +
-        `📈 签到率: ${attendanceRate}%\n`;
-
-      const result = await this.notificationService.sendToUsers({
-        title,
-        content,
-        userIds: report.teacherIds,
-        relatedEntityType: 'attendance_daily_report',
-        relatedEntityId: report.id,
-      });
-
-      // 更新推送状态
-      await this.reportRepository.update(report.id, {
-        notificationSent: true,
-        notificationSentAt: new Date(),
-        notificationIds: result?.ids
-          ? Array.isArray(result.ids)
-            ? result.ids
-            : [result.ids]
-          : [],
-      });
-
-      this.logger.log(
-        `推送日报通知成功: class=${report.className}, teacher=${report.teacherIds.join(',')}`,
-      );
-      return true;
-    } catch (err) {
-      this.logger.error(
-        `推送日报通知失败: class=${report.className}: ${err.message}`,
-      );
-      await this.reportRepository.update(report.id, {
-        failureReason: `推送通知失败: ${err.message}`,
-      });
-      return false;
-    }
+    this.logger.log(`通知服务未注入，跳过推送: class=${report.className}`);
+    return false;
   }
 
   /**

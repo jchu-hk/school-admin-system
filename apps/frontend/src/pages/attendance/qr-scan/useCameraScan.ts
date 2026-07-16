@@ -1,4 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import jsQR from 'jsqr';
+
+// jsQR 缓存副本（避免 ESM 构建问题导致引用丢失）
+const _jsQR: typeof jsQR | null = jsQR || null;
 
 /**
  * useCameraScan — 摄像头管理与扫码逻辑
@@ -205,9 +209,7 @@ export function useCameraScan() {
     const canvas = canvasRef.current;
     if (!video || !canvas) return null;
 
-    // 延迟加载 jsQR（如果浏览器环境中可用）
-    const jsQR = (window as any).jsQR;
-    if (!jsQR) return null;
+    if (!_jsQR) return null;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;

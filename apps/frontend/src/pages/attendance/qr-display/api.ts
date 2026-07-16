@@ -110,12 +110,12 @@ export async function generateQrCode(
 }
 
 /**
- * GET /api/auth/me (or profile endpoint)
+ * GET /api/portal/profile (or other profile endpoint)
  * 获取当前学生用户信息
  */
 export async function fetchStudentProfile(): Promise<StudentProfile | null> {
   try {
-    const res = await request<ApiSuccessResponse<StudentProfile>>('/auth/me');
+    const res = await request<ApiSuccessResponse<StudentProfile>>('/portal/profile');
     return res.data;
   } catch {
     return null;

@@ -3,6 +3,7 @@ import CameraScanBox from './CameraScanBox';
 import ScanResultToast from './ScanResultToast';
 import RecentScans from './RecentScans';
 import { useCameraScan, ScanStatus } from './useCameraScan';
+import './qr-scan.css';
 
 /**
  * QrScanPage — 教职工扫码签到主页面
@@ -142,7 +143,7 @@ const QrScanPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto">
       {/* ===== 顶部工具栏 ===== */}
       <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-2">

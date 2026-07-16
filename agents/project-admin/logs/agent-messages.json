@@ -1,122 +1,5 @@
 [
   {
-    "timestamp": "2026-07-13T22:20:53Z",
-    "from": "CHECKER",
-    "to": "PM",
-    "message": "[CR-20260714-001] T01 CHECKER QC: FAIL — 发现5个问题：1) Git冲突标记未清除 2) 函数/模块总数未更新 3) 缺少v2.0.0-draft.1 changelog 4) QR码签名长度矛盾 5) 缺少v1.9.0 chglog & 跨模块表未更新",
-    "type": "failed",
-    "agent_status": {
-      "agent": "CHECKER",
-      "status": "idle",
-      "task": "[CR-20260714-001] T01 CHECKER QC: FAIL — 发现5个问题：1)"
-    }
-  },
-  {
-    "timestamp": "2026-07-13T22:21:54Z",
-    "from": "PM",
-    "to": "CHECKER",
-    "message": "[CR-20260714-001] T01 CHECKER Re-QC: 审查修复后的 Requirement Doc",
-    "type": "assign",
-    "agent_status": {
-      "agent": "CHECKER",
-      "status": "running",
-      "task": "[CR-20260714-001] T01 CHECKER Re-QC: 审查修复后的 Requir"
-    }
-  },
-  {
-    "timestamp": "2026-07-13T22:23:45Z",
-    "from": "CHECKER",
-    "to": "PM",
-    "message": "[CR-20260714-001] T01 CHECKER Re-QC: PASS - 二次审查全部7项检查通过，PM修复确认无误",
-    "type": "passed",
-    "agent_status": {
-      "agent": "CHECKER",
-      "status": "idle",
-      "task": "[CR-20260714-001] T01 CHECKER Re-QC: PASS - 二次审查全部"
-    }
-  },
-  {
-    "timestamp": "2026-07-13T22:24:16Z",
-    "from": "CHECKER",
-    "to": "PM",
-    "message": "[CR-20260714-001] T01 CHECKER Re-QC: PASS ✅ — 全部7项检查通过，版本 v2.0.0-draft.1 需求文档质量达标",
-    "type": "passed",
-    "agent_status": {
-      "agent": "CHECKER",
-      "status": "idle",
-      "task": "[CR-20260714-001] T01 CHECKER Re-QC: PASS ✅ — 全部7项"
-    }
-  },
-  {
-    "timestamp": "2026-07-13T22:24:23Z",
-    "from": "PM",
-    "to": "UI",
-    "message": "[CR-20260714-001] T03: 修改 Functional Spec — 学生/家长门户 FSD: RBAC矩阵+菜单结构+自服务模块详细规格",
-    "type": "assign",
-    "agent_status": {
-      "agent": "UI",
-      "status": "running",
-      "task": "[CR-20260714-001] T03: 修改 Functional Spec — 学生/家长门"
-    }
-  },
-  {
-    "timestamp": "2026-07-13T22:25:11Z",
-    "from": "REQ",
-    "to": "PM",
-    "message": "[CR-20260714-001] T02: 开始编写 QR考勤 FSD",
-    "type": "received"
-  },
-  {
-    "timestamp": "2026-07-13T22:25:13Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[CR-20260714-001] T03: 开始编写 学生/家长门户 FSD",
-    "type": "received"
-  },
-  {
-    "timestamp": "2026-07-13T22:31:55Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[CR-20260714-001] T02: 重新执行 — 创建 QR考勤 FSD (上次运行上下文丢失)",
-    "type": "assign",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[CR-20260714-001] T02: 重新执行 — 创建 QR考勤 FSD (上次运行上下文"
-    }
-  },
-  {
-    "timestamp": "2026-07-13T22:32:15Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[CR-20260714-001] T02: 开始编写 QR考勤 FSD",
-    "type": "received"
-  },
-  {
-    "timestamp": "2026-07-13T22:32:58Z",
-    "from": "PM",
-    "to": "HUMAN",
-    "message": "[CR-20260714-001] T01 CHECKER Re-QC: PASS ✅ — Requirement Doc (SPEC-COMPLETE.md) 已通过质检，版本 v2.0.0-draft.1",
-    "type": "passed",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "[CR-20260714-001] T01 CHECKER Re-QC: PASS ✅ — Requ"
-    }
-  },
-  {
-    "timestamp": "2026-07-13T22:33:52Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[CR-20260714-001] T02: 直接输出 QR考勤 FSD 文档 (subagent未产出文件, PM直接补充)",
-    "type": "assign",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[CR-20260714-001] T02: 直接输出 QR考勤 FSD 文档 (subagent未"
-    }
-  },
-  {
     "timestamp": "2026-07-13T22:33:56Z",
     "from": "PM",
     "to": "DEV",
@@ -1122,6 +1005,128 @@
       "agent": "DEV",
       "status": "idle",
       "task": "[CR-20260714-001 T25] 部署完成 - 新前端已部署到8081，SPA路由全部正常"
+    }
+  },
+  {
+    "timestamp": "2026-07-15T05:51:41Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "CR-20260714-001 T25 sub-task 2: rebuild backend with QR + portal modules\n\nThe portal-app (port 8081)",
+    "type": "spawn_check",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "CR-20260714-001 T25 sub-task 2: rebuild backend wi"
+    }
+  },
+  {
+    "timestamp": "2026-07-15T05:51:55Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[CR-20260714-001 T25 sub-task 2] 开始重建后端",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-15T06:00:49Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[CR-20260714-001 T25 sub-task 2] 后端重建完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[CR-20260714-001 T25 sub-task 2] 后端重建完成"
+    }
+  },
+  {
+    "timestamp": "2026-07-15T06:02:47Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "CR-20260714-001 T25 sub-task 3: fix QR service student lookup\\n\\nThe QR generate service (apps/backe",
+    "type": "spawn_check",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "CR-20260714-001 T25 sub-task 3: fix QR service stu"
+    }
+  },
+  {
+    "timestamp": "2026-07-15T06:03:01Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[CR-20260714-001 T25 sub-task 3] 开始修复QR service学生查找逻辑",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-15T06:13:39Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[CR-20260714-001 T25 sub-task 2+3] 后端重建完成，QR+Portal模块已部署",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[CR-20260714-001 T25 sub-task 2+3] 后端重建完成，QR+Porta"
+    }
+  },
+  {
+    "timestamp": "2026-07-15T07:40:24Z",
+    "from": "PM",
+    "to": "SYSTEM",
+    "message": "心跳检查 2026-07-15 15:40 系统正常",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "心跳检查 2026-07-15 15:40 系统正常"
+    }
+  },
+  {
+    "timestamp": "2026-07-15T08:25:58Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[CR-20260714-001 T25] portal-app 新增登录页 + 路由守卫，已部署验证",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[CR-20260714-001 T25] portal-app 新增登录页 + 路由守卫，已部署验"
+    }
+  },
+  {
+    "timestamp": "2026-07-15T10:02:37Z",
+    "from": "PM",
+    "to": "USER",
+    "message": "PM每日状态汇报(晚间)已发送",
+    "type": "done",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "PM每日状态汇报(晚间)已发送"
+    }
+  },
+  {
+    "timestamp": "2026-07-16T00:51:52Z",
+    "from": "PM",
+    "to": "USER",
+    "message": "查询任务概览",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "查询任务概览"
+    }
+  },
+  {
+    "timestamp": "2026-07-16T04:50:11Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "心跳检查 12:50 GMT+8 — Backend 200 ✅ Frontend 200 ✅ 系统稳定",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "心跳检查 12:50 GMT+8 — Backend 200 ✅ Frontend 200 ✅ 系统"
     }
   }
 ]

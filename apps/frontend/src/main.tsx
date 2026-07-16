@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import QrDisplayPage from './pages/attendance/qr-display/QrDisplayPage';
+import QrScanPage from './pages/attendance/qr-scan/QrScanPage';
 import ParentPortalLayout from './pages/portal/parent/ParentPortalLayout';
 import ChildProfilePage from './pages/portal/parent/ChildProfilePage';
 import ParentLeavePage from './pages/portal/parent/ParentLeavePage';
@@ -11,11 +12,13 @@ import StudentPortalLayout from './pages/portal/student/StudentPortalLayout';
 import StudentDashboard from './pages/portal/student/StudentDashboard';
 import StudentProfilePage from './pages/portal/student/profile/StudentProfilePage';
 import StudentLeavePage from './pages/portal/student/leave/StudentLeavePage';
+import LoginPage from './pages/login/LoginPage';
 import './pages/portal/student/leave/leave.css';
 import './styles/qr-display.css';
 import './pages/portal/parent/parent-portal.css';
 import './pages/portal/parent/leave/leave.css';
 import './styles/portal-student.css';
+import './styles/login.css';
 
 const PlaceholderPage: React.FC<{ title: string }> = ({ title }) => (
   <div className="portal-dashboard">
@@ -28,15 +31,56 @@ const PlaceholderPage: React.FC<{ title: string }> = ({ title }) => (
   </div>
 );
 
+/**
+ * RequireAuth — 路由守卫组件
+ * 如果 localStorage 中没有有效的 auth_token，重定向到登录页。
+ * 登录完成后会跳转回来源 URL。
+ */
+const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  const token = localStorage.getItem('auth_token');
+
+  if (!token) {
+    // 保存当前路径作为登录后的跳转目标
+    const redirect = encodeURIComponent(location.pathname + location.search);
+    return <Navigate to={`/login?redirect=${redirect}`} replace />;
+  }
+
+  return <>{children}</>;
+};
+
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* QR考勤展示页 — 学生入口 */}
-        <Route path="/attendance/qr" element={<QrDisplayPage />} />
+        {/* ── 登录页（公开） ── */}
+        <Route path="/login" element={<LoginPage />} />
 
-        {/* 家长门户 */}
-        <Route path="/portal/parent" element={<ParentPortalLayout />}>
+        {/* ── QR考勤展示页（学生扫码展示，需要登录） ── */}
+        <Route
+          path="/attendance/qr"
+          element={
+            <RequireAuth>
+              <QrDisplayPage />
+            </RequireAuth>
+          }
+        />
+
+        {/* ── QR考勤扫码页（教职工扫码签到，公开页面） ── */}
+        <Route
+          path="/attendance/scan"
+          element={<QrScanPage />}
+        />
+
+        {/* ── 家长门户（需要登录） ── */}
+        <Route
+          path="/portal/parent"
+          element={
+            <RequireAuth>
+              <ParentPortalLayout />
+            </RequireAuth>
+          }
+        >
           <Route index element={<Navigate to="children" replace />} />
           <Route path="children" element={<ChildProfilePage />} />
           <Route path="leaves" element={<ParentLeavePage />} />
@@ -44,15 +88,18 @@ const App: React.FC = () => {
           <Route path="settings" element={<AccountSettings />} />
         </Route>
 
-        {/* 学生门户 — 带侧边栏的布局路由 */}
-        <Route path="/portal/student" element={<StudentPortalLayout />}>
-          {/* 默认首页 — 概览卡片 */}
+        {/* ── 学生门户（需要登录） ── */}
+        <Route
+          path="/portal/student"
+          element={
+            <RequireAuth>
+              <StudentPortalLayout />
+            </RequireAuth>
+          }
+        >
           <Route index element={<StudentDashboard />} />
-          {/* 个人档案 */}
           <Route path="profile" element={<StudentProfilePage />} />
-          {/* 请假管理 */}
           <Route path="leave" element={<StudentLeavePage />} />
-          {/* 占位页面（由后续任务 T16/T17 实现完整页面） */}
           <Route path="attendance" element={<PlaceholderPage title="签到记录" />} />
           <Route path="notification" element={<PlaceholderPage title="通知中心" />} />
           <Route path="settings" element={<PlaceholderPage title="账户设置" />} />
@@ -61,8 +108,8 @@ const App: React.FC = () => {
         {/* 兼容旧路由 */}
         <Route path="/portal/profile" element={<Navigate to="/portal/student/profile" replace />} />
 
-        {/* 默认重定向到 QR 考勤页 */}
-        <Route path="*" element={<Navigate to="/attendance/qr" replace />} />
+        {/* 默认重定向到登录页 */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

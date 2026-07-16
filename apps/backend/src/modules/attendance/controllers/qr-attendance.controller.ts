@@ -62,37 +62,7 @@ export class QrAttendanceController {
   }
 
   // ==================== F-ATTQR-002: 扫码签到 ====================
-
-  @Post('scan')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: '教职工扫码记录学生签到' })
-  @ApiResponse({ status: 200, description: '签到成功' })
-  @ApiResponse({ status: 400, description: 'QR码过期/无效' })
-  @ApiResponse({ status: 403, description: '无扫码权限' })
-  @ApiResponse({ status: 409, description: '重复签到' })
-  @UseGuards(QrScanPermissionGuard)
-  @Roles(
-    UserRole.TEACHER,
-    UserRole.SCHOOL_STAFF,
-    UserRole.SCHOOL_DIRECTOR,
-    UserRole.SYSTEM_ADMIN,
-  )
-  async scan(@Body() dto: ScanQrDto, @Request() req) {
-    const staffUserId = req.user.id;
-    const ipAddress = req.ip;
-
-    const result = await this.qrScanService.scan(
-      dto.qr_code_data,
-      staffUserId,
-      dto.device_id,
-      ipAddress,
-    );
-
-    return {
-      success: true,
-      data: result,
-    };
-  }
+  // 已迁移至 ScanPublicController（公开无鉴权端点）
 
   // ==================== 离线批量同步 ====================
 

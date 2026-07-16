@@ -219,6 +219,29 @@ agent-PM (调度中枢) → DEV/QA/DEVOPS/CHECKER
 **解决方法**: docker cp + docker exec 直接更新运行容器
 
 
+## 2026-07-16 — QR扫码页Bug修复
+
+**问题**: `/attendance/scan` 页面打开后：
+1. 摄像头权限弹窗确认后无画面
+2. 页面不是移动端模式
+
+**根因**:
+1. **CameraScanBox条件渲染Bug**: `<video>` 元素被条件渲染包围：`{videoRef.current ? <video .../> : ...}`，由于初始渲染时 `videoRef.current === null`，video 元素从未被挂载，`ref` 无法被赋值，导致摄像头流无处渲染。
+2. **jsQR未正确导入**: `useCameraScan.ts` 中通过 `(window as any).jsQR` 访问，但Vite ESM构建后jsQR不是全局变量，始终为 `null`，导致QR码解码静默失败。
+3. **扫描线动画缺失**: `qr-scan.css` 定义在独立文件中但从未被 import。
+4. **无移动端约束**: 页面全宽渲染，没有 `max-w-md mx-auto` 限制。
+
+**前端修复**:
+1. CameraScanBox: 始终渲染 `<video>` 元素（加 `hidden` class 控制显示），保证 ref 可被赋值
+2. useCameraScan: 改为 `import jsQR from 'jsqr'` 模块化导入
+3. QrScanPage: import `qr-scan.css` 扫描线动画 + 加 `max-w-md mx-auto` 移动端约束
+
+**后端修复（反复401问题）**:
+- **根因**: `QrAttendanceController` 有 class-level `@UseGuards(JwtAuthGuard, RolesGuard)`，所有方法必须过JWT。`POST /api/attendance/qr/scan` 不带token返回401。
+- **关键坑**: Express 对相同路径的多个 handler 是链式执行，不会覆盖。第一个 handler（带guard）抛401后，第二个 handler 永远不会执行。
+- **修复**: (1) 新建 `ScanPublicController`（无 class-level guards）; (2) 从旧 controller 中彻底删除 scan 方法，防止路由冲突; (3) 在 AttendanceModule 中注册新 controller
+- **部署坑**: Docker 容器运行时入口是 `/app/apps/backend/dist/main.js`，不是 `/app/dist/main.js`
+
 ## 2026-07-12 — PM教训: 不应直接执行DEV的工作
 
 **问题**: #233 的代码修复（StudentPage class dropdown + status filter）由PM直接完成，没有 spawn DEV agent。

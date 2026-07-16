@@ -4,6 +4,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AttendanceController } from './attendance.controller';
 import { AttendanceService } from './attendance.service';
 import { QrAttendanceController } from './controllers/qr-attendance.controller';
+import { ScanPublicController } from './controllers/scan-public.controller';
 import { QrGenerationService } from './services/qr-generation.service';
 import { QrScanService } from './services/qr-scan.service';
 import { QrScanPermissionGuard } from './guards/qr-permission.guard';
@@ -38,6 +39,7 @@ import { ReportController } from './controllers/report.controller';
   controllers: [
     AttendanceController,
     QrAttendanceController,
+    ScanPublicController,
     SyncController,
     ReportController,
   ],

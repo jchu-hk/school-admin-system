@@ -75,26 +75,33 @@ export class QrGenerationService {
     nonce: string;
   }> {
     // 1. 校验学生档案存在
-    // studentUserId is the User.id of the student; we need to look up the Student profile
-    const studentProfile = await this.studentRepository.findOne({
-      where: { studentId: studentUserId } as any,
-    });
+    // studentUserId 是 User.id，需要通过 student_users 表查到 Student.id
+    const studentLink = await this.studentRepository.query<Array<{ student_id: string }>>(
+      'SELECT student_id FROM student_users WHERE user_id = $1',
+      [studentUserId],
+    );
 
-    // Fallback: try finding student by user id linked to student profile
-    const student = studentProfile?.id
-      ? studentProfile
-      : await this.studentRepository.findOne({
-          where: { id: studentUserId } as any,
-        });
+    let studentId: string | undefined;
+    if (studentLink && studentLink.length > 0) {
+      studentId = studentLink[0].student_id;
+    }
 
-    if (!student) {
+    if (!studentId) {
+      // Fallback: 也尝试直接用 student.student_id 列查找（兼容旧数据或直接匹配）
+      const studentByStudentId = await this.studentRepository.findOne({
+        where: { studentId: studentUserId } as any,
+      });
+      if (studentByStudentId) {
+        studentId = studentByStudentId.id;
+      }
+    }
+
+    if (!studentId) {
       throw new BadRequestException({
         error: 'STUDENT_NOT_FOUND',
         message: '学生档案不存在',
       });
     }
-
-    const studentId = student.id;
 
     // 2. 校验当天是否已签到
     const { start: todayStart, end: todayEnd } = todayRange();
@@ -113,8 +120,8 @@ export class QrGenerationService {
       throw new ConflictException({
         error: 'ALREADY_CHECKED_IN',
         message: '今日已签到',
-        checked_in_at: existingLog.createdAt
-          ? existingLog.createdAt.toISOString()
+        checked_in_at: existingLog.generatedAt
+          ? existingLog.generatedAt.toISOString()
           : undefined,
       });
     }

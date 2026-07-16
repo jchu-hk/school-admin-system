@@ -48,16 +48,16 @@ const CameraScanBox: React.FC<CameraScanBoxProps> = ({
 
   return (
     <div className="relative w-full overflow-hidden bg-black rounded-xl" style={{ aspectRatio: '4/3' }}>
-      {/* 视频预览 */}
-      {videoRef.current ? (
-        <video
-          ref={videoRef as React.Ref<HTMLVideoElement>}
-          className="w-full h-full object-cover"
-          playsInline
-          muted
-        />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center">
+      {/* 视频预览 — 始终渲染 video 元素，让 ref 可以被赋值 */}
+      <video
+        ref={videoRef as React.Ref<HTMLVideoElement>}
+        className={`w-full h-full object-cover ${isActive ? 'block' : 'hidden'}`}
+        playsInline
+        muted
+      />
+      {/* 加载/错误状态叠加层 — 在摄像头准备好之前显示 */}
+      {!isActive && (
+        <div className="absolute inset-0 flex items-center justify-center">
           {isInitializing && (
             <div className="text-center text-white">
               <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
