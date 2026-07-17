@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -58,5 +60,24 @@ export class RoleController {
   )
   findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Role> {
     return this.roleService.findOne(id);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: '更新角色权限' })
+  @ApiResponse({
+    status: 200,
+    description: '更新角色权限成功',
+    type: Role,
+  })
+  @ApiResponse({ status: 404, description: '角色不存在' })
+  @Roles(
+    UserRole.SYSTEM_ADMIN,
+    UserRole.SCHOOL_DIRECTOR,
+  )
+  updatePermissions(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateRoleDto: { permissions: string[] },
+  ): Promise<Role> {
+    return this.roleService.updatePermissions(id, updateRoleDto.permissions);
   }
 }

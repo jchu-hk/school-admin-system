@@ -22,6 +22,9 @@ export class Role {
 
   @Column({ name: 'is_system', default: false })
   isSystem: boolean;
+
+  @Column({ type: 'jsonb', default: [] })
+  permissions: string[];
 }
 
 @Injectable()
@@ -89,5 +92,11 @@ export class RoleService {
       `[RoleService] Getting users with role ${_roleName} in school ${schoolId}`,
     );
     return [];
+  }
+
+  async updatePermissions(roleId: string, permissions: string[]): Promise<Role> {
+    const role = await this.findOne(roleId);
+    role.permissions = permissions;
+    return this.roleRepository.save(role);
   }
 }

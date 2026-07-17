@@ -13,4 +13,7 @@ export class Role {
 
   @Column({ name: 'is_system', default: false })
   isSystem: boolean;
+
+  @Column({ type: 'jsonb', default: [] })
+  permissions: string[];
 }
