@@ -156,15 +156,16 @@ def write_message(
     }
 
     if status:
-        # When PM assigns a task to another agent, update the recipient's status
-        # (not the sender's status, which would incorrectly show PM as running)
-        status_agent = to_agent if (from_agent == "PM" and msg_type == "assign") else from_agent
+        # Each agent always updates its OWN status.
+        # PM does NOT set recipient's status — the recipient agent
+        # calls write_message itself when it starts/finishes work.
+        # This ensures the message log reflects real agent activity.
         new_msg["agent_status"] = {
-            "agent": status_agent,
+            "agent": from_agent,
             "status": status,
-            "task": message[:50],
+            "task": message[:80],
         }
-        write_agent_status(status_agent, status, message)
+        write_agent_status(from_agent, status, message)
 
     # Auto-update GitHub Issue labels
     sync_issue_labels_for_message(from_agent, to_agent, msg_type, message)

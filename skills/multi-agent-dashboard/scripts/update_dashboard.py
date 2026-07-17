@@ -49,7 +49,10 @@ def read_agent_messages(hours: int = 72) -> list:
         created = datetime.fromisoformat(m["timestamp"].replace("Z", "+00:00")).astimezone(TZ_GMT8)
         if created < cutoff:
             continue
-        if m["to"].lower() in ["system", ""] or m["from"].lower() in ["system"]:
+        # Hide noise but keep intentional reset messages (from PM)
+        to_lower = m["to"].lower()
+        from_lower = m["from"].lower()
+        if (to_lower in ["system", ""] and from_lower != "pm") or from_lower in ["system"]:
             continue
         filtered.append({**m, "_dt": created})
 
@@ -92,7 +95,7 @@ def _build_agents_html(status: dict) -> str:
             f'<div class="agent{running}">'
             f'<div class="agent-icon">{icons.get(agent, "❓")}</div>'
             f'<div class="agent-name">{agent}</div>'
-            f'<div class="agent-task">{task[:30]}</div>'
+            f'<div class="agent-task">{task[:80]}</div>'
             f'<span class="status-badge {badge_class}">{s}</span>'
             f'</div>'
         )
