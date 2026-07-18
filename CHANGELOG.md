@@ -7,7 +7,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.5.7] - 2026-07-10
+## [2.0.0-draft.1] — 2026-07-18
+
+### Added
+
+**新模块: QR签到考勤 (CR-20260714-001 Phase 1~4)**
+- QR码签到系统: 学生展示QR码 → 教职工扫码 → 签到记录
+- POST /api/attendance/qr/scan 公开API端点
+- CameraScanBox 摄像头组件 + jsQR解码
+- 离线签到批量同步
+- 签到记录查询与报表
+
+**新模块: 学生门户**
+- 个人档案管理
+- 电子请假申请
+
+**新模块: 家长门户**
+- 多孩子切换
+- 权限只读视图
+
+### Fixed
+
+**P0缺陷修复**
+- Fix #266: QR扫码提交后端500 — scanner_id UUID类型不匹配
+- Fix #256/#265: QR扫码页面摄像头无画面 + jsQR解码失败 + 后端401拦截
+- Fix #235: student角色保存权限配置失败 — 后端添加PATCH /api/roles/:id
+
+### Technical Details
+- Git Commit: `68e28b9` (latest), `adbbf28` (#235 fix), `cc0db46` (QR fixes)
+- Branch: `main`
+- QA验证: #256 PASSED, #259 全系统回归 PASSED (12/12模块)
+- 测试环境: http://localhost:8080 (admin-app) / http://localhost:8081 (portal-app)
+- Coze入口: https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/
+
+---
+
+## [1.6.0] — 2026-07-13
+
+### Fixed
+
+**Bug清零版本 — 所有已知Bug修复**
+- Fix #222: 新增学生返回500错误
+- Fix #223: 编辑学生班级不保存
+- Fix #224: 出勤概览人工录入按钮无响应
+- Fix #225: 搜索与下拉筛选不工作
+- Fix #229: 人工录入出勤日期选择无效果
+- Fix #213~#216: 环境清理 Phase 1-4
+
+### Technical Details
+- Git Commit: `d81c25e`
+- Branch: `main`
+- Status: Bug清零发布
+
+---
+
+## [1.5.7] — 2026-07-10
 
 ### Fixed
 

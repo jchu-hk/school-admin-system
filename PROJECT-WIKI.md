@@ -1,19 +1,18 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-16 11:55 GMT+8
-> Updated by: PM (CR-20260714-001 Phase 1~4 完成, Phase 5 待部署)
+> Last updated: 2026-07-18 14:00 GMT+8
+> Updated by: PM (所有P0/P1缺陷已修复关闭，待人工Sanity测试)
 
 ---
 
 ## 📦 Current Version
 
-- **Version**: v1.6.0 → v2.0.0-draft.1
-- **Release Date (当前)**: 2026-07-13 (v1.6.0 — 全部Bug清零)
-- **开发中版本**: v2.0.0 (CR-20260714-001 — QR考勤 + 学生/家长门户)
-- **Git Commit (当前)**: `d81c25e` (main)
-- **Branch**: `main` (dashboard自动更新commit; 新功能代码在workspace未提交)
-- **Status**: Bug清零发布(v1.6.0) + 新功能开发完成(Phase 1~4) → 等待Phase 5集成部署
-- **Tested By**: QA Agent (Phase 4 验证通过)
+- **Version**: v2.0.0-draft.1
+- **Release Date**: 2026-07-18 (所有P0/P1缺陷已修复)
+- **Git Commit (当前)**: `68e28b9` (latest), `adbbf28` (#235 fix), `cc0db46` (QR fixes)
+- **Branch**: `main`
+- **Status**: CR-20260714-001 Phase 1~4 完成 + Phase 5 T24全系统回归通过（12/12模块）— 等待人工Sanity测试后确认Phase 5方向
+- **Tested By**: QA Agent (Phase 4验证 + T24全系统回归通过)
 
 ## 🚀 CR-20260714-001 变更概览
 | `3f207a2` | 修复出勤记录按钮无响应 | Frontend |
@@ -55,31 +54,39 @@
 > 🔗 **旧前端 (教职工后台)**: [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/)
 > ⚠️ 新功能链接在 Coze Nginx 路由已配置好（指向8081端口），但等新前端容器部署完成后才真正可用。
 
-### Phase 5 待办任务 (P0)
+### Phase 5 待办任务 (P0) — ⏸️ 暂停，等待人工Sanity测试后决定方向
 
-| Issue | 任务 | 负责角色 | 依赖 |
-|-------|------|---------|------|
-| #259 | T24: 全系统回归测试 | QA | T20~T23完成 |
-| #261 | T25: 部署脚本 — DB迁移/Docker/环境变量 | DEVOPS | T07 |
-| #262 | T26: UAT准备 — 环境+用例+培训材料 | DEVOPS+Admin | T24+T25 |
-| #263 | T27: UAT执行 | Admin+QA | T26 |
-| #264 | T28: 生产发布 | DEVOPS | T27 |
+| Issue | 任务 | 状态 | 负责 | 依赖 |
+|-------|------|------|------|------|
+| ~~#259~~ | ~~T24: 全系统回归测试~~ | ✅ **已完成/已关闭** | QA | T20~T23 |
+| #261 | T25: 部署脚本 — DB迁移/Docker/环境变量 | ⏸️ 等待决策 | DEVOPS | 人工Sanity测试结果 |
+| #262 | T26: UAT准备 — 环境+用例+培训材料 | ⏸️ 等待决策 | DEVOPS+Admin | 人工Sanity测试结果 |
+| #263 | T27: UAT执行 | ⏸️ 等待决策 | Admin+QA | T26 |
+| #264 | T28: 生产发布 | ⏸️ 等待决策 | DEVOPS | T27 |
 
-> 所有Phase 5 Issue已创建但**未分配**，需PM按流程分配并启动。
+> **当前**: 等待Human全面人工Sanity测试后，根据结果决定是否继续Phase 5部署/UAT/发布
 
-### 测试账号 (v2.0.0新角色)
+### 测试账号 (v2.0.0-draft.1)
 
-| 角色 | 用户名 | 密码 | 说明 |
-|------|--------|------|------|
-| 系统管理员 | `qa_test` | `Admin123!` | 全部功能 |
-| 校务人员 | `staff1` | `Admin123!` | 日常管理 |
-| 教师 | `teacher1` | `Admin123!` | +需OTP |
-| **学生** | **`student1`** | **`Admin123!`** | **仅学生门户** (新) |
-| **家长** | **`parent1`** | **`Admin123!`** | **仅家长门户** (新) |
+| 角色 | 用户名 | 密码 | OTP | 说明 |
+|------|--------|------|-----|------|
+| 系统管理员 | `qa_test` | `Admin123!` | ❌ | 全部功能 |
+| 校务人员 | `staff1` | `Admin123!` | ❌ | 日常管理 |
+| 教师 | `teacher1` | `Admin123!` | ✅ | 教学管理 (需OTP) |
+| **学生** | **`student1`** | **`Admin123!`** | ❌ | **仅学生门户** (新) |
+| **家长** | **`parent1`** | **`Admin123!`** | ❌ | **仅家长门户** (新) |
 
-### 已知问题
+> ⚠️ OTP登录: `qa_test` 和 `staff1` 不需要OTP，推荐人工测试使用
+> 但新功能页面（QR扫码、门户）可能另有访问控制
 
-- **#235 P1**: `student`角色保存权限配置失败（未分配、未修复）
+### 已知问题（已全部修复）
+
+所有P0/P1缺陷已修复关闭  ✅
+- ~~#235 P1: student角色保存权限配置失败~~ → 已修复 ✅
+- ~~#256 P0: QR考勤测试~~ → 已通过关闭 ✅
+- ~~#265 P1: QR扫码无反应~~ → 已修复关闭 ✅
+- ~~#259 P0: 全系统回归测试~~ → 已通过关闭 ✅
+- ~~#266 P0: QR扫码后端500~~ → 已修复关闭 ✅
 
 ---
 
@@ -247,22 +254,27 @@ Browser → Cloudflare Tunnel → Frontend (Next.js :3001)
 
 | Priority | Count | Issues |
 |----------|-------|--------|
-| P0 | 6 | CR-20260714-001 Phase 5 (T24~T28 + T29) |
-| P1 | 1 | #235 student角色权限保存失败 |
+| P0 | 0 | ✅ 所有P0已修复关闭 |
+| P1 | 0 | ✅ 所有P1已修复关闭 |
 | P2 | ~10 | Core module backlog |
 | P3 | ~5 | AI features, TypeORM warnings |
 | P4 | 2 | Enhancements (teacher recruitment, meeting management) |
+
+> **2026-07-18**: 所有P0/P1缺陷已清零 ✅ 待人工Sanity测试 |
 
 ### Key Issues
 
 | # | Title | Status | Priority |
 |---|-------|--------|----------|
-| #259 | T24: 全系统回归测试 | open (unassigned) | P0 |
-| #261 | T25: 部署脚本 | open (unassigned) | P0 |
-| #262 | T26: UAT准备 | open (unassigned) | P0 |
-| #263 | T27: UAT执行 | open (unassigned) | P0 |
-| #264 | T28: 生产发布 | open (unassigned) | P0 |
-| #235 | student角色权限保存失败 | open (unassigned) | P1 |
+| ~~#256~~ | ~~T21: QR考勤测试~~ | ✅ **CLOSED** (QA验证通过) | ~P0~ |
+| ~~#259~~ | ~~T24: 全系统回归测试~~ | ✅ **CLOSED** (12/12模块通过) | ~P0~ |
+| ~~#266~~ | ~~QR扫码后端500~~ | ✅ **CLOSED** | ~P0~ |
+| ~~#235~~ | ~~student角色权限保存~~ | ✅ **CLOSED** (commit adbbf28) | ~P1~ |
+| ~~#265~~ | ~~QR扫码无反应~~ | ✅ **CLOSED** (含#256修复) | ~P1~ |
+| #261 | T25: 部署脚本 | ⏸️ 等待决策 | P0 |
+| #262 | T26: UAT准备 | ⏸️ 等待决策 | P0 |
+| #263 | T27: UAT执行 | ⏸️ 等待决策 | P0 |
+| #264 | T28: 生产发布 | ⏸️ 等待决策 | P0 |
 | #140 | TypeORM warnings fix | ready-for-review | P3 |
 | #184 | Teacher recruitment module | backlog | P4 |
 | #182 | Meeting management module | backlog | P4 |
