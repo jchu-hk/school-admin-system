@@ -252,7 +252,9 @@ export default function LeavePage() {
   const fetchTeachers = useCallback(async () => {
     try {
       const response = await apiClient.get('/users?role=teacher&pageSize=100')
-      setTeachers(response.data || [])
+      // #272: Axios response.data wraps the body - use .data?.data or safely coerce
+      const teacherData = response.data?.data || response.data
+      setTeachers(Array.isArray(teacherData) ? teacherData : [])
     } catch (error) {
       console.error('Failed to fetch teachers:', error)
     }

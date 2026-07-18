@@ -153,6 +153,20 @@ export default function UserPage() {
   const [departmentFilter, setDepartmentFilter] = useState('')
   const [activeTab, setActiveTab] = useState<'users' | 'roles'>('users')
   
+  // Get current user info
+  const getCurrentUser = (): { id: string; role: UserRole } | null => {
+    const userStr = localStorage.getItem('user')
+    if (userStr) {
+      try {
+        return JSON.parse(userStr)
+      } catch {
+        return null
+      }
+    }
+    return null
+  }
+  const currentUser = getCurrentUser()
+  
   // Modal states
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
@@ -283,6 +297,11 @@ export default function UserPage() {
       fetchUsers()
     } catch (error) {
       console.error('Failed to delete user:', error)
+      if (isAxiosError(error) && error.response?.status === 403) {
+        alert('删除用户失败：权限不足，请联系管理员') // #268: show user feedback
+      } else {
+        alert('删除用户失败：' + (error instanceof Error ? error.message : '系统错误'))
+      }
     }
   }
 
@@ -293,6 +312,7 @@ export default function UserPage() {
       fetchUsers()
     } catch (error) {
       console.error('Failed to toggle status:', error)
+      alert('操作失败：' + (isAxiosError(error) && error.response?.status === 403 ? '权限不足' : '系统错误')) // #270: show user feedback
     }
   }
 
@@ -432,7 +452,7 @@ export default function UserPage() {
               </button>
               <button
                 onClick={() => {
-                  reset()
+                  reset({ username: '', name: '', role: UserRole.SCHOOL_STAFF, department: '', phone: '', email: '', password: '' }) // #271: clear form state
                   setShowCreateModal(true)
                 }}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
@@ -615,16 +635,18 @@ export default function UserPage() {
                             >
                               {user.status === UserStatus.ACTIVE ? <XCircle size={18} /> : <CheckCircle size={18} />}
                             </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                openDeleteConfirm(user)
-                              }}
-                              className="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition"
-                              title="删除"
-                            >
-                              <Trash2 size={18} />
-                            </button>
+                            {currentUser?.role !== UserRole.SCHOOL_STAFF && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  openDeleteConfirm(user)
+                                }}
+                                className="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition"
+                                title="删除"
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -1213,7 +1235,11 @@ function PermissionModal({ role, onClose }: PermissionModalProps) {
       onClose()
     } catch (error) {
       console.error('Failed to save permissions:', error)
-      alert('保存权限配置失败，请重试')
+      if (isAxiosError(error) && error.response?.status === 403) {
+        alert('保存权限配置失败：权限不足，请联系管理员') // #271: distinguish 403 vs 500
+      } else {
+        alert('保存权限配置失败：系统错误，请重试')
+      }
     } finally {
       setIsSaving(false)
     }
