@@ -47,14 +47,14 @@ export default function AboutPage() {
         setLoading(false)
         // Fallback to default version info
         setVersionInfo({
-          version: 'v1.5.7',
-          buildNumber: 'build-20260704-01',
-          buildDate: '2026-07-04',
+          version: 'v1.6.1',
+          buildNumber: 'build-20260718-01',
+          buildDate: '2026-07-18',
           gitCommit: 'unknown',
           gitBranch: 'main',
           environment: 'testing',
           changelog: [
-            { build: 'build-20260704-01', date: '2026-07-04', changes: ['Bug修复: 学生表单、出勤记录、资产管理、用户管理'] }
+            { build: 'build-20260718-01', date: '2026-07-18', changes: ['P0紧急修复: 7项缺陷 #267-#273 - 资产租借/用户管理/请假/家长查询'] }
           ]
         })
       })
