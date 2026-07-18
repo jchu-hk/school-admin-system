@@ -70,34 +70,6 @@ export class AssetController {
     return this.assetService.getAssetStatistics(schoolId);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: '获取资产详情' })
-  @ApiResponse({ status: 200, description: '获取资产详情成功', type: Asset })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  findOneAsset(@Param('id', ParseUUIDPipe) id: string) {
-    return this.assetService.findOneAsset(id);
-  }
-
-  @Put(':id')
-  @ApiOperation({ summary: '更新资产' })
-  @ApiResponse({ status: 200, description: '资产更新成功', type: Asset })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
-  updateAsset(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateDto: UpdateAssetDto,
-  ) {
-    return this.assetService.updateAsset(id, updateDto);
-  }
-
-  @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: '删除资产' })
-  @ApiResponse({ status: 204, description: '资产删除成功' })
-  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
-  removeAsset(@Param('id', ParseUUIDPipe) id: string) {
-    return this.assetService.removeAsset(id);
-  }
-
   // ============ Asset Rental CRUD ============
 
   @Post('rentals')
@@ -131,6 +103,34 @@ export class AssetController {
   @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
   getOverdueRentals() {
     return this.assetService.getOverdueRentals();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: '获取资产详情' })
+  @ApiResponse({ status: 200, description: '获取资产详情成功', type: Asset })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  findOneAsset(@Param('id', ParseUUIDPipe) id: string) {
+    return this.assetService.findOneAsset(id);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: '更新资产' })
+  @ApiResponse({ status: 200, description: '资产更新成功', type: Asset })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR, UserRole.SCHOOL_STAFF)
+  updateAsset(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateDto: UpdateAssetDto,
+  ) {
+    return this.assetService.updateAsset(id, updateDto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: '删除资产' })
+  @ApiResponse({ status: 204, description: '资产删除成功' })
+  @Roles(UserRole.SYSTEM_ADMIN, UserRole.SCHOOL_DIRECTOR)
+  removeAsset(@Param('id', ParseUUIDPipe) id: string) {
+    return this.assetService.removeAsset(id);
   }
 
   @Get('rentals/:id')
