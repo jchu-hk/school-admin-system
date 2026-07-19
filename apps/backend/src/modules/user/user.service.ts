@@ -132,7 +132,12 @@ export class UserService {
       .getMany();
 
     const primaryLinkMap = new Map<string, string>();
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     for (const link of links) {
+      // Skip non-UUID student IDs to prevent database errors
+      if (!uuidRegex.test(link.studentId)) {
+        continue;
+      }
       primaryLinkMap.set(link.parentId, link.studentId);
     }
 
@@ -141,6 +146,9 @@ export class UserService {
         const primaryStudentId = primaryLinkMap.get(user.id);
         if (primaryStudentId) {
           user.relatedStudentId = primaryStudentId;
+        } else {
+          // No valid linked student found; set to null to avoid UUID cast errors
+          user.relatedStudentId = null;
         }
       }
     }
