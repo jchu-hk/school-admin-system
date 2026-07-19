@@ -357,6 +357,7 @@ export class StudentService {
       ...(dto.address !== undefined && { address: dto.address }),
       ...(dto.phone !== undefined && { phone: dto.phone }),
       ...(dto.email !== undefined && { email: dto.email }),
+      ...(dto.admission_date && { admissionDate: new Date(dto.admission_date) }),
       ...(dto.guardian_name !== undefined && {
         guardianName: dto.guardian_name,
       }),

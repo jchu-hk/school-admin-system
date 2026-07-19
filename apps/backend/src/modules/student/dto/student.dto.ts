@@ -162,6 +162,11 @@ export class UpdateStudentDto {
   @MaxLength(255)
   email?: string;
 
+  @ApiPropertyOptional({ description: '入学日期' })
+  @IsDateString()
+  @IsOptional()
+  admission_date?: string;
+
   @ApiPropertyOptional({ description: '监护人姓名' })
   @IsString()
   @IsOptional()
