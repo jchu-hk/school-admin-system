@@ -477,7 +477,7 @@ export default function StudentPage() {
     try {
       // Validate with strict schema before submission
       const validated = studentSubmissionSchema.parse(data)
-      await apiClient.patch(`/students/${selectedStudent.id}`, {
+      await apiClient.put(`/students/${selectedStudent.id}`, {
         ...validated,
         gender: validated.gender || undefined, // send undefined instead of empty string
       })
@@ -516,14 +516,24 @@ export default function StudentPage() {
     }
   }
 
+  const toDateInputValue = (dateStr: string | null | undefined): string => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const openEditModal = (student: Student) => {
     setSelectedStudent(student)
     reset({
       name_zh: student.name_zh,
       name_en: student.name_en || '',
       gender: student.gender,
-      birth_date: student.birth_date,
-      admission_date: student.admission_date,
+      birth_date: toDateInputValue(student.birth_date),
+      admission_date: toDateInputValue(student.admission_date),
       hk_id: student.hk_id || '',
       phone: student.phone || '',
       email: student.email || '',
