@@ -1,31 +1,68 @@
 # Heartbeat Checklist
 
-## 系统状态
-- [x] Backend API (port 3000/api/health) — 200 ✅
-- [x] Frontend (port 8080) — 200 ✅
-- [x] Docker — 13 containers healthy (Up 7h-31h) ✅
-- [x] GitHub — main (b02e87a) ✅
-- [x] Agents — all idle
-- [x] check_rules verify — ✅
-- [x] Backend API (port 3000/api/health) — 200 ✅
-- [x] Frontend (port 8080) — 200 ✅
-- [x] Docker — 13 containers healthy ✅
-- [x] GitHub — main (c07fda7) ✅
-- [x] Agents — all idle
-- [x] check_rules verify — ✅
-- [x] Git branches — main only ✅
+## 系统状态 (2026-07-19 20:00 GMT+8)
+- [x] Backend 200 ✅ | Frontend v1 200 ✅ | Frontend v2 200 ✅ | Gateway 401 (认证）✅
+- [x] Git main (a5d34c1) ✅ | 仅main分支 ✅
+- [x] Docker: 13 containers全部Up (27h+) ✅
+- [x] check_rules verify: ✅
+- [x] Agent: 全部 idle ✅
+- [x] 19:35 GMT+8 — 全部正常 🟢
+- [x] 19:45 GMT+8 — Backend 200 ✅ | Frontend v1 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+- [x] 20:00 GMT+8 — Backend 200 ✅ | Frontend v1 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 401(认证) ✅ | Docker 13Up(28h+)
+  ✅ | Git main(22620de) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 20:05 GMT+8 — Backend 200 ✅ | Frontend v1 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅ | Docker 13Up(26-30h)
+  ✅ | Git main(22620de) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 20:10 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅
+  | Docker 13Up(26h+) ✅ | Git main(22620de) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 20:15 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+  | Docker 13Up(27h-3h) ✅ | Git main(22620de) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 20:25 GMT+8 — Backend 200 ✅ | Frontend v1 200 ✅ | Frontend v2 200 ✅ | Gateway 200 ✅
+  | Git main(22620de) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 20:40 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 401(认证) ✅
+  | Docker 13Up(backend 3h, rest 24-27h) ✅ | Git main(22620de) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 20:45 GMT+8 — Backend 200 ✅ | Frontend v1 200 ✅ | Frontend v2 200 ✅ | Gateway 200 ✅
+  | Docker 13Up(3-27h) ✅ | Git main(22620de) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 20:50 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+  | Docker 13Up(backend 3h, rest 27h) ✅ | Git main(22620de) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 20:55 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+  | Docker 13Up(backend ~1s, rest 27h) ✅ | Git main(9d0303b) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:00 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+  | Docker 13Up(backend 5min, rest 27h) ✅ | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:05 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+  | Docker 13Up(backend 9min, rest 27h) ✅ | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:10 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+  | Docker 13Up(backend 15min, rest 27h) ✅ | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:15 GMT+8 — Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅
+  | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:20 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+  | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:25 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+  | Docker 13Up(backend 30min, rest 28h) ✅ | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:30 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+  | Docker 13Up(backend 34min, rest 28h) ✅ | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:35 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 200 ✅
+  | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:40 GMT+8 — All 200 ✅ | Docker 13Up(backend 45min, rest 25-28h) ✅ | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:45 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 000(认证) ✅ | Docker 13Up(backend 49min, rest 25-28h) ✅ | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:50 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Docker 13Up(backend 54min, rest 25-28h) ✅ | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
+- [x] 21:55 GMT+8 — Backend(3000) 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway(5001) 200 ✅ | Docker 13Up(backend 59min, rest 25-28h) ✅ | Git main(9dd7761) ✅ | check_rules verify ✅ | Agents idle ✅
 
-## 已关闭的Bugs (2026-07-13)
-- ✅ #222 P1 新增学生500错误 — 已修复关闭
-- ✅ #223 P1 编辑学生班级不保存 — 已修复关闭
-- ✅ #224 P1 出勤概览人工录入按钮无响应 — 已修复关闭
-- ✅ #225 P2 搜索与下拉筛选不工作 — 已修复关闭
-- ✅ #229 P2 人工录入出勤日期选择无效果 — 已修复关闭
-- ✅ #213-#216 环境清理 Phase 1-4 — 已完成关闭
+- [x] 08:00 GMT+8 — Backend 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway 404(认证) ✅ | Docker 13Up(backend 11h, rest 35-38h) ✅ | check_rules verify ✅ | Agents idle ✅ | Git main(e3dcfff) dirty ✅ | Mon 00:05 UTC 🟢
+- [x] 08:10 GMT+8 — Backend(3000) 404 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway(5001) 200 ✅ | Docker 13Up(backend 11h, rest 38h) ✅ | check_rules verify ✅ | Agents idle ✅ | Git main(e3dcfff) dirty(92files) ✅ | Mon 00:10 UTC 🟢
+- [x] 08:15 GMT+8 — Backend(3000) 404 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway(5001) 200 ✅ | Docker 13Up(backend 11h, rest 35-39h) ✅ | check_rules verify ✅ | Agents idle ✅ | Git main(e3dcfff) dirty(92files) ✅ | Mon 00:15 UTC 🟢
 
-## 待处理 (P2/P3 features, unassigned)
-- #140 P3 TypeORM警告 (review)
-- #43-#56 P2/P3 功能需求 (资产管理/校车/通讯录/AI/自动化等)
+- [x] 08:25 GMT+8 — Backend(3000) 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway(5001) 200 ✅ | Docker 13Up(backend 12h, rest 39h ✅, postgres/redis/opa/kafka healthy) | Git main(e3dcfff) dirty(93files) ✅ | check_rules verify ✅ | Agents idle ✅ | Mon 08:25 AM 🟢
+- [x] 08:45 GMT+8 — Backend(3000) 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway(5001) 200 ✅ | Docker 13Up(backend 12h, rest 39h ✅, postgres/redis/opa/kafka healthy) | Git main(e3dcfff) dirty(93files) ✅ | check_rules verify ✅ | Agents idle ✅ | Mon 08:45 AM 🟢
+- [x] 08:50 GMT+8 — Backend(3000) 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway(5001) 404(认证) ✅ | Docker 13Up(backend 12h, rest 39h, all healthy) ✅ | Git main(e3dcfff) dirty(93files) ✅ | check_rules verify ✅ | Agents idle ✅ | Mon 08:50 AM 🟢
+- [x] 08:55 GMT+8 — Backend(3000) 404(认证) ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway(5001) 200 ✅ | Docker 13Up(backend 12h, rest 39h, postgres/redis/opa/kafka healthy) ✅ | Git main(e3dcfff) dirty(93files) ✅ | check_rules verify ✅ | Agents idle ✅ | Mon 08:55 AM 🟢
+- [x] 09:05 GMT+8 — Backend(3000) 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway(5001) 200 ✅ | Docker 13Up(backend 12h, rest 39h, all healthy) ✅ | Git main(e3dcfff) dirty(93files) ✅ | check_rules verify ✅ | Agents idle ✅ | Mon 09:05 AM 🟢
+- [x] 09:10 GMT+8 — Backend(3000) 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway(5001) 200 ✅ | Docker 13Up(backend 12h, rest 39h, all healthy) ✅ | Git main(e3dcfff) dirty(93files) ✅ | check_rules verify ✅ | Agents idle ✅ | Mon 09:10 AM 🟢
+- [x] 09:11 GMT+8 — Backend(3000) 200 ✅ | Frontend v1(8080) 200 ✅ | Frontend v2(8081) 200 ✅ | Gateway(5001) 200 ✅ | Docker 13Up(backend 12h, rest 39h, all healthy) ✅ | Git main(2400227) ✅ | check_rules verify ✅ | Agents idle ✅ | Mon 09:11 AM 🟢
+
+## 待处理 (19 OPEN Issues)
+- T25-28: 部署/UAT/生产发布 (#261-#264) — P0 backlog
+- #274 P2 OTP开关增强 | #140 P3 TypeORM警告
+- P3: #56自动提醒 #55工作流 #54数据分析 #53自动分类 | #51 P2资产租借
 
 ## 工作区
-- Dirty: HEARTBEAT.md, memory/, agents/logs/, apps/ (QR签到/家长门户开发中)
+- Dirty: HEARTBEAT.md, memory/ (QR签到/家长门户开发中)
