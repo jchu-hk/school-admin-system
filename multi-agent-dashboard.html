@@ -54,14 +54,14 @@
                 <button class="tab-btn" id="btn-t1" onclick="showTab('t1')">📅 T-1 昨日</button>
             </div>
             <div id="tab-t0" class="tab-panel active">
-                <div class="message-list"><div class="message-item msg-passed"><div class="message-time">16:30</div><div class="message-content">PM → SYSTEM: [Heartbeat 16:30] 系统稳定运行</div></div><div class="message-item msg-passed"><div class="message-time">10:20</div><div class="message-content">PM → PM: 心跳: 10:20系统正常</div></div></div>
+                <div class="message-list"><div class="message-item msg-default">暂无消息</div></div>
             </div>
             <div id="tab-t1" class="tab-panel">
-                <div class="message-list"><div class="message-item msg-assign"><div class="message-time">23:51</div><div class="message-content">PM → DEVOPS: [Grafana Fix] OPS Health Overview dashboard query fix deploy</div></div><div class="message-item msg-passed"><div class="message-time">19:35</div><div class="message-content">PM → HEARTBEAT: 19:35 GMT+8 心跳检查完成 — All 🟢</div></div><div class="message-item msg-received"><div class="message-time">19:35</div><div class="message-content">PM → HEARTBEAT: 19:35 GMT+8 心跳检查开始</div></div><div class="message-item msg-info"><div class="message-time">14:20</div><div class="message-content">PM → PM: Heartbeat 14:20 — all ✅</div></div><div class="message-item msg-info"><div class="message-time">13:00</div><div class="message-content">PM → SYSTEM: Heartbeat 13:00 — all ✅</div></div><div class="message-item msg-info"><div class="message-time">07:04</div><div class="message-content">CHECKER → PM: 状态同步: 等待任务 (idle)</div></div><div class="message-item msg-info"><div class="message-time">07:04</div><div class="message-content">REQ → PM: 状态同步: 等待任务 (idle)</div></div><div class="message-item msg-info"><div class="message-time">07:04</div><div class="message-content">ARCH → PM: 状态同步: 等待任务 (idle)</div></div><div class="message-item msg-info"><div class="message-time">07:03</div><div class="message-content">PM → SYSTEM: [Grafana] 修复OPS Dashboard JSON格式+重建容器 (2026-07-21 07:02)</div></div><div class="message-item msg-info"><div class="message-time">07:03</div><div class="message-content">PM → SYSTEM: [Grafana] 修复OPS Dashboard JSON格式+重建容器 (2026-07-21 07:02)</div></div><div class="message-item msg-passed"><div class="message-time">01:10</div><div class="message-content">DEVOPS → PM: Grafana OPS监控面板配置完成: Docker容器指标通过host-exporter(9393)采集, Prom</div></div></div>
+                <div class="message-list"><div class="message-item msg-passed"><div class="message-time">16:30</div><div class="message-content">PM → SYSTEM: [Heartbeat 16:30] 系统稳定运行</div></div><div class="message-item msg-passed"><div class="message-time">10:20</div><div class="message-content">PM → PM: 心跳: 10:20系统正常</div></div></div>
             </div>
         </div>
 
-        <div class="refresh">Updated: 2026-07-22 16:30:09 (GMT+8) | Source: agent-status.json</div>
+        <div class="refresh">Updated: 2026-07-23 06:00:01 (GMT+8) | Source: agent-status.json</div>
     </div>
     <script>var _btns=document.querySelectorAll('.tab-btn');function showTab(id){var ps=document.querySelectorAll('.tab-panel');for(var i=0;i<ps.length;i++)ps[i].classList.remove('active');for(var i=0;i<_btns.length;i++)_btns[i].classList.remove('active');document.getElementById('tab-'+id).classList.add('active');for(var i=0;i<_btns.length;i++){var oc=_btns[i].getAttribute('onclick')||'';if(oc.indexOf(id)>=0){_btns[i].classList.add('active');break}}}</script>
 </body>
