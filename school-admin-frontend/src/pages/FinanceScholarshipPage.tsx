@@ -78,7 +78,7 @@ const FinanceScholarshipPage: React.FC = () => {
     setError(null);
 
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
       const token = localStorage.getItem('auth_token');
 
       if (activeTab === 'scholarships') {
@@ -86,7 +86,7 @@ const FinanceScholarshipPage: React.FC = () => {
         if (selectedStatus) params.append('status', selectedStatus);
         if (selectedAcademicYear) params.append('academicYear', selectedAcademicYear);
 
-        const response = await fetch(`${API_BASE_URL}/scholarship/scholarships?${params}`, {
+        const response = await fetch(`${API_BASE_URL}/scholarships?${params}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -98,7 +98,7 @@ const FinanceScholarshipPage: React.FC = () => {
         const params = new URLSearchParams();
         if (selectedStatus) params.append('status', selectedStatus);
 
-        const response = await fetch(`${API_BASE_URL}/scholarship/applications?${params}`, {
+        const response = await fetch(`${API_BASE_URL}/scholarships/applications?${params}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
