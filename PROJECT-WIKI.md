@@ -1,7 +1,7 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-18 14:00 GMT+8
-> Updated by: PM (所有P0/P1缺陷已修复关闭，待人工Sanity测试)
+> Last updated: 2026-07-21 13:37 GMT+8
+> Updated by: PM (OPS监控工具已配置上线，待人工测试)
 
 ---
 
@@ -13,82 +13,6 @@
 - **Branch**: `main`
 - **Status**: CR-20260714-001 Phase 1~4 完成 + Phase 5 T24全系统回归通过（12/12模块）— 等待人工Sanity测试后确认Phase 5方向
 - **Tested By**: QA Agent (Phase 4验证 + T24全系统回归通过)
-
-## 🚀 CR-20260714-001 变更概览
-| `3f207a2` | 修复出勤记录按钮无响应 | Frontend |
-| `24787b4` | 添加inquiry实体@Column装饰器 | Backend |
-| `83358fe` | API分页参数limit改为pageSize | Backend |
-
-**注意**: Coze环境可能未包含以上所有修复
-
-
-### CR-20260714-001 变更内容
-
-| 编号 | 模块 | 状态 | 进度 |
-|------|------|------|------|
-| Phase 1 | 文档编制 (T01~T07) | ✅ 已完成 | CHECKER QC通过 |
-| Phase 2 | 后端编码 (T08~T12) | ✅ 已完成 | CHECKER Code Review通过 |
-| Phase 3 | 前端编码 (T13~T19) | ✅ 已完成 | CHECKER Code Review通过 |
-| Phase 4 | QA验证 (T20~T23) | ✅ 已完成 | 所有测试通过 |
-| Phase 5 | **集成部署 (T24~T28)** | 🔄 进行中 | T25子任务完成✅（新前端容器已部署到8081）|
-| Phase 6 | 上线后 (T29~T30) | ⏳ 待启动 | 依赖Phase 5 |
-
-**完整计划**: `docs/CHANGE-REQUEST-PLAN-20260714.md`
-
-### 新功能访问方式
-
-新功能代码在 `apps/frontend/` 目录下（独立的React前端应用），**尚未部署到Docker容器**。
-
-| 功能 | 路由 | 访问链接 (Coze) |
-|------|------|-----------------|
-| QR考勤 — 学生展示 | `/attendance/qr` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr) |
-| QR考勤 — 教职工扫码 | `/attendance/scan` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/scan](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/scan) |
-| 学生门户 — 首页 | `/portal/student` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student) |
-| 学生门户 — 个人档案 | `/portal/student/profile` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student/profile](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student/profile) |
-| 学生门户 — 电子请假 | `/portal/student/leave` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student/leave](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student/leave) |
-| 家长门户 — 孩子列表 | `/portal/parent/children` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/children](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/children) |
-| 家长门户 — 请假管理 | `/portal/parent/leaves` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/leaves](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/leaves) |
-| 家长门户 — 通知中心 | `/portal/parent/notifications` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/notifications](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/notifications) |
-| 家长门户 — 账户设置 | `/portal/parent/settings` | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/settings](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent/settings) |
-
-> 🔗 **旧前端 (教职工后台)**: [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/)
-> ⚠️ 新功能链接在 Coze Nginx 路由已配置好（指向8081端口），但等新前端容器部署完成后才真正可用。
-
-### Phase 5 待办任务 (P0) — ⏸️ 暂停，等待人工Sanity测试后决定方向
-
-| Issue | 任务 | 状态 | 负责 | 依赖 |
-|-------|------|------|------|------|
-| ~~#259~~ | ~~T24: 全系统回归测试~~ | ✅ **已完成/已关闭** | QA | T20~T23 |
-| #261 | T25: 部署脚本 — DB迁移/Docker/环境变量 | ⏸️ 等待决策 | DEVOPS | 人工Sanity测试结果 |
-| #262 | T26: UAT准备 — 环境+用例+培训材料 | ⏸️ 等待决策 | DEVOPS+Admin | 人工Sanity测试结果 |
-| #263 | T27: UAT执行 | ⏸️ 等待决策 | Admin+QA | T26 |
-| #264 | T28: 生产发布 | ⏸️ 等待决策 | DEVOPS | T27 |
-
-> **当前**: 等待Human全面人工Sanity测试后，根据结果决定是否继续Phase 5部署/UAT/发布
-
-### 测试账号 (v2.0.0-draft.1)
-
-| 角色 | 用户名 | 密码 | OTP | 说明 |
-|------|--------|------|-----|------|
-| 系统管理员 | `qa_test` | `Admin123!` | ❌ | 全部功能 |
-| 校务人员 | `staff1` | `Admin123!` | ❌ | 日常管理 |
-| 教师 | `teacher1` | `Admin123!` | ✅ | 教学管理 (需OTP) |
-| **学生** | **`student1`** | **`Admin123!`** | ❌ | **仅学生门户** (新) |
-| **家长** | **`parent1`** | **`Admin123!`** | ❌ | **仅家长门户** (新) |
-
-> ⚠️ OTP登录: `qa_test` 和 `staff1` 不需要OTP，推荐人工测试使用
-> 但新功能页面（QR扫码、门户）可能另有访问控制
-
-### 已知问题（已全部修复）
-
-所有P0/P1缺陷已修复关闭  ✅
-- ~~#235 P1: student角色保存权限配置失败~~ → 已修复 ✅
-- ~~#256 P0: QR考勤测试~~ → 已通过关闭 ✅
-- ~~#265 P1: QR扫码无反应~~ → 已修复关闭 ✅
-- ~~#259 P0: 全系统回归测试~~ → 已通过关闭 ✅
-- ~~#266 P0: QR扫码后端500~~ → 已修复关闭 ✅
-
----
 
 ## 🐳 Docker 服务清单
 
@@ -167,6 +91,11 @@ curl http://localhost:8080/school-admin/about | grep version
 | Coze — portal-app | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student) | ☁️ Coze | ✅ 已连通 |
 | Cloudflare Tunnel | `https://...trycloudflare.com` | ⚡ 临时代理 | ⚠️ URL会变化 |
 | Coze 入口 | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/) | ☁️ Coze | → OpenClaw Gateway |
+| | | | |
+| **🛠️ OPS Monitoring Tools** | | | |
+| Grafana Dashboards | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/grafana/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/grafana/) | 🔐 ops | `admin` / `admin123` |
+| Prometheus Metrics | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/prometheus/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/prometheus/) | 🔐 ops | 开源监控 |
+| Alertmanager Alerts | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/alertmanager/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/alertmanager/) | 🔐 ops | 告警管理 |
 
 **Coze 基本 URL**: [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/)
 
@@ -228,13 +157,13 @@ Browser → Cloudflare Tunnel → Frontend (Next.js :3001)
 
 | 角色 | 用户名 | 密码 | OTP | 权限 | 验证状态 |
 |------|--------|------|-----|------|---------|
-| **系统管理员** | **qa_test** | `Admin123!` | ❌ | **全部功能** | ✅ **推荐** |
+| **系统管理员** | **qa_test** | `Admin123!` | ✅ | **全部功能** | ⚠️ 需 OTP |
 | **校务人员** | **staff1** | `Admin123!` | ❌ | 日常管理 | ✅ **可用** |
 | 教师 | teacher1 | `Admin123!` | ✅ | 教学管理 | ⚠️ 需 OTP |
 | 家长 | parent1 | `Admin123!` | ❌ | 家长门户 | ✅ 功能有限 |
 | 学生 | student1 | `Admin123!` | ❌ | 学生门户 | ✅ 功能有限 |
 
-> ✅ **推荐**: `qa_test` (完整权限) 或 `staff1` (日常管理)
+> ✅ **推荐**: `staff1` (日常管理，免OTP) | `qa_test` (完整权限，需OTP)
 > 📍 **唯一信息来源**: docs/school-admin-system/PROJECT-WIKI.md
 
 ### 🛠️ 系统服务账号
@@ -245,39 +174,6 @@ Browser → Cloudflare Tunnel → Frontend (Next.js :3001)
 | Grafana | `admin` | See `.env` for password |
 
 > See `.env` file in project root for full credentials. Never commit `.env` to Git.
-
----
-
-## 🐛 Open Issues
-
-### Priority Summary
-
-| Priority | Count | Issues |
-|----------|-------|--------|
-| P0 | 0 | ✅ 所有P0已修复关闭 |
-| P1 | 0 | ✅ 所有P1已修复关闭 |
-| P2 | ~10 | Core module backlog |
-| P3 | ~5 | AI features, TypeORM warnings |
-| P4 | 2 | Enhancements (teacher recruitment, meeting management) |
-
-> **2026-07-18**: 所有P0/P1缺陷已清零 ✅ 待人工Sanity测试 |
-
-### Key Issues
-
-| # | Title | Status | Priority |
-|---|-------|--------|----------|
-| ~~#256~~ | ~~T21: QR考勤测试~~ | ✅ **CLOSED** (QA验证通过) | ~P0~ |
-| ~~#259~~ | ~~T24: 全系统回归测试~~ | ✅ **CLOSED** (12/12模块通过) | ~P0~ |
-| ~~#266~~ | ~~QR扫码后端500~~ | ✅ **CLOSED** | ~P0~ |
-| ~~#235~~ | ~~student角色权限保存~~ | ✅ **CLOSED** (commit adbbf28) | ~P1~ |
-| ~~#265~~ | ~~QR扫码无反应~~ | ✅ **CLOSED** (含#256修复) | ~P1~ |
-| #261 | T25: 部署脚本 | ⏸️ 等待决策 | P0 |
-| #262 | T26: UAT准备 | ⏸️ 等待决策 | P0 |
-| #263 | T27: UAT执行 | ⏸️ 等待决策 | P0 |
-| #264 | T28: 生产发布 | ⏸️ 等待决策 | P0 |
-| #140 | TypeORM warnings fix | ready-for-review | P3 |
-| #184 | Teacher recruitment module | backlog | P4 |
-| #182 | Meeting management module | backlog | P4 |
 
 ---
 
@@ -334,119 +230,6 @@ Live dashboard: [multi-agent-dashboard.html](multi-agent-dashboard.html)
 | CHECKER | Quality checker — code review, spec compliance |
 | OPS | Operations — deployment, monitoring |
 | Project Admin | Coordinator — heartbeat monitoring, dashboard updates |
-
----
-
-## 🔄 Recent Activity
-
-### 2026-07-15 07:07 — CR-20260714-001 状态更新 & Wiki同步
-
-**CR-20260714-001 整体进度**: Phase 1~4（文档→后端→前端→QA验证）**全部完成** ✅
-
-**剩余**: Phase 5 集成部署（T24~T28）待启动 ⛔
-
-**关键变更**:
-- 系统新增两个大模块：Module 16 QR签到考勤 + Module 17 学生/家长门户
-- 新增独立前端应用 `apps/frontend/`（与旧 `school-admin-frontend/` 并行）
-- 新前端路由：`/attendance/*`（QR考勤）、`/portal/*`（学生/家长门户）
-- 新前端**尚未部署**到Docker，需Phase 5 T25完成
-- Coze Nginx需新增 `/attendance/` 和 `/portal/` 路由规则
-- 文档已同步更新：COZE_PROXY_CONFIG.md + PROJECT-WIKI.md
-
----
-
-### 2026-07-08 — Issue #206 #207 QA验收通过
-
-**时间**: 12:55 GMT+8
-
-**验收结果**: ✅ 通过
-
-**修复内容**:
-- #206: 班级下拉框现在显示12个班级 ✅
-- #207: 新增学生保存返回 HTTP 201 ✅
-
-**额外修复** (QA验收中发现):
-1. `classes` 属性缺失 → 已添加到 StudentFormProps 接口 (commit ff6886a)
-2. nginx路由配置缺失 → 已添加 /students 和 /classes 路由 (commit 8a66942)
-
-**Issue状态**:
-- #206 ✅ 已关闭
-- #207 ✅ 已关闭
-
----
-
-### 2026-07-08 — QA Re-verification Task Dispatched
-
-**时间**: 12:33 GMT+8
-
-**派发内容**: Issue #206 + #207 QA重新验收
-- #206: 新增学生页面所属班级下拉框无数据
-- #207: 新增学生保存失败返回400错误
-
-**修复内容**:
-- Backend路由 `/api/classes` 已修复（之前404，现返回401需认证）
-- Frontend已重新构建并部署
-
-**QA验收状态**: 🔄 进行中
-
----
-
-### 2026-07-08 — Backend & Frontend Deployment
-
-**时间**: 12:25-12:33 GMT+8
-
-**问题发现**:
-- Backend容器使用旧编译输出，`/api/classes` 路由返回404
-- 虽然源代码正确，但dist文件缺失
-
-**修复措施**:
-- 重新构建Backend并部署到容器
-- 重启容器
-- 验证 `/api/classes` 返回401（正常需认证）
-- 重新构建Frontend并部署
-
----
-
-### 2026-07-07 — Student Management Testing Data & E2E Report
-
-**测试数据创建** (22:05 GMT+8):
-- 60个测试学生（12个班级 × 5个学生/班）
-- 60个家长账户
-- 60个班级分配
-- 120条考勤记录（昨天+今天）
-
-**E2E测试报告**:
-- 报告位置: `e2e-tests/TEST-REPORT.md`
-- 测试用例: 35个学生管理测试用例
-- 覆盖范围: 列表、筛选、搜索、CRUD、表单验证
-- 测试状态: ✅ 已完成
-
-**Wiki更新**: 添加了E2E测试报告链接到PROJECT-WIKI.md
-
----
-
-### 2026-07-04 — Production Release Deployed
-
-**Version: v1.5.6 — Bug fixes for #197 & #198**
-
-- **Deploy time**: 08:44 GMT+8
-- **Pull**: Fresh Docker images from GHCR (backend + frontend `latest`)
-- **Git**: Updated to `dfc40a5` (fast-forward from `2b249df`)
-- **Changes deployed**:
-  - 🐛 Fix #197: `currentClass` returning null
-  - 🐛 Fix #198: Prevent soft-deleted student_id reuse
-  - ✨ New: `CreateStudentDto.student_id` optional field
-  - 📄 New: Test credentials doc (`docs/test-credentials.md`)
-  - 📄 New: Test cases for #197 & #198
-  - 📄 New: `CHANGELOG.md` version management
-  - 🛠 New: Release automation script (`scripts/release.sh`)
-  - 📋 New: Release Management Plan (`docs/RELEASE-MANAGEMENT.md`)
-- **Compose stack**: Fresh deploy via `infra/docker-compose.local.yml`
-  - Architecture: Backend (NestJS) + Frontend (Nginx) + Postgres + Redis + OPA
-  - Backend/frontend run as prebuilt GHCR images (amd64 via Rosetta)
-  - Postgres/Redis data volumes persist across deployments
-  - OPA serves as ABAC policy engine
-- **Platform note**: Images are `linux/amd64`; Rosetta emulation on Apple Silicon
 
 ---
 

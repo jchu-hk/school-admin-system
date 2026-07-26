@@ -79,7 +79,11 @@ const FinanceScholarshipPage: React.FC = () => {
     setError(null);
 
     try {
+<<<<<<< HEAD
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/';
+=======
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+>>>>>>> origin/main
       const token = localStorage.getItem('auth_token');
 
       if (activeTab === 'scholarships') {
