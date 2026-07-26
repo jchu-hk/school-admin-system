@@ -49,7 +49,7 @@ export interface CourseQueryParams {
   status?: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/';
 
 export const courseApi = {
   // 获取课程列表

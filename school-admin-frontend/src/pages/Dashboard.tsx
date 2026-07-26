@@ -80,10 +80,10 @@ export default function Dashboard() {
 
   // 出勤详情数据
   const attendanceDetails = [
-    { label: '出勤', value: presentCount, color: 'text-green-600' },
-    { label: '迟到', value: lateCount, color: 'text-yellow-600' },
-    { label: '早退', value: leaveCount, color: 'text-blue-600' },
-    { label: '缺勤', value: absentCount, color: 'text-red-600' },
+    { label: t.dashboard.presentCount, value: presentCount, color: 'text-green-600' },
+    { label: t.dashboard.lateCount, value: lateCount, color: 'text-yellow-600' },
+    { label: t.dashboard.earlyLeaveCount, value: leaveCount, color: 'text-blue-600' },
+    { label: t.dashboard.absentCount, value: absentCount, color: 'text-red-600' },
   ]
 
   return (
@@ -110,7 +110,7 @@ export default function Dashboard() {
 
       {/* 出勤详情卡片 */}
       <div className="bg-white rounded-xl shadow-card p-4 md:p-5">
-        <h3 className="font-semibold mb-3 text-gray-700 text-sm md:text-base">今日出勤详情</h3>
+        <h3 className="font-semibold mb-3 text-gray-700 text-sm md:text-base">{t.dashboard.dailyDetail}</h3>
         <div className="grid grid-cols-4 gap-4">
           {attendanceDetails.map(({ label, value, color }) => (
             <div key={label} className="text-center">
@@ -144,7 +144,7 @@ export default function Dashboard() {
           </div>
           <div className="h-[180px] md:h-[200px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={trendData.map(d => ({ name: d?.date?.slice(5) || '', 出勤: d?.present || 0, 迟到: d?.late || 0 }))}>
+              <BarChart data={trendData.map(d => ({ name: d?.date?.slice(5) || '', present: d?.present || 0, late: d?.late || 0 }))}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" fontSize={10} tick={{ fontSize: 10 }} />
                 <YAxis fontSize={10} domain={[0, 'auto']} tick={{ fontSize: 10 }} />
@@ -153,10 +153,11 @@ export default function Dashboard() {
                     fontSize: '12px',
                     padding: '8px 12px',
                     borderRadius: '8px'
-                  }} 
+                  }}
+                  formatter={(value, name) => [value, name === 'present' ? t.dashboard.presentCount : t.dashboard.lateCount]}
                 />
-                <Bar dataKey="出勤" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="迟到" fill="#eab308" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="present" name="present" fill="#22c55e" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="late" name="late" fill="#eab308" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

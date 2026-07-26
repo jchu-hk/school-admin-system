@@ -1,6 +1,6 @@
 // DSE成绩追踪API接口定义
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/';
 
 // ==================== DSE Release ====================
 export interface DseRelease {

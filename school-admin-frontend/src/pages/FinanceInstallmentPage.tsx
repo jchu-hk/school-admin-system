@@ -127,7 +127,7 @@ const FinanceInstallmentPage: React.FC = () => {
   const [reviewAction, setReviewAction] = useState<'approve' | 'reject'>('approve');
   const [reviewNotes, setReviewNotes] = useState('');
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/';
   const token = localStorage.getItem('auth_token');
   const headers = { Authorization: `Bearer ${token}` };
 

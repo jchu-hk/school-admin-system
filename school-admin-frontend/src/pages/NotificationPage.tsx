@@ -42,6 +42,8 @@ import type {
   RecipientType,
   ReadStatus
 } from '../types/notification'
+import { useI18n } from '../i18n';
+import { zhCN } from '../i18n/locales/zh-CN';
 import {
   notificationTypeLabels,
   notificationStatusLabels,
@@ -56,21 +58,21 @@ import {
 
 // 表单验证Schema
 const sendNotificationSchema = z.object({
-  title: z.string().min(2, '標題至少需要2個字符').max(200, '標題最多200個字符'),
-  content: z.string().min(10, '內容至少需要10個字符').max(5000, '內容最多5000個字符'),
+  title: z.string().min(2, zhCN.notification.titleRequired).max(200, zhCN.notification.titleMaxLength),
+  content: z.string().min(10, zhCN.notification.contentRequired).max(5000, zhCN.notification.contentMaxLength),
   type: z.enum(['system', 'activity', 'urgent']),
   recipientType: z.enum(['all', 'class', 'role', 'specific']),
-  channels: z.array(z.enum(['app', 'sms', 'email', 'wechat'])).min(1, '至少選擇一個發送渠道'),
+  channels: z.array(z.enum(['app', 'sms', 'email', 'wechat'])).min(1, zhCN.notification.atLeastOneChannel),
   scheduledAt: z.string().optional()
 })
 
 type SendNotificationForm = z.infer<typeof sendNotificationSchema>
 
 const templateSchema = z.object({
-  name: z.string().min(2, '模板名稱至少需要2個字符'),
+  name: z.string().min(2, zhCN.notification.templateNameRequired),
   type: z.enum(['system', 'activity', 'urgent']),
-  title: z.string().min(2, '標題至少需要2個字符'),
-  content: z.string().min(10, '內容至少需要10個字符')
+  title: z.string().min(2, zhCN.notification.templateTitleRequired),
+  content: z.string().min(10, zhCN.notification.templateContentRequired)
 })
 
 type TemplateForm = z.infer<typeof templateSchema>
@@ -79,6 +81,7 @@ type TemplateForm = z.infer<typeof templateSchema>
 type TabType = 'list' | 'templates'
 
 export default function NotificationPage() {
+  const { t } = useI18n();
   // 标签页状态
   const [activeTab, setActiveTab] = useState<TabType>('list')
   
@@ -207,7 +210,7 @@ export default function NotificationPage() {
           recipientCount: 850,
           readCount: 840,
           senderId: 'staff-001',
-          senderName: '校務處',
+          senderName: '校長',
           sentAt: '2026-06-06T18:00:00Z',
           createdAt: '2026-06-06T17:30:00Z',
           updatedAt: '2026-06-06T18:00:00Z'
@@ -275,10 +278,10 @@ export default function NotificationPage() {
       setSelectedRecipientType('all')
       setScheduleEnabled(false)
       loadNotifications()
-      alert('通知發送成功！')
+      alert(t.notification.sendSuccess)
     } catch (error) {
       console.error('Failed to send notification:', error)
-      alert('發送失敗，請重試')
+      alert(t.notification.sendFailed)
     }
   }
 
@@ -289,9 +292,9 @@ export default function NotificationPage() {
       setSelectedNotification({
         ...detail,
         recipients: detail.recipients || [
-          { id: '1', notificationId: notification.id, userId: 'u1', userName: '陳家長', userType: 'parent', className: '2A', readStatus: 'read', readAt: '2026-06-08T09:30:00Z', channel: 'app', deliveredAt: '2026-06-08T09:00:00Z' },
+          { id: '1', notificationId: notification.id, userId: 'u1', userName: '王家長', userType: 'parent', className: '2A', readStatus: 'read', readAt: '2026-06-08T09:30:00Z', channel: 'app', deliveredAt: '2026-06-08T09:00:00Z' },
           { id: '2', notificationId: notification.id, userId: 'u2', userName: '李家長', userType: 'parent', className: '3B', readStatus: 'read', readAt: '2026-06-08T10:00:00Z', channel: 'email', deliveredAt: '2026-06-08T09:05:00Z' },
-          { id: '3', notificationId: notification.id, userId: 'u3', userName: '王家長', userType: 'parent', className: '1C', readStatus: 'unread', channel: 'app', deliveredAt: '2026-06-08T09:00:00Z' }
+          { id: '3', notificationId: notification.id, userId: 'u3', userName: '陳家長', userType: 'parent', className: '1C', readStatus: 'unread', channel: 'app', deliveredAt: '2026-06-08T09:00:00Z' }
         ]
       })
       setShowDetailModal(true)
@@ -302,7 +305,7 @@ export default function NotificationPage() {
 
   // 删除通知
   const handleDelete = async (id: string) => {
-    if (!confirm('確定要刪除此通知嗎？')) return
+    if (!confirm(t.notification.deleteConfirm)) return
     try {
       await notificationApi.deleteNotification(id)
       loadNotifications()
@@ -313,7 +316,7 @@ export default function NotificationPage() {
 
   // 取消定时发送
   const handleCancelScheduled = async (id: string) => {
-    if (!confirm('確定要取消此定時發送嗎？')) return
+    if (!confirm(t.notification.cancelScheduledConfirm)) return
     try {
       await notificationApi.cancelScheduled(id)
       loadNotifications()
@@ -360,7 +363,7 @@ export default function NotificationPage() {
 
   // 删除模板
   const handleDeleteTemplate = async (id: string) => {
-    if (!confirm('確定要刪除此模板嗎？')) return
+    if (!confirm(t.notification.deleteTemplateConfirm)) return
     try {
       await notificationApi.deleteTemplate(id)
       setTemplates(templates.filter(t => t.id !== id))
@@ -458,7 +461,7 @@ export default function NotificationPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <input
                   type="text"
-                  placeholder="搜索通知標題..."
+                  placeholder={t.notification.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -567,7 +570,7 @@ export default function NotificationPage() {
                               <button
                                 onClick={() => handleViewDetail(notification)}
                                 className="p-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition"
-                                title="查看詳情"
+                                title={t.notification.viewDetails}
                               >
                                 <Eye size={16} />
                               </button>
@@ -575,7 +578,7 @@ export default function NotificationPage() {
                                 <button
                                   onClick={() => handleCancelScheduled(notification.id)}
                                   className="p-1.5 bg-yellow-50 text-yellow-600 rounded hover:bg-yellow-100 transition"
-                                  title="取消定時發送"
+                                  title={t.notification.cancelScheduled}
                                 >
                                   <XCircle size={16} />
                                 </button>
@@ -585,14 +588,14 @@ export default function NotificationPage() {
                                   <button
                                     onClick={() => handleViewDetail(notification)}
                                     className="p-1.5 bg-green-50 text-green-600 rounded hover:bg-green-100 transition"
-                                    title="編輯"
+                                    title={t.notification.edit}
                                   >
                                     <Edit3 size={16} />
                                   </button>
                                   <button
                                     onClick={() => handleDelete(notification.id)}
                                     className="p-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition"
-                                    title="刪除"
+                                    title={t.notification.delete}
                                   >
                                     <Trash2 size={16} />
                                   </button>
@@ -674,7 +677,7 @@ export default function NotificationPage() {
                         <button
                           onClick={() => handleEditTemplate(template)}
                           className="p-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition"
-                          title="編輯"
+                          title={t.notification.edit}
                         >
                           <Edit3 size={16} />
                         </button>
@@ -682,7 +685,7 @@ export default function NotificationPage() {
                           <button
                             onClick={() => handleDeleteTemplate(template.id)}
                             className="p-1.5 bg-red-50 text-red-600 rounded hover:bg-red-100 transition"
-                            title="刪除"
+                            title={t.notification.delete}
                           >
                             <Trash2 size={16} />
                           </button>
@@ -719,8 +722,8 @@ export default function NotificationPage() {
                   >
                     <span className={selectedTemplateId ? 'text-gray-900' : 'text-gray-400'}>
                       {selectedTemplateId 
-                        ? templates.find(t => t.id === selectedTemplateId)?.name || '選擇模板'
-                        : '選擇模板...'}
+                        ? templates.find(t => t.id === selectedTemplateId)?.name || t.notification.selectTemplate
+                        : t.notification.selectTemplate}
                     </span>
                     <ChevronDown size={18} className="text-gray-400" />
                   </button>
@@ -766,7 +769,7 @@ export default function NotificationPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">通知標題 *</label>
                 <input
                   {...registerSend('title')}
-                  placeholder="請輸入通知標題"
+                  placeholder={t.notification.titlePlaceholder}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {sendErrors.title && <p className="mt-1 text-sm text-red-600">{sendErrors.title.message}</p>}
@@ -778,7 +781,7 @@ export default function NotificationPage() {
                 <textarea
                   {...registerSend('content')}
                   rows={5}
-                  placeholder="請輸入通知內容..."
+                  placeholder={t.notification.contentPlaceholder}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 />
                 {sendErrors.content && <p className="mt-1 text-sm text-red-600">{sendErrors.content.message}</p>}
@@ -827,7 +830,7 @@ export default function NotificationPage() {
                     <div className="p-3 bg-gray-50 rounded-lg">
                       <p className="text-sm text-gray-600 mb-2">選擇角色（模擬數據）：</p>
                       <div className="flex flex-wrap gap-2">
-                        {['家長', '教師', '行政人員', '校長'].map((role) => (
+                        {[t.notification.parents, t.notification.teachers, '行政人員', '校長'].map((role) => (
                           <label key={role} className="flex items-center gap-1 bg-white px-3 py-1.5 rounded border cursor-pointer">
                             <input
                               type="checkbox"
@@ -854,10 +857,10 @@ export default function NotificationPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">發送渠道 *</label>
                 <div className="flex flex-wrap gap-3">
                   {([
-                    { key: 'app', icon: Smartphone, label: 'APP推送' },
-                    { key: 'sms', icon: MessageSquare, label: '短信' },
-                    { key: 'email', icon: Mail, label: '郵件' },
-                    { key: 'wechat', icon: MessageCircle, label: '微信' }
+                    { key: 'app', icon: Smartphone, label: t.notification.channels },
+                    { key: 'sms', icon: MessageSquare, label: t.notification.channel },
+                    { key: 'email', icon: Mail, label: t.notification.channel },
+                    { key: 'wechat', icon: MessageCircle, label: t.notification.channel }
                   ] as { key: NotificationChannel; icon: any; label: string }[]).map(({ key, icon: Icon, label }) => (
                     <label
                       key={key}
@@ -914,7 +917,7 @@ export default function NotificationPage() {
                   className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2"
                 >
                   <Send size={18} />
-                  {scheduleEnabled ? '定時發送' : '立即發送'}
+                  {scheduleEnabled ? t.notification.schedule : t.notification.sendNow}
                 </button>
               </div>
             </form>
@@ -1028,7 +1031,7 @@ export default function NotificationPage() {
                           </td>
                           <td className="px-3 py-2">
                             <span className={`px-2 py-0.5 rounded text-xs ${readStatusColors[recipient.readStatus]}`}>
-                              {recipient.readStatus === 'read' ? '已讀' : '未讀'}
+                              {recipient.readStatus === 'read' ? t.notification.read : t.notification.unread}
                             </span>
                           </td>
                           <td className="px-3 py-2 text-gray-500">{formatDate(recipient.readAt)}</td>
@@ -1049,7 +1052,7 @@ export default function NotificationPage() {
           <div className="bg-white rounded-xl w-full max-w-lg">
             <div className="p-4 border-b flex items-center justify-between">
               <h3 className="text-lg font-semibold">
-                {selectedTemplate ? '編輯模板' : '新增模板'}
+                {selectedTemplate ? t.notification.editTemplate : t.notification.newTemplate}
               </h3>
               <button onClick={() => setShowTemplateModal(false)} className="p-1 hover:bg-gray-100 rounded">
                 <X size={20} />
@@ -1060,7 +1063,7 @@ export default function NotificationPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">模板名稱 *</label>
                 <input
                   {...registerTemplate('name')}
-                  placeholder="請輸入模板名稱"
+                  placeholder={t.notification.templateNamePlaceholder}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {templateErrors.name && <p className="mt-1 text-sm text-red-600">{templateErrors.name.message}</p>}
@@ -1082,7 +1085,7 @@ export default function NotificationPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">標題 *</label>
                 <input
                   {...registerTemplate('title')}
-                  placeholder="請輸入標題，可使用 {{變量名}}"
+                  placeholder={t.notification.titlePlaceholder}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 {templateErrors.title && <p className="mt-1 text-sm text-red-600">{templateErrors.title.message}</p>}
@@ -1093,7 +1096,7 @@ export default function NotificationPage() {
                 <textarea
                   {...registerTemplate('content')}
                   rows={5}
-                  placeholder="請輸入內容，可使用 {{變量名}} 作為佔位符..."
+                  placeholder={t.notification.contentPlaceholder}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 />
                 {templateErrors.content && <p className="mt-1 text-sm text-red-600">{templateErrors.content.message}</p>}

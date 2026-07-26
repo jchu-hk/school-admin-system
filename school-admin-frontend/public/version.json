@@ -1,28 +1,46 @@
 {
-  "version": "v1.6.0",
-  "buildDate": "2026-07-13",
-  "gitCommit": "0cc866f",
+  "version": "v1.5.7",
+  "buildDate": "2026-07-26",
+  "gitCommit": "1e5cd10",
   "gitBranch": "main",
   "changelog": [
     {
-      "version": "v1.6.0",
-      "date": "2026-07-13",
+      "version": "build-2026-07-20",
+      "date": "2026-07-20",
       "changes": [
-        "[全部Bug清零] 12个Bug修复",
-        "P0: #231 用户管理搜索无效 (search→keyword)",
-        "P0: #217 Coze代理兼容性 (forbidNonWhitelisted配置)",
-        "P1: #230 资产创建500错误",
-        "P1: #226 资产加载500错误",
-        "P1: #234 学生班级筛选UUID校验失败",
-        "P1: #233/#232 学生管理功能回归 (环境清理导致)",
-        "P1: #222 新增学生500错误",
-        "P1: #223 编辑学生班级不保存",
-        "P1: #224 出勤人工录入按钮无响应",
-        "P2: #229 出勤日期选择框无效果",
-        "P2: #225 用户搜索/筛选不工作",
-        "P2: #227 出勤重置按钮无响应",
-        "P3: #228 出勤日期显示标签",
-        "环境清理: #213-#216 完整4阶段环境重置"
+        "fix(#220): 前端编辑学生时日期字段显示空白——ISO datetime不兼容HTML5 date input",
+        "dashboard update 23:36",
+        "dashboard update 23:36",
+        "dashboard update 23:36",
+        "dashboard update 22:53",
+        "dashboard update 22:53",
+        "dashboard update 18:45",
+        "dashboard update 16:15",
+        "dashboard update 12:25",
+        "dashboard update 12:25",
+        "dashboard update 11:30",
+        "dashboard update 10:40",
+        "dashboard update 09:10",
+        "dashboard update 08:00",
+        "dashboard update 06:00"
+      ]
+    },
+    {
+      "version": "build-2026-07-19",
+      "date": "2026-07-19",
+      "changes": [
+        "dashboard update 20:57",
+        "dashboard update 20:56",
+        "dashboard update 20:55",
+        "fix(#280): add admission_date to UpdateStudentDto",
+        "dashboard update 20:54",
+        "dashboard update 20:54",
+        "dashboard update 19:45",
+        "dashboard update 17:37",
+        "P0 bugs #268 #269 #270 - UUID validation in populateRelatedStudentIds to prevent DB FK errors",
+        "dashboard update 17:31",
+        "dashboard update 17:30",
+        "dashboard update 17:19"
       ]
     }
   ]

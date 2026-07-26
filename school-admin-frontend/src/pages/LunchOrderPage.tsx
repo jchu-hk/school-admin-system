@@ -8,6 +8,7 @@ import {
   Filter, History, AlertCircle, RefreshCw, BarChart3, Utensils
 } from 'lucide-react'
 import apiClient from '../api/client'
+import { useI18n } from '../i18n';
 
 enum LunchOrderStatus {
   PENDING = 'pending',
@@ -38,36 +39,36 @@ interface Prediction { predictions: Array<{ date: string; predictedOrders: numbe
 type Tab = 'orders' | 'changes' | 'menu' | 'stats'
 
 const statusLabels: Record<string, { label: string; color: string }> = {
-  pending: { label: '待确认', color: 'bg-yellow-100 text-yellow-800' },
-  confirmed: { label: '已确认', color: 'bg-blue-100 text-blue-800' },
-  cancelled: { label: '已取消', color: 'bg-gray-100 text-gray-600' },
-  completed: { label: '已完成', color: 'bg-green-100 text-green-800' },
+  pending: { label: t.lunch.pending, color: 'bg-yellow-100 text-yellow-800' },
+  confirmed: { label: t.lunch.confirmed, color: 'bg-blue-100 text-blue-800' },
+  cancelled: { label: t.lunch.cancelled, color: 'bg-gray-100 text-gray-600' },
+  completed: { label: t.lunch.completed, color: 'bg-green-100 text-green-800' },
 }
 
 const changeStatusLabels: Record<string, { label: string; color: string }> = {
-  pending: { label: '待审核', color: 'bg-yellow-100 text-yellow-800' },
-  approved: { label: '已批准', color: 'bg-green-100 text-green-800' },
-  rejected: { label: '已拒绝', color: 'bg-red-100 text-red-800' },
-  auto_rejected: { label: '自动拒绝', color: 'bg-gray-100 text-gray-600' },
+  pending: { label: t.lunch.pendingReview, color: 'bg-yellow-100 text-yellow-800' },
+  approved: { label: t.lunch.approved, color: 'bg-green-100 text-green-800' },
+  rejected: { label: t.lunch.rejected, color: 'bg-red-100 text-red-800' },
+  auto_rejected: { label: t.lunch.autoRejected, color: 'bg-gray-100 text-gray-600' },
 }
 
 const changeTypeLabels: Record<string, { label: string; color: string }> = {
-  add: { label: '加单', color: 'bg-blue-100 text-blue-800' },
-  cancel: { label: '取消', color: 'bg-red-100 text-red-800' },
-  modify: { label: '更改', color: 'bg-orange-100 text-orange-800' },
+  add: { label: t.lunch.addOrder, color: 'bg-blue-100 text-blue-800' },
+  cancel: { label: t.lunch.cancel, color: 'bg-red-100 text-red-800' },
+  modify: { label: t.lunch.modify, color: 'bg-orange-100 text-orange-800' },
 }
 
 const orderSchema = z.object({
-  studentId: z.string().min(1, '请选择学生'),
-  orderDate: z.string().min(1, '请选择日期'),
-  menuName: z.string().min(1, '请输入菜品名称'),
-  menuPrice: z.number().min(0, '价格不能为负'),
+  studentId: z.string().min(1, t.lunch.selectStudent),
+  orderDate: z.string().min(1, t.lunch.selectDate),
+  menuName: z.string().min(1, t.lunch.enterDishName),
+  menuPrice: z.number().min(0, t.lunch.priceNonNegative),
   quantity: z.number().min(1).default(1),
   notes: z.string().optional(),
 })
 
 const changeSchema = z.object({
-  studentId: z.string().min(1, '请选择学生'),
+  studentId: z.string().min(1, t.lunch.selectStudent),
   changeType: z.enum(['add', 'cancel', 'modify']),
   orderId: z.string().optional(),
   originalItem: z.string().optional(),
@@ -77,13 +78,14 @@ const changeSchema = z.object({
   notes: z.string().optional(),
 })
 
-const rejectSchema = z.object({ rejectReason: z.string().min(1, '请输入拒绝原因') })
+const rejectSchema = z.object({ rejectReason: z.string().min(1, t.lunch.rejectReasonRequired) })
 
 type OrderForm = z.infer<typeof orderSchema>
 type ChangeForm = z.infer<typeof changeSchema>
 type RejectForm = z.infer<typeof rejectSchema>
 
 export default function LunchOrderPage() {
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<Tab>('orders')
   const [orders, setOrders] = useState<LunchOrder[]>([])
   const [changes, setChanges] = useState<LunchChange[]>([])
@@ -124,7 +126,7 @@ export default function LunchOrderPage() {
       const { data } = await apiClient.get(`/lunch?${params}`)
       setOrders(data.orders || [])
       setTotal(data.total || 0)
-    } catch { setError('获取订单列表失败') } finally { setLoading(false) }
+    } catch { setError(t.lunch.loadOrdersFailed) } finally { setLoading(false) }
   }, [page, orderFilter])
 
   const fetchChanges = useCallback(async (p = changePage) => {
@@ -136,7 +138,7 @@ export default function LunchOrderPage() {
       const { data } = await apiClient.get(`/lunch/changes?${params}`)
       setChanges(data.changes || [])
       setChangesTotal(data.total || 0)
-    } catch { setError('获取变更列表失败') } finally { setLoading(false) }
+    } catch { setError(t.lunch.loadChangesFailed) } finally { setLoading(false) }
   }, [changePage, changeFilter])
 
   const fetchMenus = useCallback(async () => {
@@ -153,13 +155,13 @@ export default function LunchOrderPage() {
       const params = new URLSearchParams({ startDate: statsDateRange.startDate, endDate: statsDateRange.endDate })
       const { data } = await apiClient.get(`/lunch/supplier-report?${params}`)
       setSupplierReport(data)
-    } catch { setError('获取供应商报表失败') } finally { setLoading(false) }
+    } catch { setError(t.lunch.loadSupplierReportFailed) } finally { setLoading(false) }
   }, [statsDateRange])
 
   const fetchPrediction = useCallback(async () => {
     setLoading(true)
     try { const { data } = await apiClient.get('/lunch/prediction?days=7'); setPrediction(data) }
-    catch { setError('获取预测数据失败') } finally { setLoading(false) }
+    catch { setError(t.lunch.loadPredictionFailed) } finally { setLoading(false) }
   }, [])
 
   const handleCreateOrder = async (values: OrderForm) => {
@@ -169,7 +171,7 @@ export default function LunchOrderPage() {
       orderForm.reset()
       fetchOrders(1)
       setPage(1)
-    } catch { setError('创建订单失败') }
+    } catch { setError(t.lunch.createOrderFailed) }
   }
 
   const handleCreateChange = async (values: ChangeForm) => {
@@ -180,12 +182,12 @@ export default function LunchOrderPage() {
       fetchChanges(1)
       setChangePage(1)
       fetchCutoffStatus()
-    } catch { setError('提交变更失败') }
+    } catch { setError(t.lunch.submitChangeFailed) }
   }
 
   const handleApproveChange = async (id: string) => {
     try { await apiClient.post(`/lunch/changes/${id}/approve`); fetchChanges(changePage); fetchOrders(1) }
-    catch { setError('批准失败') }
+    catch { setError(t.lunch.approveChangeFailed) }
   }
 
   const handleRejectChange = async (values: RejectForm) => {
@@ -196,7 +198,7 @@ export default function LunchOrderPage() {
       rejectForm.reset()
       setSelectedChange(null)
       fetchChanges(changePage)
-    } catch { setError('拒绝失败') }
+    } catch { setError(t.lunch.rejectChangeFailed) }
   }
 
   const openRejectModal = (change: LunchChange) => { setSelectedChange(change); setShowRejectModal(true) }
@@ -209,10 +211,10 @@ export default function LunchOrderPage() {
   }, [activeTab])
 
   const tabs = [
-    { key: 'orders', label: '订单管理', icon: Utensils },
-    { key: 'changes', label: '变更申请', icon: History },
-    { key: 'menu', label: '菜单管理', icon: FileText },
-    { key: 'stats', label: '统计报表', icon: BarChart3 },
+    { key: 'orders', label: t.lunch.orderManagement, icon: Utensils },
+    { key: 'changes', label: t.lunch.changeRequests, icon: History },
+    { key: 'menu', label: t.lunch.menuManagement, icon: FileText },
+    { key: 'stats', label: t.lunch.statistics, icon: BarChart3 },
   ] as const
 
   const totalPages = Math.ceil(total / limit)
@@ -241,7 +243,7 @@ export default function LunchOrderPage() {
           <div>
             <p className="font-medium text-sm">
               今日截止时间：<span className="font-mono">{cutoffStatus.cutoffTime}</span>
-              {cutoffStatus.isAfterCutoff ? ' — 已过截止时间，变更申请将被自动拒绝' : ' — 请尽快提交变更申请'}
+              {cutoffStatus.isAfterCutoff ? t.lunch.afterCutoff : t.lunch.beforeCutoff}
             </p>
             <p className="text-xs text-gray-500 mt-0.5">当前有 {cutoffStatus.pendingChangesCount} 条待审变更</p>
           </div>
@@ -405,7 +407,7 @@ export default function LunchOrderPage() {
       {activeTab === 'menu' && (
         <>
           <div className="flex justify-end mb-4">
-            <button onClick={() => alert('创建菜单功能开发中')} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"><Plus size={16} /> 新增菜单</button>
+            <button onClick={() => alert(t.lunch.createMenuDev)} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"><Plus size={16} /> 新增菜单</button>
           </div>
           <div className="bg-white rounded-lg border overflow-hidden">
             <table className="w-full text-sm">
@@ -426,7 +428,7 @@ export default function LunchOrderPage() {
                     <td className="px-4 py-3 text-gray-500">{menu.description || '-'}</td>
                     <td className="px-4 py-3 text-right">¥{menu.price.toFixed(2)}</td>
                     <td className="px-4 py-3">{menu.supplier || '-'}</td>
-                    <td className="px-4 py-3 text-center"><span className={`inline-block px-2 py-0.5 rounded-full text-xs ${menu.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>{menu.status === 'active' ? '启用' : '停用'}</span></td>
+                    <td className="px-4 py-3 text-center"><span className={`inline-block px-2 py-0.5 rounded-full text-xs ${menu.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>{menu.status === 'active' ? t.lunch.active : t.lunch.inactive}</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -447,7 +449,7 @@ export default function LunchOrderPage() {
               <input type="date" value={statsDateRange.endDate} onChange={(e) => setStatsDateRange((d) => ({ ...d, endDate: e.target.value }))} className="border rounded px-2 py-1.5 text-sm" />
             </div>
             <button onClick={() => { fetchSupplierReport(); fetchPrediction() }} className="flex items-center gap-1 px-3 py-1.5 text-sm border rounded hover:bg-gray-50"><RefreshCw size={14} /> 刷新</button>
-            <button onClick={() => alert('导出CSV功能开发中')} className="flex items-center gap-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700">📥 导出报表</button>
+            <button onClick={() => alert(t.lunch.exportCSVDev)} className="flex items-center gap-1 px-3 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700">📥 导出报表</button>
           </div>
 
           {loading ? (<div className="text-center py-12 text-gray-400">加载中...</div>) : (
@@ -468,7 +470,7 @@ export default function LunchOrderPage() {
                     </div>
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="text-left text-gray-500 border-b"><th className="pb-2">供应商</th><th className="pb-2 text-right">订单数</th><th className="pb-2 text-right">金额</th></tr>
+                        <tr className="text-left text-gray-500 border-b"><th className="pb-2">{t.lunch.supplier}</th><th className="pb-2 text-right">{t.lunch.totalOrders}</th><th className="pb-2 text-right">{t.lunch.amount}</th></tr>
                       </thead>
                       <tbody>
                         {supplierReport.suppliers.map((s, i) => (
@@ -494,7 +496,7 @@ export default function LunchOrderPage() {
                         <div key={p.date} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                           <div>
                             <span className="text-sm font-medium">{p.date}</span>
-                            <span className={`ml-2 text-xs px-1.5 py-0.5 rounded ${p.confidence === 'high' ? 'bg-green-100 text-green-700' : p.confidence === 'medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'}`}>{p.confidence === 'high' ? '高置信' : p.confidence === 'medium' ? '中置信' : '低置信'}</span>
+                            <span className={`ml-2 text-xs px-1.5 py-0.5 rounded ${p.confidence === 'high' ? 'bg-green-100 text-green-700' : p.confidence === 'medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'}`}>{p.confidence === 'high' ? t.lunch.highConfidence : p.confidence === 'medium' ? t.lunch.mediumConfidence : t.lunch.lowConfidence}</span>
                           </div>
                           <div className="text-right">
                             <p className="text-sm font-medium">约 {p.predictedOrders} 单</p>
@@ -583,7 +585,7 @@ export default function LunchOrderPage() {
               {changeForm.watch('changeType') !== 'add' && (
                 <div>
                   <label className="block text-sm font-medium mb-1">关联订单ID（可选）</label>
-                  <input {...changeForm.register('orderId')} className="w-full border rounded px-3 py-2 text-sm" placeholder="取消/修改时填写" />
+                  <input {...changeForm.register('orderId')} className="w-full border rounded px-3 py-2 text-sm" placeholder={t.lunch.modifyFill} />
                 </div>
               )}
               {(changeForm.watch('changeType') === 'cancel' || changeForm.watch('changeType') === 'modify') && (
@@ -643,7 +645,7 @@ export default function LunchOrderPage() {
             <form onSubmit={rejectForm.handleSubmit(handleRejectChange)} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">拒绝原因 *</label>
-                <textarea {...rejectForm.register('rejectReason')} className="w-full border rounded px-3 py-2 text-sm" rows={3} placeholder="请输入拒绝原因..." />
+                <textarea {...rejectForm.register('rejectReason')} className="w-full border rounded px-3 py-2 text-sm" rows={3} placeholder={t.lunch.rejectReasonPlaceholder} />
                 {rejectForm.formState.errors.rejectReason && <p className="text-red-500 text-xs mt-1">{rejectForm.formState.errors.rejectReason.message}</p>}
               </div>
               <div className="flex justify-end gap-3 pt-2">

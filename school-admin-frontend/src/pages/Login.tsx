@@ -7,6 +7,7 @@ import apiClient from '../api/client'
 import { Eye, EyeOff, LogIn, Shield } from 'lucide-react'
 import { useI18n } from '../i18n'
 import { setToken } from '../utils/tokenService'
+import { setUser } from '../utils/userService'
 
 const loginSchema = z.object({
   username: z.string().min(1, '请输入用户名'),
@@ -59,8 +60,12 @@ export default function Login() {
   /**
    * After successful login, check if user must set password
    */
-  const handlePostLogin = (token: string) => {
+  const handlePostLogin = (token: string, userData?: LoginResponse['user']) => {
     setToken(token)
+    // Store user info
+    if (userData) {
+      setUser(userData)
+    }
     // Check password status
     apiClient
       .get('/auth/password-status')
@@ -93,8 +98,9 @@ export default function Login() {
 
       // 直接返回access_token的情况
       const token = res.data?.access_token
+      const userData = res.data?.user
       if (token && typeof token === 'string' && token !== 'undefined' && token !== 'null') {
-        handlePostLogin(token)
+        handlePostLogin(token, userData)
         return
       }
 
@@ -111,7 +117,7 @@ export default function Login() {
       setError('')
       setIsSubmitting(true)
 
-      const res = await apiClient.post<{ access_token: string }>('/auth/verify-otp', {
+      const res = await apiClient.post<LoginResponse>('/auth/verify-otp', {
         tempToken: loginData?.temp_token,
         code: data.otpCode,
         otpType: loginData?.otpType || 'email',
@@ -119,8 +125,9 @@ export default function Login() {
       })
 
       const token = res.data?.access_token
+      const userData = res.data?.user
       if (token && typeof token === 'string' && token !== 'undefined' && token !== 'null') {
-        handlePostLogin(token)
+        handlePostLogin(token, userData)
       } else {
         setError('验证失败，未获取到访问令牌')
         setIsSubmitting(false)

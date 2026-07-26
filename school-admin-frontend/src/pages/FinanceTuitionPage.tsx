@@ -105,7 +105,7 @@ const FinanceTuitionPage: React.FC = () => {
   const academicYears = ['2023-2024', '2024-2025', '2025-2026'];
   const grades = ['中一', '中二', '中三', '中四', '中五', '中六'];
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/';
   const token = localStorage.getItem('auth_token');
   const headers = { Authorization: `Bearer ${token}` };
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/button';
+import { useI18n } from '../i18n';
 import {
   Award,
   Search,
@@ -49,7 +50,7 @@ interface Application {
 }
 
 const FinanceScholarshipPage: React.FC = () => {
-  const { t } = { t: (key: string) => key };
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState<'scholarships' | 'applications'>('scholarships');
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -60,13 +61,13 @@ const FinanceScholarshipPage: React.FC = () => {
 
   const academicYears = ['2023-2024', '2024-2025', '2025-2026'];
   const statusOptions = [
-    { value: 'open', label: '开放申请' },
-    { value: 'pending', label: '待审核' },
-    { value: 'reviewing', label: '审核中' },
-    { value: 'approved', label: '已批准' },
-    { value: 'rejected', label: '已拒绝' },
-    { value: 'awarded', label: '已发放' },
-    { value: 'closed', label: '已结束' },
+    { value: 'open', label: t.scholarship.openForApplication },
+    { value: 'pending', label: t.scholarship.pendingReview },
+    { value: 'reviewing', label: t.scholarship.underReview },
+    { value: 'approved', label: t.scholarship.approved },
+    { value: 'rejected', label: t.scholarship.rejected },
+    { value: 'awarded', label: t.scholarship.awarded },
+    { value: 'closed', label: t.scholarship.closed },
   ];
 
   useEffect(() => {
@@ -78,7 +79,7 @@ const FinanceScholarshipPage: React.FC = () => {
     setError(null);
 
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/';
       const token = localStorage.getItem('auth_token');
 
       if (activeTab === 'scholarships') {
@@ -86,7 +87,7 @@ const FinanceScholarshipPage: React.FC = () => {
         if (selectedStatus) params.append('status', selectedStatus);
         if (selectedAcademicYear) params.append('academicYear', selectedAcademicYear);
 
-        const response = await fetch(`${API_BASE_URL}/scholarship/scholarships?${params}`, {
+        const response = await fetch(`${API_BASE_URL}/scholarships?${params}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -98,7 +99,7 @@ const FinanceScholarshipPage: React.FC = () => {
         const params = new URLSearchParams();
         if (selectedStatus) params.append('status', selectedStatus);
 
-        const response = await fetch(`${API_BASE_URL}/scholarship/applications?${params}`, {
+        const response = await fetch(`${API_BASE_URL}/scholarships/applications?${params}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -108,7 +109,7 @@ const FinanceScholarshipPage: React.FC = () => {
         }
       }
     } catch (err: any) {
-      setError(err.message || '获取数据失败');
+      setError(err.message || t.scholarship.fetchFailed);
     } finally {
       setLoading(false);
     }
@@ -116,13 +117,13 @@ const FinanceScholarshipPage: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { bg: string; text: string; icon: any; label: string }> = {
-      open: { bg: 'bg-green-100', text: 'text-green-700', icon: Clock, label: '开放申请' },
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: Clock, label: '待审核' },
-      reviewing: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Clock, label: '审核中' },
-      approved: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, label: '已批准' },
-      rejected: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle, label: '已拒绝' },
-      awarded: { bg: 'bg-purple-100', text: 'text-purple-700', icon: Award, label: '已发放' },
-      closed: { bg: 'bg-gray-100', text: 'text-gray-700', icon: XCircle, label: '已结束' },
+      open: { bg: 'bg-green-100', text: 'text-green-700', icon: Clock, label: t.scholarship.openForApplication },
+      pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: Clock, label: t.scholarship.pendingReview },
+      reviewing: { bg: 'bg-blue-100', text: 'text-blue-700', icon: Clock, label: t.scholarship.underReview },
+      approved: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, label: t.scholarship.approved },
+      rejected: { bg: 'bg-red-100', text: 'text-red-700', icon: XCircle, label: t.scholarship.rejected },
+      awarded: { bg: 'bg-purple-100', text: 'text-purple-700', icon: Award, label: t.scholarship.awarded },
+      closed: { bg: 'bg-gray-100', text: 'text-gray-700', icon: XCircle, label: t.scholarship.closed },
     };
 
     const config = statusConfig[status] || statusConfig.pending;
@@ -310,13 +311,13 @@ const FinanceScholarshipPage: React.FC = () => {
                           学年: {scholarship.academicYear}
                         </span>
                         <div className="flex items-center gap-2">
-                          <Button className="p-2" title="查看详情">
+                          <Button className="p-2" title={t.scholarship.viewDetails}>
                             <Eye className="w-4 h-4" />
                           </Button>
-                          <Button className="p-2" title="编辑">
+                          <Button className="p-2" title={t.scholarship.edit}>
                             <Edit2 className="w-4 h-4" />
                           </Button>
-                          <Button className="p-2" title="导出">
+                          <Button className="p-2" title={t.scholarship.export}>
                             <Download className="w-4 h-4" />
                           </Button>
                         </div>
@@ -368,15 +369,15 @@ const FinanceScholarshipPage: React.FC = () => {
                         <td className="py-4 px-4">{getStatusBadge(app.status)}</td>
                         <td className="py-4 px-4">
                           <div className="flex items-center gap-2">
-                            <Button className="p-2 text-blue-600 hover:bg-blue-50" title="查看">
+                            <Button className="p-2 text-blue-600 hover:bg-blue-50" title={t.scholarship.view}>
                               <Eye className="w-4 h-4" />
                             </Button>
                             {(app.status === 'pending' || app.status === 'reviewing') && (
                               <>
-                                <Button className="p-2 text-green-600 hover:bg-green-50" title="批准">
+                                <Button className="p-2 text-green-600 hover:bg-green-50" title={t.scholarship.approve}>
                                   <CheckCircle className="w-4 h-4" />
                                 </Button>
-                                <Button className="p-2 text-red-600 hover:bg-red-50" title="拒绝">
+                                <Button className="p-2 text-red-600 hover:bg-red-50" title={t.scholarship.rejected}>
                                   <XCircle className="w-4 h-4" />
                                 </Button>
                               </>

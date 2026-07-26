@@ -8,6 +8,7 @@ import {
 import {
   useNavigate,
 } from 'react-router-dom';
+import { useI18n } from '../i18n';
 import {
   AttendanceStatus,
   AttendanceRecord,
@@ -43,13 +44,13 @@ type DataSourceStatus = {
 
 // ============ Constants ============
 const STATUS_LABELS: Record<AttendanceStatus, string> = {
-  [AttendanceStatus.PRESENT]: '出席',
-  [AttendanceStatus.ABSENT]: '缺席',
-  [AttendanceStatus.LATE]: '迟到',
-  [AttendanceStatus.LEAVE_EARLY]: '早退',
-  [AttendanceStatus.SICK_LEAVE]: '病假',
-  [AttendanceStatus.PERSONAL_LEAVE]: '事假',
-  [AttendanceStatus.ABSENT_WITH_LEAVE]: '请假缺勤',
+  [AttendanceStatus.PRESENT]: t.attendance.statusPresent,
+  [AttendanceStatus.ABSENT]: t.attendance.statusAbsent,
+  [AttendanceStatus.LATE]: t.attendance.statusLate,
+  [AttendanceStatus.LEAVE_EARLY]: t.attendance.statusEarlyLeave,
+  [AttendanceStatus.SICK_LEAVE]: t.attendance.statusSickLeave,
+  [AttendanceStatus.PERSONAL_LEAVE]: t.attendance.statusPersonalLeave,
+  [AttendanceStatus.ABSENT_WITH_LEAVE]: t.attendance.statusAbsentWithLeave,
 };
 
 const STATUS_COLORS: Record<AttendanceStatus, string> = {
@@ -103,7 +104,20 @@ const MOCK_STUDENTS: Record<string, Array<{ id: string; name: string }>> = {
 
 // ============ Component ============
 export default function AttendancePage() {
-  const navigate = useNavigate();
+  const { t } = useI18n();
+
+  const getStatusLabel = (status: AttendanceStatus): string => {
+    const labels: Record<AttendanceStatus, string> = {
+      [AttendanceStatus.PRESENT]: t.attendance.statusPresent,
+      [AttendanceStatus.ABSENT]: t.attendance.statusAbsent,
+      [AttendanceStatus.LATE]: t.attendance.statusLate,
+      [AttendanceStatus.EARLY_LEAVE]: t.attendance.statusEarlyLeave,
+      [AttendanceStatus.SICK_LEAVE]: t.attendance.statusSickLeave,
+      [AttendanceStatus.PERSONAL_LEAVE]: t.attendance.statusPersonalLeave,
+      [AttendanceStatus.ABSENT_WITH_LEAVE]: t.attendance.statusAbsentWithLeave,
+    };
+    return labels[status] || status;
+  };  const navigate = useNavigate();
 
   // Tab state
   const [activeTab, setActiveTab] = useState<'overview' | 'manual' | 'anomaly'>('overview');
@@ -133,9 +147,9 @@ export default function AttendancePage() {
   // Data source status (mock — in production from API)
   const [dataSourceStatuses, setDataSourceStatuses] = useState<DataSourceStatus[]>([
     { name: 'eClass API', status: 'success', lastSyncTime: '07:05:22', recordCount: 38 },
-    { name: '门禁刷卡机-RFID-001', status: 'success', lastSyncTime: '07:58:00' },
-    { name: '门禁刷卡机-RFID-002', status: 'offline', lastSyncTime: '07:45:00' },
-    { name: '人脸识别闸机-FACE-001', status: 'success', lastSyncTime: '07:59:00' },
+    { name: t.attendance.doorAccessRFID, status: 'success', lastSyncTime: '07:58:00' },
+    { name: t.attendance.doorAccessRFID, status: 'offline', lastSyncTime: '07:45:00' },
+    { name: t.attendance.faceRecognitionGate, status: 'success', lastSyncTime: '07:59:00' },
   ]);
 
   // ============ Load Data ============
@@ -154,7 +168,7 @@ export default function AttendancePage() {
         setAffectedStudents(affectedData.students);
       }
     } catch (err) {
-      setError('加载出勤数据失败，请稍后重试');
+      setError(t.attendance.loadFailed);
     } finally {
       setLoading(false);
     }
@@ -191,7 +205,7 @@ export default function AttendancePage() {
         }));
         setManualRecords(mapped);
         setError(null);
-        setSubmitSuccess(`已加载 ${mapped.length} 条出勤记录`);
+        setSubmitSuccess(t.attendance.recordsLoaded.replace('{count}', String(mapped.length)));
         setTimeout(() => setSubmitSuccess(null), 3000);
       } else {
         // No existing records, initialize with default PRESENT
@@ -268,7 +282,7 @@ export default function AttendancePage() {
       setPreviewData(data);
       setShowPreview(true);
     } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || '预览生成失败，请检查数据';
+      const msg = err?.response?.data?.message || err?.message || t.attendance.previewFailed;
       setError(msg);
     } finally {
       setSubmitting(false);
@@ -286,12 +300,12 @@ export default function AttendancePage() {
         records: manualRecords,
       });
       setBatchId(result.batchId);
-      setSubmitSuccess(`成功保存 ${result.count} 条记录`);
+      setSubmitSuccess(t.attendance.recordsSaved.replace('{count}', String(result.count)));
       setShowPreview(false);
       setManualRecords([]);
       loadData();
     } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || '批量保存失败，请稍后重试';
+      const msg = err?.response?.data?.message || err?.message || t.attendance.batchSaveFailed;
       setError(msg);
     } finally {
       setSubmitting(false);
@@ -300,14 +314,14 @@ export default function AttendancePage() {
 
   const handleBatchRevoke = async () => {
     if (!batchId) return;
-    if (!confirm('确定要撤销这批记录吗？此操作不可恢复。')) return;
+    if (!confirm(t.attendance.confirmRevoke)) return;
     try {
       await attendanceApi.batchRevoke(batchId);
       setBatchId(null);
       setSubmitSuccess(null);
       loadData();
     } catch (err: any) {
-      alert(err?.response?.data?.message || '撤销失败');
+      alert(err?.response?.data?.message || t.attendance.revokeFailed);
     }
   };
 
@@ -338,10 +352,10 @@ export default function AttendancePage() {
                 src.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
                 'bg-gray-100 text-gray-700'
               }`}>
-                {src.status === 'success' ? '✅ 正常' :
-                 src.status === 'offline' ? '❌ 离线' :
-                 src.status === 'pending' ? '⚠️ 同步中' :
-                 src.status === 'partial' ? '⚠️ 部分成功' : '❌ 失败'}
+                {src.status === 'success' ? t.attendance.okNormal :
+                 src.status === 'offline' ? t.attendance.offlineText :
+                 src.status === 'pending' ? t.attendance.syncing :
+                 src.status === 'partial' ? t.attendance.partialSuccess : t.attendance.failedStatus}
               </span>
             </div>
           </div>
@@ -579,7 +593,7 @@ export default function AttendancePage() {
                     <td className="px-4 py-2">{r.studentName}</td>
                     <td className="px-4 py-2">
                       <span className={`px-2 py-0.5 rounded-full text-xs ${STATUS_COLORS[r.status]}`}>
-                        {STATUS_LABELS[r.status]}
+                        {getStatusLabel(r.status)}
                       </span>
                     </td>
                   </tr>
@@ -601,7 +615,7 @@ export default function AttendancePage() {
               className="flex items-center gap-2 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition text-sm disabled:opacity-50"
             >
               <Check size={16} />
-              {submitting ? '保存中...' : '确认保存'}
+              {submitting ? t.attendance.saving : t.attendance.confirmSave}
             </button>
           </div>
         </div>
@@ -715,7 +729,7 @@ export default function AttendancePage() {
                   <td className="px-4 py-2">
                     <input
                       type="text"
-                      placeholder="备注"
+                      placeholder={t.attendance.remark}
                       value={record.remark || ''}
                       onChange={(e) => updateManualRecord(i, 'remark', e.target.value)}
                       className="border border-gray-300 rounded px-2 py-1 text-xs w-28"
@@ -742,7 +756,7 @@ export default function AttendancePage() {
               className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition text-sm disabled:opacity-50"
             >
               <Eye size={16} />
-              {submitting ? '生成预览...' : '生成确认预览'}
+              {submitting ? t.attendance.generatingPreview : t.attendance.confirmPreview}
             </button>
           )}
           {manualRecords.length === 0 && (
@@ -798,16 +812,16 @@ export default function AttendancePage() {
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-500">
           <div className={`w-2 h-2 rounded-full ${dataSourceStatuses.some(s => s.status === 'offline') ? 'bg-red-500' : 'bg-green-500'}`} />
-          {dataSourceStatuses.some(s => s.status === 'offline') ? '部分数据源离线' : '数据源正常'}
+          {dataSourceStatuses.some(s => s.status === 'offline') ? t.attendance.offlineText : t.attendance.okNormal}
         </div>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-1 bg-white rounded-xl shadow-sm border border-gray-200 p-1">
         {[
-          { key: 'overview', label: '出勤概览', icon: TrendingUp },
-          { key: 'manual', label: '人工录入', icon: Plus },
-          { key: 'anomaly', label: '异常检测', icon: AlertCircle },
+          { key: 'overview', label: t.attendance.overviewTab, icon: TrendingUp },
+          { key: 'manual', label: t.attendance.manualTab, icon: Plus },
+          { key: 'anomaly', label: t.attendance.anomalyTab, icon: AlertCircle },
         ].map(({ key, label, icon: Icon }) => (
           <button
             key={key}
