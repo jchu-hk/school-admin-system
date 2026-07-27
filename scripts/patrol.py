@@ -97,20 +97,38 @@ def check_docker_containers():
 
 def check_open_issues_count():
     """检查open issues统计"""
-    open_issues = gh_api(f"repos/{REPO}/issues?state=open&per_page=1")
-    total = gh_api(f"repos/{REPO}/issues?state=open&per_page=1")
-    
-    # 获取总数
+    # 使用 --jq "length" 统计总数（排除PR）
+    # 注意：--paginate 会合并所有页面，length 计算合并后数组长度
     result = subprocess.run(
-        ["gh", "api", f"repos/{REPO}/issues", "--paginate", "-q", "length(@)"],
+        ["gh", "api", f"repos/{REPO}/issues",
+         "--paginate",
+         "--jq", "[.[] | select(.pull_request == null)] | length"],
         capture_output=True, text=True, timeout=30
     )
     try:
         total_count = int(result.stdout.strip())
-    except:
+    except (ValueError, TypeError) as e:
+        log(f"⚠️ 无法解析issue数量: {e}, stdout={result.stdout[:200]}, stderr={result.stderr[:200]}")
         total_count = 0
     
     return total_count
+
+def check_p0_p1_issues():
+    """检查是否有open的P0/P1 issues — 无论什么状态都应告警"""
+    all_urgent = []
+    for priority in ["p0", "p1"]:
+        issues = gh_api(f"repos/{REPO}/issues?state=open&labels={priority}")
+        all_urgent.extend(issues)
+    return all_urgent
+
+def check_recently_closed_p0():
+    """检查最近24小时关闭的P0 issues — 快速修复可能已关闭但PM应知情"""
+    from datetime import timedelta
+    yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+    issues = gh_api(
+        f"repos/{REPO}/issues?state=closed&labels=p0&since={yesterday}T00:00:00Z&per_page=50"
+    )
+    return [i for i in issues if 'pull_request' not in i]
 
 def main():
     log("=" * 50)
@@ -139,18 +157,34 @@ def main():
         for i in recent[:3]:
             concerns.append(f"🆕 #{i['number']}: {i['title'][:40]}")
     
-    # 4. 检查open issues总数
+    # 4. 【新增】检查P0/P1 open issues — 任何P0/P1都应告警
+    urgent = check_p0_p1_issues()
+    log(f"P0/P1 open issues: {len(urgent)}")
+    if urgent:
+        for i in urgent[:10]:
+            labels = [l['name'] for l in i.get('labels', [])]
+            prio = [l for l in labels if l in ('p0', 'p1')]
+            concerns.append(f"🚨 [{','.join(prio)}] #{i['number']}: {i['title'][:40]}")
+    
+    # 5. 【新增】检查最近关闭的P0 — PM应知情
+    closed_p0 = check_recently_closed_p0()
+    log(f"Recently closed P0 (24h): {len(closed_p0)}")
+    if closed_p0:
+        for i in closed_p0[:5]:
+            concerns.append(f"✅ [已关闭P0] #{i['number']}: {i['title'][:40]}")
+    
+    # 6. 检查open issues总数
     open_count = check_open_issues_count()
     log(f"Total open issues: {open_count}")
     
-    # 5. 检查测试环境
+    # 7. 检查测试环境
     env_status = check_test_env()
     log(f"测试环境: {', '.join(env_status)}")
     
     containers = check_docker_containers()
     log(f"容器: {', '.join(containers)}")
     
-    # 6. 判断是否需要通知
+    # 8. 判断是否需要通知
     log("=" * 50)
     if concerns:
         log(f"⚠️ 发现 {len(concerns)} 个需要关注的任务")
