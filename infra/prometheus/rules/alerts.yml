@@ -1,35 +1,82 @@
 groups:
-- name: school-admin-alerts
-  rules:
-  # 数据库CPU使用率超过80%
-  - alert: DatabaseCPUHigh
-    expr: 100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
-    for: 2m
-    labels:
-      severity: critical
-    annotations:
-      summary: "Database CPU usage is high"
-      description: "Database CPU usage is {{ $value }}% for more than 2 minutes"
-      actionable_steps: "Check database queries, optimize slow queries, scale database resources"
+  - name: school-admin-alerts
+    rules:
+      - alert: ServiceDown
+        expr: up == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.job }} is down"
+          description: "Service {{ $labels.job }} (instance {{ $labels.instance }}) has been down for more than 30 seconds"
+          actionable_steps: "Check service logs, restart service if needed"
 
-  # API错误率超过5%
-  - alert: APIErrorRateHigh
-    expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100 > 5
-    for: 1m
-    labels:
-      severity: warning
-    annotations:
-      summary: "API error rate is high"
-      description: "API error rate is {{ $value }}% for more than 1 minute"
-      actionable_steps: "Check backend logs, identify failed requests, rollback recent deploy if needed"
+      - alert: ContainerHighCPU
+        expr: docker_container_cpu_percent > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container {{ $labels.name }} CPU > 80%"
+          description: "Container {{ $labels.name }} CPU usage is {{ $value }}%"
+          actionable_steps: "Check for CPU-intensive processes inside the container"
 
-  # 服务宕机告警
-  - alert: ServiceDown
-    expr: up == 0
-    for: 30s
-    labels:
-      severity: critical
-    annotations:
-      summary: "Service {{ $labels.job }} is down"
-      description: "Service {{ $labels.job }} has been down for more than 30 seconds"
-      actionable_steps: "Check service logs, restart service if needed"
+      - alert: ContainerHighMemory
+        expr: docker_container_mem_percent > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container {{ $labels.name }} memory > 80%"
+          description: "Container {{ $labels.name }} memory usage is {{ $value }}%"
+          actionable_steps: "Check for memory leaks, increase memory limits"
+
+      - alert: ContainerDown
+        expr: docker_container_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Container {{ $labels.name }} is down"
+          description: "Container {{ $labels.name }} is not running"
+          actionable_steps: "Check container logs, restart the container"
+
+      - alert: BackendCPUHigh
+        expr: process_cpu_seconds_total{job="school-backend"} > 0.8
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Backend CPU usage is high"
+          description: "Backend process CPU usage is {{ $value }} for more than 2 minutes"
+          actionable_steps: "Check for hot loops, optimize algorithms, scale horizontally"
+
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes{mountpoint="/",fstype!=""} / node_filesystem_size_bytes{mountpoint="/",fstype!=""})) * 100 > 85
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk space is running low"
+          description: "Disk usage on {{ $labels.mountpoint }} is {{ $value }}%"
+          actionable_steps: "Clean up old logs, remove unused Docker images, expand disk"
+
+      - alert: NodeHighCPU
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Node CPU usage is high"
+          description: "Host CPU usage is {{ $value }}% for more than 5 minutes"
+          actionable_steps: "Check running processes, scale to additional nodes"
+
+      - alert: NodeMemoryLow
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Node memory is running low"
+          description: "Host memory usage is {{ $value }}%"
+          actionable_steps: "Check memory usage by containers, restart memory-intensive services"

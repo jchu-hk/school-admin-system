@@ -55,6 +55,7 @@ const QrScanPage: React.FC = () => {
     recentScans,
     isOnline,
     isSyncing,
+    debugInfo,
     startScanning,
     stopScanning,
   } = useCameraScan();
@@ -209,6 +210,7 @@ const QrScanPage: React.FC = () => {
         {/* 当前状态指示 */}
         <div className="mt-3 text-center">
           <StatusIndicator status={status} />
+          <p className="text-[10px] text-gray-400 mt-1">{debugInfo || ' '}</p>
         </div>
 
         {/* 最近签到列表 */}

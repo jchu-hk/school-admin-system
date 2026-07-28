@@ -43,6 +43,9 @@ Sandbox Port 5000 (Nginx — host machine)
 | `/assets/*` | `:8080/assets/*` | Static Files | Static assets (backup) |
 | `/attendance/*` | `:8080` | ⚠️ 新QR考勤 | **不被旧前端识别** — 需部署新前端 |
 | `/portal/*` | `:8080` | ⚠️ 新学生/家长门户 | **不被旧前端识别** — 需部署新前端 |
+| `/grafana/` | `:3001` | Grafana | OPS Dashboard → `admin/admin123` |
+| `/prometheus/` | `:9091` | Prometheus | OPS Metrics |
+| `/alertmanager/` | `:9093` | Alertmanager | OPS Alerts |
 | `/` | `:5001` | OpenClaw | Gateway + Web UI |
 
 ## CR-20260714-001 新功能路由（目标状态）
@@ -70,6 +73,9 @@ Sandbox Port 5000 (Nginx — host machine)
 | 学生门户 | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student` |
 | 家长门户 | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/parent` |
 | OpenClaw Web UI | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/` |
+| Grafana Dashboards | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/grafana/` | 🔐 `admin` / `admin123` |
+| Prometheus Metrics | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/prometheus/` |
+| Alertmanager Alerts | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/alertmanager/` |
 
 > ⚠️ QR考勤和门户链接在**旧前端部署**下无法访问（旧v1.6.0不包含这些路由），需等Phase 5部署后启用。
 

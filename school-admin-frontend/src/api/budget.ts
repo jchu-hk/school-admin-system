@@ -1,6 +1,6 @@
 // 预算管理API接口定义
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 // ==================== Budget ====================
 export interface Budget {

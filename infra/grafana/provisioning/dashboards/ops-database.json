@@ -1,0 +1,469 @@
+{
+  "title": "数据库监控 - OPS Database",
+  "uid": "ops-database",
+  "tags": [
+    "ops",
+    "database",
+    "postgres"
+  ],
+  "timezone": "browser",
+  "refresh": "30s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "title": "PostgreSQL Status",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_up{name=\"school-admin-postgres\"}",
+          "legendFormat": "PG"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "PG Container CPU",
+      "type": "stat",
+      "gridPos": {
+        "x": 4,
+        "y": 0,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_cpu_percent{name=\"school-admin-postgres\"}",
+          "legendFormat": "CPU %"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "PG Container Memory %",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_mem_percent{name=\"school-admin-postgres\"}",
+          "legendFormat": "Mem %"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "PG Memory Usage",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_mem_usage_bytes{name=\"school-admin-postgres\"}",
+          "legendFormat": "Postgres"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      }
+    },
+    {
+      "title": "PG PIDs / Connections",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_pids{name=\"school-admin-postgres\"}",
+          "legendFormat": "PIDs"
+        }
+      ]
+    },
+    {
+      "title": "PG Network I/O",
+      "type": "stat",
+      "gridPos": {
+        "x": 20,
+        "y": 0,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_net_rx_bytes{name=\"school-admin-postgres\"}",
+          "legendFormat": "RX"
+        },
+        {
+          "expr": "docker_container_net_tx_bytes{name=\"school-admin-postgres\"}",
+          "legendFormat": "TX"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      }
+    },
+    {
+      "title": "Redis Status",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 3,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_up{name=\"school-admin-redis\"}",
+          "legendFormat": "Redis"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "Redis CPU",
+      "type": "stat",
+      "gridPos": {
+        "x": 4,
+        "y": 3,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_cpu_percent{name=\"school-admin-redis\"}",
+          "legendFormat": "CPU %"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0
+        }
+      }
+    },
+    {
+      "title": "Redis Memory",
+      "type": "stat",
+      "gridPos": {
+        "x": 8,
+        "y": 3,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_mem_percent{name=\"school-admin-redis\"}",
+          "legendFormat": "Mem %"
+        },
+        {
+          "expr": "docker_container_mem_usage_bytes{name=\"school-admin-redis\"}",
+          "legendFormat": "Usage"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      }
+    },
+    {
+      "title": "Kafka Status",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 3,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_up{name=\"school-admin-kafka\"}",
+          "legendFormat": "Kafka"
+        }
+      ],
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "Kafka CPU",
+      "type": "stat",
+      "gridPos": {
+        "x": 16,
+        "y": 3,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_cpu_percent{name=\"school-admin-kafka\"}",
+          "legendFormat": "CPU %"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        }
+      }
+    },
+    {
+      "title": "Kafka Memory",
+      "type": "stat",
+      "gridPos": {
+        "x": 20,
+        "y": 3,
+        "w": 4,
+        "h": 3
+      },
+      "targets": [
+        {
+          "expr": "docker_container_mem_usage_bytes{name=\"school-admin-kafka\"}",
+          "legendFormat": "Memory"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      }
+    },
+    {
+      "title": "Postgres CPU Over Time",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 8,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "docker_container_cpu_percent{name=\"school-admin-postgres\"}",
+          "legendFormat": "CPU %"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0
+        }
+      }
+    },
+    {
+      "title": "Postgres Memory Over Time",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 8,
+        "y": 6,
+        "w": 8,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "docker_container_mem_usage_bytes{name=\"school-admin-postgres\"}",
+          "legendFormat": "Postgres"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      }
+    },
+    {
+      "title": "DB Network Traffic Comparison",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 16,
+        "y": 6,
+        "w": 8,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "rate(docker_container_net_rx_bytes{name=~\"school-admin-(postgres|redis|kafka)\"}[2m])",
+          "legendFormat": "RX {{ name }}"
+        },
+        {
+          "expr": "rate(docker_container_net_tx_bytes{name=~\"school-admin-(postgres|redis|kafka)\"}[2m])",
+          "legendFormat": "TX {{ name }}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps"
+        }
+      }
+    },
+    {
+      "title": "All DB Containers Resource Table",
+      "type": "table",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 24,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "docker_container_up{name=~\"school-admin-(postgres|redis|kafka|zookeeper)\"}",
+          "legendFormat": "Up {{ name }}"
+        },
+        {
+          "expr": "docker_container_cpu_percent{name=~\"school-admin-(postgres|redis|kafka|zookeeper)\"}",
+          "legendFormat": "CPU {{ name }}"
+        },
+        {
+          "expr": "docker_container_mem_usage_bytes{name=~\"school-admin-(postgres|redis|kafka|zookeeper)\"}",
+          "legendFormat": "Mem {{ name }}"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge"
+        },
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "name": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "Value": {
+                "aggregations": []
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "folderUid": "ops-monitoring"
+}

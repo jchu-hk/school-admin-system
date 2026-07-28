@@ -7,6 +7,12 @@
 -- 清理现有测试数据（谨慎使用）
 -- DELETE FROM users WHERE username IN ('admin', 'staff1', 'teacher1', 'parent1', 'student1');
 
+-- =====================================================
+-- ⚠️ 密码变更警告: 以下所有 ON CONFLICT DO UPDATE 会覆盖密码！
+-- 如果通过 API/UI 修改密码，种子脚本重新运行会重置回 Admin123!
+-- 如需修改密码，同步更新 bcrypt hash
+-- =====================================================
+
 -- 管理员账号 (system_admin - 需要OTP)
 INSERT INTO users (
     id, username, name, email, phone, role, status, password,

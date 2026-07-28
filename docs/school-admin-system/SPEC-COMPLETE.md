@@ -1927,6 +1927,14 @@ Step 6: 数据汇总与归档 (Summary & Archive)
 | 系统配置 | ✅ 全部 | ❌ | ❌ | ❌ | ❌ | ✅ |
 | 审计日志 | ✅ 查看 | ❌ | ❌ | ❌ | ❌ | ✅ |
 
+> **🆕 v1.6.2 (#287) 前端菜单角色过滤 — 侧边栏按角色显示**：
+> - Admin Dashboard 侧边栏现已按当前用户角色过滤菜单项
+> - 实现方式：`Layout.tsx` 中每个菜单项定义 `roles: string[]`，运行时通过 `useMemo` 过滤
+> - 用户信息存储：`userService.ts` 统一从 localStorage 读取角色
+> - 双重防线：前端隐藏为 UI 体验，后端 `JwtAuthGuard + RolesGuard` 为安全底线
+> - 完整角色-菜单映射表见 `SPEC-SYSTEM-DESIGN.md` §15.5
+> - 详情：[#287 影响分析](https://github.com/jchu-hk/school-admin-system/issues/287#issuecomment-5077187860)
+
 > **🔒 RBAC权限澄清 — TEACHER角色费用权限说明（v1.7.0 Patch修复）：**
 > - **费用收取（❌ 无权限）**：TEACHER角色**不可**操作收费界面、录入收款记录或修改费用数据。收费操作（录入、审批、豁免）仅限SCHOOL_ADMIN和OFFICER角色。
 > - **费用查询（✅ 本班学生费用状态）**：TEACHER角色可查看所教班级学生的费用缴纳状态（如欠费提醒确认），用于辅助班主任了解学生家庭情况以便给予适当支持。**但不得查看金额详情，仅显示"已缴清"/"欠费"/"分期付款"等状态标签。**

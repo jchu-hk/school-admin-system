@@ -101,10 +101,10 @@ export class QrScanService {
     );
 
     if (!isValid) {
-      // 记录伪造尝试
+      // 记录伪造尝试（studentId不可信，传入null）
       await this.logScanResult(
         null,
-        studentId,
+        null,
         staffUserId,
         'forged',
         deviceId,
@@ -124,10 +124,10 @@ export class QrScanService {
     });
 
     if (!qrCodeRecord) {
-      // nonce 不存在 → 可能伪造或数据库未同步
+      // nonce 不存在 → 可能伪造或数据库未同步（studentId不可信，传入null）
       await this.logScanResult(
         null,
-        studentId,
+        null,
         staffUserId,
         'forged',
         deviceId,
@@ -206,7 +206,11 @@ export class QrScanService {
     });
 
     if (!student) {
-      // 如果 student 表中找不到，尝试通过 users 表查找关联学生
+      throw new BadRequestException({
+        error: 'STUDENT_NOT_FOUND',
+        message: '未找到学生信息，该二维码无效',
+        alert: true,
+      });
     }
 
     const studentName = student?.nameZh || student?.studentId || studentId;
@@ -312,7 +316,7 @@ export class QrScanService {
    */
   private async logScanResult(
     qrCodeId: string | null,
-    studentId: string,
+    studentId: string | null,
     staffUserId: string,
     result: string,
     deviceId?: string,

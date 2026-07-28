@@ -28,8 +28,8 @@ export class AttendanceQrLog {
   qrCode: QrCode;
 
   /** 签到学生 */
-  @Column({ name: 'student_id' })
-  studentId: string;
+  @Column({ name: 'student_id', nullable: true })
+  studentId?: string;
 
   @ManyToOne(() => Student)
   @JoinColumn({ name: 'student_id' })

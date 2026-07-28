@@ -1,6 +1,41 @@
 # DEV Agent - 长期记忆
 
-*上次更新: 2026-07-11*
+*上次更新: 2026-07-25*
+
+---
+
+### 2026-07-25 — [#284][#285] Fix i18n English Translation Defects
+
+**#284: Attendance menu only shows 2 sub-items in English**
+- **根因**: `en.ts` nav section missing `assetManagement` and `assetRentalManagement` keys
+  - Layout.tsx references `t.nav.assetManagement` and `t.nav.assetRentalManagement` which returned undefined
+  - These keys existed in `zh-CN.ts` but not in `en.ts`
+- **修复**: Added both keys to `en.ts` and `zh-TW.ts`
+
+**#285: Page titles still display Chinese after switching to English**
+- **根因**: Layout.tsx hardcoded `智慧校园` as the system title
+- **修复**:
+  1. Added `nav.systemTitle` key to all 3 locale files with English value 'Smart Campus'
+  2. Changed Layout.tsx from `智慧校园` to `{t.nav.systemTitle}`
+  3. Also removed fallback `|| '关于系统'` from Layout.tsx about button
+
+**Dashboard improvements (caught during audit)**:
+- Replaced hardcoded Chinese chart labels `'出勤'`, `'迟到'`, `'早退'`, `'缺勤'` with `t()` calls
+- Added `dashboard.dailyDetail`, `dashboard.presentCount`, `dashboard.lateCount`, `dashboard.earlyLeaveCount`, `dashboard.absentCount`, `dashboard.pendingInquiries`, `dashboard.pendingLeaves` keys to all 3 locales
+- Fixed BarChart to use English dataKeys with translated tooltip formatter
+
+**Key finding**: Many pages (AttendancePage, FinanceScholarshipPage, LunchOrderPage, NotificationPage) do NOT use `useI18n` at all. They hardcode Chinese throughout. Fixing those is a larger separate effort beyond these two issues.
+
+**Files changed**:
+- `src/i18n/locales/en.ts` — Added 11 keys
+- `src/i18n/locales/zh-CN.ts` — Added 11 keys
+- `src/i18n/locales/zh-TW.ts` — Added 11 keys
+- `src/components/Layout.tsx` — Fixed hardcoded title, removed fallback
+- `src/pages/Dashboard.tsx` — Fixed chart labels
+
+**Build**: `npx vite build` → `docker cp` ✅
+
+**Scope note**: Only pages using `useI18n` were fixed. Pages without i18n (Attendance, FinanceScholarship, LunchOrder, Notification) remain Chinese-only — requires separate feature.
 
 ---
 
@@ -238,6 +273,71 @@ r = json.loads(subprocess.check_output([
 2. 更新任何变化的知识（URL、端口、配置等）
 3. 如果学到了新的教训，添加到"教训"部分
 
+### 2026-07-19 — P0五Bug修复（#268 #269 #270 #271 #273）
+
+**关键发现：所有5个P0 Bug共享一个根因**
+
+#### 根因分析
+
+**数据库 `parent_student_links` 表数据腐败**
+- 60+ 条记录 `student_id = '00000000-0000-0000-0000-000000000000'`（null UUID）
+- 1条记录 `student_id = 'TEST0077'`（非UUID字符串）
+- 这些值通过简单的UUID格式验证（匹配正则），但在 `users` 表找不到对应记录
+
+**传播路径：**
+1. 任何调用 `findOne()` 或 `findAllUsers()` 的方法都会触发 `populateRelatedStudentIds()`
+2. 该方法从 `parent_student_links` 读取 `student_id` 并赋值给 `user.relatedStudentId`
+3. 当 `save()` 被调用时（update/delete/toggleStatus），TypeORM 尝试写回 `related_student_id` FK
+4. PostgreSQL 报 `invalid input syntax for type uuid` 或 FK 约束违反 → 500
+
+**影响范围：**
+- `#268 DELETE user` — `remove()` → `findOne()` → `populateRelatedStudentIds()` → 腐败数据 → `save()` → 500
+- `#269 Department/ClassName save` — `update()` → `findOne()` → 腐败数据 → `save()` → 500
+- `#270 Toggle status` — `toggleStatus()` → `findOne()` → 腐败数据 → `save()` → 500
+- `#271 Add user pre-fill` — 前端独立bug，`reset()` 没有在openCreateModal时调用 ✅ 已在workspace源码中修复
+- `#273 Inquiry submit fail` — 枚举和列已经在数据库存在，原始测试失败可能是 corruption 导致的级联错误
+
+#### 主要修复
+
+**数据层（PostgreSQL 直接）：**
+```sql
+DELETE FROM parent_student_links WHERE student_id = '00000000-0000-0000-0000-000000000000';
+```
+删除 60 条腐败记录。
+
+**代码层（user.service.ts）：**
+在 `populateRelatedStudentIds()` 方法中添加 null-UUID 跳过逻辑：
+```typescript
+const nullUuid = '00000000-0000-0000-0000-000000000000';
+for (const link of links) {
+  if (link.studentId === nullUuid) {
+    continue;
+  }
+  primaryLinkMap.set(link.parentId, link.studentId);
+}
+```
+并在无有效链接时为 parent 清除 `relatedStudent` 关系。
+
+#### 部署
+- 后端：`cd apps/backend && npm run build` → `docker cp user.service.js` → `docker restart`
+- frontend fix (#271) 已在 deployed container v1.6.1 中
+
+#### 验证结果
+- PATCH department → HTTP 200 ✅
+- PATCH status disabled → HTTP 200 ✅
+- DELETE user → HTTP 204 ✅
+- POST inquiry → HTTP 201 ✅
+- Frontend reset() → source code confirmed ✅
+
+**教训：**
+- 1. 数据腐败是这次所有bug的共同根源
+- 2. 之前的"修复"（commit cde56ea）只加了前端alert，没处理后端500
+- 3. 总是先检查数据库数据完整性再找代码问题
+- 4. TypeORM 的 `save()` 会序列化 entity 所有字段到 DB，腐败的 `relatedStudentId` 会导致级联 FK 错误
+- 5. 前端的 `department` vs 后端 `className` 字段名不匹配是另一个已知但未解决的非P0问题
+
+---
+
 ### 2026-07-13 — 周一工作: 诊断剩余Bugs + 环境清理
 
 **Working directory**: `/workspace/school-admin-system/`
@@ -279,3 +379,41 @@ r = json.loads(subprocess.check_output([
 - Docker 容器环境变量（DB_HOST=postgres vs school-admin-postgres）要匹配网络配置
 - 后端容器网络是 `school-admin-network` 不是 `school-admin-system_default`
 - 后端实际运行路径: `/app/apps/backend/dist/main.js`
+
+### 2026-07-25 — #283: DeepSeek 模型弃用排查验证
+- **背景**: DeepSeek 弃用 `deepseek-chat` 和 `deepseek-reasoner`，影响所有 agent 运行
+- **用户修复**: 更新到 `deepseek-v4-flash` 和 `deepseek-v4-pro`
+- **验证结果**:
+  1. ✅ Gateway 配置仅含新模型 ID，无旧引用
+  2. ✅ 全工作区扫描无旧模型 ID 残留（仅 agent-messages.json 有事件日志）
+  3. ✅ 强制运行 cron 任务（pm-daily-check, dashboard-refresh）均成功
+  4. ✅ Issue #283 已评论排查报告
+- **教训**: 当模型提供商弃用模型 ID 时，需验证 (1) gateway config (2) 全工作区引用 (3) cron/script 运行时兼容性
+
+### 2026-07-25 — [#281][#282]: API Base URL Fallback + 奖学金路径 Bug
+
+**根因**:
+1. `#281` — 所有前端 API 文件使用 `import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api'` 作为 fallback，但 3001 是 Grafana 端口，不是后端 API。`VITE_API_BASE_URL` 在 `.env.production` 中为空字符串（falsy），导致 fallback 到错误地址
+2. `#282` — 奖学金页面调用 `${API_BASE_URL}/scholarship/scholarships`，但后端 controller prefix = `scholarships`（无额外 `scholarship/` 前缀），正确路径应为 `/api/scholarships`
+
+**修复 (10 个文件)**：
+- API 文件: `settings.ts`, `budget.ts`, `exam.ts`, `course.ts`, `dse.ts` (5 个)
+- 页面文件: `FinanceScholarshipPage.tsx`, `FinanceTuitionPage.tsx`, `FinanceFeePage.tsx`, `FinanceInstallmentPage.tsx` (4 个)
+- 统一从 `'http://localhost:3001/api'` → `'/api/'`
+- `FinanceScholarshipPage.tsx` 路径修复: `scholarship/scholarships` → `scholarships`, `scholarship/applications` → `scholarships/applications`
+
+**部署**: `npx vite build` → `docker cp dist/. school-admin-frontend:/usr/share/nginx/html/`
+
+**验证结果**:
+- `localhost:3001` 从构建产物中完全清除 ✅
+- `GET /api/settings/configs` (admin) → 200 ✅
+- `GET /api/scholarships` (admin) → 200 ✅
+- `GET /api/scholarships` (staff1) → 200 ✅
+- 旧路径 `GET /api/scholarship/scholarships` → 404 (正确失败) ✅
+- `GET /api/budgets` / `exams` / `courses` → 500 (后端表/列缺失，预存 bug，非本次修复范围)
+- `GET /api/scholarships/applications` → 500 (后端 SQL 语法错误，预存 bug)
+
+**教训**:
+- 所有前端 API 调用都必须使用相对路径 `/api/`，不要硬编码端口
+- 检查前端页面内的 fetch 调用同样需要修复（不只是 api/ 目录下的文件）
+- 奖学金页面有 `scholarship/scholarships` 和 `scholarship/applications` 路径错误 — 多了一个 `scholarship/` 前缀

@@ -243,6 +243,7 @@ services:
       - "${PROMETHEUS_PORT:-9091}:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules:/etc/prometheus/rules:ro
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -267,15 +268,57 @@ services:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin123}
       GF_USERS_ALLOW_SIGN_UP: "false"
-      GF_SERVER_ROOT_URL: "https://school-admin-monitor.trycloudflare.com"
+      GF_SERVER_ROOT_URL: "https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/grafana/"
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
       GF_SERVER_PROTOCOL: "http"
       GF_SECURITY_COOKIE_SECURE: "true"
-      GF_SECURITY_COOKIE_SAMESITE: "strict"
+      GF_SECURITY_COOKIE_SAMESITE: "none"
+      GF_SECURITY_CSRF_TRUSTED_ORIGINS: "https://*.dev.coze.site https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site"
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
     depends_on:
       - prometheus
+    restart: unless-stopped
+    networks:
+      - school-network
+
+  # ------------------------------------------------------------
+  # cAdvisor / Docker Container Metrics Exporter (replaced by host-based exporter on port 9393)
+  # The host-based exporter runs externally at http://172.19.0.1:9393/metrics
+  # ------------------------------------------------------------
+
+  # ------------------------------------------------------------
+  # PostgreSQL Exporter (for Grafana PG dashboards)
+  # ------------------------------------------------------------
+  postgres_exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: school-admin-postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://school_admin:school_admin123@postgres:5432/school_admin?sslmode=disable"
+    ports:
+      - "9187:9187"
+    restart: unless-stopped
+    networks:
+      - school-network
+
+  # ------------------------------------------------------------
+  # Node Exporter - Host System Metrics
+  # ------------------------------------------------------------
+  node_exporter:
+    image: prom/node-exporter:v1.6.1
+    container_name: school-admin-node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     restart: unless-stopped
     networks:
       - school-network

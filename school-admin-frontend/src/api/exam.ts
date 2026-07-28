@@ -76,7 +76,7 @@ export interface ExamQueryParams {
   endDate?: string;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 export const examApi = {
   // 获取考试列表

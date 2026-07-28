@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { HttpMetricsMiddleware } from './modules/metrics/http-metrics.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,6 +25,10 @@ async function bootstrap() {
 
   // Global interceptor to serialize entities (excludes @Exclude() fields like password)
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  // Global HTTP metrics middleware for Prometheus
+  const httpMetricsMiddleware = new HttpMetricsMiddleware();
+  app.use((req: any, res: any, next: any) => httpMetricsMiddleware.use(req, res, next));
 
   // Swagger API Documentation setup
   const swaggerConfig = new DocumentBuilder()

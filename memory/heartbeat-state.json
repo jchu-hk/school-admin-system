@@ -1,9 +1,10 @@
 {
   "lastChecks": {
+    "heartbeat": 1785146703,
+    "system": 1785146703,
     "email": null,
     "calendar": null,
-    "weather": "2026-07-16T09:45:00+08:00"
+    "weather": null
   },
-  "lastHeartbeat": "2026-07-17T09:50:00.000000+08:00",
-  "heartbeatCount": 55
+  "lastRecorded": 1785146703
 }

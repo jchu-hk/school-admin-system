@@ -1,3 +1,7 @@
+## [SAS] Prefix Convention (2026-07-25)
+
+When the user sends messages related to the **School Admin System** project, they will prefix with `[SAS]` to differentiate from general conversation. When I respond about SAS topics, I should also use this prefix or contextually acknowledge it's SAS-related.
+
 ## Coze Proxy Configuration (Important!)
 
 **Document Location**: `/workspace/projects/workspace/COZE_PROXY_CONFIG.md`

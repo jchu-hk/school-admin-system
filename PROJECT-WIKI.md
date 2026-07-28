@@ -1,7 +1,7 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-21 13:37 GMT+8
-> Updated by: PM (OPS监控工具已配置上线，待人工测试)
+> Last updated: 2026-07-25 13:47 GMT+8
+> Updated by: PM (v1.6.2 deployed: #281-#285 fixes + #287 role-menu enhancement)
 
 ---
 
@@ -83,7 +83,7 @@ curl http://localhost:8080/school-admin/about | grep version
 
 | Service | URL | 类型 | 状态 |
 |---------|-----|------|------|
-| **admin-app** (本地) | http://localhost:8080 | ✅ 自管 | ✅ v1.6.0 |
+| **admin-app** (本地) | http://localhost:8080 | ✅ 自管 | ✅ v1.6.2 |
 | **portal-app** (本地) | http://localhost:8081 | ✅ 自管 | ✅ QR考勤+门户 |
 | Backend API (本地) | http://localhost:3000 | ✅ 自管 | ✅ v1.5.7 |
 | Coze — admin-app | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/) | ☁️ Coze | ✅ 教职工后台 |
@@ -271,6 +271,281 @@ docker compose exec backend npm run migration:run
 ```bash
 cd /workspace/projects/workspace
 python3 skills/multi-agent-dashboard/scripts/update_dashboard.py --repo jchu-hk/school-admin-system
+```
+
+---
+
+## 🛠️ OPS Information — School Admin System
+
+> 集中收录系统运维相关的重要信息、工具、脚本和使用手册。
+
+### 📂 Infrastructure Stack
+
+所有服务运行在 Docker Compose 编排环境中，配置文件位于 `infra/docker-compose.yml`。
+
+| 组件 | 容器名 | 端口 (宿主机) | 类型 |
+|-------|--------|---------------|------|
+| **Core Services** | | | |
+| Backend API | `school-admin-backend` | 3000 | NestJS REST API (v1.5.7) |
+| Frontend (admin-app) | `school-admin-frontend` | 8080→80 | Nginx SPA (v1.6.0) |
+| Frontend (portal-app) | `school-admin-frontend-v2` | 8081→80 | Nginx SPA (QR考勤+门户) |
+| PostgreSQL | `school-admin-postgres` | 5432 | 主数据库 |
+| Redis | `school-admin-redis` | 6379 | 缓存/队列 |
+| | | | |
+| **Policy & Event** | | | |
+| OPA (ABAC) | `school-admin-opa` | 8181 | 策略引擎 |
+| Kafka | `school-admin-kafka` | 9092 | 事件流 |
+| Zookeeper | `school-admin-zookeeper` | 2181 | Kafka 协调 |
+| | | | |
+| **Monitoring** | | | |
+| Prometheus | `school-admin-prometheus` | 9091 | 指标采集 |
+| Grafana | `school-admin-grafana` | 3001 | 可视化面板 |
+| Alertmanager | `school-admin-alertmanager` | 9093 | 告警管理 |
+| Node Exporter | `school-admin-node-exporter` | 9100 | 主机指标 |
+| Postgres Exporter | `school-admin-postgres-exporter` | 9187 | 数据库指标 |
+| | | | |
+| **Network** | | | |
+| Cloudflare Tunnel | `school-admin-cloudflared` | — | 公网代理 |
+
+> Docker Compose 项目名: `infra` | 内部网络: `school-network`
+
+---
+
+### 📊 Monitoring Stack Access
+
+所有监控工具通过 Coze 代理访问（需要认证）：
+
+| Service | URL | 默认凭据 |
+|---------|-----|----------|
+| **Grafana** | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/grafana/` | `admin` / 见 `.env` |
+| **Prometheus** | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/prometheus/` | 开源，无认证 |
+| **Alertmanager** | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/alertmanager/` | 开源，无认证 |
+
+**Prometheus 采集目标**:
+- `school-backend` → `/api/metrics` (每10s)
+- `postgres` → `postgres_exporter:9187` (每10s)
+- `node_exporter` → `node_exporter:9100` (每15s)
+- `cadvisor` → Docker gateway `172.19.0.1:9393` (每15s)
+
+**预配置告警规则** (`infra/prometheus/rules/alerts.yml`):
+| 告警名 | 条件 | 严重度 |
+|--------|------|--------|
+| ServiceDown | `up == 0` 持续30s | 🔴 critical |
+| ContainerDown | `docker_container_up == 0` 持续1m | 🔴 critical |
+| DiskSpaceLow | 磁盘使用 > 85% 持续5m | 🔴 critical |
+| ContainerHighCPU | CPU > 80% 持续2m | 🟡 warning |
+| ContainerHighMemory | 内存 > 80% 持续2m | 🟡 warning |
+| BackendCPUHigh | 后端进程CPU > 80% 持续2m | 🟡 warning |
+| NodeHighCPU | 主机CPU > 80% 持续5m | 🟡 warning |
+| NodeMemoryLow | 主机内存 > 85% 持续5m | 🟡 warning |
+
+---
+
+### 🗄️ Database Operations
+
+#### 连接信息
+
+| 字段 | 值 |
+|------|-----|
+| Host | `localhost` (宿主机) / `school-admin-postgres` (容器内) |
+| Port | 5432 |
+| User | `school_admin` |
+| Database | `school_admin` |
+| Password | 见 `.env` 或 `school_admin123` (默认) |
+
+#### 常用命令
+
+```bash
+# 连接数据库
+PGPASSWORD="school_admin123" psql -h localhost -p 5432 -U school_admin -d school_admin
+
+# 查看迁移状态
+docker compose -f infra/docker-compose.yml exec backend npm run migration:show
+
+# 运行迁移
+docker compose -f infra/docker-compose.yml exec backend npm run migration:run
+
+# 回滚迁移
+docker compose -f infra/docker-compose.yml exec backend npm run migration:revert
+```
+
+#### 备份
+
+备份脚本位于 `scripts/backup-database.sh`，支持：
+
+| 功能 | 说明 |
+|------|------|
+| 自动备份 | 支持 cron 定期执行 |
+| 压缩 | .sql.gz 格式 |
+| 保留策略 | 默认保留30天 |
+| 通知 | 支持 Webhook / Email |
+
+```bash
+# 手动备份
+DB_PASSWORD="school_admin123" bash scripts/backup-database.sh
+
+# 设置 cron 每日备份（示例）
+0 2 * * * cd /workspace/projects/workspace && DB_PASSWORD="xxx" bash scripts/backup-database.sh >> /var/log/backup.log 2>&1
+```
+
+**Seed 数据脚本** (`scripts/`):
+- `seed-users.sql` — 用户种子数据
+- `seed-full-test-data.sql` — 完整测试数据
+- `seed-dashboard-data.sql` ~ `seed-dashboard-data-v4.sql` — Dashboard 演示数据
+- `seed-attendance-data.sql` / `seed-attendance-and-inquiry-data.sql` — 考勤+咨询数据
+- `seed-test-data-issue157-160.sql` — Issue #157-160 测试数据
+- `seed-daily-attendance.sh` / `seed-daily-attendance.ts` — 日考勤种子脚本
+
+---
+
+### 🩺 Health Checks
+
+| Check | 命令/Endpoint | 期望结果 |
+|-------|-------------|----------|
+| Backend API | `curl http://localhost:3000/api/health` | 200 + `{"status":"ok"}` |
+| Frontend v1 | `curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/` | 200 |
+| Frontend v2 | `curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/` | 200 |
+| Gateway | `curl -s -o /dev/null -w "%{http_code}" http://localhost:5001/` | 200/401/404 |
+| PostgreSQL | `docker compose exec postgres pg_isready -U school_admin` | `accepting connections` |
+| Redis | `docker compose exec redis redis-cli ping` | `PONG` |
+| OPA | `docker compose exec opa opa eval '1+1'` | 2 |
+| Kafka | `docker compose exec kafka kafka-topics --list --bootstrap-server localhost:9092` | topics 列表 |
+
+**深度数据库健康检查脚本**: `scripts/db-health-check.sh` — 检查连接池、WAL、慢查询等。
+
+---
+
+### 💾 Backup & Disaster Recovery
+
+| 脚本 | 用途 | 位置 |
+|------|------|------|
+| `backup-database.sh` | PostgreSQL 自动备份+压缩+保留管理+通知 | `scripts/` |
+| `backup_database.sh` | 基础版数据库备份 | `scripts/` |
+| `backup-memory.sh` | Agent 记忆文件备份 | `scripts/` |
+| `dr-recovery.sh` | 一键灾难恢复（L4 区域级故障切换） | `scripts/` |
+| `ssl-cert-renew.sh` | SSL 证书到期自动续期 | `scripts/` |
+
+---
+
+### 🌐 Cloudflare Tunnel
+
+Cloudflare Tunnel 提供公网访问入口，运行在 `school-admin-cloudflared` 容器中。
+
+**相关脚本**:
+| 脚本 | 用途 |
+|------|------|
+| `infra/cloudflared-manager.sh` | Tunnel 管理（启动/停止/状态） |
+| `scripts/start-cloudflare-tunnel.sh` | 启动 Tunnel |
+| `scripts/run-tunnel.sh` | 运行 Tunnel |
+| `scripts/keep-tunnel-alive.sh` | 保活脚本 |
+| `scripts/check-tunnel-health.sh` | 健康检查 |
+| `scripts/setup-cloudflare-tunnels.sh` | 初始设置 |
+| `scripts/tunnel.sh` | 简易 Tunnel 管理 |
+| `scripts/cloudflare-watchdog.py` | 看门狗监控 |
+
+```bash
+# 重启 Tunnel（URL 变化时）
+docker compose -f infra/docker-compose.yml restart cloudflared
+```
+
+---
+
+### 🔧 Nginx Configuration
+
+Nginx 作为反向代理位于 `infra/nginx/nginx.conf`，主要配置：
+
+| 功能 | 配置 |
+|------|------|
+| Gzip 压缩 | `on` — text/css/js/json/svg 等 |
+| 安全头 | X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Referrer-Policy |
+| CORS | 按请求方法映射 |
+| 限流 | API: 30r/s, Auth: 5r/m |
+| 静态缓存 | JS/CSS/图片等缓存 1 年 |
+
+---
+
+### 📜 OPS Scripts Reference
+
+所有脚本位于 `scripts/` 目录，分类如下：
+
+| 类别 | 脚本 | 用途 |
+|------|------|------|
+| **部署** | `release.sh` | 发布流程 |
+| | `daily-integrate.sh` | 日集成 |
+| | `daily-release.sh` | 日发布 |
+| | `update-status-page.sh` | 状态页更新 |
+| **CI** | `auto-update-dashboard.sh` | Dashboard 自动更新 |
+| | `dashboard-refresh.sh` | Dashboard 刷新 |
+| **监控** | `agent-monitor.sh` | Agent 监控 |
+| | `agent-monitor-simple.sh` | Agent 监控（简化版） |
+| | `patrol.py` | 定时巡检 |
+| | `pm_monitor.py` | PM 监控 |
+| | `pm-auto-monitor.sh` | PM 自动监控 |
+| | `subagent-watchdog.sh` | Subagent 看门狗 |
+| | `validate-agent-messages.py` | 消息验证 |
+| **数据库** | `db-health-check.sh` | 数据库健康检查 |
+| | `schema-init.sql` | Schema 初始化 |
+| | `generate-test-data.js` | 测试数据生成 |
+| **Tunnel** | (见 Cloudflare Tunnel 章节) | |
+| **PM 工具** | `pm-daily-check.sh` | PM 每日检查 |
+| | `pm-weekly-report.sh` | PM 周报 |
+| | `pm-cleanup-branches.sh` | 清理过期分支 |
+| | `check-report-due.sh` | 检查报告到期 |
+| | `check-role-activity.sh` | 角色活动检查 |
+| | `detect-stuck-tasks.py` | 卡住任务检测 |
+| **同步** | `sync-memory.sh` | 记忆同步 |
+| | `sync-wiki.sh` | Wiki 同步 |
+
+---
+
+### 🔐 Security & Auth
+
+JWT 认证 + RBAC/ABAC 权限系统。策略由 OPA 引擎执行（策略文件: `infra/opa/policies/`）。
+
+| 组件 | 说明 |
+|------|------|
+| JWT Auth Guard | `JwtAuthGuard` — 所有 API 请求认证 |
+| Role Guard | `RolesGuard` — 基于角色的权限控制 |
+| OPA Guard | Open Policy Agent 策略决策 |
+| OTP | 管理员/教师登录需 TOTP 二次验证 |
+
+**测试账号**: 见上方 Credentials 章节。
+
+---
+
+### 📋 OPS Quick Reference
+
+```bash
+# 全部服务状态
+docker compose -f infra/docker-compose.yml ps
+
+# 查看日志（实时）
+docker compose -f infra/docker-compose.yml logs -f [service]
+
+# 重启单个服务
+docker compose -f infra/docker-compose.yml restart [service]
+
+# 重建并重启
+docker compose -f infra/docker-compose.yml up -d --build [service]
+
+# 检查数据库状态
+PGPASSWORD="school_admin123" psql -h localhost -U school_admin -d school_admin -c "SELECT count(*) FROM information_schema.tables WHERE table_schema='public';"
+
+# 验证前后端连通性
+curl -s http://localhost:3000/api/health
+docker compose -f infra/docker-compose.yml exec backend curl -sf http://localhost:3000/api/health
+
+# 查看 Kafka topics
+docker compose -f infra/docker-compose.yml exec kafka kafka-topics --list --bootstrap-server localhost:9092
+
+# 清除 Docker 旧镜像（释放磁盘）
+docker image prune -af --filter "until=72h"
+
+# 容器资源使用排名
+docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.MemPerc}}\t{{.NetIO}}\t{{.BlockIO}}" | sort -k3 -h
+
+# 查看容器健康检查状态
+docker inspect --format='{{.Name}} {{.State.Health.Status}}' $(docker ps -q)
 ```
 
 ---

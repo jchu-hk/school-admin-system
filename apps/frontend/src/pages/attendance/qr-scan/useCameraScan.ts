@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import jsQR from 'jsqr';
 
-// jsQR 缓存副本（避免 ESM 构建问题导致引用丢失）
-const _jsQR: typeof jsQR | null = jsQR || null;
+// 保存 jsQR 引用
+const _jsQR: typeof jsQR = jsQR;
 
 /**
  * useCameraScan — 摄像头管理与扫码逻辑
@@ -126,6 +126,7 @@ export function useCameraScan() {
   const [recentScans, setRecentScans] = useState<RecentScan[]>(getRecentScans());
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string>('');
   const [isSyncing, setIsSyncing] = useState(false);
 
   // ===== 网络状态监听 =====
@@ -209,24 +210,36 @@ export function useCameraScan() {
     const canvas = canvasRef.current;
     if (!video || !canvas) return null;
 
-    if (!_jsQR) return null;
+    if (!_jsQR) {
+      setDebugInfo('jsQR未加载');
+      return null;
+    }
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
     // 当视频有足够分辨率时采样
-    if (video.videoWidth === 0 || video.videoHeight === 0) return null;
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      setDebugInfo('等待摄像头...');
+      return null;
+    }
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const code = jsQR(imageData.data, imageData.width, imageData.height, {
-      inversionAttempts: 'dontInvert',
+    setDebugInfo(`分辨率: ${canvas.width}x${canvas.height}`);
+    const code = _jsQR(imageData.data, imageData.width, imageData.height, {
+      inversionAttempts: 'attemptBoth',
     });
 
-    return code?.data || null;
+    if (code) {
+      setDebugInfo(`解码成功: ${code.data.substring(0, 30)}...`);
+      return code.data;
+    }
+    setDebugInfo(`扫描中...`);
+    return null;
   }, []);
 
   // ===== 调用扫码 API =====
@@ -355,8 +368,8 @@ export function useCameraScan() {
         setStatus('scanning');
         startScanningInternal();
       }, 3000);
-    } catch {
-      // ignore
+    } catch (err) {
+      console.error('[QR Scan] performScan error:', err);
     } finally {
       isScanningRef.current = false;
     }
@@ -434,6 +447,8 @@ export function useCameraScan() {
     isOnline,
     /** 是否正在同步离线数据 */
     isSyncing,
+    /** 调试信息 */
+    debugInfo,
     /** 开始扫描 */
     startScanning,
     /** 停止扫描 */

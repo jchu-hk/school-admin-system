@@ -2559,23 +2559,62 @@ WHERE g.academic_year = :year;
 
 ### 15.5 菜单权限过滤机制
 
-#### 前后端协作方案
+> **版本更新**: v1.6.2 (#287) — Admin Dashboard 侧边栏已实现前端角色过滤。
+> Portal 侧（Student/Parent）使用独立的 Portal 前端，不受此更新影响。
 
-1. **后端提供菜单接口**：`GET /api/portal/menus` 根据角色返回可见菜单列表
-2. **前端动态渲染**：根据接口数据动态渲染侧边菜单
-3. **API 双重验证**：前端菜单过滤仅为 UI 层面，后端 API 权限校验为安全底线
+#### 当前实现 (v1.6.2): Admin Dashboard
 
-#### 接口定义
+**方案**: 前端静态角色过滤（Layout.tsx + userService.ts）
 
-```json
-GET /api/portal/menus
-Response: [
-  { "id": "profile", "label": "我的档案", "icon": "user", "children": [...] },
-  { "id": "leave", "label": "请假管理", "icon": "calendar", "children": [...] }
+1. **userService.ts**: 从 localStorage 读取当前用户角色 (`getUserRole()`)
+2. **Layout.tsx**: 每个菜单项定义 `roles: string[]` 允许的角色列表
+3. **useMemo 过滤**: 运行时按 `userRole` 过滤菜单项，非授权角色不可见
+4. **双重防线**: 前端隐藏为 UI 体验，后端 `JwtAuthGuard + RolesGuard` 为安全底线
+
+```typescript
+// 菜单项定义（Layout.tsx）
+const allNavItems = [
+  { label: 'Dashboard', path: '/dashboard', roles: [ADMIN, DIRECTOR, STAFF, TEACHER, PARENT, STUDENT] },
+  { label: 'System Settings', path: '/settings', roles: [ADMIN, DIRECTOR] },
+  { label: 'User Management', path: '/users', roles: [ADMIN, DIRECTOR] },
+  // ...
 ]
+const navItems = useMemo(
+  () => allNavItems.filter(item => item.roles.includes(userRole || '')),
+  [userRole]
+)
 ```
 
-#### 角色-菜单映射逻辑
+#### Admin Dashboard 角色-菜单映射表 (v1.6.2)
+
+| 菜单模块 | admin | director | staff | teacher | parent | student |
+|---------|:-----:|:--------:|:-----:|:-------:|:------:|:-------:|
+| Dashboard | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| 学生管理 | ✅ | ✅ | ✅ | — | — | — |
+| 考勤管理 | ✅ | ✅ | ✅ | ✅ | — | — |
+| 资产管理 | ✅ | ✅ | ✅ | — | — | — |
+| 资产租借 | ✅ | ✅ | ✅ | — | — | — |
+| 用户管理 | ✅ | ✅ | — | — | — | — |
+| 请假管理 | ✅ | ✅ | ✅ | ✅ | — | — |
+| 家长查询 | ✅ | ✅ | ✅ | — | ✅ | — |
+| 查询队列 | ✅ | ✅ | ✅ | — | — | — |
+| 通知管理 | ✅ | ✅ | ✅ | ✅ | — | — |
+| 课程管理 | ✅ | ✅ | ✅ | — | — | — |
+| 考试管理 | ✅ | ✅ | ✅ | — | — | — |
+| 财政管理 | ✅ | ✅ | ✅ | — | — | — |
+| 系统设置 | ✅ | ✅ | — | — | — | — |
+| 学生链接 | — | — | — | — | ✅ | — |
+| 关于 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+#### 未来计划 (v2.0): 后端菜单 API
+
+**目标**: 由后端统一管理菜单配置，前端动态渲染
+
+1. **后端提供菜单接口**：`GET /api/portal/menus` 根据角色返回可见菜单列表
+2. **前端动态渲染**：根据接口数据动态渲染侧边菜单，无需前端硬编码
+3. **优势**: 角色变更无需重新构建前端；支持运行时菜单定制
+
+#### Portal 侧 (Student/Parent) — 计划中
 
 | 菜单模块 | Student | Parent | 说明 |
 |---------|:-------:|:------:|------|

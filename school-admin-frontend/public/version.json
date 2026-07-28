@@ -1,46 +1,55 @@
 {
   "version": "v1.5.7",
-  "buildDate": "2026-07-26",
-  "gitCommit": "1e5cd10",
+  "buildDate": "2026-07-27",
+  "gitCommit": "7225acc",
   "gitBranch": "main",
   "changelog": [
     {
-      "version": "build-2026-07-20",
-      "date": "2026-07-20",
+      "version": "build-2026-07-27",
+      "date": "2026-07-27",
       "changes": [
-        "fix(#220): 前端编辑学生时日期字段显示空白——ISO datetime不兼容HTML5 date input",
-        "dashboard update 23:36",
-        "dashboard update 23:36",
-        "dashboard update 23:36",
-        "dashboard update 22:53",
-        "dashboard update 22:53",
-        "dashboard update 18:45",
-        "dashboard update 16:15",
-        "dashboard update 12:25",
-        "dashboard update 12:25",
-        "dashboard update 11:30",
-        "dashboard update 10:40",
-        "dashboard update 09:10",
+        "dashboard update 14:25",
+        "dashboard update 11:40",
         "dashboard update 08:00",
         "dashboard update 06:00"
       ]
     },
     {
-      "version": "build-2026-07-19",
-      "date": "2026-07-19",
+      "version": "build-2026-07-26",
+      "date": "2026-07-26",
       "changes": [
-        "dashboard update 20:57",
-        "dashboard update 20:56",
-        "dashboard update 20:55",
-        "fix(#280): add admission_date to UpdateStudentDto",
-        "dashboard update 20:54",
-        "dashboard update 20:54",
-        "dashboard update 19:45",
-        "dashboard update 17:37",
-        "P0 bugs #268 #269 #270 - UUID validation in populateRelatedStudentIds to prevent DB FK errors",
-        "dashboard update 17:31",
-        "dashboard update 17:30",
-        "dashboard update 17:19"
+        "dashboard update 23:16",
+        "dashboard update 23:13",
+        "dashboard update 23:06",
+        "dashboard update 22:59",
+        "dashboard update 22:59",
+        "dashboard update 22:58",
+        "dashboard update 22:57",
+        "dashboard update 22:57",
+        "dashboard update 08:00",
+        "dashboard update 06:00"
+      ]
+    },
+    {
+      "version": "build-2026-07-25",
+      "date": "2026-07-25",
+      "changes": [
+        "dashboard update 23:01",
+        "dashboard update 23:00",
+        "dashboard update 22:58",
+        "dashboard update 22:58",
+        "dashboard update 22:35",
+        "dashboard update 22:33",
+        "dashboard update 22:30",
+        "dashboard update 22:30",
+        "dashboard update 18:07",
+        "dashboard update 13:07",
+        "dashboard update 13:06",
+        "dashboard update 12:51",
+        "dashboard update 12:51",
+        "dashboard update 12:50",
+        "dashboard update 12:50",
+        "dashboard update 12:39"
       ]
     }
   ]

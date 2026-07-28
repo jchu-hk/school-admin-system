@@ -295,10 +295,13 @@ export class QrGenerationService {
       .createHmac('sha256', signingKey)
       .update(payload)
       .digest('hex');
-    return crypto.timingSafeEqual(
-      Buffer.from(signature, 'hex'),
-      Buffer.from(expectedSig, 'hex'),
-    );
+    const sigBuf = Buffer.from(signature, 'hex');
+    const expectedBuf = Buffer.from(expectedSig, 'hex');
+    // 防止 timingSafeEqual 因长度不一致而抛出 RangeError
+    if (sigBuf.length !== expectedBuf.length) {
+      return false;
+    }
+    return crypto.timingSafeEqual(sigBuf, expectedBuf);
   }
 
   /**

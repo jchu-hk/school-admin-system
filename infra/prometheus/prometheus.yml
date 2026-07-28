@@ -27,8 +27,31 @@ scrape_configs:
       - targets: ['backend:3000']
     scrape_interval: 10s
 
-  # PostgreSQL Database Metrics
+  # PostgreSQL Database Metrics (via postgres_exporter)
   - job_name: 'postgres'
     static_configs:
-      - targets: ['postgres:5432']
+      - targets: ['postgres_exporter:9187']
     scrape_interval: 10s
+
+  # Docker Container Metrics (custom host-based exporter via Docker gateway)
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['172.19.0.1:9393']
+    scrape_interval: 15s
+
+  # Node Exporter - Host System Metrics
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['node_exporter:9100']
+    scrape_interval: 15s
+
+  # Docker Containers View (separate job for container grouping)
+  - job_name: 'docker-containers'
+    static_configs:
+      - targets: ['172.19.0.1:9393']
+    scrape_interval: 15s
+    metric_relabel_configs:
+      - source_labels: [name]
+        target_label: docker_service
+        regex: (.+)
+        replacement: '${1}'

@@ -2,6 +2,10 @@ global:
   resolve_timeout: 5m
   # 企业微信Webhook配置
   wechat_api_url: 'https://qyapi.weixin.qq.com/cgi-bin/'
+  # 以下为占位值，需替换为真实的企业微信应用凭证
+  # - wechat_api_corp_id: 企业微信企业ID (Corp ID)，在「我的企业」页面获取
+  # - wechat_api_secret: 自建应用的Secret，在「应用管理」→「自建」应用的详情页获取
+  # - agent_id: 应用的AgentId，在应用详情页获取
   wechat_api_corp_id: 'YOUR_CORP_ID'
   wechat_api_secret: 'YOUR_APP_SECRET'
 
