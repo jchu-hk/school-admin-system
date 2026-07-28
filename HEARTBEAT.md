@@ -1,15 +1,31 @@
 # Heartbeat Checklist
 
-## 18:40 — Heartbeat (Tue) ✅
+## 19:35 — Heartbeat (Tue) ✅
 
 ### System Status 🟢
-- **Health**: All 200 ✅ (backend:3000 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
-- **Docker**: 14/14 Up(19h, all healthy ✅: postgres/redis/opa/kafka)
-- **Git**: main(88fd046, heartbeat 18:35) dirty(1, heartbeat log)
-- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog p2) | 0 PRs
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 14/14 Up(20h, all healthy ✅: postgres/redis/opa/kafka healthy)
+- **Git**: main(7352272, CI fix) clean
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog p2/p3) | 0 PRs
 - **Agents**: idle ✅
-- **System**: CPU 73.3 | Mem 3.0/3.8Gi (79%) | Disk 29/40Gi (76%)
-- 1520+ consecutive green 🏆
+- **System**: CPU load 0.60 | Mem 2.9/3.8Gi (77%) | Disk 29/40Gi (77%)
+- 1600+ consecutive green 🏆
+- CI: lockfile fix at 7352272 synced, next CI run should pass
+- HEARTBEAT_OK 🟢
+
+## 19:20 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 14/14 Up(19h, all healthy ✅: postgres/redis/opa/zookeeper/kafka)
+- **Git**: main(7352272, CI fix) dirty(2, heartbeat+memory log)
+- **GitHub**: 19 open (same backlog) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 0.90 | Mem 2.9/3.8Gi (79%) | Disk 29/40Gi (77%)
+- 1550+ consecutive green 🏆
+- HEARTBEAT_OK 🟢
+- **System**: CPU 1.88 | Mem 3.0/3.8Gi (79%) | Disk 29/40Gi (76%)
+- 1550+ consecutive green 🏆
 - HEARTBEAT_OK 🟢
 
 ## 17:40 — Heartbeat (Tue) ✅
@@ -163,6 +179,19 @@
 - [x] **21:30** — All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200) | Docker 15Up(37h, all 15 healthy ✅) | Git main(7225acc) dirty(163, unchanged) | GitHub 19 open (same backlog) | Agents idle | check_rules verify ✅ | 620+ consecutive green | 🟢 — HEARTBEAT_OK
 - [x] **21:40** — All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200) | Docker 15Up(37h, all 15 healthy ✅) | Git main(7225acc) dirty(163) | GitHub 19 open (#274 ready-for-review, T25-28 backlog, p2/p3) | Agents idle | check_rules verify ✅ | 630+ consecutive green | 🟢 — HEARTBEAT_OK
 - [x] **21:55** — All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200) | Docker 15Up(37h, all 15 healthy ✅) | Git main(7225acc) dirty(163) | GitHub 19 open (same backlog) | Agents idle | check_rules verify ✅ | 640+ consecutive green | 🟢 — HEARTBEAT_OK
+
+## 19:25 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 14/14 Up(19h, all healthy ✅: postgres/redis/opa/kafka)
+- **Git**: main(7352272, CI fix) dirty(2, heartbeat+memory log)
+- **GitHub**: 19 open (same backlog) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 0.82 | Mem 2.9/3.8Gi (77%) | Disk 29/40Gi (77%)
+- 1560+ consecutive green 🏆
+- CI: lockfile fixed at 7352272, should be green now
+- HEARTBEAT_OK 🟢
 
 ## 16:00 — Heartbeat (Tue) ✅
 
