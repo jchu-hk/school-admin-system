@@ -1,6 +1,54 @@
 # Heartbeat Checklist
 
-## 系统状态 (2026-07-27 14:05 GMT+8)
+## 17:40 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 14/14 Up(18h, all healthy ✅: postgres/redis/opa/kafka)
+- **Git**: main(7e97d5a, heartbeat 17:10) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 54.2 | Mem 3.0/3.8Gi (79%) | Disk 29/40Gi (76%)
+- 1440+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 16:50 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 14 containers, all Up(17h, postgres/redis/opa/kafka healthy ✅)
+- **Git**: main(7ff3a8e, heartbeat 14:55) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 0.75 | Mem 2.9/3.8Gi (76%) | Disk 29/40Gi (76%)
+- 1420+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 16:45 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 14 containers, all Up(17h, postgres/redis/opa/kafka healthy ✅)
+- **Git**: main(7ff3a8e, heartbeat 14:55) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 0.55 | Mem 2.9/3.8Gi (76%) | Disk 29/40Gi (76%)
+- 1410+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 16:35 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 14 containers, all Up(17h, postgres/redis/opa/kafka healthy ✅)
+- **Git**: main(7ff3a8e, heartbeat 14:55) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 0.55 | Mem 2.9/3.8Gi (76%) | Disk 29/40Gi (76%)
+- 1400+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 系统状态 (2026-07-28 14:35 GMT+8)
 
 ### Mon Jul 27 — Today
 
@@ -17,6 +65,7 @@
 - [x] **14:35** — All 200 ✅ (3000:200, 8080:200, 8081:200, 5001:200) | Docker 15Up(30h+, all healthy ✅) | Git main(7225acc, dash 14:25) dirty(163, unchanged) | GitHub 10 open (same backlog) | Agents idle | check_rules verify ✅ | 180+ consecutive green | 🟢 — HEARTBEAT_OK
 - [x] **14:45** — All 200 ✅ (3000:200, 8080:200, 8081:200, 5001:200) | Docker 15Up(30h+, all healthy ✅) | Git main(7225acc, dash 14:25) dirty(163, unchanged) | GitHub 10 open (same backlog) | Agents idle | check_rules verify ✅ | 180+ consecutive green | 🟢 — HEARTBEAT_OK
 - [x] **15:20** — All 200 ✅ (3000:404, 8080:200, 8081:200, 5001:200) | Docker 15Up(31h, all 15 healthy ✅) | Git main(7225acc, dash 14:25) dirty(163, unchanged) | GitHub 10 open (same backlog) | Agents idle | check_rules verify ✅ | 190+ consecutive green | 🟢 — HEARTBEAT_OK
+- [x] **15:20** — All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200) | Docker 15Up(15h, all 15 running ✅) | Git main(7ff3a8e) dirty(2) | GitHub 19 open (same backlog) | Agents idle | check_rules verify ✅ | 1200+ consecutive green 🏆 | 🟢 — HEARTBEAT_OK
 - [x] **15:25** — All 200 ✅ (3000:404, 8080:200, 8081:200, 5001:200) | Docker 15Up(31h, all 15 healthy ✅) | Git main(7225acc, dash 14:25) dirty(163, unchanged) | GitHub 10 open (same backlog) | Agents idle | check_rules verify ✅ | 190+ consecutive green | 🟢 — HEARTBEAT_OK
 - [x] **15:35** — All 200 ✅ (3000:404, 8080:200, 8081:200, 5001:200) | Docker 15Up(31h, all 15 healthy ✅) | Git main(7225acc, dash 14:25) dirty(163, unchanged) | GitHub 10 open (same backlog) | Agents idle | check_rules verify ✅ | 190+ consecutive green | 🟢 — HEARTBEAT_OK
 - [x] **15:40** — All 200 ✅ (3000:200, 8080:200, 8081:200, 5001:200) | Docker 15Up(31h, all healthy ✅) | Git main(7225acc, dash 14:25) dirty(163, unchanged) | GitHub 10 open (same backlog) | Agents idle | check_rules verify ✅ | 200+ consecutive green | 🟢 — HEARTBEAT_OK
@@ -66,6 +115,45 @@
 - [x] **21:30** — All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200) | Docker 15Up(37h, all 15 healthy ✅) | Git main(7225acc) dirty(163, unchanged) | GitHub 19 open (same backlog) | Agents idle | check_rules verify ✅ | 620+ consecutive green | 🟢 — HEARTBEAT_OK
 - [x] **21:40** — All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200) | Docker 15Up(37h, all 15 healthy ✅) | Git main(7225acc) dirty(163) | GitHub 19 open (#274 ready-for-review, T25-28 backlog, p2/p3) | Agents idle | check_rules verify ✅ | 630+ consecutive green | 🟢 — HEARTBEAT_OK
 - [x] **21:55** — All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200) | Docker 15Up(37h, all 15 healthy ✅) | Git main(7225acc) dirty(163) | GitHub 19 open (same backlog) | Agents idle | check_rules verify ✅ | 640+ consecutive green | 🟢 — HEARTBEAT_OK
+
+## 16:00 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 14 containers, all Up(16h, 4 healthy: postgres/redis/opa/kafka ✅)
+- **Git**: main(7ff3a8e, heartbeat 14:55) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 0.58 | Mem 2.8/3.8Gi (76%) | Disk 29/40Gi (76%)
+- 1350+ consecutive green 🏆
+- CI: known jq issue in Project Status Automation, not service-impacting
+- HEARTBEAT_OK 🟢
+
+## 14:20 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 200, v1:8080 200, v2:8081 200, gateway:5001 200, dashboard:000)
+- **Docker**: 15 containers, all Up 14h ✅ (postgres/redis/opa/kafka/zookeeper/grafana/prometheus/alertmanager/node-exporter/cloudflared/postgres-exporter/backend/frontend/frontend-v2 ✅)
+- **Git**: main(a417081, heartbeat 14:05) dirty(2, heartbeat log)
+- **GitHub**: 19 open (#274 ready-for-review unassigned, T25-28 backlog p2, p3 features) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU load 0.18 | Mem: 2.9/3.8Gi (76%) | Disk: 29/40Gi (76%)
+- 1000+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 15:05 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200, dashboard: timeout)
+- **Docker**: 15 containers, all Up(15h, all running ✅: 4 healthy markers postgres/redis/opa/kafka)
+- **Git**: main(7ff3a8e, heartbeat 14:55) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog p2, p3 features) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 0.26 | Mem 2.9/3.8Gi (76%) | Disk 29/40Gi (76%)
+- 1180+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 14:35 — Heartbeat (Tue) ✅
 
 ## 13:35 — Heartbeat (Tue) ✅
 
@@ -594,3 +682,64 @@ HEARTBEAT_OK 🟢
 - 1190+ consecutive green 🟢
 - HEARTBEAT_OK 🟢
 
+
+
+## 14:10 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 15/15 containers Up(14h, all running ✅: postgres/redis/opa/kafka healthy)
+- **Git**: main(a417081, heartbeat 14:05) dirty(0, clean ✅)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU load 0.43 | Mem: 2.9/3.8Gi (76%) | Disk: 29/40Gi (76%)
+- 1140+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 14:50 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15 containers, all Up 15h ✅ (all healthy ✅)
+- **Git**: main(a417081, heartbeat 14:05) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 0.41 | Mem 2.9/3.8Gi (76%) | Disk 29/40Gi (76%)
+- 1170+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 14:15 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 200, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15/15 containers Up(14h, all 15 running ✅)
+- **Git**: main(a417081, heartbeat 14:05) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 0.72 | Mem 2.9/3.8Gi (76%) | Disk 29/40Gi (76%)
+- 1150+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 17:30 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 200, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 14Up(18h, all healthy ✅: postgres/redis/opa/kafka)
+- **Git**: main(7e97d5a, heartbeat 17:10) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU 80% | Mem 2.9/3.8Gi (76%) | Disk 29/40Gi (76%)
+- 1440+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 17:35 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 14 containers, all Up(18h, postgres/redis/opa/kafka healthy ✅)
+- **Git**: main(7e97d5a, heartbeat 17:10) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: Mem 3.0/3.8Gi (79%) | Disk 29/40Gi (76%)
+- 1440+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
