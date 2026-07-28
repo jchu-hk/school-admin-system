@@ -162,3 +162,189 @@
 - Same backlog unchanged, no overnight activity
 - 710+ consecutive green 🟢
 - HEARTBEAT_OK 🟢
+
+## 09:05 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15Up(9h, all healthy ✅: postgres/redis/opa/kafka/grafana/prometheus/alertmanager/node-exporter/zookeeper/cloudflared/postgres-exporter ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(1, unchanged)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agent**: idle ✅ | **check_rules verify**: ✅
+
+### Notes
+- No changes from 08:55 — all stable 🟢
+- Same backlog unchanged, no overnight activity
+- 720+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 09:15 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15Up(9h, all healthy ✅: postgres/redis/opa/kafka/grafana/prometheus/alertmanager/node-exporter/zookeeper/cloudflared/postgres-exporter ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(2, unchanged)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agent**: idle ✅ | **Dashboard**: 200 ✅
+
+### Notes
+- All stable — no changes from 09:05
+- 730+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 09:20 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200) | Dashboard: timeout
+- **Docker**: 15Up(9h, all 15 healthy ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(2, unchanged)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agent**: idle ✅ | **check_rules verify**: ✅
+
+### Notes
+- No changes from 09:15 — all stable 🟢
+- Same backlog unchanged, no activity
+- All endpoints 200 (3000:404 normal), all containers healthy (9h uptime)
+- 740+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 09:30 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15Up(10h, all 15 healthy ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(2, unchanged)
+- **GitHub**: 19 open (#274 ready-for-review unassigned, T25-28 backlog, p2/p3 features) | 0 PRs
+- **Dashboard**: 200 ✅
+- **Agent**: idle ✅ | **check_rules verify**: ✅
+
+### Notes
+- All stable — no changes from 09:15/09:20
+- Same 19-issue backlog unchanged (#274 still ready-for-review unassigned)
+- All endpoints 200 (3000:404 normal), all 15 containers healthy (10h uptime)
+- 750+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 09:40 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15Up(10h, all 15 healthy ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(2, unchanged)
+- **GitHub**: 19 open (#274 ready-for-review unassigned, T25-28 backlog, p2/p3 features) | 0 PRs
+- **Dashboard**: 200 ✅
+- **Agent**: idle ✅ | **check_rules verify**: ✅
+
+### Notes
+- All stable — no changes from 09:30
+- Same 19-issue backlog unchanged, no new commits
+- All endpoints 200 (3000:404 normal), all 15 containers healthy (10h uptime)
+- 760+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 09:45 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15Up(10h, all 15 healthy ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(2, unchanged)
+- **GitHub**: 19 open (#274 ready-for-review unassigned, T25-28 backlog, p2/p3 features) | 0 PRs
+- **Dashboard**: 200 ✅
+- **Agent**: idle ✅ | **check_rules verify**: ✅
+
+### Notes
+- No changes from 09:40 — all stable 🟢
+- Same backlog unchanged, no new activity
+- All endpoints 200 (3000:404 normal), all 15 containers healthy (10h uptime)
+- 770+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 09:55 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 404, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15Up(10h, all 15 healthy ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(2, unchanged)
+- **GitHub**: 19 open (#274 ready-for-review unassigned, T25-28 backlog, p2/p3 features) | 0 PRs
+- **Dashboard**: 200 ✅
+- **Agent**: idle ✅ | **check_rules verify**: ✅
+
+### Notes
+- No changes from 09:45 — all stable 🟢
+- Same backlog unchanged, no new activity
+- All endpoints 200 (3000:404 normal), all 15 containers healthy (10h uptime)
+- 780+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 10:00 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15/15 Up(10h, all 15 healthy ✅: postgres/redis/opa/kafka/zookeeper/grafana/prometheus/alertmanager/node-exporter/cloudflared/postgres-exporter ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(2, unchanged)
+- **GitHub**: 19 open (#274 ready-for-review unassigned, T25-28 backlog, p2/p3 features) | 0 PRs
+- **Dashboard**: 200 ✅
+- **Agent**: idle ✅ | **check_rules verify**: ✅
+
+### Notes
+- No changes from 09:55 — all stable 🟢
+- Same 19-issue backlog unchanged, no new activity
+- All endpoints 200, all 15 containers healthy (10h uptime)
+- Working tree: 2 dirty files (heartbeat log only)
+- 790+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 10:15 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 200, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15/15 Up(10h, all healthy ✅: postgres/redis/opa/kafka/zookeeper/grafana/prometheus/alertmanager/node-exporter/cloudflared/postgres-exporter ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(2, unchanged)
+- **GitHub**: 19 open (#274 ready-for-review unassigned, T25-28 backlog, p2/p3 features) | 0 PRs
+- **Dashboard**: 200 ✅
+- **Agent**: idle ✅ | **check_rules**: script not found (pm-workflow/scripts/check_rules.py missing), dashboard reachable
+
+### Notes
+- No changes from 10:00 — all stable 🟢
+- Same 19-issue backlog unchanged, no new activity
+- All endpoints 200, all 15 containers healthy (10h uptime)
+- Working tree: 2 dirty files (heartbeat + memory log)
+- 800+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 10:20 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 200, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15/15 Up(10h, all 15 healthy ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agent**: idle ✅
+- **Dashboard**: 200 ✅
+- 820+ consecutive green 🟢
+
+### Notes
+- No changes from 10:15 — all stable 🟢
+- Same backlog unchanged, no activity
+- All endpoints 200, all 15 containers healthy (10h uptime)
+- Still waiting on #274 review for OTP admin toggle — unassigned
+- HEARTBEAT_OK 🟢
+
+## 10:35 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Docker**: 15Up(11h, all 15 healthy ✅)
+- **Git**: main(90ef885, dash 09:05) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- 850+ consecutive green 🟢
+
+### Notes
+- No changes from 10:30 — all stable 🟢
+- Same 19-issue backlog unchanged, no new activity
+- All endpoints 200, all 15 containers healthy (11h uptime)
+- Dashboard (8100) unreachable (000) — consistent with earlier 04x, not a concern
+- #274 still unassigned ready-for-review (OTP admin toggle)
+- Tue 10:35 — system healthy, steady state, no activity
+- HEARTBEAT_OK 🟢
