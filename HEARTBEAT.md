@@ -348,3 +348,87 @@
 - #274 still unassigned ready-for-review (OTP admin toggle)
 - Tue 10:35 — system healthy, steady state, no activity
 - HEARTBEAT_OK 🟢
+
+## 10:55 — Heartbeat (Tue) ✅
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001 200)
+- **Dashboard**: 000 (8060/8100 — unreachable, consistent pattern)
+- **Docker**: 15/15 Up(11h, all healthy ✅ — postgres/redis/opa/kafka/zookeeper/grafana/prometheus/alertmanager/node-exporter/cloudflared/postgres-exporter/backend/frontend/frontend-v2 ✅)
+- **Git**: main(65aee35, heartbeat 10:50) dirty(0, clean ✅)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3 features) | 0 PRs
+- **Agents**: idle ✅
+- 900+ consecutive green 🟢
+
+### Notes
+- Tue 10:55 — steady state, all healthy
+- Working tree clean, Docker stable at 11h uptime
+- Same 19-issue backlog unchanged since weekend
+- Git log overnight: 4f99f80 refactor context architecture + 9749abb refactor three-layer context — recent improvements committed
+- No activity, no incidents
+- HEARTBEAT_OK 🟢
+
+## 11:05 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001 200, dashboard 200)
+- **Docker**: 15 containers, all Up 11h ✅ (backend/frontend/frontend-v2/postgres/redis/opa/kafka/zookeeper/grafana/prometheus/alertmanager/node-exporter/cloudflared/postgres-exporter ✅)
+- **Git**: main(65aee35, heartbeat 10:50) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- CPU load: 0.24 | Mem: 2.9/3.8Gi (76%) | Disk: 29/40Gi (76%)
+- 910+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 11:15 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000 200, v1:8080 200, v2:8081 200, gateway:5001 200, dashboard 200)
+- **Docker**: 15 containers, all Up 11h ✅ (all healthy)
+- **Git**: main(65aee35, heartbeat 10:50) dirty(2, heartbeat log)
+- **GitHub**: 19 open (#274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- 930+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 11:30 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 15 containers, all Up 12h ✅ (postgres/redis/opa/kafka/zookeeper/grafana/prometheus/alertmanager/node-exporter/cloudflared/postgres-exporter/backend/frontend/frontend-v2 ✅)
+- **Git**: main(65aee35, heartbeat 10:50) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU load 0.82 | Mem: 2.9/3.8Gi (76%) | Disk: 29/40Gi (76%)
+- **Dashboard**: 000 (8060, 8100 — unreachable, consistent pattern)
+- 940+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 11:40 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 15 containers, all Up 12h ✅ (all healthy)
+- **Git**: main(65aee35, heartbeat 10:50) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU load 1.81 | Mem: 2.9/3.8Gi (76%) | Disk: 29/40Gi (76%)
+- **Dashboard**: 200 ✅
+- 950+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 11:50 — Heartbeat (Tue) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: 15 containers, all Up 12h ✅ (all healthy: postgres/redis/opa/kafka/zookeeper/grafana/prometheus/alertmanager/node-exporter/cloudflared/postgres-exporter/backend/frontend/frontend-v2 ✅)
+- **Git**: main(65aee35, heartbeat 10:50) dirty(2, heartbeat log)
+- **GitHub**: 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3 features) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU load 0.87 | Mem: 2.9/3.8Gi (76%) | Disk: 29/40Gi (76%)
+- **Dashboard**: unreachable (8060/8100 000 — consistent pattern)
+- 960+ consecutive green 🟢
+- HEARTBEAT_OK 🟢
+
+## 11:55 — Heartbeat (Tue) ✅
+
+All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200) | Docker 15/15 Up(12h, all healthy ✅) | Git main(65aee35, heartbeat 10:50) dirty(2, heartbeat log) | GitHub 19 open (same backlog: #274 ready-for-review unassigned, T25-28 backlog, p2/p3) | 0 PRs | Agents idle ✅ | CPU 0.42 | Mem 2.9/3.8Gi (76%) | Disk 29/40Gi (76%) | Dashboard 200 ✅ | 970+ consecutive green 🟢
+HEARTBEAT_OK 🟢
