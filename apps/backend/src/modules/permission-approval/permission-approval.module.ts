@@ -10,7 +10,7 @@ import { AuditModule } from '../audit/audit.module';
 import { NotificationModule } from '../notification/notification.module';
 import { PermissionService } from '../permission/permission.service';
 import { Permission } from '../permission/entities/permission.entity';
-import { RoleService } from '../role/role.service';
+import { RoleService } from '../role/services/role.service';
 import { Role } from '../role/entities/role.entity';
 import { User } from '../user/user.entity';
 

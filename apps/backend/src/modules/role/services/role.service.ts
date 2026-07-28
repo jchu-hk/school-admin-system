@@ -1,31 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-
-export interface Role {
-  id: string;
-  name: string;
-  isSystem: boolean;
-  validUntil?: Date;
-}
-
-@Entity('roles')
-export class Role {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ unique: true })
-  name: string;
-
-  @Column({ nullable: true })
-  description: string;
-
-  @Column({ name: 'is_system', default: false })
-  isSystem: boolean;
-
-  @Column({ type: 'jsonb', default: [] })
-  permissions: string[];
-}
+import { Repository } from 'typeorm';
+import { Role } from '../entities/role.entity';
 
 @Injectable()
 export class RoleService {

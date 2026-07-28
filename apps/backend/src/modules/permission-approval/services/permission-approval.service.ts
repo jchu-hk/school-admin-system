@@ -23,7 +23,7 @@ import { AuditService } from '../../audit/audit.service';
 import { NotificationService } from '../../notification/notification.service';
 import { NotificationUrgency } from '../../notification/template.entity';
 import { PermissionService } from '../../permission/permission.service';
-import { RoleService } from '../../role/role.service';
+import { RoleService } from '../../role/services/role.service';
 
 @Injectable()
 export class PermissionApprovalService {
