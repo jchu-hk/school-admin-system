@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T09:31:32Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "Heartbeat 17:30 — 检查P0修复进度",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "Heartbeat 17:30 — 检查P0修复进度"
-    }
-  },
-  {
     "timestamp": "2026-07-19T09:36:43Z",
     "from": "QA",
     "to": "PM",
@@ -1172,6 +1160,13 @@
     "from": "QA",
     "to": "PM",
     "message": "QA: ✅ #291 考试API测试: 24项, 发现P0分页bug",
+    "type": "default"
+  },
+  {
+    "timestamp": "2026-07-29T00:17:27Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "PM: ✅ #291 协调QA→DEV→验证完成",
     "type": "default"
   }
 ]

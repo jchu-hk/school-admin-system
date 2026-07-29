@@ -1,9 +1,9 @@
 {
   "agents": {
     "PM": {
-      "status": "done",
-      "task": "#291 考试模块测试+修复协调",
-      "lastUpdate": "2026-07-29T00:05:00Z"
+      "status": "idle",
+      "task": "✅ #291 协调QA→DEV→验证完成",
+      "lastUpdate": "2026-07-29T00:17:27Z"
     },
     "QA": {
       "status": "idle",
