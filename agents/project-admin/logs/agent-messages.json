@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T12:54:04Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#280] P0: 编辑学生入学日期(admission_date)保存成功但数据未更新 - UpdateStudentDto缺少admission_date字段",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#280] P0: 编辑学生入学日期(admission_date)保存成功但数据未更新 - UpdateStudentDto缺少admission_date"
-    }
-  },
-  {
     "timestamp": "2026-07-19T12:54:21Z",
     "from": "DEV",
     "to": "PM",
@@ -1158,5 +1146,12 @@
     "to": "PM",
     "message": "DEV: 接收 - 修复 #292 getStats+postponed + #293 keyword多字段搜索",
     "type": "received"
+  },
+  {
+    "timestamp": "2026-07-29T01:31:42Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "DEV: ✅ #292 + #293 修复完成",
+    "type": "default"
   }
 ]

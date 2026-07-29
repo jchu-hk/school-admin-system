@@ -11,9 +11,9 @@
       "lastUpdate": "2026-07-29T00:17:25Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "修复 #292 getStats+postponed + #293 keyword多字段搜索",
-      "lastUpdate": "2026-07-29T01:29:31Z"
+      "status": "idle",
+      "task": "✅ #292 + #293 修复完成",
+      "lastUpdate": "2026-07-29T01:31:42Z"
     },
     "DEVOPS": {
       "status": "idle",
