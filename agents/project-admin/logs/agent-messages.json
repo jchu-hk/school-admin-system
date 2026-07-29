@@ -1,29 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T12:55:10Z",
-    "from": "PM",
-    "to": "CHECKER",
-    "message": "[Heartbeat 20:55] 系统检查 - 全绿",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "[Heartbeat 20:55] 系统检查 - 全绿"
-    }
-  },
-  {
-    "timestamp": "2026-07-19T12:56:04Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#280] 修复完成: admission_date UpdateStudentDto添加 + 部署 + API验证通过",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#280] 修复完成: admission_date UpdateStudentDto添加 + 部署 + API验证通过"
-    }
-  },
-  {
     "timestamp": "2026-07-19T12:57:26Z",
     "from": "PM",
     "to": "DEV",
@@ -1147,6 +1123,25 @@
     "from": "PM",
     "to": "PM",
     "message": "PM: ✅ #292+#293 QA→DEV→验证 完成",
+    "type": "default"
+  },
+  {
+    "timestamp": "2026-07-29T02:20:16Z",
+    "from": "PM",
+    "to": "DASHBOARD",
+    "message": "Health All 200 | Docker 14/14 Up(backend 49min, others ~3h, postgres/redis/opa healthy, kafka starting) | Git main(9aeb43f, PM idle) dirty(2, heartbeat log) | GitHub 19 open(same backlog: #274 ready-for-review, Phase 5 T25-28 backlog p2, p3 backlog) | 0 PRs | Agents idle | CPU 0.08, Mem 2.4/3.8Gi(64%), Disk 29/40Gi(78%)",
+    "type": "info",
+    "agent_status": {
+      "agent": "PM",
+      "status": "idle",
+      "task": "Health All 200 | Docker 14/14 Up(backend 49min, others ~3h, postgres/redis/opa h"
+    }
+  },
+  {
+    "timestamp": "2026-07-29T02:46:44Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "DEV: ✅ #294 修复: exam undefined params → 400",
     "type": "default"
   }
 ]

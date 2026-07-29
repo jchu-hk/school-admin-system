@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "idle",
-      "task": "✅ #292+#293 QA→DEV→验证 完成",
-      "lastUpdate": "2026-07-29T01:31:44Z"
+      "task": "Health All 200 | Docker 14/14 Up(backend 49min, others ~3h, postgres/redis/opa h",
+      "lastUpdate": "2026-07-29T02:20:16Z"
     },
     "QA": {
       "status": "idle",
@@ -12,8 +12,8 @@
     },
     "DEV": {
       "status": "idle",
-      "task": "✅ #292 + #293 修复完成",
-      "lastUpdate": "2026-07-29T01:31:42Z"
+      "task": "✅ #294 修复: exam undefined params → 400",
+      "lastUpdate": "2026-07-29T02:46:44Z"
     },
     "DEVOPS": {
       "status": "idle",
