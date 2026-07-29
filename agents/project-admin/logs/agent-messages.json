@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T09:18:49Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[P0 re-debug] Spawning subagent for root cause + fix + deploy of #268 #269 #270 #271 #273",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[P0 re-debug] Spawning subagent for root cause + fix + deploy of #268 #269 #270 "
-    }
-  },
-  {
     "timestamp": "2026-07-19T09:19:16Z",
     "from": "DEV",
     "to": "PM",
@@ -1188,5 +1176,12 @@
     "to": "PM",
     "message": "DEV: 接收 - 修复#292: 测试dashboard更新",
     "type": "received"
+  },
+  {
+    "timestamp": "2026-07-29T00:17:06Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "DEV: 修复#292完成",
+    "type": "default"
   }
 ]

@@ -11,9 +11,9 @@
       "lastUpdate": "2026-07-28T23:40:00Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "修复#292: 测试dashboard更新",
-      "lastUpdate": "2026-07-29T00:17:03Z"
+      "status": "idle",
+      "task": "修复#292完成",
+      "lastUpdate": "2026-07-29T00:17:06Z"
     },
     "DEVOPS": {
       "status": "idle",
