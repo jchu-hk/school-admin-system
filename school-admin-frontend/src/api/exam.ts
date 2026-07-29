@@ -81,8 +81,19 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 export const examApi = {
   // 获取考试列表
   getList: async (params: ExamQueryParams = {}): Promise<ExamListResponse> => {
+    // Filter out undefined/null/empty values to avoid sending "undefined" strings in query
+    const cleanParams: Record<string, string> = {};
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined && value !== null && value !== '') {
+        cleanParams[key] = String(value);
+      }
+    }
+    const qs = Object.keys(cleanParams).length > 0
+      ? `?${new URLSearchParams(cleanParams).toString()}`
+      : '';
+
     const response = await fetch(
-      `${API_BASE_URL}/exams?${new URLSearchParams(params as any).toString()}`,
+      `${API_BASE_URL}exams${qs}`,  // API_BASE_URL already has trailing /
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,

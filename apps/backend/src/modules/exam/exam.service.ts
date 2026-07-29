@@ -37,25 +37,34 @@ export class ExamService {
       endDate,
     } = query;
 
-    const where: FindOptionsWhere<Exam> = {};
-
-    if (keyword) {
-      where.name = Like(`%${keyword}%`);
-    }
+    // Build non-keyword filters (AND conditions)
+    const filters: FindOptionsWhere<Exam> = {};
     if (subject) {
-      where.subject = subject;
+      filters.subject = subject;
     }
     if (className) {
-      where.className = className;
+      filters.className = className;
     }
     if (status) {
-      where.status = status;
+      filters.status = status;
     }
     if (examType) {
-      where.examType = examType;
+      filters.examType = examType;
     }
     if (startDate && endDate) {
-      where.examDate = Between(new Date(startDate), new Date(endDate));
+      filters.examDate = Between(new Date(startDate), new Date(endDate));
+    }
+
+    // Keyword search: OR across name, subject, classroom
+    let where: FindOptionsWhere<Exam> | FindOptionsWhere<Exam>[];
+    if (keyword) {
+      where = [
+        { ...filters, name: Like(`%${keyword}%`) },
+        { ...filters, subject: Like(`%${keyword}%`) },
+        { ...filters, classroom: Like(`%${keyword}%`) },
+      ];
+    } else {
+      where = filters;
     }
 
     const [data, total] = await this.examRepository.findAndCount({
@@ -117,16 +126,18 @@ export class ExamService {
     ongoing: number;
     completed: number;
     cancelled: number;
+    postponed: number;
   }> {
-    const [total, scheduled, ongoing, completed, cancelled] = await Promise.all(
+    const [total, scheduled, ongoing, completed, cancelled, postponed] = await Promise.all(
       [
         this.examRepository.count(),
         this.examRepository.count({ where: { status: 'scheduled' as any } }),
         this.examRepository.count({ where: { status: 'ongoing' as any } }),
         this.examRepository.count({ where: { status: 'completed' as any } }),
         this.examRepository.count({ where: { status: 'cancelled' as any } }),
+        this.examRepository.count({ where: { status: 'postponed' as any } }),
       ],
     );
-    return { total, scheduled, ongoing, completed, cancelled };
+    return { total, scheduled, ongoing, completed, cancelled, postponed };
   }
 }
