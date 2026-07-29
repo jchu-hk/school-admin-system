@@ -166,15 +166,42 @@ h1 {{ text-align: center; color: #4ade80; margin-bottom: 20px }}
     DASHBOARD_FILE.write_text(html)
 
 
+def rebuild_dashboard():
+    """Rebuild dashboard from existing data without changing status (used by cron/wrappers)"""
+    status = load_status()
+    messages = []
+    if MESSAGE_FILE.exists():
+        messages = json.loads(MESSAGE_FILE.read_text())
+    build_dashboard(status, messages)
+    try:
+        subprocess.run(["git", "add", "multi-agent-dashboard.html"], cwd=WORKSPACE, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "chore: dashboard rebuild"], cwd=WORKSPACE, check=True, capture_output=True)
+        subprocess.run(["git", "push", "origin", "main"], cwd=WORKSPACE, check=True, capture_output=True)
+    except:
+        pass
+    print("✅ Dashboard rebuilt and pushed")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Agent Status Update")
-    parser.add_argument("--agent", required=True, choices=["PM", "DEV", "QA", "DEVOPS", "CHECKER", "ARCH", "REQ"],
+    parser.add_argument("--agent", choices=["PM", "DEV", "QA", "DEVOPS", "CHECKER", "ARCH", "REQ"],
                        help="Agent name")
-    parser.add_argument("--status", required=True, choices=["running", "idle", "terminated"],
+    parser.add_argument("--status", choices=["running", "idle", "terminated"],
                        help="New status: running/idle/terminated")
-    parser.add_argument("--task", required=True, help="Task description")
+    parser.add_argument("--task", help="Task description")
+    parser.add_argument("--rebuild", action="store_true",
+                       help="Just rebuild dashboard from existing data (no status change)")
     parser.add_argument("--to", default="PM", help="Message recipient (default: PM)")
     args = parser.parse_args()
+
+    # --rebuild mode: just regenerate HTML from existing data
+    if args.rebuild:
+        rebuild_dashboard()
+        return
+
+    # Status update mode: requires agent/status/task
+    if not args.agent or not args.status or not args.task:
+        parser.error("Either --rebuild or --agent/--status/--task required")
 
     # 1. Update status
     status = load_status()

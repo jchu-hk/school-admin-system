@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T09:18:19Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "Re-opened P0 bugs #268 #269 #270 #271 #273 — human re-test 19/7 FAILED. Fixes committed but never deployed + some fixes never actually committed. Need full root cause analysis + fix + deploy.",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "Re-opened P0 bugs #268 #269 #270 #271 #273 — human re-test 19/7 FAILED. Fixes co"
-    }
-  },
-  {
     "timestamp": "2026-07-19T09:18:49Z",
     "from": "PM",
     "to": "DEV",
@@ -1193,5 +1181,12 @@
       "status": "idle",
       "task": "14:25 system check — all 200 ✅"
     }
+  },
+  {
+    "timestamp": "2026-07-29T00:17:03Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "DEV: 接收 - 修复#292: 测试dashboard更新",
+    "type": "received"
   }
 ]

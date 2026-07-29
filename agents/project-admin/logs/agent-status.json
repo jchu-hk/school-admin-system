@@ -1,44 +1,44 @@
 {
   "agents": {
     "PM": {
-      "status": "idle",
-      "task": "14:25 system check — all 200 ✅",
-      "lastUpdate": "2026-07-27T06:25:10Z"
-    },
-    "DEV": {
-      "status": "idle",
-      "task": "[#286] 完成: i18n迁移4页面 (retry v2) — 7 files, 966 insertions, 159 deletions. TypeSc",
-      "lastUpdate": "2026-07-26T15:13:46Z"
+      "status": "done",
+      "task": "#291 考试模块测试+修复协调",
+      "lastUpdate": "2026-07-29T00:05:00Z"
     },
     "QA": {
-      "status": "idle",
-      "task": "[#286] QA验证失败: 4个页面均未实施i18n迁移- AttendancePage: 含约490中文字符，未使用i18n- FinanceScholar",
-      "lastUpdate": "2026-07-26T15:06:10Z"
+      "status": "done",
+      "task": "#291 考试模块API测试: 24项, 发现P0分页bug",
+      "lastUpdate": "2026-07-28T23:40:00Z"
+    },
+    "DEV": {
+      "status": "running",
+      "task": "修复#292: 测试dashboard更新",
+      "lastUpdate": "2026-07-29T00:17:03Z"
     },
     "DEVOPS": {
       "status": "idle",
-      "task": "Grafana OPS监控面板配置完成: Docker容器指标通过host-exporter(9393)采集, Prometheus已配置cadvisor/do",
+      "task": "等待任务",
       "lastUpdate": "2026-07-20T17:10:03Z"
+    },
+    "CHECKER": {
+      "status": "idle",
+      "task": "等待任务",
+      "lastUpdate": "2026-07-20T23:04:17Z"
     },
     "ARCH": {
       "status": "idle",
-      "task": "状态同步: 等待任务 (idle)",
+      "task": "等待任务",
       "lastUpdate": "2026-07-20T23:04:13Z"
     },
     "REQ": {
       "status": "idle",
-      "task": "状态同步: 等待任务 (idle)",
+      "task": "等待任务",
       "lastUpdate": "2026-07-20T23:04:15Z"
-    },
-    "CHECKER": {
-      "status": "idle",
-      "task": "状态同步: 等待任务 (idle)",
-      "lastUpdate": "2026-07-20T23:04:17Z"
     },
     "UI_DESIGNER": {
       "status": "idle",
       "task": "等待任务",
-      "lastUpdate": "2026-07-17T12:55:00+08:00"
+      "lastUpdate": "2026-07-17T12:55:00Z"
     }
   }
 }

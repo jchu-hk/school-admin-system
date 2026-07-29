@@ -1,3 +1,17 @@
+## 2026-07-29 — Role Service DI Conflict 修复 (#290)
+
+**问题**: 用户报告「配置权限 - 教师」保存时报「系统错误，请重试」
+
+**根因**: Role 模块存在两个 RoleService 定义（role.service.ts 旧版无 updatePermissions，services/role.service.ts 新版有），permission-approval 模块引用了旧版文件，可能导致 DI 冲突
+
+**修复** (commit 4e46625):
+1. 删除旧 role.service.ts
+2. 清理 services/role.service.ts — 移除内联重复的 Role entity 定义，改为从 entities/role.entity.ts 导入
+3. 修正 permission-approval 模块的 import 路径
+4. 简化 role.module.ts — 移除不必要的 forwardRef
+
+**教训**: 重构时如果重命名/移动文件，必须检查所有 import 引用
+
 ## [SAS] Prefix Convention (2026-07-25)
 
 When the user sends messages related to the **School Admin System** project, they will prefix with `[SAS]` to differentiate from general conversation. When I respond about SAS topics, I should also use this prefix or contextually acknowledge it's SAS-related.
