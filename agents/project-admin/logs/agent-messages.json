@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T09:30:12Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[P0 re-debug] 修复完成。根因：parent_student_links 60条 student_id=00000000...数据腐败。删除腐败数据+populateRelatedStudentIds中添加nullUuid跳过。已验证全部PASS。Issue评论已写入。#268 #269 #270 #271 #273",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[P0 re-debug] 修复完成。根因：parent_student_links 60条 student_id=00000000...数据腐败。删除腐败数据"
-    }
-  },
-  {
     "timestamp": "2026-07-19T09:31:32Z",
     "from": "PM",
     "to": "PM",
@@ -1177,6 +1165,13 @@
     "from": "DEV",
     "to": "PM",
     "message": "DEV: ✅ #291 修复: ExamQueryDto分页参数",
+    "type": "default"
+  },
+  {
+    "timestamp": "2026-07-29T00:17:25Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "QA: ✅ #291 考试API测试: 24项, 发现P0分页bug",
     "type": "default"
   }
 ]

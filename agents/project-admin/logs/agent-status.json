@@ -6,9 +6,9 @@
       "lastUpdate": "2026-07-29T00:05:00Z"
     },
     "QA": {
-      "status": "done",
-      "task": "#291 考试模块API测试: 24项, 发现P0分页bug",
-      "lastUpdate": "2026-07-28T23:40:00Z"
+      "status": "idle",
+      "task": "✅ #291 考试API测试: 24项, 发现P0分页bug",
+      "lastUpdate": "2026-07-29T00:17:25Z"
     },
     "DEV": {
       "status": "idle",
