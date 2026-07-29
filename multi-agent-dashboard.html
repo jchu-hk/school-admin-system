@@ -28,7 +28,16 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
 .msg-failed { border-left-color: #ef4444 }
 .msg-default { border-left-color: #6b7280 }
 .refresh { text-align: center; color: #6b7280; font-size: 0.8em; margin-top: 20px }
+.tabs { display: flex; gap: 8px; margin-bottom: 12px }
+.tab { padding: 6px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: #9ca3af; cursor: pointer; font-size: 0.85em; transition: all 0.2s }
+.tab:hover { background: rgba(255,255,255,0.1); color: #e0e0e0 }
+.tab.active { background: rgba(74,222,128,0.15); border-color: #4ade80; color: #4ade80; font-weight: bold }
+.tab-content { display: none }
+.tab-content.active { display: block }
 </style>
+<script>
+function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById('tab-' + tab).classList.add('active'); }
+</script>
 </head>
 <body>
 <div class="container">
@@ -71,11 +80,24 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
     <div class="agent-name">REQ</div>
     <div class="agent-task">等待任务</div>
     <span class="status-badge status-idle">idle</span>
+</div><div class="agent">
+    <div class="agent-icon">🎨</div>
+    <div class="agent-name">UI_DESIGNER</div>
+    <div class="agent-task">等待任务</div>
+    <span class="status-badge status-idle">idle</span>
 </div></div>
 </div>
 
 <div class="card">
 <h2 style="color:#4ade80;margin-bottom:15px">💬 Messages</h2>
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('today')">📅 T 今日 (07/30)</button>
+  <button class="tab" onclick="switchTab('yesterday')">📅 T-1 昨日 (07/29)</button>
+</div>
+<div class="tab-content active" id="tab-today">
+<div class="message-list"><p style="text-align:center;color:#6b7280;padding:20px">暂无今日消息</p></div>
+</div>
+<div class="tab-content" id="tab-yesterday" style="display:none">
 <div class="message-list"><div class="message-item msg-info">
     <div class="message-time">12:10</div>
     <div class="message-content">PM → SYSTEM: heartbeat 12:10 — All green</div>
@@ -115,31 +137,11 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
 </div><div class="message-item msg-received">
     <div class="message-time">08:17</div>
     <div class="message-content">DEV → PM: DEV: 接收 - 修复#292: 测试dashboard更新</div>
-</div><div class="message-item msg-passed">
-    <div class="message-time">14:25</div>
-    <div class="message-content">PM → HEARTBEAT: 14:25 system check — all 200 ✅</div>
-</div><div class="message-item msg-passed">
-    <div class="message-time">11:40</div>
-    <div class="message-content">PM → HUMAN: Heartbeat 11:40 - All systems stable</div>
-</div><div class="message-item msg-done">
-    <div class="message-time">23:16</div>
-    <div class="message-content">PM → DEV: [#286] PM确认: i18n迁移通过 — 19 files, 1123+ insertions, bui</div>
-</div><div class="message-item msg-passed">
-    <div class="message-time">23:13</div>
-    <div class="message-content">DEV → PM: [#286] 完成: i18n迁移4页面 (retry v2) — 7 files, 966 insertio</div>
-</div><div class="message-item msg-failed">
-    <div class="message-time">23:06</div>
-    <div class="message-content">QA → PM: [#286] QA验证失败: 4个页面均未实施i18n迁移- AttendancePage: 含约490中文字</div>
-</div><div class="message-item msg-received">
-    <div class="message-time">22:59</div>
-    <div class="message-content">DEV → PM: [#286] 开始i18n迁移 (retry v2)</div>
-</div><div class="message-item msg-assign">
-    <div class="message-time">22:59</div>
-    <div class="message-content">PM → DEV: [#286] RE-ASSIGN: i18n迁移4页面 — 上次DEV声称完成但实际零代码变更，需重新实现。A</div>
 </div></div>
 </div>
+</div>
 
-<div class="refresh">Updated: 2026-07-30 07:45:24 (GMT+8)</div>
+<div class="refresh">Updated: 2026-07-30 07:46:40 (GMT+8)</div>
 </div>
 </body>
 </html>
