@@ -1,16 +1,31 @@
 # Heartbeat Checklist
 
-## 17:00 — Heartbeat (Wed) ✅
+## 17:15 — Heartbeat (Wed) ✅
 
 ### System Status 🟢
-- **Health**: All 200 ✅ (backend:3000 200, v1:8080 200, v2:8081 200, gateway:5001/health 200, gateway:5001 200)
-- **Docker**: 14/14 Up(~9h, postgres/redis/opa healthy ✅; kafka 36s starting)
-- **Git**: main(7e77d1c, heartbeat 16:50) dirty(2, HEARTBEAT.md + memory)
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001 200, gateway:5001/health 200)
+- **Docker**: 14/14 Up(~9h, postgres/redis/opa healthy ✅; kafka 8s starting)
+- **Git**: main(53aeb27, heartbeat 17:05) dirty(1, memory log)
 - **GitHub**: 19 open (#274 ready-for-review unassigned, Phase 5 T25-28 backlog p2/p3) | 0 PRs
 - **Agents**: idle ✅
-- **System**: CPU load 0.94 | Mem 2.8/3.8Gi (74%) | Disk 29/40Gi (77%)
+- **System**: CPU load 0.59 | Mem 2.6/3.8Gi (68%) | Disk 29/40Gi (77%)
 - **Dashboard**: 200 ✅
-- 3200+ consecutive green 🏆
+- ~3320+ consecutive green 🏆
+- **CI**: Pre-existing lint errors blocking CI (known issue)
+- HEARTBEAT_OK 🟢
+
+---
+
+## 16:50 — Heartbeat (Wed) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200, gateway:5001 200)
+- **Docker**: 14/14 Up(~9h, postgres/redis/opa healthy ✅; kafka 12s starting)
+- **Git**: main(315e1d7, heartbeat 16:40) dirty(2, HEARTBEAT.md + memory)
+- **GitHub**: 19 open (#274 ready-for-review unassigned, Phase 5 T25-28 backlog p2/p3) | 0 PRs
+- **Agents**: idle ✅
+- **System**: CPU load 0.18 | Mem 2.8/3.8Gi (74%) | Disk 29/40Gi (77%)
+- 3140+ consecutive green 🏆
 - **CI**: Pre-existing lint errors blocking CI (known issue)
 - HEARTBEAT_OK 🟢
 
