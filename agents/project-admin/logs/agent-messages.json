@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T03:30:18Z",
-    "from": "PM",
-    "to": "SYSTEM",
-    "message": "Heartbeat 11:30 — All 200 ✅ Docker 13Up(backend 15h, rest 42h) ✅ Git main(c707801) dirty(93files) ✅ Agents idle ✅",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "Heartbeat 11:30 — All 200 ✅ Docker 13Up(backend 15h, rest 42h) ✅ Git main(c70780"
-    }
-  },
-  {
     "timestamp": "2026-07-20T04:25:07Z",
     "from": "PM",
     "to": "PM",
@@ -1133,5 +1121,12 @@
     "to": "PM",
     "message": "PM: 接收 - 🔄 Morning init — 系统巡检中",
     "type": "received"
+  },
+  {
+    "timestamp": "2026-07-29T23:46:53Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "PM: ✅ Morning init done — 8 agents, 系统正常",
+    "type": "default"
   }
 ]

@@ -1,9 +1,9 @@
 {
   "agents": {
     "PM": {
-      "status": "running",
-      "task": "🔄 Morning init — 系统巡检中",
-      "lastUpdate": "2026-07-29T23:46:48Z"
+      "status": "idle",
+      "task": "✅ Morning init done — 8 agents, 系统正常",
+      "lastUpdate": "2026-07-29T23:46:53Z"
     },
     "QA": {
       "status": "idle",
