@@ -1,9 +1,9 @@
 {
   "agents": {
     "PM": {
-      "status": "idle",
-      "task": "✅ #291 协调QA→DEV→验证完成",
-      "lastUpdate": "2026-07-29T00:17:27Z"
+      "status": "running",
+      "task": "创建P1缺陷 #292 #293 + 派发DEV",
+      "lastUpdate": "2026-07-29T01:28:33Z"
     },
     "QA": {
       "status": "idle",

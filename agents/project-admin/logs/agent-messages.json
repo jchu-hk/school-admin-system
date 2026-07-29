@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T09:36:43Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "P0 re-test PASSED for #268 #269 #270 #271 #273 — verified via API. Root cause was DB corruption in parent_student_links (60 null-UUID records). Fix deployed to backend container.",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "P0 re-test PASSED for #268 #269 #270 #271 #273 — verified via API. Root cause wa"
-    }
-  },
-  {
     "timestamp": "2026-07-19T11:45:11Z",
     "from": "PM",
     "to": "SYSTEM",
@@ -1168,5 +1156,12 @@
     "to": "PM",
     "message": "PM: ✅ #291 协调QA→DEV→验证完成",
     "type": "default"
+  },
+  {
+    "timestamp": "2026-07-29T01:28:33Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "PM: 接收 - 创建P1缺陷 #292 #293 + 派发DEV",
+    "type": "received"
   }
 ]
