@@ -48,7 +48,7 @@ function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.class
 <div class="agent-grid"><div class="agent  running">
     <div class="agent-icon">🧑💼</div>
     <div class="agent-name">PM</div>
-    <div class="agent-task">heartbeat 12:10 — All green</div>
+    <div class="agent-task">🔄 Morning init — 系统巡检中</div>
     <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔧</div>
@@ -95,7 +95,10 @@ function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.class
   <button class="tab" onclick="switchTab('yesterday')">📅 T-1 昨日 (07/29)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><p style="text-align:center;color:#6b7280;padding:20px">暂无今日消息</p></div>
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">07:46</div>
+    <div class="message-content">PM → PM: PM: 接收 - 🔄 Morning init — 系统巡检中</div>
+</div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
 <div class="message-list"><div class="message-item msg-info">
@@ -141,7 +144,7 @@ function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.class
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-07-30 07:46:40 (GMT+8)</div>
+<div class="refresh">Updated: 2026-07-30 07:46:48 (GMT+8)</div>
 </div>
 </body>
 </html>

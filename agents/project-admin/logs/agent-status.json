@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "heartbeat 12:10 — All green",
-      "lastUpdate": "2026-07-29T04:10:12Z"
+      "task": "🔄 Morning init — 系统巡检中",
+      "lastUpdate": "2026-07-29T23:46:48Z"
     },
     "QA": {
       "status": "idle",

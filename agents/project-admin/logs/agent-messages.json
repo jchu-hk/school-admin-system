@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T02:40:13Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "Heartbeat 10:40 GMT+8: all green",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "Heartbeat 10:40 GMT+8: all green"
-    }
-  },
-  {
     "timestamp": "2026-07-20T03:30:18Z",
     "from": "PM",
     "to": "SYSTEM",
@@ -1138,5 +1126,12 @@
       "status": "running",
       "task": "heartbeat 12:10 — All green"
     }
+  },
+  {
+    "timestamp": "2026-07-29T23:46:48Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "PM: 接收 - 🔄 Morning init — 系统巡检中",
+    "type": "received"
   }
 ]

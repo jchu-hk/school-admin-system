@@ -80,11 +80,12 @@ def build_dashboard(status: dict, messages: list):
     """Build simple dashboard HTML"""
     icons = {
         "PM": "🧑💼", "DEVOPS": "🔧", "DEV": "🤖",
-        "QA": "🔍", "CHECKER": "✓", "ARCH": "🏗️", "REQ": "📝"
+        "QA": "🔍", "CHECKER": "✓", "ARCH": "🏗️", "REQ": "📝",
+        "UI_DESIGNER": "🎨"
     }
 
     agents_html = ""
-    for agent in ["PM", "DEVOPS", "DEV", "QA", "CHECKER", "ARCH", "REQ"]:
+    for agent in ["PM", "DEVOPS", "DEV", "QA", "CHECKER", "ARCH", "REQ", "UI_DESIGNER"]:
         agent_data = status.get("agents", {}).get(agent, {"status": "idle", "task": "等待任务"})
         agent_status = agent_data.get("status", "idle")
         task = agent_data.get("task", "等待任务")
@@ -99,15 +100,47 @@ def build_dashboard(status: dict, messages: list):
     <span class="status-badge status-{agent_status}">{agent_status}</span>
 </div>'''
 
-    messages_html = ""
-    for m in reversed(messages[-20:]):
-        mtype = m.get("type", "default")
+    # Split messages into T (today) and T-1 (yesterday) tabs
+    gmt8 = timezone(timedelta(hours=8))
+    now_gmt8 = datetime.now(gmt8)
+    today_str = now_gmt8.strftime("%Y-%m-%d")
+    yesterday_str = (now_gmt8 - timedelta(days=1)).strftime("%Y-%m-%d")
+    today_label = now_gmt8.strftime("%m/%d")
+    yesterday_label = (now_gmt8 - timedelta(days=1)).strftime("%m/%d")
+
+    today_msgs = []
+    yesterday_msgs = []
+    for m in messages:
         utc_time = datetime.fromisoformat(m["timestamp"].replace("Z", "+00:00"))
-        gmt8 = utc_time.astimezone(timezone(timedelta(hours=8)))
-        time_str = gmt8.strftime("%H:%M")
-        messages_html += f'''<div class="message-item msg-{mtype}">
+        msg_gmt8 = utc_time.astimezone(gmt8)
+        msg_date = msg_gmt8.strftime("%Y-%m-%d")
+        if msg_date == today_str:
+            today_msgs.append(m)
+        elif msg_date == yesterday_str:
+            yesterday_msgs.append(m)
+
+    def render_msg_list(msgs):
+        html = ""
+        for m in reversed(msgs[-15:]):
+            mtype = m.get("type", "default")
+            utc_time = datetime.fromisoformat(m["timestamp"].replace("Z", "+00:00"))
+            gmt8_time = utc_time.astimezone(timezone(timedelta(hours=8)))
+            time_str = gmt8_time.strftime("%H:%M")
+            html += f'''<div class="message-item msg-{mtype}">
     <div class="message-time">{time_str}</div>
     <div class="message-content">{m['from']} → {m['to']}: {m['message'][:55]}</div>
+</div>'''
+        return html
+
+    messages_html = f'''<div class="tabs">
+  <button class="tab active" onclick="switchTab('today')">📅 T 今日 ({today_label})</button>
+  <button class="tab" onclick="switchTab('yesterday')">📅 T-1 昨日 ({yesterday_label})</button>
+</div>
+<div class="tab-content active" id="tab-today">
+<div class="message-list">{render_msg_list(today_msgs) if today_msgs else '<p style="text-align:center;color:#6b7280;padding:20px">暂无今日消息</p>'}</div>
+</div>
+<div class="tab-content" id="tab-yesterday" style="display:none">
+<div class="message-list">{render_msg_list(yesterday_msgs) if yesterday_msgs else '<p style="text-align:center;color:#6b7280;padding:20px">暂无昨日消息</p>'}</div>
 </div>'''
 
     now = datetime.now().astimezone(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
@@ -142,7 +175,16 @@ h1 {{ text-align: center; color: #4ade80; margin-bottom: 20px }}
 .msg-failed {{ border-left-color: #ef4444 }}
 .msg-default {{ border-left-color: #6b7280 }}
 .refresh {{ text-align: center; color: #6b7280; font-size: 0.8em; margin-top: 20px }}
+.tabs {{ display: flex; gap: 8px; margin-bottom: 12px }}
+.tab {{ padding: 6px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: #9ca3af; cursor: pointer; font-size: 0.85em; transition: all 0.2s }}
+.tab:hover {{ background: rgba(255,255,255,0.1); color: #e0e0e0 }}
+.tab.active {{ background: rgba(74,222,128,0.15); border-color: #4ade80; color: #4ade80; font-weight: bold }}
+.tab-content {{ display: none }}
+.tab-content.active {{ display: block }}
 </style>
+<script>
+function switchTab(tab) {{ document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById('tab-' + tab).classList.add('active'); }}
+</script>
 </head>
 <body>
 <div class="container">
@@ -155,7 +197,7 @@ h1 {{ text-align: center; color: #4ade80; margin-bottom: 20px }}
 
 <div class="card">
 <h2 style="color:#4ade80;margin-bottom:15px">💬 Messages</h2>
-<div class="message-list">{messages_html}</div>
+{messages_html}
 </div>
 
 <div class="refresh">Updated: {now} (GMT+8)</div>
