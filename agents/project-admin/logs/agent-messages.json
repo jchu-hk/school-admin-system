@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T09:19:16Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[P0 re-debug] 开始对 #268 #269 #270 #271 #273 进行根因分析和修复",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[P0 re-debug] 开始对 #268 #269 #270 #271 #273 进行根因分析和修复"
-    }
-  },
-  {
     "timestamp": "2026-07-19T09:30:12Z",
     "from": "DEV",
     "to": "PM",
@@ -1182,6 +1170,13 @@
     "from": "DEV",
     "to": "PM",
     "message": "DEV: 修复#292完成",
+    "type": "default"
+  },
+  {
+    "timestamp": "2026-07-29T00:17:23Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "DEV: ✅ #291 修复: ExamQueryDto分页参数",
     "type": "default"
   }
 ]

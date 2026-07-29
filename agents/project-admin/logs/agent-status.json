@@ -12,8 +12,8 @@
     },
     "DEV": {
       "status": "idle",
-      "task": "修复#292完成",
-      "lastUpdate": "2026-07-29T00:17:06Z"
+      "task": "✅ #291 修复: ExamQueryDto分页参数",
+      "lastUpdate": "2026-07-29T00:17:23Z"
     },
     "DEVOPS": {
       "status": "idle",
