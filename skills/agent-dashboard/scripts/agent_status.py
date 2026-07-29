@@ -21,6 +21,7 @@ Features:
 
 import argparse
 import json
+import shutil
 import subprocess
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -166,6 +167,30 @@ h1 {{ text-align: center; color: #4ade80; margin-bottom: 20px }}
     DASHBOARD_FILE.write_text(html)
 
 
+def _deploy_dashboard():
+    """Copy dashboard HTML to frontend Docker containers.
+    
+    The multi-agent-dashboard.html file must be copied to the nginx root
+    of both frontend containers (v1 and v2), otherwise nginx's SPA fallback
+    returns the React index.html instead.
+    """
+    # v1: docker cp (writable volume)
+    try:
+        subprocess.run(
+            ["docker", "cp", str(DASHBOARD_FILE),
+             "school-admin-frontend:/usr/share/nginx/html/multi-agent-dashboard.html"],
+            check=True, capture_output=True, timeout=10
+        )
+    except Exception:
+        pass
+    # v2: bind mount read-only, must copy to host path
+    try:
+        shutil.copy2(str(DASHBOARD_FILE),
+                     str(WORKSPACE / "apps/frontend/dist/multi-agent-dashboard.html"))
+    except Exception:
+        pass
+
+
 def rebuild_dashboard():
     """Rebuild dashboard from existing data without changing status (used by cron/wrappers)"""
     status = load_status()
@@ -179,6 +204,8 @@ def rebuild_dashboard():
         subprocess.run(["git", "push", "origin", "main"], cwd=WORKSPACE, check=True, capture_output=True)
     except:
         pass
+    # Deploy dashboard to frontend containers so users can see it
+    _deploy_dashboard()
     print("✅ Dashboard rebuilt and pushed")
 
 
