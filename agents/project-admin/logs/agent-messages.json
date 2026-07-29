@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T11:45:11Z",
-    "from": "PM",
-    "to": "SYSTEM",
-    "message": "19:45 心跳检查: 全部正常 🟢",
-    "type": "passed",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "19:45 心跳检查: 全部正常 🟢"
-    }
-  },
-  {
     "timestamp": "2026-07-19T12:54:04Z",
     "from": "PM",
     "to": "DEV",
@@ -1162,6 +1150,13 @@
     "from": "PM",
     "to": "PM",
     "message": "PM: 接收 - 创建P1缺陷 #292 #293 + 派发DEV",
+    "type": "received"
+  },
+  {
+    "timestamp": "2026-07-29T01:29:31Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "DEV: 接收 - 修复 #292 getStats+postponed + #293 keyword多字段搜索",
     "type": "received"
   }
 ]
