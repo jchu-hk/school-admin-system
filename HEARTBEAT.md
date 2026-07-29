@@ -1,15 +1,16 @@
 
-## 19:30 — Heartbeat (Wed) ✅
+## 19:40 — Heartbeat (Wed) ✅
 
 ### System Status 🟢
-- **Health**: All 200 ✅ (backend:3000 200, v1:8080 200, v2:8081 200, gateway:5001 200, gateway:5001/health 200)
-- **Docker**: 14/14 Up(~12h, postgres/redis/opa healthy ✅; kafka 41s starting)
-- **Git**: main(1eedbfa, heartbeat 19:30) dirty(2, HEARTBEAT.md + memory)
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001 200, gateway:5001/health 200; backend:3000 404 expected)
+- **Docker**: 14/14 Up(~12h, postgres/redis/opa healthy ✅; kafka 29s starting)
+- **Git**: main(a5ba35c, heartbeat 19:30) clean
 - **GitHub**: 19 open (#274 ready-for-review unassigned, Phase 5 T25-28 backlog p2/p3) | 0 PRs
 - **Agents**: idle ✅
-- **System**: CPU load 1.41 | Mem 2.8/3.8Gi (75%) | Disk 29/40Gi (77%)
-- **Dashboard**: 200 ✅
+- **System**: CPU load 0.32 | Mem 2.8/3.8Gi (73%) | Disk 29/40Gi (77%)
+- ~3850+ consecutive green 🏆
 - **CI**: Pre-existing lint errors blocking CI (known issue)
+- **Dashboard**: Unreachable (network timeout)
 - HEARTBEAT_OK 🟢
 
 ## 19:25 — Heartbeat (Wed) ✅
