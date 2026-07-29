@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T12:57:26Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#280] FIX VERIFIED: admission_date UpdateStudentDto已添加 + 部署 + API验证通过",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "[#280] FIX VERIFIED: admission_date UpdateStudentDto已添加 + 部署 + API验证通过"
-    }
-  },
-  {
     "timestamp": "2026-07-20T01:10:56Z",
     "from": "PM",
     "to": "SELF",
@@ -1142,6 +1130,13 @@
     "from": "DEV",
     "to": "PM",
     "message": "DEV: ✅ #294 修复: exam undefined params → 400",
+    "type": "default"
+  },
+  {
+    "timestamp": "2026-07-29T02:46:45Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "PM: ✅ #294 QA→DEV→验证+部署 完成",
     "type": "default"
   }
 ]
