@@ -7,32 +7,42 @@ Usage: python update_dashboard.py
 """
 
 import json
+import sys
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
+
+# Add skill scripts to path so we can import infer_status
+SKILL_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(SKILL_DIR))
+from infer_status import infer_status
 
 REPO_PATH = Path("/workspace/projects/workspace")
 TZ_GMT8 = timezone(timedelta(hours=8))
 
 
 def read_agent_status() -> dict:
-    """Read agent status ONLY from agent-status.json (source of truth).
+    """Infer agent status from GitHub Issues/Commits (per 2026-06-27 proposal).
 
-    We intentionally do NOT infer status from agent-messages.json because
-    old agent_status fields in that file can overwrite newer 'idle' entries
-    (the file is append-only, so stale 'running' entries can appear last).
+    Priority: GitHub Issues (in-progress label) > GitHub Commits > heartbeat files > defaults
+    Does NOT require agent-status.json file — works purely from GitHub activity.
     """
-    status_file = REPO_PATH / "agents/project-admin/logs/agent-status.json"
-    if not status_file.exists():
-        return {"agents": {}}
-
-    status = json.loads(status_file.read_text())
-
+    raw = infer_status("jchu-hk/school-admin-system")
+    
+    # Convert from infer_status format to update_dashboard format
+    agents = {}
+    for agent, data in raw.items():
+        agents[agent] = {
+            "status": data.get("status", "idle"),
+            "task": data.get("task", "等待任务"),
+            "lastUpdate": data.get("evidence", "")
+        }
+    
     # Ensure all known agents exist
     for agent in ["PM", "DEVOPS", "DEV", "QA", "CHECKER", "ARCH", "REQ", "UI_DESIGNER"]:
-        if agent not in status.get("agents", {}):
-            status["agents"][agent] = {"status": "idle", "task": "等待任务", "lastUpdate": ""}
+        if agent not in agents:
+            agents[agent] = {"status": "idle", "task": "等待任务", "lastUpdate": ""}
 
-    return status
+    return {"agents": agents}
 
 
 def read_agent_messages(hours: int = 72) -> list:
