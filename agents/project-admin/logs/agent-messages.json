@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-19T12:54:21Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#280] 开始修复: Student UpdateStudentDto添加admission_date",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[#280] 开始修复: Student UpdateStudentDto添加admission_date"
-    }
-  },
-  {
     "timestamp": "2026-07-19T12:55:10Z",
     "from": "PM",
     "to": "CHECKER",
@@ -1152,6 +1140,13 @@
     "from": "DEV",
     "to": "PM",
     "message": "DEV: ✅ #292 + #293 修复完成",
+    "type": "default"
+  },
+  {
+    "timestamp": "2026-07-29T01:31:44Z",
+    "from": "PM",
+    "to": "PM",
+    "message": "PM: ✅ #292+#293 QA→DEV→验证 完成",
     "type": "default"
   }
 ]
