@@ -1,18 +1,34 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-25 13:47 GMT+8
+> Last updated: 2026-07-31 22:57 GMT+8
 > Updated by: PM (v1.6.2 deployed: #281-#285 fixes + #287 role-menu enhancement)
 
 ---
 
 ## 📦 Current Version
 
-- **Version**: v2.0.0-draft.1
-- **Release Date**: 2026-07-18 (所有P0/P1缺陷已修复)
-- **Git Commit (当前)**: `68e28b9` (latest), `adbbf28` (#235 fix), `cc0db46` (QR fixes)
+- **Version**: v1.6.1
+- **Release Date**: 2026-07-31 22:57 GMT+8
+- **Git Commit**: `6816155`
 - **Branch**: `main`
-- **Status**: CR-20260714-001 Phase 1~4 完成 + Phase 5 T24全系统回归通过（12/12模块）— 等待人工Sanity测试后确认Phase 5方向
-- **Tested By**: QA Agent (Phase 4验证 + T24全系统回归通过)
+- **Status**: Released for Testing
+- **Tested By**: PM (human testing pending)
+- **Changelog**:
+  - fix(#267): AssetController route ordering conflict — GET rentals matched by :id wildcard
+fix(#268-#273): User/Asset/Leave management — 7 P0 defects closed (delete alert, status toggle, modal reset, leave teachers fetch, UUID validation, parent links data corruption, inquiry_create enum)
+fix(#220): Student edit form date fields blank — ISO datetime incompatible with HTML5 date input
+fix(#280): UpdateStudentDto missing admission_date field
+fix(#290): RoleService DI conflict — duplicate service definitions causing permission save failures
+fix(#291): i18n build error 't is not defined' — module-level t() usage in Attendance/Scholarship/Lunch/Notification pages
+fix(#294): Exam API undefined params filter + merge conflict in FinanceScholarshipPage
+fix(#235): Missing PATCH /api/roles/:id endpoint for role permission update
+fix: QR scan page — camera init, jsQR ESM import, backend 401 JWT guard conflict
+fix: Scholarship API path duplicate directory
+fix: System settings API path — .env.production overwriting VITE_API_BASE_URL
+fix: Missing userService.ts — imported by Layout and Login but never created
+fix: pnpm-lock.yaml regeneration for CI frozen-lockfile
+infra: Three-layer context architecture to prevent bootstrap truncation
+
 
 ## 🐳 Docker 服务清单
 

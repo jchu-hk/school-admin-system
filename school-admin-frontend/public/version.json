@@ -1,55 +1,15 @@
 {
-  "version": "v1.5.7",
-  "buildDate": "2026-07-27",
-  "gitCommit": "7225acc",
+  "version": "v1.6.1",
+  "buildDate": "2026-07-31",
+  "gitCommit": "6816155",
   "gitBranch": "main",
   "changelog": [
     {
-      "version": "build-2026-07-27",
-      "date": "2026-07-27",
+      "version": "build-2026-07-31",
+      "date": "2026-07-31",
       "changes": [
-        "dashboard update 14:25",
-        "dashboard update 11:40",
-        "dashboard update 08:00",
-        "dashboard update 06:00"
-      ]
-    },
-    {
-      "version": "build-2026-07-26",
-      "date": "2026-07-26",
-      "changes": [
-        "dashboard update 23:16",
-        "dashboard update 23:13",
-        "dashboard update 23:06",
-        "dashboard update 22:59",
-        "dashboard update 22:59",
-        "dashboard update 22:58",
-        "dashboard update 22:57",
-        "dashboard update 22:57",
-        "dashboard update 08:00",
-        "dashboard update 06:00"
-      ]
-    },
-    {
-      "version": "build-2026-07-25",
-      "date": "2026-07-25",
-      "changes": [
-        "dashboard update 23:01",
-        "dashboard update 23:00",
-        "dashboard update 22:58",
-        "dashboard update 22:58",
-        "dashboard update 22:35",
-        "dashboard update 22:33",
-        "dashboard update 22:30",
-        "dashboard update 22:30",
-        "dashboard update 18:07",
-        "dashboard update 13:07",
-        "dashboard update 13:06",
-        "dashboard update 12:51",
-        "dashboard update 12:51",
-        "dashboard update 12:50",
-        "dashboard update 12:50",
-        "dashboard update 12:39"
+        "fix(#291): resolve 't is not defined' build error — i18n module-level t usage",
+        "add missing userService.ts — was imported by Layout.tsx and Login.tsx but never created"
       ]
     }
   ]

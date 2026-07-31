@@ -1,7 +1,7 @@
 {
   "name": "school-admin-frontend",
   "private": true,
-  "version": "1.5.7",
+  "version": "1.6.1",
   "type": "module",
   "scripts": {
     "dev": "vite",

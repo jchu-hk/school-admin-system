@@ -48,13 +48,13 @@ export default function AboutPage() {
         // Fallback to default version info
         setVersionInfo({
           version: 'v1.6.1',
-          buildNumber: 'build-20260718-01',
-          buildDate: '2026-07-18',
+          buildNumber: 'build-20260731-01',
+          buildDate: '2026-07-31',
           gitCommit: 'unknown',
           gitBranch: 'main',
           environment: 'testing',
           changelog: [
-            { build: 'build-20260718-01', date: '2026-07-18', changes: ['P0紧急修复: 7项缺陷 #267-#273 - 资产租借/用户管理/请假/家长查询'] }
+            { build: 'build-20260731-01', date: '2026-07-31', changes: ['13 defect fixes (#220,#235,#267-#273,#280,#290,#291,#294) + QR scan + i18n + CI'] }
           ]
         })
       })
