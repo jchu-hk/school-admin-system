@@ -28,11 +28,15 @@
 
 ## 2. 记忆管理
 
-- **Daily notes:** `memory/YYYY-MM-DD.md` — 每日原始日志
+- **Daily notes:** `memory/YYYY-MM-DD.md` — 每日原始日志（用户对话、决策、Bug修复、Issue变更、部署事件）
 - **Long-term:** `MEMORY.md` — 长期记忆（仅主会话加载）
 - Agent 记忆: `agents/{AGENT}/MEMORY.md` — 各 Agent 自己的长期记忆
 
 **原则**: 想记住的东西 → 写入文件。Text > Brain.
+
+⚠️ **Daily memory 规则**:
+- ✅ 写入: 用户对话、Bug修复、Issue操作、部署、设计决策、教训
+- ❌ **禁止写入**: 心跳报告、例行系统状态检查（这些属于 HEARTBEAT.md）
 
 ---
 
