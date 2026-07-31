@@ -83,6 +83,7 @@ const createStudentSchema = z.object({
   emergency_contact: z.string().max(100).optional().or(z.literal('')),
   emergency_phone: z.string().max(20).optional().or(z.literal('')),
   notes: z.string().optional().or(z.literal('')),
+  status: z.string().optional().or(z.literal('')),
 })
 
 const editStudentSchema = createStudentSchema
@@ -108,6 +109,9 @@ const studentSubmissionSchema = z.object({
   emergency_contact: z.string().max(100).optional().or(z.literal('')),
   emergency_phone: z.string().max(20).optional().or(z.literal('')),
   notes: z.string().optional().or(z.literal('')),
+  status: z.enum([StudentStatus.ACTIVE, StudentStatus.GRADUATED, StudentStatus.WITHDRAWN, StudentStatus.TRANSFERRED], {
+    required_error: '请选择状态',
+  }),
 })
 
 type StudentFormData = z.infer<typeof createStudentSchema>
@@ -130,6 +134,10 @@ const STATUS_OPTIONS = [
 
 const TODAY = new Date().toISOString().split('T')[0]
 
+// 删除权限：仅允许删除“在读”状态的学生（该学生不在当前在册名单内）。
+// 注意：系统中不存在 draft 状态，因此无法按“仅 Draft 可删除”实现，#296 已按真实状态收敛。
+const canDeleteStudent = (status?: StudentStatus): boolean => status === StudentStatus.ACTIVE
+
 const DEFAULT_FORM_VALUES = {
   student_id: '',
   name_zh: '',
@@ -148,6 +156,7 @@ const DEFAULT_FORM_VALUES = {
   emergency_contact: '',
   emergency_phone: '',
   notes: '',
+  status: StudentStatus.ACTIVE,
 }
 
 // ============ Sub-components ============
@@ -185,12 +194,13 @@ interface StudentFormProps {
   handleSubmit: ReturnType<typeof useForm<StudentFormData>['handleSubmit']>
   onCancel: () => void
   isSubmitting: boolean
+  isEdit?: boolean
   register: ReturnType<typeof useForm<StudentFormData>>['register']
   errors: ReturnType<typeof useForm<StudentFormData>>['formState']['errors']
   classes: { id: string; name: string; grade?: string }[]
 }
 
-function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register, errors, classes }: StudentFormProps) {
+function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, isEdit, register, errors, classes }: StudentFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* 基本信息 */}
@@ -200,7 +210,8 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
       <div className="grid grid-cols-2 gap-4">
         <Field label="学号" error={errors.student_id}>
           <input type="text" {...register('student_id')} data-testid="field-student_id" maxLength={10}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            readOnly={isEdit}
+            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${isEdit ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'border-gray-300'}`}
             placeholder="例如：2026-0001" />
         </Field>
         <Field label="中文姓名" required error={errors.name_zh}>
@@ -235,6 +246,12 @@ function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, register,
         <Field label="入学日期" required error={errors.admission_date}>
           <input type="date" {...register('admission_date')} data-testid="field-admission_date"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.admission_date ? 'border-red-500' : 'border-gray-300'}`} />
+        </Field>
+        <Field label="状态" error={errors.status}>
+          <select {...register('status')} data-testid="field-status"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
         </Field>
         <Field label="香港身份证" error={errors.hk_id}>
           <input type="text" {...register('hk_id')} data-testid="field-hk_id"
@@ -529,6 +546,7 @@ export default function StudentPage() {
   const openEditModal = (student: Student) => {
     setSelectedStudent(student)
     reset({
+      student_id: student.student_id || '',
       name_zh: student.name_zh,
       name_en: student.name_en || '',
       gender: student.gender,
@@ -544,6 +562,7 @@ export default function StudentPage() {
       emergency_contact: student.emergency_contact || '',
       emergency_phone: student.emergency_phone || '',
       notes: student.notes || '',
+      status: student.status || StudentStatus.ACTIVE,
       class_id: (student as any).currentClass?.class_id || '',
     })
     setShowEditModal(true)
@@ -649,8 +668,10 @@ export default function StudentPage() {
                         className="p-1.5 text-gray-500 hover:text-blue-600 rounded" title="查看"><Eye size={16} /></button>
                       <button onClick={(e) => { e.stopPropagation(); openEditModal(s) }}
                         className="p-1.5 text-gray-500 hover:text-green-600 rounded" title="编辑"><Edit2 size={16} /></button>
-                      <button onClick={(e) => { e.stopPropagation(); setSelectedStudent(s); setShowDeleteConfirm(true) }}
-                        className="p-1.5 text-gray-500 hover:text-red-600 rounded" title="删除"><Trash2 size={16} /></button>
+                      {canDeleteStudent(s.status) && (
+                        <button onClick={(e) => { e.stopPropagation(); setSelectedStudent(s); setShowDeleteConfirm(true) }}
+                          className="p-1.5 text-gray-500 hover:text-red-600 rounded" title="删除"><Trash2 size={16} /></button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -697,7 +718,7 @@ export default function StudentPage() {
       {showEditModal && selectedStudent && (
         <Modal title="编辑学生" onClose={() => setShowEditModal(false)}>
           <StudentForm onSubmit={handleUpdate} onCancel={() => setShowEditModal(false)}
-            isSubmitting={isSubmitting} register={register} errors={errors}
+            isSubmitting={isSubmitting} isEdit register={register} errors={errors}
             handleSubmit={handleSubmit} classes={classes} />
         </Modal>
       )}

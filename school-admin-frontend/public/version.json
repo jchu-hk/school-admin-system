@@ -1,13 +1,14 @@
 {
   "version": "v1.6.1",
   "buildDate": "2026-07-31",
-  "gitCommit": "6816155",
+  "gitCommit": "1832243",
   "gitBranch": "main",
   "changelog": [
     {
       "version": "build-2026-07-31",
       "date": "2026-07-31",
       "changes": [
+        "v1.6.1 — 13 defect fixes, version sync",
         "fix(#291): resolve 't is not defined' build error — i18n module-level t usage",
         "add missing userService.ts — was imported by Layout.tsx and Login.tsx but never created"
       ]

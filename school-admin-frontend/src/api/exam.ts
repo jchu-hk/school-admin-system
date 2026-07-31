@@ -1,5 +1,7 @@
 // 考试管理 API 接口定义
 
+import { getToken } from '../utils/tokenService'
+
 export enum ExamStatus {
   SCHEDULED = 'scheduled',
   ONGOING = 'ongoing',
@@ -78,6 +80,9 @@ export interface ExamQueryParams {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
+// API_BASE_URL already ends with '/' (e.g. '/api/'), so paths must NOT have a leading '/'
+const URL_BASE = API_BASE_URL.endsWith('/') ? API_BASE_URL : `${API_BASE_URL}/`;
+
 export const examApi = {
   // 获取考试列表
   getList: async (params: ExamQueryParams = {}): Promise<ExamListResponse> => {
@@ -93,10 +98,10 @@ export const examApi = {
       : '';
 
     const response = await fetch(
-      `${API_BASE_URL}exams${qs}`,  // API_BASE_URL already has trailing /
+      `${URL_BASE}exams${qs}`,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${getToken() ?? ''}`,
           'Content-Type': 'application/json',
         },
       }
@@ -111,9 +116,9 @@ export const examApi = {
 
   // 获取考试详情
   getDetail: async (id: string): Promise<Exam> => {
-    const response = await fetch(`${API_BASE_URL}/exams/${id}`, {
+    const response = await fetch(`${URL_BASE}exams/${id}`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken() ?? ''}`,
       },
     });
 
@@ -126,10 +131,10 @@ export const examApi = {
 
   // 创建考试
   create: async (data: ExamFormData): Promise<Exam> => {
-    const response = await fetch(`${API_BASE_URL}/exams`, {
+    const response = await fetch(`${URL_BASE}exams`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken() ?? ''}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
@@ -144,10 +149,10 @@ export const examApi = {
 
   // 更新考试
   update: async (id: string, data: Partial<ExamFormData>): Promise<Exam> => {
-    const response = await fetch(`${API_BASE_URL}/exams/${id}`, {
+    const response = await fetch(`${URL_BASE}exams/${id}`, {
       method: 'PATCH',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken() ?? ''}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
@@ -162,10 +167,10 @@ export const examApi = {
 
   // 更新考试状态
   updateStatus: async (id: string, status: ExamStatus): Promise<Exam> => {
-    const response = await fetch(`${API_BASE_URL}/exams/${id}/status`, {
+    const response = await fetch(`${URL_BASE}exams/${id}/status`, {
       method: 'PATCH',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken() ?? ''}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ status }),
@@ -180,10 +185,10 @@ export const examApi = {
 
   // 删除考试
   delete: async (id: string): Promise<void> => {
-    const response = await fetch(`${API_BASE_URL}/exams/${id}`, {
+    const response = await fetch(`${URL_BASE}exams/${id}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken() ?? ''}`,
       },
     });
 
@@ -200,9 +205,9 @@ export const examApi = {
     completed: number;
     cancelled: number;
   }> => {
-    const response = await fetch(`${API_BASE_URL}/exams/stats`, {
+    const response = await fetch(`${URL_BASE}exams/stats`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken() ?? ''}`,
       },
     });
 

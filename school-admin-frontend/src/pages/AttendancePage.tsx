@@ -110,7 +110,13 @@ export default function AttendancePage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'manual' | 'anomaly'>('overview');
 
   // Filter state
-  const [selectedClass, setSelectedClass] = useState<string>('1A');
+  const [selectedClass, setSelectedClass] = useState<string>(''); // '' = all classes
+
+  // 班级选项：'所有班级' + 具体班级（用于出勤概览统计）
+  const CLASS_OPTIONS: ClassOption[] = [
+    { id: '', name: '所有班级' },
+    ...MOCK_CLASSES,
+  ];
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split('T')[0],
   );
@@ -122,7 +128,8 @@ export default function AttendancePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Manual entry state
+  // Manual entry state (uses its own class — specific classes only, NOT 'all')
+  const [manualClass, setManualClass] = useState<string>(MOCK_CLASSES[0]?.id || '1A');
   const [manualRecords, setManualRecords] = useState<BatchRecordInput[]>([]);
   const [manualDate, setManualDate] = useState<string>(() => new Date().toISOString().split('T')[0]);
   const [previewData, setPreviewData] = useState<ConfirmPreviewResponse | null>(null);
@@ -168,7 +175,7 @@ export default function AttendancePage() {
   // ============ Manual Entry Handlers ============
   const initManualRecords = async (dateOverride?: string) => {
     const targetDate = dateOverride ?? manualDate;
-    const students = MOCK_STUDENTS[selectedClass] || [];
+    const students = MOCK_STUDENTS[manualClass] || [];
     if (students.length === 0) {
       setManualRecords([]);
       setPreviewData(null);
@@ -180,12 +187,12 @@ export default function AttendancePage() {
 
     // Try to load existing records for this date from API
     try {
-      const existing = await attendanceApi.getByClassAndDate(selectedClass, targetDate);
+      const existing = await attendanceApi.getByClassAndDate(manualClass, targetDate);
       if (existing.records && existing.records.length > 0) {
         const mapped: BatchRecordInput[] = existing.records.map((r) => ({
           studentId: r.student?.id || r.studentId,
           studentName: r.student?.name || '',
-          classId: selectedClass,
+          classId: manualClass,
           status: r.status,
           checkInTime: r.checkInTime || '',
           remark: r.remark || '',
@@ -199,7 +206,7 @@ export default function AttendancePage() {
         const initial: BatchRecordInput[] = students.map((s) => ({
           studentId: s.id,
           studentName: s.name,
-          classId: selectedClass,
+          classId: manualClass,
           status: AttendanceStatus.PRESENT,
           checkInTime: '',
           remark: '',
@@ -212,7 +219,7 @@ export default function AttendancePage() {
       const initial: BatchRecordInput[] = students.map((s) => ({
         studentId: s.id,
         studentName: s.name,
-        classId: selectedClass,
+        classId: manualClass,
         status: AttendanceStatus.PRESENT,
         checkInTime: '',
         remark: '',
@@ -239,6 +246,10 @@ export default function AttendancePage() {
     if (tab === 'manual') {
       const today = new Date().toISOString().split('T')[0];
       setManualDate(today);
+      // ensure manual entry uses a real class (not 'all')
+      if (!manualClass) {
+        setManualClass(MOCK_CLASSES[0]?.id || '1A');
+      }
     }
     setActiveTab(tab);
   };
@@ -247,7 +258,7 @@ export default function AttendancePage() {
     if (activeTab === 'manual') {
       initManualRecords();
     }
-  }, [activeTab, selectedClass, manualDate]);
+  }, [activeTab, manualClass, manualDate]);
 
   const updateManualRecord = (index: number, field: keyof BatchRecordInput, value: string) => {
     setManualRecords((prev) => {
@@ -262,7 +273,7 @@ export default function AttendancePage() {
     setError(null);
     try {
       const data = await attendanceApi.confirmPreview({
-        classId: selectedClass,
+        classId: manualClass,
         attendanceDate: manualDate,
         records: manualRecords,
       });
@@ -282,7 +293,7 @@ export default function AttendancePage() {
     setError(null);
     try {
       const result = await attendanceApi.batchCreate({
-        classId: selectedClass,
+        classId: manualClass,
         attendanceDate: manualDate,
         records: manualRecords,
       });
@@ -421,8 +432,8 @@ export default function AttendancePage() {
               onChange={(e) => handleClassChange(e.target.value)}
               className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              {MOCK_CLASSES.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
+              {CLASS_OPTIONS.map((c) => (
+                <option key={c.id || 'all'} value={c.id}>{c.name}</option>
               ))}
             </select>
           </div>
@@ -644,8 +655,11 @@ export default function AttendancePage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">班级</label>
             <select
-              value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
+              value={manualClass}
+              onChange={(e) => {
+                setManualClass(e.target.value);
+                initManualRecords();
+              }}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
             >
               {MOCK_CLASSES.map((c) => (
@@ -675,6 +689,7 @@ export default function AttendancePage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="text-left px-4 py-3 font-medium text-gray-700 w-8">#</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-700">班级</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-700">学号</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-700">姓名</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-700">状态</th>
@@ -686,6 +701,7 @@ export default function AttendancePage() {
               {manualRecords.map((record, i) => (
                 <tr key={i} className="border-t border-gray-100 hover:bg-gray-50">
                   <td className="px-4 py-2 text-gray-400 text-xs">{i + 1}</td>
+                  <td className="px-4 py-2 text-xs text-gray-600">{record.classId || '—'}</td>
                   <td className="px-4 py-2 font-mono text-xs text-gray-600">{record.studentId}</td>
                   <td className="px-4 py-2">{record.studentName}</td>
                   <td className="px-4 py-2">
@@ -732,6 +748,13 @@ export default function AttendancePage() {
           <div className="text-center py-8 text-gray-400">
             <Users size={32} className="mx-auto mb-2" />
             <p>请先选择班级</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="mt-4 px-4 py-2 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-sm text-red-700">
+            <XCircle size={16} />
+            <span>{error}</span>
           </div>
         )}
 
