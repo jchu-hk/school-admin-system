@@ -45,21 +45,21 @@ function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.class
 
 <div class="card">
 <h2 style="color:#4ade80;margin-bottom:15px">👥 Agents</h2>
-<div class="agent-grid"><div class="agent">
+<div class="agent-grid"><div class="agent  running">
     <div class="agent-icon">🧑💼</div>
     <div class="agent-name">PM</div>
-    <div class="agent-task">✅ Morning init done — 8 agents, 系统正</div>
-    <span class="status-badge status-idle">idle</span>
+    <div class="agent-task">[Human-Testing P0 Batch] Backend AP</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔧</div>
     <div class="agent-name">DEVOPS</div>
     <div class="agent-task">等待任务</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent">
+</div><div class="agent  running">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
-    <div class="agent-task">✅ #294 修复: exam undefined params → </div>
-    <span class="status-badge status-idle">idle</span>
+    <div class="agent-task">[#298,#301,#302,#304,#305] 开始诊断</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
@@ -91,24 +91,21 @@ function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.class
 <div class="card">
 <h2 style="color:#4ade80;margin-bottom:15px">💬 Messages</h2>
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('today')">📅 T 今日 (07/31)</button>
-  <button class="tab" onclick="switchTab('yesterday')">📅 T-1 昨日 (07/30)</button>
+  <button class="tab active" onclick="switchTab('today')">📅 T 今日 (08/01)</button>
+  <button class="tab" onclick="switchTab('yesterday')">📅 T-1 昨日 (07/31)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><p style="text-align:center;color:#6b7280;padding:20px">暂无今日消息</p></div>
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">00:03</div>
+    <div class="message-content">DEV → PM: [#298,#301,#302,#304,#305] 开始诊断</div>
+</div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
-<div class="message-list"><div class="message-item msg-default">
-    <div class="message-time">07:46</div>
-    <div class="message-content">PM → PM: PM: ✅ Morning init done — 8 agents, 系统正常</div>
-</div><div class="message-item msg-received">
-    <div class="message-time">07:46</div>
-    <div class="message-content">PM → PM: PM: 接收 - 🔄 Morning init — 系统巡检中</div>
-</div></div>
+<div class="message-list"><p style="text-align:center;color:#6b7280;padding:20px">暂无昨日消息</p></div>
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-07-31 23:52:05 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-01 00:03:24 (GMT+8)</div>
 </div>
 </body>
 </html>
