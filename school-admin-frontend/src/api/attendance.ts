@@ -146,7 +146,11 @@ export const attendanceApi = {
   /** 获取每日统计 */
   getDailyStats: async (date: string, classId?: string) => {
     const { data } = await apiClient.get('/attendances/stats/daily', {
-      params: { date, classId },
+      params: {
+        date,
+        // '' means 'all classes' → omit classId so backend returns aggregate
+        classId: classId || undefined,
+      },
     });
     return data as AttendanceStats & { date: string };
   },

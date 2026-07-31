@@ -58,11 +58,14 @@ export interface UserListResponse {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
+// API_BASE_URL already ends with '/' (e.g. '/api/'), so paths must NOT have a leading '/'
+const URL_BASE = API_BASE_URL.endsWith('/') ? API_BASE_URL : `${API_BASE_URL}/`;
+
 export const settingsApi = {
   // 获取系统配置列表
   getConfigs: async (params: { page?: number; pageSize?: number; category?: string } = {}): Promise<ConfigListResponse> => {
     const response = await fetch(
-      `${API_BASE_URL}/settings/configs?${new URLSearchParams(params as any).toString()}`,
+      `${URL_BASE}settings/configs?${new URLSearchParams(params as any).toString()}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -80,7 +83,7 @@ export const settingsApi = {
 
   // 更新系统配置
   updateConfig: async (id: string, data: Partial<SystemConfigFormData>): Promise<SystemConfig> => {
-    const response = await fetch(`${API_BASE_URL}/settings/configs/${id}`, {
+    const response = await fetch(`${URL_BASE}settings/configs/${id}`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -99,7 +102,7 @@ export const settingsApi = {
   // 获取系统日志
   getLogs: async (params: { page?: number; pageSize?: number; level?: string; module?: string } = {}): Promise<LogListResponse> => {
     const response = await fetch(
-      `${API_BASE_URL}/settings/logs?${new URLSearchParams(params as any).toString()}`,
+      `${URL_BASE}settings/logs?${new URLSearchParams(params as any).toString()}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -118,7 +121,7 @@ export const settingsApi = {
   // 获取系统用户
   getUsers: async (params: { page?: number; pageSize?: number; keyword?: string; role?: string; status?: string } = {}): Promise<UserListResponse> => {
     const response = await fetch(
-      `${API_BASE_URL}/settings/users?${new URLSearchParams(params as any).toString()}`,
+      `${URL_BASE}settings/users?${new URLSearchParams(params as any).toString()}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -136,7 +139,7 @@ export const settingsApi = {
 
   // 更新用户状态
   updateUserStatus: async (id: string, status: 'active' | 'inactive'): Promise<void> => {
-    const response = await fetch(`${API_BASE_URL}/settings/users/${id}/status`, {
+    const response = await fetch(`${URL_BASE}settings/users/${id}/status`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -152,7 +155,7 @@ export const settingsApi = {
 
   // 删除用户
   deleteUser: async (id: string): Promise<void> => {
-    const response = await fetch(`${API_BASE_URL}/settings/users/${id}`, {
+    const response = await fetch(`${URL_BASE}settings/users/${id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,

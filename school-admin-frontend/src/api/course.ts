@@ -51,11 +51,14 @@ export interface CourseQueryParams {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
+// API_BASE_URL already ends with '/' (e.g. '/api/'), so paths must NOT have a leading '/'
+const URL_BASE = API_BASE_URL.endsWith('/') ? API_BASE_URL : `${API_BASE_URL}/`;
+
 export const courseApi = {
   // 获取课程列表
   getList: async (params: CourseQueryParams = {}): Promise<CourseListResponse> => {
     const response = await fetch(
-      `${API_BASE_URL}/courses?${new URLSearchParams(params as any).toString()}`,
+      `${URL_BASE}courses?${new URLSearchParams(params as any).toString()}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -73,7 +76,7 @@ export const courseApi = {
 
   // 获取课程详情
   getDetail: async (id: string): Promise<Course> => {
-    const response = await fetch(`${API_BASE_URL}/courses/${id}`, {
+    const response = await fetch(`${URL_BASE}courses/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
       },
@@ -88,7 +91,7 @@ export const courseApi = {
 
   // 创建课程
   create: async (data: CourseFormData): Promise<Course> => {
-    const response = await fetch(`${API_BASE_URL}/courses`, {
+    const response = await fetch(`${URL_BASE}courses`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -106,7 +109,7 @@ export const courseApi = {
 
   // 更新课程
   update: async (id: string, data: Partial<CourseFormData>): Promise<Course> => {
-    const response = await fetch(`${API_BASE_URL}/courses/${id}`, {
+    const response = await fetch(`${URL_BASE}courses/${id}`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
@@ -124,7 +127,7 @@ export const courseApi = {
 
   // 删除课程
   delete: async (id: string): Promise<void> => {
-    const response = await fetch(`${API_BASE_URL}/courses/${id}`, {
+    const response = await fetch(`${URL_BASE}courses/${id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
