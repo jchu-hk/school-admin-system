@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Search, Plus, Eye, X, ChevronLeft, ChevronRight,
   Calendar, Clock, AlertCircle, CheckCircle, XCircle,
@@ -40,17 +40,6 @@ type DataSourceStatus = {
   status: 'success' | 'failed' | 'partial' | 'offline' | 'pending';
   lastSyncTime?: string;
   recordCount?: number;
-};
-
-// ============ Constants ============
-const STATUS_LABELS: Record<AttendanceStatus, string> = {
-  [AttendanceStatus.PRESENT]: t.attendance.statusPresent,
-  [AttendanceStatus.ABSENT]: t.attendance.statusAbsent,
-  [AttendanceStatus.LATE]: t.attendance.statusLate,
-  [AttendanceStatus.LEAVE_EARLY]: t.attendance.statusEarlyLeave,
-  [AttendanceStatus.SICK_LEAVE]: t.attendance.statusSickLeave,
-  [AttendanceStatus.PERSONAL_LEAVE]: t.attendance.statusPersonalLeave,
-  [AttendanceStatus.ABSENT_WITH_LEAVE]: t.attendance.statusAbsentWithLeave,
 };
 
 const STATUS_COLORS: Record<AttendanceStatus, string> = {
@@ -106,18 +95,16 @@ const MOCK_STUDENTS: Record<string, Array<{ id: string; name: string }>> = {
 export default function AttendancePage() {
   const { t } = useI18n();
 
-  const getStatusLabel = (status: AttendanceStatus): string => {
-    const labels: Record<AttendanceStatus, string> = {
-      [AttendanceStatus.PRESENT]: t.attendance.statusPresent,
-      [AttendanceStatus.ABSENT]: t.attendance.statusAbsent,
-      [AttendanceStatus.LATE]: t.attendance.statusLate,
-      [AttendanceStatus.EARLY_LEAVE]: t.attendance.statusEarlyLeave,
-      [AttendanceStatus.SICK_LEAVE]: t.attendance.statusSickLeave,
-      [AttendanceStatus.PERSONAL_LEAVE]: t.attendance.statusPersonalLeave,
-      [AttendanceStatus.ABSENT_WITH_LEAVE]: t.attendance.statusAbsentWithLeave,
-    };
-    return labels[status] || status;
-  };  const navigate = useNavigate();
+  const statusLabels: Record<AttendanceStatus, string> = useMemo(() => ({
+    [AttendanceStatus.PRESENT]: t.attendance.statusPresent,
+    [AttendanceStatus.ABSENT]: t.attendance.statusAbsent,
+    [AttendanceStatus.LATE]: t.attendance.statusLate,
+    [AttendanceStatus.EARLY_LEAVE]: t.attendance.statusEarlyLeave,
+    [AttendanceStatus.SICK_LEAVE]: t.attendance.statusSickLeave,
+    [AttendanceStatus.PERSONAL_LEAVE]: t.attendance.statusPersonalLeave,
+    [AttendanceStatus.ABSENT_WITH_LEAVE]: t.attendance.statusAbsentWithLeave,
+  }), [t]);
+  const navigate = useNavigate();
 
   // Tab state
   const [activeTab, setActiveTab] = useState<'overview' | 'manual' | 'anomaly'>('overview');
@@ -570,7 +557,7 @@ export default function AttendancePage() {
               return (
                 <div key={status} className={`rounded-lg p-3 text-center ${STATUS_COLORS[status]}`}>
                   <div className="text-xl font-bold">{count}</div>
-                  <div className="text-xs mt-1">{STATUS_LABELS[status]}</div>
+                  <div className="text-xs mt-1">{statusLabels[status]}</div>
                 </div>
               );
             })}
@@ -593,7 +580,7 @@ export default function AttendancePage() {
                     <td className="px-4 py-2">{r.studentName}</td>
                     <td className="px-4 py-2">
                       <span className={`px-2 py-0.5 rounded-full text-xs ${STATUS_COLORS[r.status]}`}>
-                        {getStatusLabel(r.status)}
+                        {statusLabels[r.status] || r.status}
                       </span>
                     </td>
                   </tr>
@@ -713,7 +700,7 @@ export default function AttendancePage() {
                             onChange={() => updateManualRecord(i, 'status', status)}
                             className="text-blue-600"
                           />
-                          <span className="text-xs">{STATUS_LABELS[status]}</span>
+                          <span className="text-xs">{statusLabels[status]}</span>
                         </label>
                       ))}
                     </div>

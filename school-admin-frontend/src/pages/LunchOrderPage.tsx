@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -38,54 +38,54 @@ interface Prediction { predictions: Array<{ date: string; predictedOrders: numbe
 
 type Tab = 'orders' | 'changes' | 'menu' | 'stats'
 
-const statusLabels: Record<string, { label: string; color: string }> = {
-  pending: { label: t.lunch.pending, color: 'bg-yellow-100 text-yellow-800' },
-  confirmed: { label: t.lunch.confirmed, color: 'bg-blue-100 text-blue-800' },
-  cancelled: { label: t.lunch.cancelled, color: 'bg-gray-100 text-gray-600' },
-  completed: { label: t.lunch.completed, color: 'bg-green-100 text-green-800' },
-}
-
-const changeStatusLabels: Record<string, { label: string; color: string }> = {
-  pending: { label: t.lunch.pendingReview, color: 'bg-yellow-100 text-yellow-800' },
-  approved: { label: t.lunch.approved, color: 'bg-green-100 text-green-800' },
-  rejected: { label: t.lunch.rejected, color: 'bg-red-100 text-red-800' },
-  auto_rejected: { label: t.lunch.autoRejected, color: 'bg-gray-100 text-gray-600' },
-}
-
-const changeTypeLabels: Record<string, { label: string; color: string }> = {
-  add: { label: t.lunch.addOrder, color: 'bg-blue-100 text-blue-800' },
-  cancel: { label: t.lunch.cancel, color: 'bg-red-100 text-red-800' },
-  modify: { label: t.lunch.modify, color: 'bg-orange-100 text-orange-800' },
-}
-
-const orderSchema = z.object({
-  studentId: z.string().min(1, t.lunch.selectStudent),
-  orderDate: z.string().min(1, t.lunch.selectDate),
-  menuName: z.string().min(1, t.lunch.enterDishName),
-  menuPrice: z.number().min(0, t.lunch.priceNonNegative),
-  quantity: z.number().min(1).default(1),
-  notes: z.string().optional(),
-})
-
-const changeSchema = z.object({
-  studentId: z.string().min(1, t.lunch.selectStudent),
-  changeType: z.enum(['add', 'cancel', 'modify']),
-  orderId: z.string().optional(),
-  originalItem: z.string().optional(),
-  newItem: z.string().optional(),
-  newQuantity: z.number().min(1).optional(),
-  newPrice: z.number().min(0).optional(),
-  notes: z.string().optional(),
-})
-
-const rejectSchema = z.object({ rejectReason: z.string().min(1, t.lunch.rejectReasonRequired) })
-
-type OrderForm = z.infer<typeof orderSchema>
-type ChangeForm = z.infer<typeof changeSchema>
-type RejectForm = z.infer<typeof rejectSchema>
+interface OrderForm { studentId: string; orderDate: string; menuName: string; menuPrice: number; quantity: number; notes?: string }
+interface ChangeForm { studentId: string; changeType: 'add' | 'cancel' | 'modify'; orderId?: string; originalItem?: string; newItem?: string; newQuantity?: number; newPrice?: number; notes?: string }
+interface RejectForm { rejectReason: string }
 
 export default function LunchOrderPage() {
   const { t } = useI18n();
+
+  const statusLabels: Record<string, { label: string; color: string }> = useMemo(() => ({
+    pending: { label: t.lunch.pending, color: 'bg-yellow-100 text-yellow-800' },
+    confirmed: { label: t.lunch.confirmed, color: 'bg-blue-100 text-blue-800' },
+    cancelled: { label: t.lunch.cancelled, color: 'bg-gray-100 text-gray-600' },
+    completed: { label: t.lunch.completed, color: 'bg-green-100 text-green-800' },
+  }), [t])
+
+  const changeStatusLabels: Record<string, { label: string; color: string }> = useMemo(() => ({
+    pending: { label: t.lunch.pendingReview, color: 'bg-yellow-100 text-yellow-800' },
+    approved: { label: t.lunch.approved, color: 'bg-green-100 text-green-800' },
+    rejected: { label: t.lunch.rejected, color: 'bg-red-100 text-red-800' },
+    auto_rejected: { label: t.lunch.autoRejected, color: 'bg-gray-100 text-gray-600' },
+  }), [t])
+
+  const changeTypeLabels: Record<string, { label: string; color: string }> = useMemo(() => ({
+    add: { label: t.lunch.addOrder, color: 'bg-blue-100 text-blue-800' },
+    cancel: { label: t.lunch.cancel, color: 'bg-red-100 text-red-800' },
+    modify: { label: t.lunch.modify, color: 'bg-orange-100 text-orange-800' },
+  }), [t])
+
+  const orderSchema = useMemo(() => z.object({
+    studentId: z.string().min(1, t.lunch.selectStudent),
+    orderDate: z.string().min(1, t.lunch.selectDate),
+    menuName: z.string().min(1, t.lunch.enterDishName),
+    menuPrice: z.number().min(0, t.lunch.priceNonNegative),
+    quantity: z.number().min(1).default(1),
+    notes: z.string().optional(),
+  }), [t])
+
+  const changeSchema = useMemo(() => z.object({
+    studentId: z.string().min(1, t.lunch.selectStudent),
+    changeType: z.enum(['add', 'cancel', 'modify']),
+    orderId: z.string().optional(),
+    originalItem: z.string().optional(),
+    newItem: z.string().optional(),
+    newQuantity: z.number().min(1).optional(),
+    newPrice: z.number().min(0).optional(),
+    notes: z.string().optional(),
+  }), [t])
+
+  const rejectSchema = useMemo(() => z.object({ rejectReason: z.string().min(1, t.lunch.rejectReasonRequired) }), [t])
   const [activeTab, setActiveTab] = useState<Tab>('orders')
   const [orders, setOrders] = useState<LunchOrder[]>([])
   const [changes, setChanges] = useState<LunchChange[]>([])
