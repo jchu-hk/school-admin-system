@@ -60,11 +60,11 @@ function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.class
     <div class="agent-name">DEV</div>
     <div class="agent-task">[#298,#301,#302,#304,#305] 全部完成并验证通</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent">
+</div><div class="agent  running">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
-    <div class="agent-task">✅ #291 考试API测试: 24项, 发现P0分页bug</div>
-    <span class="status-badge status-idle">idle</span>
+    <div class="agent-task">[QA验证] 开始验证 #295-#305</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">✓</div>
     <div class="agent-name">CHECKER</div>
@@ -95,7 +95,10 @@ function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.class
   <button class="tab" onclick="switchTab('yesterday')">📅 T-1 昨日 (07/31)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-passed">
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">00:32</div>
+    <div class="message-content">QA → PM: [QA验证] 开始验证 #295-#305</div>
+</div><div class="message-item msg-passed">
     <div class="message-time">00:15</div>
     <div class="message-content">DEV → PM: [#298,#301,#302,#304,#305] 全部完成并验证通过。根因:两处为部署遗漏重建(后端#30</div>
 </div><div class="message-item msg-passed">
@@ -114,7 +117,7 @@ function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.class
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-01 00:32:05 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-01 00:32:12 (GMT+8)</div>
 </div>
 </body>
 </html>
