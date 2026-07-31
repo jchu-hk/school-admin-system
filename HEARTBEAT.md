@@ -1,3 +1,26 @@
+## 17:25 — Heartbeat (Fri) ✅
+
+### System Status 🟢
+- **Health**: HTTP 401 on :9000 (auth-guarded, by design) ✅ | Docker 14/14 Up
+- **Docker**: **14/14 Up** — postgres/redis/opa/kafka healthy ✅
+- **Git**: main — modified HEARTBEAT.md only, no code drift ✅
+- **GitHub**: 19 open — no P0/P1 (#274 #140 ready-for-review, Phase 5 backlog p2) | 0 PRs
+- **#ContinuousGreen continues 🏆**
+- **HEARTBEAT_OK** 🟢
+---
+
+## 17:20 — Heartbeat (Fri) ✅
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, v1:8080 200, v2:8081 200, gateway:5001/health 200)
+- **Docker**: **14/14 Up** — postgres/redis/opa/kafka healthy ✅ (kafka 9h+ healthy, network fix holding)
+- **Git**: main(ea30d01) — local clean, synced with origin ✅
+- **GitHub**: 19 open — no P0/P1 (#274 #140 ready-for-review, Phase 5 T25-28 backlog p2) | 0 PRs
+- **System**: CPU load 0.52 | Mem 3.1/3.8Gi | Disk 30/40Gi (78%)
+- **#ContinuousGreen continues 🏆**
+- **HEARTBEAT_OK** 🟢
+---
+
 ## 17:15 — Heartbeat (Fri) ✅
 
 ### System Status 🟢
