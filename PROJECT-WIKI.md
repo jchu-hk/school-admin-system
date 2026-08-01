@@ -1,7 +1,7 @@
 # Project Wiki - School Admin System
 
-> Last updated: 2026-07-31 22:57 GMT+8
-> Updated by: PM (v1.6.2 deployed: #281-#285 fixes + #287 role-menu enhancement)
+> Last updated: 2026-08-01 11:57 GMT+8
+> Updated by: PM (Dashboard via /attendance/ + /agents — Coze page routing workaround)
 
 ---
 
@@ -106,6 +106,7 @@ curl http://localhost:8080/school-admin/about | grep version
 | Coze — portal-app | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr) | ☁️ Coze | ✅ 已连通 |
 | Coze — portal-app | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student) | ☁️ Coze | ✅ 已连通 |
 | Cloudflare Tunnel | `https://...trycloudflare.com` | ⚡ 临时代理 | ⚠️ URL会变化 |
+| Coze — Dashboard | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/login?agents](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/login?agents) | ☁️ Coze | 公开，无需登录 |
 | Coze 入口 | [https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/) | ☁️ Coze | → OpenClaw Gateway |
 | | | | |
 | **🛠️ OPS Monitoring Tools** | | | |
@@ -234,7 +235,9 @@ These are known issues that do not currently impact operations:
 
 ## 🤖 Multi-Agent Dashboard
 
-Live dashboard: [multi-agent-dashboard.html](multi-agent-dashboard.html)
+Live dashboard (Coze): [/agents](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/agents)  （公开，无需登录）
+Backup: [/attendance/dashboard.html](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/dashboard.html) 或 SPA 内 `/dashboard` 🤖 Agents tab
+GitHub backup: [multi-agent-dashboard.html](multi-agent-dashboard.html)
 
 ### Agent Roles
 
