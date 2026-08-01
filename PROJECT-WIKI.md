@@ -8,26 +8,8 @@
 ## 📦 Current Version
 
 - **Version**: v1.6.1
-- **Release Date**: 2026-07-31 22:57 GMT+8
-- **Git Commit**: `6816155`
-- **Branch**: `main`
-- **Status**: Released for Testing
-- **Tested By**: PM (human testing pending)
-- **Changelog**:
-  - fix(#267): AssetController route ordering conflict — GET rentals matched by :id wildcard
-fix(#268-#273): User/Asset/Leave management — 7 P0 defects closed (delete alert, status toggle, modal reset, leave teachers fetch, UUID validation, parent links data corruption, inquiry_create enum)
-fix(#220): Student edit form date fields blank — ISO datetime incompatible with HTML5 date input
-fix(#280): UpdateStudentDto missing admission_date field
-fix(#290): RoleService DI conflict — duplicate service definitions causing permission save failures
-fix(#291): i18n build error 't is not defined' — module-level t() usage in Attendance/Scholarship/Lunch/Notification pages
-fix(#294): Exam API undefined params filter + merge conflict in FinanceScholarshipPage
-fix(#235): Missing PATCH /api/roles/:id endpoint for role permission update
-fix: QR scan page — camera init, jsQR ESM import, backend 401 JWT guard conflict
-fix: Scholarship API path duplicate directory
-fix: System settings API path — .env.production overwriting VITE_API_BASE_URL
-fix: Missing userService.ts — imported by Layout and Login but never created
-fix: pnpm-lock.yaml regeneration for CI frozen-lockfile
-infra: Three-layer context architecture to prevent bootstrap truncation
+- **Release Date**: 2026-08-01 22:57 GMT+8
+- **Full Release Details**: [GitHub Releases](https://github.com/jchu-hk/school-admin-system/releases)
 
 
 ## 🐳 Docker 服务清单
