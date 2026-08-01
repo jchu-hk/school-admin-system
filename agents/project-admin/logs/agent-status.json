@@ -1,19 +1,19 @@
 {
   "agents": {
     "PM": {
-      "status": "idle",
-      "task": "✅ Morning init done — 8 agents, 系统正常",
-      "lastUpdate": "2026-07-29T23:46:53Z"
+      "status": "running",
+      "task": "[Human-Testing P0 Batch] Backend API defects: #298 Dashboard stats empty, #301 P",
+      "lastUpdate": "2026-07-31T16:02:54Z"
     },
     "QA": {
       "status": "idle",
-      "task": "✅ #291 考试API测试: 24项, 发现P0分页bug",
-      "lastUpdate": "2026-07-29T00:17:25Z"
+      "task": "[QA验证] 验证完成: 11/11 PASS, 0/11 FAIL. 全部10个修复均已独立验证通过。#295-#305 全部PASS",
+      "lastUpdate": "2026-07-31T16:37:13Z"
     },
     "DEV": {
       "status": "idle",
-      "task": "✅ #294 修复: exam undefined params → 400",
-      "lastUpdate": "2026-07-29T02:46:44Z"
+      "task": "[#298,#301,#302,#304,#305] 全部完成并验证通过。根因:两处为部署遗漏重建(后端#301原#290修复、前端#304原#294修复)，三",
+      "lastUpdate": "2026-07-31T16:15:18Z"
     },
     "DEVOPS": {
       "status": "idle",

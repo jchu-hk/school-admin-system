@@ -1,77 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T04:25:07Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "Heartbeat 12:25 - 系统检查中",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "Heartbeat 12:25 - 系统检查中"
-    }
-  },
-  {
-    "timestamp": "2026-07-20T04:25:12Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "Heartbeat 12:25 - 全部正常 🟢",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "Heartbeat 12:25 - 全部正常 🟢"
-    }
-  },
-  {
-    "timestamp": "2026-07-20T08:15:14Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "Monitor @ 16:15: All services 200 | Docker 13Up(backend 19h) | dirty 93 files | Agents idle",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "Monitor @ 16:15: All services 200 | Docker 13Up(backend 19h) | dirty 93 files | "
-    }
-  },
-  {
-    "timestamp": "2026-07-20T10:45:15Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "心跳18:45 — 系统全绿，服务正常，无紧急事项",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "心跳18:45 — 系统全绿，服务正常，无紧急事项"
-    }
-  },
-  {
-    "timestamp": "2026-07-20T14:53:06Z",
-    "from": "PM",
-    "to": "OPS",
-    "message": "配置Grafana OPS监控面板 - 添加cAdvisor/node_exporter指标采集 + 创建系统/Docker/后端/数据库仪表盘",
-    "type": "spawn_check",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "配置Grafana OPS监控面板 - 添加cAdvisor/node_exporter指标采集 +"
-    }
-  },
-  {
-    "timestamp": "2026-07-20T14:53:30Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "开始配置Grafana OPS监控面板",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "running",
-      "task": "开始配置Grafana OPS监控面板"
-    }
-  },
-  {
     "timestamp": "2026-07-20T15:36:01Z",
     "from": "PM",
     "to": "DEV",
@@ -1128,5 +1056,77 @@
     "to": "PM",
     "message": "PM: ✅ Morning init done — 8 agents, 系统正常",
     "type": "default"
+  },
+  {
+    "timestamp": "2026-07-31T16:03:24Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[#298,#301,#302,#304,#305] 开始诊断",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[#298,#301,#302,#304,#305] 开始诊断"
+    }
+  },
+  {
+    "timestamp": "2026-07-31T16:09:54Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[#295,#296,#297,#299,#300,#303] 开始诊断",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[#295,#296,#297,#299,#300,#303] 开始诊断"
+    }
+  },
+  {
+    "timestamp": "2026-07-31T16:12:46Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[#295,#296,#297,#299,#300,#303] 完成：6个P0前端缺陷已修复并部署(v1.6.1)。#295学号回填+只读；#296无draft状态已在issue说明(改为active才可删)；#297补status字段；#299加班级列；#300补错误显示；#303改读token键。commit 250441f。详情见各issue评论",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[#295,#296,#297,#299,#300,#303] 完成：6个P0前端缺陷已修复并部署(v1.6.1)。#295学号回填+只读；#296无draft"
+    }
+  },
+  {
+    "timestamp": "2026-07-31T16:15:18Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[#298,#301,#302,#304,#305] 全部完成并验证通过。根因:两处为部署遗漏重建(后端#301原#290修复、前端#304原#294修复)，三处为前端API双斜杠路径(#302 courses/#305 settings)+#298概览默认按班级过滤NULL-class。已重建并部署后端+前端(8080)。详见各issue评论。",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[#298,#301,#302,#304,#305] 全部完成并验证通过。根因:两处为部署遗漏重建(后端#301原#290修复、前端#304原#294修复)，三"
+    }
+  },
+  {
+    "timestamp": "2026-07-31T16:32:12Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[QA验证] 开始验证 #295-#305",
+    "type": "received",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[QA验证] 开始验证 #295-#305"
+    }
+  },
+  {
+    "timestamp": "2026-07-31T16:37:13Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[QA验证] 验证完成: 11/11 PASS, 0/11 FAIL. 全部10个修复均已独立验证通过。#295-#305 全部PASS",
+    "type": "passed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[QA验证] 验证完成: 11/11 PASS, 0/11 FAIL. 全部10个修复均已独立验证通过。#295-#305 全部PASS"
+    }
   }
 ]
