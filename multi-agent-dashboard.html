@@ -91,10 +91,13 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 <div class="card">
 <h2 style="color:#4ade80;margin-bottom:15px">💬 Messages</h2>
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('today', this)">📅 T 今日 (08/01)</button>
-  <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (07/31)</button>
+  <button class="tab active" onclick="switchTab('today', this)">📅 T 今日 (08/02)</button>
+  <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/01)</button>
 </div>
 <div class="tab-content active" id="tab-today">
+<div class="message-list"><p style="text-align:center;color:#6b7280;padding:20px">暂无今日消息</p></div>
+</div>
+<div class="tab-content" id="tab-yesterday" style="display:none">
 <div class="message-list"><div class="message-item msg-assign">
     <div class="message-time">08:36</div>
     <div class="message-content">PM → QA: [#295, #296, #297] 验证P0修复</div>
@@ -118,12 +121,9 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="message-content">DEV → PM: [#298,#301,#302,#304,#305] 开始诊断</div>
 </div></div>
 </div>
-<div class="tab-content" id="tab-yesterday" style="display:none">
-<div class="message-list"><p style="text-align:center;color:#6b7280;padding:20px">暂无昨日消息</p></div>
-</div>
 </div>
 
-<div class="refresh">Updated: 2026-08-01 23:53:10 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-02 00:25:38 (GMT+8)</div>
 </div>
 </body>
 </html>
