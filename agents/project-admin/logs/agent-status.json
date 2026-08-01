@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Human-Testing P0 Batch] Backend API defects: #298 Dashboard stats empty, #301 P",
-      "lastUpdate": "2026-07-31T16:02:54Z"
+      "task": "[#295, #296, #297] 验证P0修复",
+      "lastUpdate": "2026-08-01T00:36:55Z"
     },
     "QA": {
       "status": "idle",
