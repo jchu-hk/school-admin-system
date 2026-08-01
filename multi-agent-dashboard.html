@@ -36,7 +36,7 @@ h1 { text-align: center; color: #4ade80; margin-bottom: 20px }
 .tab-content.active { display: block }
 </style>
 <script>
-function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById('tab-' + tab).classList.add('active'); }
+function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById('tab-' + tab).classList.add('active'); }
 </script>
 </head>
 <body>
@@ -91,8 +91,8 @@ function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.class
 <div class="card">
 <h2 style="color:#4ade80;margin-bottom:15px">💬 Messages</h2>
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('today')">📅 T 今日 (08/01)</button>
-  <button class="tab" onclick="switchTab('yesterday')">📅 T-1 昨日 (07/31)</button>
+  <button class="tab active" onclick="switchTab('today', this)">📅 T 今日 (08/01)</button>
+  <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (07/31)</button>
 </div>
 <div class="tab-content active" id="tab-today">
 <div class="message-list"><div class="message-item msg-assign">
@@ -123,7 +123,7 @@ function switchTab(tab) { document.querySelectorAll('.tab').forEach(t => t.class
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-01 17:10:30 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-01 18:33:01 (GMT+8)</div>
 </div>
 </body>
 </html>
