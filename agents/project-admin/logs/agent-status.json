@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #307] 请验证课程管理修复部署：1) 浏览器访问课程管理页面确认不再显示'获取课程列表失败'、列表正常加载；2) 确认 About 页面显示正",
-      "lastUpdate": "2026-08-02T07:50:38Z"
+      "task": "[Issue #307] 重新验证课程管理修复部署 + About 版本。阻塞项 #308 getToken 修复 (3b05193) 已合并并部署到 :808",
+      "lastUpdate": "2026-08-02T07:58:09Z"
     },
     "QA": {
       "status": "idle",

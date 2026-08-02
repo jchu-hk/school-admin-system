@@ -48,7 +48,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 <div class="agent-grid"><div class="agent  running">
     <div class="agent-icon">🧑💼</div>
     <div class="agent-name">PM</div>
-    <div class="agent-task">[Issue #307] 请验证课程管理修复部署：1) 浏览器访问课程</div>
+    <div class="agent-task">[Issue #307] 重新验证课程管理修复部署 + About 版</div>
     <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔧</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/01)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-failed">
+<div class="message-list"><div class="message-item msg-assign">
+    <div class="message-time">15:58</div>
+    <div class="message-content">PM → QA: [Issue #307] 重新验证课程管理修复部署 + About 版本。阻塞项 #308 getToken </div>
+</div><div class="message-item msg-failed">
     <div class="message-time">15:52</div>
     <div class="message-content">QA → PM: [Issue #307] 验证失败：8080 线上仍是旧构建(17处 auth_token 直读)，getTo</div>
 </div><div class="message-item msg-received">
@@ -138,7 +141,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-02 15:52:27 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-02 15:58:13 (GMT+8)</div>
 </div>
 </body>
 </html>

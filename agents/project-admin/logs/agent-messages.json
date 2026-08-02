@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T15:38:18Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[#220] 验证日期字段空白修复。测试: 编辑学生S20260001 → 出生日期显示2020-07-01, 入学日期显示2026-09-15 → 修改日期 → 保存 → 重新打开 → 日期正常显示",
-    "type": "spawn_check",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#220] 验证日期字段空白修复。测试: 编辑学生S20260001 → 出生日期显示2020-0"
-    }
-  },
-  {
     "timestamp": "2026-07-20T15:38:27Z",
     "from": "QA",
     "to": "PM",
@@ -1127,6 +1115,18 @@
       "agent": "QA",
       "status": "idle",
       "task": "[Issue #307] 验证失败：8080 线上仍是旧构建(17处 auth_token 直读)，getToken() 修复未部署；/school-admin"
+    }
+  },
+  {
+    "timestamp": "2026-08-02T07:58:08Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[Issue #307] 重新验证课程管理修复部署 + About 版本。阻塞项 #308 getToken 修复 (3b05193) 已合并并部署到 :8080 (version.json v1.6.1)。请对线上 :8080 做浏览器/HTTP 验证：1) 课程管理页面不再报'获取课程列表失败' 2) About 页面版本信息正确。通过则标注 issue 待关闭。",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #307] 重新验证课程管理修复部署 + About 版本。阻塞项 #308 getToken 修复 (3b05193) 已合并并部署到 :808"
     }
   }
 ]
