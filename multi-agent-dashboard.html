@@ -50,11 +50,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">PM</div>
     <div class="agent-task">[Issue #307/#308] Deploy #308 getTo</div>
     <span class="status-badge status-running">running</span>
-</div><div class="agent">
+</div><div class="agent  running">
     <div class="agent-icon">🔧</div>
     <div class="agent-name">DEVOPS</div>
-    <div class="agent-task">等待任务</div>
-    <span class="status-badge status-idle">idle</span>
+    <div class="agent-task">[Issue #307/#308] 开始部署 #308 getToke</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent  running">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/01)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-assign">
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">16:01</div>
+    <div class="message-content">DEVOPS → PM: [Issue #307/#308] 开始部署 #308 getToken 修复 bundle</div>
+</div><div class="message-item msg-assign">
     <div class="message-time">16:00</div>
     <div class="message-content">PM → DEVOPS: [Issue #307/#308] Deploy #308 getToken 修复构建到 school-adm</div>
 </div><div class="message-item msg-passed">
@@ -150,7 +153,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-02 16:00:44 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-02 16:01:10 (GMT+8)</div>
 </div>
 </body>
 </html>
