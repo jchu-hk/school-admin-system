@@ -8,7 +8,7 @@ import type {
   NotificationQueryParams
 } from '../types/notification'
 
-const API_BASE = '/api/notifications'
+const API_BASE = '/notifications'
 
 const notificationApi = {
   // 获取通知列表

@@ -24,13 +24,13 @@ const inquiryApi = {
     if (filter.page) params.append('page', filter.page.toString())
     if (filter.pageSize) params.append('pageSize', filter.pageSize.toString())
 
-    const response = await apiClient.get(`/api/inquiries?${params}`)
+    const response = await apiClient.get(`/inquiries?${params}`)
     return response.data
   },
 
   // 获取单个查询
   getInquiry: async (id: string): Promise<Inquiry> => {
-    const response = await apiClient.get(`/api/inquiries/${id}`)
+    const response = await apiClient.get(`/inquiries/${id}`)
     return response.data
   },
 
