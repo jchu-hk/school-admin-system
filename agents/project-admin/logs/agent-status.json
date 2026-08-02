@@ -6,9 +6,9 @@
       "lastUpdate": "2026-08-02T07:58:09Z"
     },
     "QA": {
-      "status": "running",
-      "task": "[Issue #307] QA 开始重新验证",
-      "lastUpdate": "2026-08-02T07:58:26Z"
+      "status": "idle",
+      "task": "[Issue #307] QA 验证完成: FAIL — #308 getToken 修复未真正部署，:8080 仍服务旧 bundle（含 auth_toke",
+      "lastUpdate": "2026-08-02T08:00:06Z"
     },
     "DEV": {
       "status": "running",

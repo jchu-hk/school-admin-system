@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T15:49:04Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#220] 验证: 通过 - 编辑学生时出生日期(2020-07-01)和入学日期(2026-09-15)正常显示。修复代码已在最新构建(BtNcr7cC)中确认为通过te()函数格式化ISO日期为YYYY-MM-DD。已配置好使用该构建的部署。修改日期后保存成功，重新打开编辑弹窗日期仍正常显示。",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[#220] 验证: 通过 - 编辑学生时出生日期(2020-07-01)和入学日期(2026-09-15)正常显示。修复代码已在最新构建(BtNcr7cC)中"
-    }
-  },
-  {
     "timestamp": "2026-07-20T15:50:02Z",
     "from": "QA",
     "to": "PM",
@@ -1127,6 +1115,18 @@
       "agent": "QA",
       "status": "running",
       "task": "[Issue #307] QA 开始重新验证"
+    }
+  },
+  {
+    "timestamp": "2026-08-02T08:00:06Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #307] QA 验证完成: FAIL — #308 getToken 修复未真正部署，:8080 仍服务旧 bundle（含 auth_token bug），版本号误导",
+    "type": "passed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Issue #307] QA 验证完成: FAIL — #308 getToken 修复未真正部署，:8080 仍服务旧 bundle（含 auth_toke"
     }
   }
 ]
