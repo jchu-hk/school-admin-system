@@ -6,9 +6,9 @@
       "lastUpdate": "2026-08-02T07:50:38Z"
     },
     "QA": {
-      "status": "idle",
-      "task": "[QA验证] 验证完成: 11/11 PASS, 0/11 FAIL. 全部10个修复均已独立验证通过。#295-#305 全部PASS",
-      "lastUpdate": "2026-07-31T16:37:13Z"
+      "status": "running",
+      "task": "[Issue #307] 开始验证工作",
+      "lastUpdate": "2026-08-02T07:50:55Z"
     },
     "DEV": {
       "status": "running",

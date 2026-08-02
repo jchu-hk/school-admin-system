@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T15:37:59Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#220] 审查完成，commit 1e5cd10 已push到远程main。toDateInputValue函数经测试全部通过。建议ExamManagementPage另开issue处理类似问题。",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#220] 审查完成，commit 1e5cd10 已push到远程main。toDateInputValue函数经测试全部通过。建议ExamManageme"
-    }
-  },
-  {
     "timestamp": "2026-07-20T15:38:12Z",
     "from": "PM",
     "to": "QA",
@@ -1127,6 +1115,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #307] 请验证课程管理修复部署：1) 浏览器访问课程管理页面确认不再显示'获取课程列表失败'、列表正常加载；2) 确认 About 页面显示正"
+    }
+  },
+  {
+    "timestamp": "2026-08-02T07:50:55Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #307] 开始验证工作",
+    "type": "received",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[Issue #307] 开始验证工作"
     }
   }
 ]
