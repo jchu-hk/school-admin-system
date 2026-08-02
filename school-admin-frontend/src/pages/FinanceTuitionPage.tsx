@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/button';
+import { getToken } from '../utils/tokenService';
 import {
   DollarSign,
   RefreshCw,
@@ -106,7 +107,7 @@ const FinanceTuitionPage: React.FC = () => {
   const grades = ['中一', '中二', '中三', '中四', '中五', '中六'];
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-  const token = localStorage.getItem('auth_token');
+  const token = getToken();
   const headers = { Authorization: `Bearer ${token}` };
 
   useEffect(() => { fetchData(); }, [activeTab, selectedAcademicYear, selectedGrade, selectedStatus]);

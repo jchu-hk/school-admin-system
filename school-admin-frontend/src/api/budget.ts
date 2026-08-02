@@ -1,4 +1,5 @@
 // 预算管理API接口定义
+import { getToken } from '../utils/tokenService'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
@@ -178,7 +179,7 @@ export const EXPENSE_STATUS_LABELS: Record<string, string> = {
 // ==================== API Functions ====================
 
 const getAuthHeaders = () => ({
-  Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+  Authorization: `Bearer ${getToken()}`,
   'Content-Type': 'application/json',
 });
 

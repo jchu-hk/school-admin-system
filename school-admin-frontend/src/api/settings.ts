@@ -1,4 +1,5 @@
 // 系统设置API接口定义
+import { getToken } from '../utils/tokenService'
 export interface SystemConfig {
   id: string;
   key: string;
@@ -68,7 +69,7 @@ export const settingsApi = {
       `${URL_BASE}settings/configs?${new URLSearchParams(params as any).toString()}`,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${getToken()}`,
           'Content-Type': 'application/json',
         },
       }
@@ -86,7 +87,7 @@ export const settingsApi = {
     const response = await fetch(`${URL_BASE}settings/configs/${id}`, {
       method: 'PATCH',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken()}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
@@ -105,7 +106,7 @@ export const settingsApi = {
       `${URL_BASE}settings/logs?${new URLSearchParams(params as any).toString()}`,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${getToken()}`,
           'Content-Type': 'application/json',
         },
       }
@@ -124,7 +125,7 @@ export const settingsApi = {
       `${URL_BASE}settings/users?${new URLSearchParams(params as any).toString()}`,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${getToken()}`,
           'Content-Type': 'application/json',
         },
       }
@@ -142,7 +143,7 @@ export const settingsApi = {
     const response = await fetch(`${URL_BASE}settings/users/${id}/status`, {
       method: 'PATCH',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken()}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ status }),
@@ -158,7 +159,7 @@ export const settingsApi = {
     const response = await fetch(`${URL_BASE}settings/users/${id}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken()}`,
       },
     });
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/button';
+import { getToken } from '../utils/tokenService';
 import {
   Receipt,
   Search,
@@ -75,7 +76,7 @@ const FinanceFeePage: React.FC = () => {
 
     try {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-      const token = localStorage.getItem('auth_token');
+      const token = getToken();
 
       if (activeTab === 'records') {
         const params = new URLSearchParams();
@@ -113,7 +114,7 @@ const FinanceFeePage: React.FC = () => {
 
     try {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-      const token = localStorage.getItem('auth_token');
+      const token = getToken();
 
       const formData = new FormData();
       formData.append('receipt', file);

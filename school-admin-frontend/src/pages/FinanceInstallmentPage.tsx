@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/button';
+import { getToken } from '../utils/tokenService';
 import {
   CreditCard,
   Clock,
@@ -128,7 +129,7 @@ const FinanceInstallmentPage: React.FC = () => {
   const [reviewNotes, setReviewNotes] = useState('');
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-  const token = localStorage.getItem('auth_token');
+  const token = getToken();
   const headers = { Authorization: `Bearer ${token}` };
 
   // ============ Data Fetching ============

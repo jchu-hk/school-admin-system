@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/button';
+import { getToken } from '../utils/tokenService';
 import { useI18n } from '../i18n';
 import {
   Award,
@@ -80,7 +81,7 @@ const FinanceScholarshipPage: React.FC = () => {
 
     try {
       const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/';
-      const token = localStorage.getItem('auth_token');
+      const token = getToken();
 
       if (activeTab === 'scholarships') {
         const params = new URLSearchParams();

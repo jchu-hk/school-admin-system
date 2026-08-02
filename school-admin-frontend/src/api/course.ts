@@ -1,4 +1,5 @@
 // 课程管理API接口定义
+import { getToken } from '../utils/tokenService'
 export interface Course {
   id: string;
   code: string;
@@ -61,7 +62,7 @@ export const courseApi = {
       `${URL_BASE}courses?${new URLSearchParams(params as any).toString()}`,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${getToken()}`,
           'Content-Type': 'application/json',
         },
       }
@@ -78,7 +79,7 @@ export const courseApi = {
   getDetail: async (id: string): Promise<Course> => {
     const response = await fetch(`${URL_BASE}courses/${id}`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken()}`,
       },
     });
 
@@ -94,7 +95,7 @@ export const courseApi = {
     const response = await fetch(`${URL_BASE}courses`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken()}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
@@ -112,7 +113,7 @@ export const courseApi = {
     const response = await fetch(`${URL_BASE}courses/${id}`, {
       method: 'PATCH',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken()}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
@@ -130,7 +131,7 @@ export const courseApi = {
     const response = await fetch(`${URL_BASE}courses/${id}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        Authorization: `Bearer ${getToken()}`,
       },
     });
 
