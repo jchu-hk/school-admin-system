@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T15:50:02Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#220] QA验证: ✅ 通过。出生日期显示2020-07-01, 入学日期显示2026-09-15, 修改保存后重新打开仍然正常。QA也修正了nginx路径问题(assets/→dist/assets/)。",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[#220] QA验证: ✅ 通过。出生日期显示2020-07-01, 入学日期显示2026-09-15, 修改保存后重新打开仍然正常。QA也修正了nginx路"
-    }
-  },
-  {
     "timestamp": "2026-07-20T17:10:03Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1127,6 +1115,18 @@
       "agent": "QA",
       "status": "idle",
       "task": "[Issue #307] QA 验证完成: FAIL — #308 getToken 修复未真正部署，:8080 仍服务旧 bundle（含 auth_toke"
+    }
+  },
+  {
+    "timestamp": "2026-08-02T08:00:38Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[Issue #307/#308] Deploy #308 getToken 修复构建到 school-admin-frontend (:8080): dist 中已存在修复 bundle (index-B7Al6Piz-20260707.js, 0 auth_token), 但容器只含旧 bundle (index-Clv-l0p1-20260707.js, 带 auth_token bug). 需 docker cp 新 bundle + 更新容器 index.html + 将 version.json gitCommit 更新为 3b05193, 完成后 QA 重新验证。",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #307/#308] Deploy #308 getToken 修复构建到 school-admin-frontend (:8080): dist"
     }
   }
 ]
