@@ -55,11 +55,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">DEVOPS</div>
     <div class="agent-task">等待任务</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent">
+</div><div class="agent  running">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
-    <div class="agent-task">[#298,#301,#302,#304,#305] 全部完成并验证通</div>
-    <span class="status-badge status-idle">idle</span>
+    <div class="agent-task">[Issue #308] 开始工作</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/01)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-assign">
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">15:40</div>
+    <div class="message-content">DEV → PM: [Issue #308] 开始工作</div>
+</div><div class="message-item msg-assign">
     <div class="message-time">15:40</div>
     <div class="message-content">PM → DEV: [Issue #308] P0 课程管理 401 — token localStorage key 不一致 (</div>
 </div></div>
@@ -126,7 +129,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-02 15:40:43 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-02 15:40:56 (GMT+8)</div>
 </div>
 </body>
 </html>

@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T15:36:22Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#220] 开始审查代码变更",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[#220] 开始审查代码变更"
-    }
-  },
-  {
     "timestamp": "2026-07-20T15:37:36Z",
     "from": "DEV",
     "to": "PM",
@@ -1127,6 +1115,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #308] P0 课程管理 401 — token localStorage key 不一致 (token vs auth_token)。根因已由"
+    }
+  },
+  {
+    "timestamp": "2026-08-02T07:40:56Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #308] 开始工作",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[Issue #308] 开始工作"
     }
   }
 ]
