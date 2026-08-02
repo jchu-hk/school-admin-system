@@ -55,11 +55,22 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 // API_BASE_URL already ends with '/' (e.g. '/api/'), so paths must NOT have a leading '/'
 const URL_BASE = API_BASE_URL.endsWith('/') ? API_BASE_URL : `${API_BASE_URL}/`;
 
+// Helper: remove undefined values from params before building query string
+function buildQuery(params: Record<string, any>): string {
+  const clean: Record<string, string> = {};
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== undefined && v !== null && v !== '') {
+      clean[k] = String(v);
+    }
+  }
+  return new URLSearchParams(clean).toString();
+}
+
 export const courseApi = {
   // 获取课程列表
   getList: async (params: CourseQueryParams = {}): Promise<CourseListResponse> => {
     const response = await fetch(
-      `${URL_BASE}courses?${new URLSearchParams(params as any).toString()}`,
+      `${URL_BASE}courses?${buildQuery(params as any)}`,
       {
         headers: {
           Authorization: `Bearer ${getToken()}`,

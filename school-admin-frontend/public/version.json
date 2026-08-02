@@ -1,16 +1,14 @@
 {
   "version": "v1.6.1",
-  "buildDate": "2026-07-31",
-  "gitCommit": "1832243",
+  "buildDate": "2026-08-02",
+  "gitCommit": "2c7680c",
   "gitBranch": "main",
   "changelog": [
     {
-      "version": "build-2026-07-31",
-      "date": "2026-07-31",
+      "version": "build-2026-08-02",
+      "date": "2026-08-02",
       "changes": [
-        "v1.6.1 — 13 defect fixes, version sync",
-        "fix(#291): resolve 't is not defined' build error — i18n module-level t usage",
-        "add missing userService.ts — was imported by Layout.tsx and Login.tsx but never created"
+        "课程管理 API 路径错误 — VITE_API_BASE_URL 缺少 /school-admin 前缀导致请求路由到 Gateway(404) 而非 Backend(200)"
       ]
     }
   ]

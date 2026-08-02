@@ -3,7 +3,7 @@
  * 统一处理 token 的存储、读取、验证，防止 "undefined"/"null" 字符串问题
  */
 
-const TOKEN_KEY = 'token'
+const TOKEN_KEY = 'auth_token'
 
 /**
  * 验证 token 是否有效（非空、非 "undefined"、非 "null"）
