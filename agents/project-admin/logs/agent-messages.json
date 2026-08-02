@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T15:36:09Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#220] Issue 编辑学生后保存后日期字段空白 - 真正根因: API返回ISO datetime字符串(如2020-06-30T16:00:00.000Z)与HTML5 input[type",
-    "type": "spawn_check",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#220] Issue 编辑学生后保存后日期字段空白 - 真正根因: API返回ISO datet"
-    }
-  },
-  {
     "timestamp": "2026-07-20T15:36:22Z",
     "from": "DEV",
     "to": "PM",
@@ -1127,6 +1115,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[#295, #296, #297] 验证P0修复"
+    }
+  },
+  {
+    "timestamp": "2026-08-02T07:40:41Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #308] P0 课程管理 401 — token localStorage key 不一致 (token vs auth_token)。根因已由 QA 诊断：tokenService.setToken() 写 'token'，但 course/settings/budget/dse/Finance*.tsx 用 fetch() 读 'auth_token' 导致 Bearer null → 401。要求统一所有 fetch() 调用读取 'token' key。请按通信模板在任务开始时回执，完成后 report。",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #308] P0 课程管理 401 — token localStorage key 不一致 (token vs auth_token)。根因已由"
     }
   }
 ]
