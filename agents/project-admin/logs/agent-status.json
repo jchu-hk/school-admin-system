@@ -6,9 +6,9 @@
       "lastUpdate": "2026-08-02T07:58:09Z"
     },
     "QA": {
-      "status": "idle",
-      "task": "[Issue #307] 验证失败：8080 线上仍是旧构建(17处 auth_token 直读)，getToken() 修复未部署；/school-admin",
-      "lastUpdate": "2026-08-02T07:52:24Z"
+      "status": "running",
+      "task": "[Issue #307] QA 开始重新验证",
+      "lastUpdate": "2026-08-02T07:58:26Z"
     },
     "DEV": {
       "status": "running",
