@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #308] P0 课程管理 401 — token localStorage key 不一致 (token vs auth_token)。根因已由",
-      "lastUpdate": "2026-08-02T07:40:41Z"
+      "task": "[Issue #307] 请验证课程管理修复部署：1) 浏览器访问课程管理页面确认不再显示'获取课程列表失败'、列表正常加载；2) 确认 About 页面显示正",
+      "lastUpdate": "2026-08-02T07:50:38Z"
     },
     "QA": {
       "status": "idle",

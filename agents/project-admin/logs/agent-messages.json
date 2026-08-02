@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T15:37:36Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#220] 审查完成: 通过 ✅ commit已push到远程",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#220] 审查完成: 通过 ✅ commit已push到远程"
-    }
-  },
-  {
     "timestamp": "2026-07-20T15:37:59Z",
     "from": "DEV",
     "to": "PM",
@@ -1127,6 +1115,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[Issue #308] 开始工作"
+    }
+  },
+  {
+    "timestamp": "2026-08-02T07:50:38Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[Issue #307] 请验证课程管理修复部署：1) 浏览器访问课程管理页面确认不再显示'获取课程列表失败'、列表正常加载；2) 确认 About 页面显示正确版本信息 (应反映最新 commit 3b05193 / v1.6.1)；3) 确认 :8080 部署正常。DEV 已完成 #308 修复 (3b05193) 并部署到 school-admin-frontend 容器。",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #307] 请验证课程管理修复部署：1) 浏览器访问课程管理页面确认不再显示'获取课程列表失败'、列表正常加载；2) 确认 About 页面显示正"
     }
   }
 ]
