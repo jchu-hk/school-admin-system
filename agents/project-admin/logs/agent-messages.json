@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T15:38:12Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[#220] 日期字段空白问题已修复(commit 1e5cd10)，已部署到testing环境(student S20260001)。请验证: 编辑学生→填写出生日期+入学日期→保存→重新打开编辑→日期字段应该正常显示。测试用户 staff1/Admin123!",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#220] 日期字段空白问题已修复(commit 1e5cd10)，已部署到testing环境(student S20260001)。请验证: 编辑学生→填写"
-    }
-  },
-  {
     "timestamp": "2026-07-20T15:38:18Z",
     "from": "PM",
     "to": "QA",
@@ -1127,6 +1115,18 @@
       "agent": "QA",
       "status": "running",
       "task": "[Issue #307] 开始验证工作"
+    }
+  },
+  {
+    "timestamp": "2026-08-02T07:52:24Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #307] 验证失败：8080 线上仍是旧构建(17处 auth_token 直读)，getToken() 修复未部署；/school-admin 路径修复已在；version.json 已更新但 gitCommit 滞后。已发 GH 评论，Issue 保持 OPEN。",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Issue #307] 验证失败：8080 线上仍是旧构建(17处 auth_token 直读)，getToken() 修复未部署；/school-admin"
     }
   }
 ]
