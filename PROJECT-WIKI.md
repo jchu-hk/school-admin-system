@@ -1,6 +1,6 @@
 # Project Wiki — School Admin System
 
-> **Last updated**: 2026-08-02 09:14 GMT+8
+> **Last updated**: 2026-08-02 09:38 GMT+8
 > **Latest commit**: `a332c4ed` — main branch
 
 ---
