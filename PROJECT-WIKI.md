@@ -78,30 +78,54 @@ System has **two independent SPAs** sharing one backend API:
 
 ---
 
-## 4. 📁 Documentation Inventory
+## 4. 📁 系统相关文档
 
-### Core Specs
-
-| Document | Purpose |
-|----------|---------|
-| `SPEC-COMPLETE.md` | Full feature specification (7 modules, 45 functions) |
-| `SPEC-SYSTEM-DESIGN.md` | System architecture & design decisions |
-| `API-DESIGN.md` | REST API reference |
-| `DB-SCHEMA.md` | Database schema |
-| `DATA-DICTIONARY.md` | Field definitions |
-
-### Workflow & Rules
+### 功能规格文档
 
 | Document | Purpose |
 |----------|---------|
-| `AGENTS.md` | Agent operating rules & navigation |
-| `SOUL.md` | Core identity & safety rails |
-| `CRITICAL_RULES.md` | Hard red lines (spawn rules, forbidden actions) |
-| `MEMORY.md` | Long-term memory & lessons learned |
-| `HEARTBEAT.md` | System heartbeat log |
-| `COZE_PROXY_CONFIG.md` | Coze proxy routing configuration |
-| `docs/PM-WORKFLOW.md` | PM workflow reference |
-| `docs/SVA-GATE.md` | Self-Verifying Agent role-action matrix |
+| `SPEC-COMPLETE.md` | 完整功能规格 (7 modules, 45 functions) |
+| `SPEC-SYSTEM-DESIGN.md` | 系统架构与设计决策 |
+| `API-DESIGN.md` | REST API 接口参考 |
+| `DB-SCHEMA.md` | 数据库结构 |
+| `DATA-DICTIONARY.md` | 字段定义字典 |
+
+### 开发运维规范
+
+| Document | Purpose |
+|----------|---------|
+| `AGENTS.md` | Agent 操作规则与索引导航 |
+| `SOUL.md` | 核心身份与安全红线 |
+| `CRITICAL_RULES.md` | 硬红线 (spawn规则、禁止行为) |
+| `MEMORY.md` | 长期记忆与经验教训 |
+| `HEARTBEAT.md` | 系统心跳日志 |
+| `COZE_PROXY_CONFIG.md` | Coze 代理路由配置 |
+| `docs/PM-WORKFLOW.md` | PM 工作流程参考 |
+| `docs/SVA-GATE.md` | SVA 角色-动作矩阵 |
+
+### QA 测试报告
+
+| Document | Purpose |
+|----------|---------|
+| `e2e-tests/TEST-REPORT.md` | Student Management E2E 测试报告 |
+| `qa_report/student-management-regression-report-20260706.md` | 回归测试报告 (35 cases) |
+| `qa_report/student-management-regression-fix-report-20260706.md` | 回归修复报告 |
+| `qa_report/student-management-full-report-20260706.md` | 完整 QA 报告 |
+| `qa_report/student-page-performance-root-cause.md` | 性能根因分析 |
+| `test-reports/exam-api-test.md` | 考试 API 测试 |
+| `test-reports/exam-fix-291.md` | Issue #291 修复报告 |
+
+### OPS 运维脚本
+
+| Category | Scripts |
+|----------|---------|
+| **部署发布** | `release.sh`, `daily-integrate.sh`, `daily-release.sh` |
+| **数据库** | `backup-database.sh`, `db-health-check.sh`, `schema-init.sql` |
+| **监控巡检** | `patrol.py`, `pm_monitor.py`, `agent-monitor.sh`, `subagent-watchdog.sh` |
+| **PM 工具** | `pm-daily-check.sh`, `pm-weekly-report.sh`, `pm-cleanup-branches.sh` |
+| **Tunnel** | `start-cloudflare-tunnel.sh`, `keep-tunnel-alive.sh`, `tunnel.sh` |
+| **种子数据** | `seed-users.sql`, `seed-full-test-data.sql`, `seed-dashboard-data*.sql` |
+| **Dashboard** | `auto-update-dashboard.sh`, `dashboard-refresh.sh` |
 
 ---
 
@@ -160,18 +184,18 @@ Browser → Coze Proxy → Gateway (:5001)
 
 ---
 
-## 7. 🤖 Multi-Agent System
+## 7. 🤖 系统开发团队
 
-| Agent | Role |
-|-------|------|
-| **PM** | Task assignment, review, human reporting |
-| **DEV** | Implementation |
-| **QA** | Testing, test reports |
-| **CHECKER** | Code review, spec compliance |
-| **OPS** | Deployment, monitoring |
-| **Project Admin** | Heartbeat monitoring, dashboard updates |
+| 角色 | Agent | 职责 | 触发方式 |
+|------|-------|------|----------|
+| **项目经理** | PM | 任务分配、Issue 审核、人工汇报、协调调度 | 用户指令 / Cron 巡检 |
+| **开发工程师** | DEV | 代码实现、Bug 修复、功能开发 | PM spawn |
+| **测试工程师** | QA | 测试执行、回归验证、测试报告 | PM spawn |
+| **代码审查** | CHECKER | Code review、规格合规检查 | PM spawn |
+| **运维工程师** | DEVOPS | 部署发布、CI/CD、环境管理 | PM spawn |
+| **项目管理员** | Project Admin | 心跳监控、Dashboard 更新、状态同步 | Cron 定时 |
 
-> **Dashboard**: [coze.site/agents](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/agents) (public) · Backup: `multi-agent-dashboard.html`
+> 📊 **Agent Dashboard**: [coze.site/agents](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/agents) — 公开，展示各 Agent 实时状态与最近活动
 
 ---
 
