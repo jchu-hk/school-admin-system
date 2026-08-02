@@ -80,52 +80,55 @@ System has **two independent SPAs** sharing one backend API:
 
 ## 4. 📁 系统相关文档
 
+> 🔗 所有链接指向 GitHub `main` 分支，点击即可在线阅读。
+> Repo: [github.com/jchu-hk/school-admin-system](https://github.com/jchu-hk/school-admin-system)
+
 ### 功能规格文档
 
 | Document | Purpose |
 |----------|---------|
-| `SPEC-COMPLETE.md` | 完整功能规格 (7 modules, 45 functions) |
-| `SPEC-SYSTEM-DESIGN.md` | 系统架构与设计决策 |
-| `API-DESIGN.md` | REST API 接口参考 |
-| `DB-SCHEMA.md` | 数据库结构 |
-| `DATA-DICTIONARY.md` | 字段定义字典 |
+| [SPEC-COMPLETE.md](https://github.com/jchu-hk/school-admin-system/blob/main/SPEC-COMPLETE.md) | 完整功能规格 (7 modules, 45 functions) |
+| [SPEC-SYSTEM-DESIGN.md](https://github.com/jchu-hk/school-admin-system/blob/main/SPEC-SYSTEM-DESIGN.md) | 系统架构与设计决策 |
+| [API-DESIGN.md](https://github.com/jchu-hk/school-admin-system/blob/main/API-DESIGN.md) | REST API 接口参考 |
+| [DB-SCHEMA.md](https://github.com/jchu-hk/school-admin-system/blob/main/DB-SCHEMA.md) | 数据库结构 |
+| [DATA-DICTIONARY.md](https://github.com/jchu-hk/school-admin-system/blob/main/DATA-DICTIONARY.md) | 字段定义字典 |
 
 ### 开发运维规范
 
 | Document | Purpose |
 |----------|---------|
-| `AGENTS.md` | Agent 操作规则与索引导航 |
-| `SOUL.md` | 核心身份与安全红线 |
-| `CRITICAL_RULES.md` | 硬红线 (spawn规则、禁止行为) |
-| `MEMORY.md` | 长期记忆与经验教训 |
-| `HEARTBEAT.md` | 系统心跳日志 |
-| `COZE_PROXY_CONFIG.md` | Coze 代理路由配置 |
-| `docs/PM-WORKFLOW.md` | PM 工作流程参考 |
-| `docs/SVA-GATE.md` | SVA 角色-动作矩阵 |
+| [AGENTS.md](https://github.com/jchu-hk/school-admin-system/blob/main/AGENTS.md) | Agent 操作规则与索引导航 |
+| [SOUL.md](https://github.com/jchu-hk/school-admin-system/blob/main/SOUL.md) | 核心身份与安全红线 |
+| [CRITICAL_RULES.md](https://github.com/jchu-hk/school-admin-system/blob/main/CRITICAL_RULES.md) | 硬红线 (spawn规则、禁止行为) |
+| [MEMORY.md](https://github.com/jchu-hk/school-admin-system/blob/main/MEMORY.md) | 长期记忆与经验教训 |
+| [HEARTBEAT.md](https://github.com/jchu-hk/school-admin-system/blob/main/HEARTBEAT.md) | 系统心跳日志 |
+| [COZE_PROXY_CONFIG.md](https://github.com/jchu-hk/school-admin-system/blob/main/COZE_PROXY_CONFIG.md) | Coze 代理路由配置 |
+| [docs/PM-WORKFLOW.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/PM-WORKFLOW.md) | PM 工作流程参考 |
+| [docs/SVA-GATE.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/SVA-GATE.md) | SVA 角色-动作矩阵 |
 
 ### QA 测试报告
 
 | Document | Purpose |
 |----------|---------|
-| `e2e-tests/TEST-REPORT.md` | Student Management E2E 测试报告 |
-| `qa_report/student-management-regression-report-20260706.md` | 回归测试报告 (35 cases) |
-| `qa_report/student-management-regression-fix-report-20260706.md` | 回归修复报告 |
-| `qa_report/student-management-full-report-20260706.md` | 完整 QA 报告 |
-| `qa_report/student-page-performance-root-cause.md` | 性能根因分析 |
-| `test-reports/exam-api-test.md` | 考试 API 测试 |
-| `test-reports/exam-fix-291.md` | Issue #291 修复报告 |
+| [e2e-tests/TEST-REPORT.md](https://github.com/jchu-hk/school-admin-system/blob/main/e2e-tests/TEST-REPORT.md) | Student Management E2E 测试报告 |
+| [qa_report/…regression-report-20260706.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-regression-report-20260706.md) | 回归测试报告 (35 cases) |
+| [qa_report/…regression-fix-report-20260706.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-regression-fix-report-20260706.md) | 回归修复报告 |
+| [qa_report/…full-report-20260706.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-full-report-20260706.md) | 完整 QA 报告 |
+| [qa_report/…performance-root-cause.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-page-performance-root-cause.md) | 性能根因分析 |
+| [test-reports/exam-api-test.md](https://github.com/jchu-hk/school-admin-system/blob/main/test-reports/exam-api-test.md) | 考试 API 测试 |
+| [test-reports/exam-fix-291.md](https://github.com/jchu-hk/school-admin-system/blob/main/test-reports/exam-fix-291.md) | Issue #291 修复报告 |
 
 ### OPS 运维脚本
 
 | Category | Scripts |
 |----------|---------|
-| **部署发布** | `release.sh`, `daily-integrate.sh`, `daily-release.sh` |
-| **数据库** | `backup-database.sh`, `db-health-check.sh`, `schema-init.sql` |
-| **监控巡检** | `patrol.py`, `pm_monitor.py`, `agent-monitor.sh`, `subagent-watchdog.sh` |
-| **PM 工具** | `pm-daily-check.sh`, `pm-weekly-report.sh`, `pm-cleanup-branches.sh` |
-| **Tunnel** | `start-cloudflare-tunnel.sh`, `keep-tunnel-alive.sh`, `tunnel.sh` |
-| **种子数据** | `seed-users.sql`, `seed-full-test-data.sql`, `seed-dashboard-data*.sql` |
-| **Dashboard** | `auto-update-dashboard.sh`, `dashboard-refresh.sh` |
+| **部署发布** | [release.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/release.sh) · [daily-integrate.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/daily-integrate.sh) · [daily-release.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/daily-release.sh) |
+| **数据库** | [backup-database.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/backup-database.sh) · [db-health-check.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/db-health-check.sh) · [schema-init.sql](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/schema-init.sql) |
+| **监控巡检** | [patrol.py](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/patrol.py) · [pm_monitor.py](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/pm_monitor.py) · [agent-monitor.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/agent-monitor.sh) · [subagent-watchdog.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/subagent-watchdog.sh) |
+| **PM 工具** | [pm-daily-check.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/pm-daily-check.sh) · [pm-weekly-report.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/pm-weekly-report.sh) · [pm-cleanup-branches.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/pm-cleanup-branches.sh) |
+| **Tunnel** | [start-cloudflare-tunnel.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/start-cloudflare-tunnel.sh) · [keep-tunnel-alive.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/keep-tunnel-alive.sh) · [tunnel.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/tunnel.sh) |
+| **种子数据** | [seed-users.sql](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/seed-users.sql) · [seed-full-test-data.sql](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/seed-full-test-data.sql) |
+| **Dashboard** | [auto-update-dashboard.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/auto-update-dashboard.sh) · [dashboard-refresh.sh](https://github.com/jchu-hk/school-admin-system/blob/main/scripts/dashboard-refresh.sh) |
 
 ---
 
@@ -175,11 +178,11 @@ Browser → Coze Proxy → Gateway (:5001)
 
 | Module | Date | Status | Report |
 |--------|------|--------|--------|
-| Student Management E2E | 2026-06-27 | ✅ Pass | [TEST-REPORT.md](e2e-tests/TEST-REPORT.md) |
-| Student Management Regression (35 cases) | 2026-07-06 | ❌ 28.57% | [Report](qa_report/student-management-regression-report-20260706.md) |
-| Student Management Regression Fix | 2026-07-06 | ✅ Fixed | [Report](qa_report/student-management-regression-fix-report-20260706.md) |
-| Student Management Full QA | 2026-07-06 | ⚠️ Blocked | [Report](qa_report/student-management-full-report-20260706.md) |
-| Student Management Root Cause | 2026-07-06 | 📋 Analysis | [Report](qa_report/student-page-performance-root-cause.md) |
+| Student Management E2E | 2026-06-27 | ✅ Pass | [TEST-REPORT.md](https://github.com/jchu-hk/school-admin-system/blob/main/e2e-tests/TEST-REPORT.md) |
+| Student Management Regression (35 cases) | 2026-07-06 | ❌ 28.57% | [Report](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-regression-report-20260706.md) |
+| Student Management Regression Fix | 2026-07-06 | ✅ Fixed | [Report](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-regression-fix-report-20260706.md) |
+| Student Management Full QA | 2026-07-06 | ⚠️ Blocked | [Report](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-full-report-20260706.md) |
+| Student Management Root Cause | 2026-07-06 | 📋 Analysis | [Report](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-page-performance-root-cause.md) |
 | Student Management (human QA) | 2026-07-05 | ✅ Pass | Manual test |
 
 ---
