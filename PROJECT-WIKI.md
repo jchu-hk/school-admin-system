@@ -85,38 +85,38 @@ System has **two independent SPAs** sharing one backend API:
 
 ### 功能规格文档
 
-| Document | Purpose |
-|----------|---------|
-| [SPEC-COMPLETE.md](https://github.com/jchu-hk/school-admin-system/blob/main/SPEC-COMPLETE.md) | 完整功能规格 (7 modules, 45 functions) |
-| [SPEC-SYSTEM-DESIGN.md](https://github.com/jchu-hk/school-admin-system/blob/main/SPEC-SYSTEM-DESIGN.md) | 系统架构与设计决策 |
-| [API-DESIGN.md](https://github.com/jchu-hk/school-admin-system/blob/main/API-DESIGN.md) | REST API 接口参考 |
-| [DB-SCHEMA.md](https://github.com/jchu-hk/school-admin-system/blob/main/DB-SCHEMA.md) | 数据库结构 |
-| [DATA-DICTIONARY.md](https://github.com/jchu-hk/school-admin-system/blob/main/DATA-DICTIONARY.md) | 字段定义字典 |
+| Document | Version | Last Updated | Purpose |
+|----------|---------|-------------|---------|
+| [SPEC-COMPLETE.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/school-admin-system/SPEC-COMPLETE.md) | v1.6.1 | 2026-07-28 | 完整功能规格 (7 modules, 45 functions) |
+| [SPEC-SYSTEM-DESIGN.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/school-admin-system/SPEC-SYSTEM-DESIGN.md) | v1.6.1 | 2026-07-28 | 系统架构与设计决策 |
+| [API-DESIGN.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/school-admin-system/API-DESIGN.md) | v1.5.5 | 2026-07-15 | REST API 接口参考 |
+| [DB-SCHEMA.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/school-admin-system/DB-SCHEMA.md) | v1.5.5 | 2026-07-15 | 数据库结构 |
+| [DATA-DICTIONARY.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/school-admin-system/DATA-DICTIONARY.md) | v1.5.4 | 2026-07-02 | 字段定义字典 |
 
 ### 开发运维规范
 
-| Document | Purpose |
-|----------|---------|
-| [AGENTS.md](https://github.com/jchu-hk/school-admin-system/blob/main/AGENTS.md) | Agent 操作规则与索引导航 |
-| [SOUL.md](https://github.com/jchu-hk/school-admin-system/blob/main/SOUL.md) | 核心身份与安全红线 |
-| [CRITICAL_RULES.md](https://github.com/jchu-hk/school-admin-system/blob/main/CRITICAL_RULES.md) | 硬红线 (spawn规则、禁止行为) |
-| [MEMORY.md](https://github.com/jchu-hk/school-admin-system/blob/main/MEMORY.md) | 长期记忆与经验教训 |
-| [HEARTBEAT.md](https://github.com/jchu-hk/school-admin-system/blob/main/HEARTBEAT.md) | 系统心跳日志 |
-| [COZE_PROXY_CONFIG.md](https://github.com/jchu-hk/school-admin-system/blob/main/COZE_PROXY_CONFIG.md) | Coze 代理路由配置 |
-| [docs/PM-WORKFLOW.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/PM-WORKFLOW.md) | PM 工作流程参考 |
-| [docs/SVA-GATE.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/SVA-GATE.md) | SVA 角色-动作矩阵 |
+| Document | Version | Last Updated | Purpose |
+|----------|---------|-------------|---------|
+| [AGENTS.md](https://github.com/jchu-hk/school-admin-system/blob/main/AGENTS.md) | — | 2026-07-31 | Agent 操作规则与索引导航 |
+| [SOUL.md](https://github.com/jchu-hk/school-admin-system/blob/main/SOUL.md) | — | 2026-07-28 | 核心身份与安全红线 |
+| [CRITICAL_RULES.md](https://github.com/jchu-hk/school-admin-system/blob/main/CRITICAL_RULES.md) | — | 2026-07-28 | 硬红线 (spawn规则、禁止行为) |
+| [MEMORY.md](https://github.com/jchu-hk/school-admin-system/blob/main/MEMORY.md) | — | 2026-07-30 | 长期记忆与经验教训 |
+| [HEARTBEAT.md](https://github.com/jchu-hk/school-admin-system/blob/main/HEARTBEAT.md) | — | 2026-08-01 | 系统心跳日志 |
+| [COZE_PROXY_CONFIG.md](https://github.com/jchu-hk/school-admin-system/blob/main/COZE_PROXY_CONFIG.md) | — | 2026-07-28 | Coze 代理路由配置 |
+| [docs/PM-WORKFLOW.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/PM-WORKFLOW.md) | — | 2026-07-10 | PM 工作流程参考 |
+| [docs/SVA-GATE.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/SVA-GATE.md) | v1.0.0 | 2026-07-28 | SVA 角色-动作矩阵 |
 
 ### QA 测试报告
 
-| Document | Purpose |
-|----------|---------|
-| [e2e-tests/TEST-REPORT.md](https://github.com/jchu-hk/school-admin-system/blob/main/e2e-tests/TEST-REPORT.md) | Student Management E2E 测试报告 |
-| [qa_report/…regression-report-20260706.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-regression-report-20260706.md) | 回归测试报告 (35 cases) |
-| [qa_report/…regression-fix-report-20260706.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-regression-fix-report-20260706.md) | 回归修复报告 |
-| [qa_report/…full-report-20260706.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-full-report-20260706.md) | 完整 QA 报告 |
-| [qa_report/…performance-root-cause.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-page-performance-root-cause.md) | 性能根因分析 |
-| [test-reports/exam-api-test.md](https://github.com/jchu-hk/school-admin-system/blob/main/test-reports/exam-api-test.md) | 考试 API 测试 |
-| [test-reports/exam-fix-291.md](https://github.com/jchu-hk/school-admin-system/blob/main/test-reports/exam-fix-291.md) | Issue #291 修复报告 |
+| Document | Last Updated | Purpose |
+|----------|-------------|---------|
+| [e2e-tests/TEST-REPORT.md](https://github.com/jchu-hk/school-admin-system/blob/main/e2e-tests/TEST-REPORT.md) | 2026-06-28 | Student Management E2E 测试报告 |
+| [qa_report/…regression-report-20260706.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-regression-report-20260706.md) | 2026-07-07 | 回归测试报告 (35 cases) |
+| [qa_report/…regression-fix-report-20260706.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-regression-fix-report-20260706.md) | 2026-07-07 | 回归修复报告 |
+| [qa_report/…full-report-20260706.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-management-full-report-20260706.md) | 2026-07-06 | 完整 QA 报告 |
+| [qa_report/…performance-root-cause.md](https://github.com/jchu-hk/school-admin-system/blob/main/qa_report/student-page-performance-root-cause.md) | 2026-07-07 | 性能根因分析 |
+| [test-reports/exam-api-test.md](https://github.com/jchu-hk/school-admin-system/blob/main/test-reports/exam-api-test.md) | 2026-07-29 | 考试 API 测试 |
+| [test-reports/exam-fix-291.md](https://github.com/jchu-hk/school-admin-system/blob/main/test-reports/exam-fix-291.md) | 2026-07-29 | Issue #291 修复报告 |
 
 ### OPS 运维脚本
 
