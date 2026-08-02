@@ -91,10 +91,13 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 <div class="card">
 <h2 style="color:#4ade80;margin-bottom:15px">💬 Messages</h2>
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('today', this)">📅 T 今日 (08/02)</button>
-  <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/01)</button>
+  <button class="tab active" onclick="switchTab('today', this)">📅 T 今日 (08/03)</button>
+  <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/02)</button>
 </div>
 <div class="tab-content active" id="tab-today">
+<div class="message-list"><p style="text-align:center;color:#6b7280;padding:20px">暂无今日消息</p></div>
+</div>
+<div class="tab-content" id="tab-yesterday" style="display:none">
 <div class="message-list"><div class="message-item msg-passed">
     <div class="message-time">16:01</div>
     <div class="message-content">DEVOPS → PM: [Issue #307/#308] 部署完成: #308 getToken 修复 bundle (index-</div>
@@ -130,33 +133,9 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="message-content">PM → DEV: [Issue #308] P0 课程管理 401 — token localStorage key 不一致 (</div>
 </div></div>
 </div>
-<div class="tab-content" id="tab-yesterday" style="display:none">
-<div class="message-list"><div class="message-item msg-assign">
-    <div class="message-time">08:36</div>
-    <div class="message-content">PM → QA: [#295, #296, #297] 验证P0修复</div>
-</div><div class="message-item msg-passed">
-    <div class="message-time">00:37</div>
-    <div class="message-content">QA → PM: [QA验证] 验证完成: 11/11 PASS, 0/11 FAIL. 全部10个修复均已独立验证通过。#29</div>
-</div><div class="message-item msg-received">
-    <div class="message-time">00:32</div>
-    <div class="message-content">QA → PM: [QA验证] 开始验证 #295-#305</div>
-</div><div class="message-item msg-passed">
-    <div class="message-time">00:15</div>
-    <div class="message-content">DEV → PM: [#298,#301,#302,#304,#305] 全部完成并验证通过。根因:两处为部署遗漏重建(后端#30</div>
-</div><div class="message-item msg-passed">
-    <div class="message-time">00:12</div>
-    <div class="message-content">DEV → PM: [#295,#296,#297,#299,#300,#303] 完成：6个P0前端缺陷已修复并部署(v1.6.</div>
-</div><div class="message-item msg-received">
-    <div class="message-time">00:09</div>
-    <div class="message-content">DEV → PM: [#295,#296,#297,#299,#300,#303] 开始诊断</div>
-</div><div class="message-item msg-received">
-    <div class="message-time">00:03</div>
-    <div class="message-content">DEV → PM: [#298,#301,#302,#304,#305] 开始诊断</div>
-</div></div>
-</div>
 </div>
 
-<div class="refresh">Updated: 2026-08-02 23:52:05 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-03 00:25:38 (GMT+8)</div>
 </div>
 </body>
 </html>
