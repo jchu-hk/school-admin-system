@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import apiClient from '../api/client'
-import { Eye, EyeOff, LogIn, Shield } from 'lucide-react'
+import { Eye, EyeOff, LogIn, Shield, Activity } from 'lucide-react'
 import { useI18n } from '../i18n'
 import { setToken } from '../utils/tokenService'
 import { setUser } from '../utils/userService'
+import AgentDashboardPage from './AgentDashboardPage'
 
 const loginSchema = z.object({
   username: z.string().min(1, '请输入用户名'),
@@ -38,6 +39,7 @@ interface LoginResponse {
 
 export default function Login() {
   const { t } = useI18n()
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [showPwd, setShowPwd] = useState(false)
   const [error, setError] = useState('')
@@ -144,6 +146,18 @@ export default function Login() {
     setError('')
   }
 
+  // Agent Dashboard guest view — accessed via /login?agents
+  if (searchParams.get('agents') !== null) {
+    return (
+      <>
+        <a href="/school-admin/login" className="fixed top-3 left-3 z-50 text-sm text-gray-400 hover:text-green-400 transition">
+          ← {t.login.loginButton || '登录'}
+        </a>
+        <AgentDashboardPage />
+      </>
+    )
+  }
+
   // OTP验证界面
   if (step === 'otp') {
     return (
@@ -243,6 +257,11 @@ export default function Login() {
             {isSubmitting ? t.login.loggingIn : t.login.loginButton}
           </button>
         </form>
+        <div className="mt-6 pt-4 border-t border-gray-200 text-center">
+          <a href="/school-admin/login?agents" className="text-xs text-gray-400 hover:text-blue-500 transition">
+            📊 Agent Dashboard
+          </a>
+        </div>
       </div>
     </div>
   )

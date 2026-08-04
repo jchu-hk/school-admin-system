@@ -22,6 +22,7 @@ Features:
 import argparse
 import json
 import subprocess
+import shutil
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -133,8 +134,8 @@ def build_dashboard(status: dict, messages: list):
         return html
 
     messages_html = f'''<div class="tabs">
-  <button class="tab active" onclick="switchTab('today')">📅 T 今日 ({today_label})</button>
-  <button class="tab" onclick="switchTab('yesterday')">📅 T-1 昨日 ({yesterday_label})</button>
+  <button class="tab active" onclick="switchTab('today', this)">📅 T 今日 ({today_label})</button>
+  <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 ({yesterday_label})</button>
 </div>
 <div class="tab-content active" id="tab-today">
 <div class="message-list">{render_msg_list(today_msgs) if today_msgs else '<p style="text-align:center;color:#6b7280;padding:20px">暂无今日消息</p>'}</div>
@@ -183,7 +184,7 @@ h1 {{ text-align: center; color: #4ade80; margin-bottom: 20px }}
 .tab-content.active {{ display: block }}
 </style>
 <script>
-function switchTab(tab) {{ document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); event.target.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById('tab-' + tab).classList.add('active'); }}
+function switchTab(tab, el) {{ document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById('tab-' + tab).classList.add('active'); }}
 </script>
 </head>
 <body>
@@ -208,20 +209,93 @@ function switchTab(tab) {{ document.querySelectorAll('.tab').forEach(t => t.clas
     DASHBOARD_FILE.write_text(html)
 
 
+def deploy_dashboard_to_coze():
+    """Copy dashboard.html to all serving locations"""
+    ok = True
+    # 1. School-admin frontend (v1, /school-admin/multi-agent-dashboard.html)
+    try:
+        subprocess.run(
+            ["docker", "cp", str(DASHBOARD_FILE),
+             "school-admin-frontend:/usr/share/nginx/html/multi-agent-dashboard.html"],
+            check=True, capture_output=True, timeout=15
+        )
+        print("✅ Dashboard → school-admin-frontend (v1)")
+    except subprocess.CalledProcessError as e:
+        stderr = e.stderr.decode() if isinstance(e.stderr, bytes) else str(e.stderr)
+        print(f"❌ v1 deploy FAILED: {stderr[:80]}")
+        ok = False
+    except Exception as e:
+        print(f"⚠️  v1 deploy error: {type(e).__name__}: {e}")
+        ok = False
+
+    # 2. Portal frontend (v2, /attendance/dashboard.html)
+    try:
+        v2_dist = WORKSPACE / "apps" / "frontend" / "dist"
+        if v2_dist.exists():
+            shutil.copy2(str(DASHBOARD_FILE), str(v2_dist / "dashboard.html"))
+            print("✅ Dashboard → portal-frontend (v2, /attendance/dashboard.html)")
+        else:
+            print("⚠️  v2 dist not found, skipping")
+    except Exception as e:
+        print(f"⚠️  v2 deploy error: {type(e).__name__}: {e}")
+
+    # 3. Root-level nginx alias (/agents)
+    try:
+        shutil.copy2(str(DASHBOARD_FILE), "/var/www/html/agents.html")
+        print("✅ Dashboard → /var/www/html/agents.html (/agents)")
+    except Exception as e:
+        print(f"⚠️  /agents deploy error: {type(e).__name__}: {e}")
+
+    return ok
+
+
+def git_commit_dashboard():
+    """Commit dashboard + source data to git (backup). Returns True on success."""
+    try:
+        subprocess.run(["git", "add",
+                        "multi-agent-dashboard.html",
+                        "agents/project-admin/logs/agent-messages.json",
+                        "agents/project-admin/logs/agent-status.json"],
+                       cwd=WORKSPACE, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "chore: dashboard rebuild"],
+                       cwd=WORKSPACE, check=True, capture_output=True)
+        subprocess.run(["git", "push", "origin", "main"],
+                       cwd=WORKSPACE, check=True, capture_output=True)
+        print("✅ Dashboard + source data committed and pushed to GitHub")
+        return True
+    except subprocess.CalledProcessError as e:
+        stderr = e.stderr.decode() if isinstance(e.stderr, bytes) else str(e.stderr)
+        print(f"⚠️  Git push warning: {stderr[:120]}")
+        return False
+    except Exception as e:
+        print(f"⚠️  Git error: {type(e).__name__}: {e}")
+        return False
+
+
 def rebuild_dashboard():
-    """Rebuild dashboard from existing data without changing status (used by cron/wrappers)"""
+    """Rebuild dashboard from existing data + deploy to Coze + git backup"""
     status = load_status()
     messages = []
     if MESSAGE_FILE.exists():
         messages = json.loads(MESSAGE_FILE.read_text())
     build_dashboard(status, messages)
-    try:
-        subprocess.run(["git", "add", "multi-agent-dashboard.html"], cwd=WORKSPACE, check=True, capture_output=True)
-        subprocess.run(["git", "commit", "-m", "chore: dashboard rebuild"], cwd=WORKSPACE, check=True, capture_output=True)
-        subprocess.run(["git", "push", "origin", "main"], cwd=WORKSPACE, check=True, capture_output=True)
-    except:
-        pass
-    print("✅ Dashboard rebuilt and pushed")
+
+    # 1. Deploy to Coze proxy (primary — instant, no auth)
+    coze_ok = deploy_dashboard_to_coze()
+
+    # 2. Git backup (secondary — source of truth)
+    git_ok = git_commit_dashboard()
+
+    status_line = []
+    if coze_ok:
+        status_line.append("Coze ✅")
+    else:
+        status_line.append("Coze ❌")
+    if git_ok:
+        status_line.append("Git ✅")
+    else:
+        status_line.append("Git ⚠️")
+    print(f"✅ Dashboard rebuild complete ({' | '.join(status_line)})")
 
 
 def main():
@@ -265,17 +339,18 @@ def main():
     # 4. Build dashboard
     build_dashboard(status, messages)
 
-    # 5. Push to GitHub
-    try:
-        subprocess.run(["git", "add", "."], cwd=WORKSPACE, check=True, capture_output=True)
-        subprocess.run(["git", "commit", "-m", f"chore: {args.agent} {args.status} - {args.task[:30]}"],
-                     cwd=WORKSPACE, check=True, capture_output=True)
-        subprocess.run(["git", "push", "origin", "main"], cwd=WORKSPACE, check=True, capture_output=True)
-    except:
-        pass
+    # 5. Deploy to Coze proxy (primary — instant, no auth)
+    coze_ok = deploy_dashboard_to_coze()
 
+    # 6. Git backup (secondary — source of truth)
+    git_ok = git_commit_dashboard()
+
+    status_str = " | ".join(filter(None, [
+        "Coze ✅" if coze_ok else "Coze ❌",
+        "Git ✅" if git_ok else "Git ⚠️",
+    ]))
     print(f"✅ {args.agent} → {args.status}: {args.task}")
-    print(f"✅ Dashboard updated")
+    print(f"✅ Dashboard updated ({status_str})")
 
 
 if __name__ == "__main__":

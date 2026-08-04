@@ -38,6 +38,7 @@ Sandbox Port 5000 (Nginx — host machine)
 |---------------|-------------------|---------|-------------|
 | `/school-admin/` | `:8080` | Frontend (旧) | React app entry point — 旧UI v1.6.0 |
 | `/school-admin/api/*` | `:3000/api/*` | Backend API | API requests from frontend |
+| `/school-admin/multi-agent-dashboard.html` | `:8080/multi-agent-dashboard.html` | Dashboard | Agent状态仪表板 — 即时更新,无需认证 |
 | `/school-admin/assets/*` | `:8080/assets/*` | Static Files | JS/CSS bundles — 旧UI |
 | `/api/*` | `:3000/api/*` | Backend API | Direct API access (backup) |
 | `/assets/*` | `:8080/assets/*` | Static Files | Static assets (backup) |

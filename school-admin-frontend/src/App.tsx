@@ -24,6 +24,7 @@ import AboutPage from './pages/AboutPage'
 import StudentProfilePage from './pages/StudentProfilePage'
 import AssetManagementPage from './pages/AssetManagementPage'
 import AssetRentalPage from './pages/AssetRentalPage'
+import AgentDashboardPage from './pages/AgentDashboardPage'
 import Layout from './components/Layout'
 import ErrorBoundary from './components/ErrorBoundary'
 import { getToken } from './utils/tokenService'
@@ -52,6 +53,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/set-password" element={<SetPasswordPage />} />
+          <Route path="/agents" element={<AgentDashboardPage />} />
           <Route path="/" element={
             <ProtectedRoute>
               <Layout />
@@ -72,6 +74,7 @@ export default function App() {
             <Route path="assets" element={<AssetManagementPage />} />
             <Route path="asset-rentals" element={<AssetRentalPage />} />
             <Route path="about" element={<AboutPage />} />
+            <Route path="agent-dashboard" element={<AgentDashboardPage />} />
             <Route path="finance/tuition" element={<FinanceTuitionPage />} />
             <Route path="finance/installment" element={<FinanceInstallmentPage />} />
             <Route path="finance/fee" element={<FinanceFeePage />} />

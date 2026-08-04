@@ -1,7 +1,19 @@
 # Project Wiki — School Admin System
 
-> **Last updated**: 2026-08-02 09:38 GMT+8
+> **Last updated**: 2026-08-02 15:45 GMT+8
 > **Latest commit**: `a332c4ed` — main branch
+
+---
+
+## 🔧 Latest Test-Env Deployment
+
+> **Deployed**: 2026-08-02 15:40 GMT+8 · **Frontend** `school-admin-frontend` (:8080)
+> **Build**: `v1.6.1` · commit `2c7680c` (main) · build 2026-08-02
+> **New JS**: `index-Clv-l0p1-20260707.js` (旧: `index-CHIDs11R-20260707.js`)
+> **Fixes deployed (test env)**:
+> - #306 — 课程管理 API 路径修复 (VITE_API_BASE_URL = `/school-admin/api/`) → 修复 Gateway(404) 路由问题
+> - #308 — token key 修复 (`token` → `auth_token`)
+> **Verified**: container md5 == local dist · `localhost:8080` → 200 · Coze proxy `/school-admin/` → 200
 
 ---
 

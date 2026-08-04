@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, BookOpen, Settings, LogOut, Info, GraduationCap, Calendar, MessageCircle, Bell, UserCog, DollarSign, ChevronDown, ClipboardCheck, Link2, Clock, FileText, Package } from 'lucide-react'
+import { LayoutDashboard, Users, BookOpen, Settings, LogOut, Info, GraduationCap, Calendar, MessageCircle, Bell, UserCog, DollarSign, ChevronDown, ClipboardCheck, Link2, Clock, FileText, Package, Activity } from 'lucide-react'
 import LanguageSelector from './LanguageSelector'
 import { useI18n } from '../i18n'
 import { getToken, removeToken } from '../utils/tokenService'
@@ -122,6 +122,12 @@ export default function Layout() {
             <button onClick={() => navigate('/about')} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition">
               <Info size={20} />
               {t.nav.about}
+            </button>
+          )}
+          {canSeeAbout && (
+            <button onClick={() => navigate('/agents')} className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition">
+              <Activity size={20} />
+              🤖 Agents
             </button>
           )}
         </nav>

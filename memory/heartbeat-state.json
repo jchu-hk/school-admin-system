@@ -1,1 +1,22 @@
-{"lastChecks":{"heartbeat":1785387621,"system":1785387621,"email":null,"calendar":null,"weather":null},"lastRecorded":1785387621}
+{
+  "lastChecks": {
+    "heartbeat": 1785842416,
+    "system": 1785842416,
+    "email": null,
+    "calendar": null,
+    "weather": null
+  },
+  "lastRecorded": 1785842416,
+  "last_heartbeat": "2026-08-04T19:20:00+08:00",
+  "status": "OK",
+  "note": "heartbeat green",
+  "last": "2026-08-04 19:20",
+  "result": "green",
+  "health_all_200": true,
+  "docker_up": "14/14",
+  "gh_open": 19,
+  "p0": 0,
+  "p1": 0,
+  "git_ahead": 237,
+  "git_behind": 1
+}

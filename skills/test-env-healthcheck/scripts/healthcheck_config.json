@@ -21,6 +21,14 @@
       "expected_status": 200,
       "critical": false
     },
+    "agents_dashboard": {
+      "name": "Agent Dashboard (/agents)",
+      "url": "http://localhost:5000/agents",
+      "timeout": 10,
+      "expected_status": 200,
+      "expected_content_type": "text/html",
+      "critical": false
+    },
     "cloudflare_tunnel": {
       "name": "Cloudflare Tunnel (External)",
       "url": "https://school.zhumuai.cn/api/health",
