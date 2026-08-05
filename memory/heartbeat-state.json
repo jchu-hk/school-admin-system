@@ -1,22 +1,15 @@
 {
-  "lastChecks": {
-    "heartbeat": 1785842416,
-    "system": 1785842416,
-    "email": null,
-    "calendar": null,
-    "weather": null
-  },
-  "lastRecorded": 1785842416,
-  "last_heartbeat": "2026-08-04T19:20:00+08:00",
-  "status": "OK",
-  "note": "heartbeat green",
-  "last": "2026-08-04 19:20",
-  "result": "green",
-  "health_all_200": true,
-  "docker_up": "14/14",
-  "gh_open": 19,
+  "timestamp": "2026-08-05T18:50:00+08:00",
+  "status": "GREEN",
+  "head": "85b687f",
+  "health": "all_200",
+  "docker_up": 14,
+  "issues_open": 19,
   "p0": 0,
   "p1": 0,
-  "git_ahead": 237,
-  "git_behind": 1
+  "p0_p1": "0/0",
+  "prs": 0,
+  "note": "ContinuousGreen continues",
+  "last_heartbeat": "2026-08-05 19:25",
+  "open_issues": 19
 }
