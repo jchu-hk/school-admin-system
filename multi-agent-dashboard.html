@@ -50,11 +50,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">PM</div>
     <div class="agent-task">[Issue #309] 每日备份失败 EACCES /var/bac</div>
     <span class="status-badge status-running">running</span>
-</div><div class="agent  running">
+</div><div class="agent">
     <div class="agent-icon">🔧</div>
     <div class="agent-name">DEVOPS</div>
-    <div class="agent-task">[Issue #309] 修复方案: 根因已确认-容器 /var/ba</div>
-    <span class="status-badge status-running">running</span>
+    <div class="agent-task">[Issue #310] 排查完成：cloudflared 本环境不可</div>
+    <span class="status-badge status-idle">idle</span>
 </div><div class="agent  running">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/05)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-info">
+<div class="message-list"><div class="message-item msg-failed">
+    <div class="message-time">16:36</div>
+    <div class="message-content">DEVOPS → PM: [Issue #310] 排查完成：cloudflared 本环境不可修(egress 禁止持久连接, qui</div>
+</div><div class="message-item msg-info">
     <div class="message-time">16:31</div>
     <div class="message-content">DEVOPS → PM: [Issue #309] 修复方案: 根因已确认-容器 /var/backups 属主 root:root 0</div>
 </div><div class="message-item msg-received">
@@ -117,7 +120,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-06 16:32:57 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-06 16:36:58 (GMT+8)</div>
 </div>
 </body>
 </html>

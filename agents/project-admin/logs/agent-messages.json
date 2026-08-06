@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-21T06:20:11Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "Heartbeat 14:20 — all ✅",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "Heartbeat 14:20 — all ✅"
-    }
-  },
-  {
     "timestamp": "2026-07-21T11:35:09Z",
     "from": "PM",
     "to": "HEARTBEAT",
@@ -1127,6 +1115,18 @@
       "agent": "DEVOPS",
       "status": "running",
       "task": "[Issue #309] 修复方案: 根因已确认-容器 /var/backups 属主 root:root 0755，备份进程(nestjs/1001)无法 m"
+    }
+  },
+  {
+    "timestamp": "2026-08-06T08:36:52Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[Issue #310] 排查完成：cloudflared 本环境不可修(egress 禁止持久连接, quick+named 均 'connection with edge closed')，判定 blocked。已停 crash-loop 容器。公网经官方 aade13aa-...dev.coze.site 实测全部 200（school-admin/portal/api 可达）。school-admin.coze.site/portal.student.coze.site 需 Coze 平台侧配路由。已 comment #310",
+    "type": "failed",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[Issue #310] 排查完成：cloudflared 本环境不可修(egress 禁止持久连接, quick+named 均 'connection wi"
     }
   }
 ]

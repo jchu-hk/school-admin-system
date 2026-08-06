@@ -16,9 +16,9 @@
       "lastUpdate": "2026-08-02T07:40:56Z"
     },
     "DEVOPS": {
-      "status": "running",
-      "task": "[Issue #309] 修复方案: 根因已确认-容器 /var/backups 属主 root:root 0755，备份进程(nestjs/1001)无法 m",
-      "lastUpdate": "2026-08-06T08:31:59Z"
+      "status": "idle",
+      "task": "[Issue #310] 排查完成：cloudflared 本环境不可修(egress 禁止持久连接, quick+named 均 'connection wi",
+      "lastUpdate": "2026-08-06T08:36:52Z"
     },
     "CHECKER": {
       "status": "idle",
