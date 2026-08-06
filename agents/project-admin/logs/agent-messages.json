@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-21T05:00:10Z",
-    "from": "PM",
-    "to": "SYSTEM",
-    "message": "Heartbeat 13:00 — all ✅",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "Heartbeat 13:00 — all ✅"
-    }
-  },
-  {
     "timestamp": "2026-07-21T06:20:11Z",
     "from": "PM",
     "to": "PM",
@@ -1127,6 +1115,18 @@
       "agent": "DEVOPS",
       "status": "running",
       "task": "[Issue #309] 开始工作"
+    }
+  },
+  {
+    "timestamp": "2026-08-06T08:31:59Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[Issue #309] 修复方案: 根因已确认-容器 /var/backups 属主 root:root 0755，备份进程(nestjs/1001)无法 mkdir。方案: ①compose 后端服务增加 BACKUP_DIR=/app/backups 环境变量+挂载命名卷 school-admin-backups-data:/app/backups(持久化+可写); ②重建 school-admin-backend 容器生效。会短暂重启后端，9000端口不受影响。已备份原 compose 文件。请确认后执行。",
+    "type": "info",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "[Issue #309] 修复方案: 根因已确认-容器 /var/backups 属主 root:root 0755，备份进程(nestjs/1001)无法 m"
     }
   }
 ]
