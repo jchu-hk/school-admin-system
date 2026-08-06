@@ -1,3 +1,17 @@
+# 17:40 — Heartbeat (Thu) 🟡 #309仍未部署(连续第10轮)阻塞持续缓解(daocloud可达)待主机授权重建 #310公网🔴持续
+
+### System Status 🟢 (内网正常) / 🟡 (#309阻塞缓解但未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: 同既往全绿（backend 172.19.0.3:3000/api/health 200）。
+- **Docker**: backend **Up About an hour**(Image=**v1.5.7**, Created 16:35Z **早于** b5ae579 fix commit); docker exec 确认: **`pg_dump` MISSING** → **#309 修复第10轮仍未部署**; postgres/redis/kafka/opa healthy; **cloudflared Exited(2)**（公网仍不可达 #310）; 15 容器（14 Up + 1 Exited + 1 Created zen_kowalevski）。
+- **备份文件**: `backup_20260806083712..sql.gz` 仍 **20B 空文件**（#309 pg_dump 缺失静默失败现场）。
+- **🔑 阻塞持续缓解(同前多轮)**: daocloud → 401(可达); 本 sandbox `/var/run/docker.sock` 可用。即 deploy 技术上现可行，但 `agents_list` 仅 main(无独立 DEVOPS 可派发)，PM 受 SVA 约束不可代做 deploy。**需用户在主机端授权 `cd infra && docker compose build backend && up -d`**。
+- **Git**: main(**b1b6e1f** 17:35 heartbeat) synced; fix commit b5ae579 在历史但容器未重建。
+- **GitHub**: **21 open — 0 P0 / 2 P1**（#309 in-progress/devops、#310 provider-action 均 OPEN）| 0 PRs | 无新 issue。
+- **System**: load 正常 | Disk 31/40Gi(81%)。
+- **⚠️ Action**: 与 17:35 一致。#309 阻塞已完全缓解，但环境仅 main agent、无 DEVOPS 可派发，PM 受 SVA 约束不可代做 deploy。**需用户在主机端授权执行 `cd infra && docker compose build backend && up -d`** → 验证 pg_dump 存在 + 备份>0B 方可 close #309。#310 公网持续（cloudflared Exited，host egress/provider 路由）。无新 P0。
+
+---
+
 # 17:35 — Heartbeat (Thu) 🟡 #309仍未部署(连续第9轮)阻塞已完全缓解(daocloud可达+docker sock可用)待主机授权重建 #310公网🔴持续
 
 ### System Status 🟢 (内网正常) / 🟡 (#309阻塞缓解但未部署) / 🔴 (公网持续)
