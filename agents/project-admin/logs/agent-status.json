@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #310] 公网端点不可达 cloudflared quick tunnel 无法建立(host egress 故障), 建议 named tun",
-      "lastUpdate": "2026-08-06T08:25:31Z"
+      "task": "[Issue #309] 每日备份失败 EACCES /var/backups 权限不足, 需修复备份目录权限",
+      "lastUpdate": "2026-08-06T08:25:35Z"
     },
     "QA": {
       "status": "idle",
