@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #307/#308] Deploy #308 getToken 修复构建到 school-admin-frontend (:8080): dist",
-      "lastUpdate": "2026-08-02T08:00:38Z"
+      "task": "[Issue #310] 公网端点不可达 cloudflared quick tunnel 无法建立(host egress 故障), 建议 named tun",
+      "lastUpdate": "2026-08-06T08:25:31Z"
     },
     "QA": {
       "status": "idle",

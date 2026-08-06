@@ -48,7 +48,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 <div class="agent-grid"><div class="agent  running">
     <div class="agent-icon">🧑💼</div>
     <div class="agent-name">PM</div>
-    <div class="agent-task">[Issue #307/#308] Deploy #308 getTo</div>
+    <div class="agent-task">[Issue #310] 公网端点不可达 cloudflared qu</div>
     <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔧</div>
@@ -95,14 +95,17 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/05)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><p style="text-align:center;color:#6b7280;padding:20px">暂无今日消息</p></div>
+<div class="message-list"><div class="message-item msg-assign">
+    <div class="message-time">16:25</div>
+    <div class="message-content">PM → DEVOPS: [Issue #310] 公网端点不可达 cloudflared quick tunnel 无法建立(host</div>
+</div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
 <div class="message-list"><p style="text-align:center;color:#6b7280;padding:20px">暂无昨日消息</p></div>
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-06 16:22:05 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-06 16:25:33 (GMT+8)</div>
 </div>
 </body>
 </html>

@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T23:03:46Z",
-    "from": "PM",
-    "to": "SYSTEM",
-    "message": "[Grafana] 修复OPS Dashboard JSON格式+重建容器 (2026-07-21 07:02)",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Grafana] 修复OPS Dashboard JSON格式+重建容器 (2026-07-21 07:02)"
-    }
-  },
-  {
     "timestamp": "2026-07-20T23:04:13Z",
     "from": "ARCH",
     "to": "PM",
@@ -1127,6 +1115,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[Issue #307/#308] 部署完成: #308 getToken 修复 bundle (index-B7Al6Piz) 已上线 :8080，index"
+    }
+  },
+  {
+    "timestamp": "2026-08-06T08:25:31Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[Issue #310] 公网端点不可达 cloudflared quick tunnel 无法建立(host egress 故障), 建议 named tunnel 方案",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #310] 公网端点不可达 cloudflared quick tunnel 无法建立(host egress 故障), 建议 named tun"
     }
   }
 ]
