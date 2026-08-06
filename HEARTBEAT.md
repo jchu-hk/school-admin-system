@@ -1,3 +1,18 @@
+# 16:30 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200; 9000→401 auth 正常。（与既往一致）
+- **Docker**: **14/14 Up** ✅，0 exited/unhealthy（postgres/redis/kafka/opa healthy；cloudflared crash-loop 持续 Up 15s）。host up 3d3h28m。
+- **Git**: main(**4df9548** heartbeat 16:25: spawn DEVOPS for P1 #309 #310) — **ahead 0 / behind 0** ✅（clean）
+- **GitHub**: **21 open — 0 P0 / 2 P1**（#310 公网不可达 + #309 备份失败，均 in-progress/devops，16:25 已 spawn DEVOPS）| 0 PRs
+- **System**: load **8.48/5.77/3.10 瞬时升高**（top 均为本心跳自检 gh/kafka-topics + docker/containerd，无 runaway，判瞬态）| Mem ~108Mi avail（3342/3911 用，偏紧同既往）| Disk 31/40Gi (82%)
+- **Action**: 态势与 16:25 一致，**无新变化**。内网全绿，公网暴露持续（#310 open，host egress 故障非应用可修）；#309/#310 DEVOPS subagent 已在 16:25 spawn 推进。未追加 spawn。遗留同前：default bridge 网络损坏(pending)。无新 P0/P1。
+- **内网 🏆 公网 🔴 持续** | **HEARTBEAT_OK** 🟢
+
+---
+
+---
+
 # 16:25 — Heartbeat (Thu) 🟡
 
 ### System Status 🟡
