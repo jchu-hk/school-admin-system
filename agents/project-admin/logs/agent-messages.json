@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-21T11:35:09Z",
-    "from": "PM",
-    "to": "HEARTBEAT",
-    "message": "19:35 GMT+8 心跳检查开始",
-    "type": "received",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "19:35 GMT+8 心跳检查开始"
-    }
-  },
-  {
     "timestamp": "2026-07-21T11:35:21Z",
     "from": "PM",
     "to": "HEARTBEAT",
@@ -1127,6 +1115,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[Issue #310] 排查完成：cloudflared 本环境不可修(egress 禁止持久连接, quick+named 均 'connection wi"
+    }
+  },
+  {
+    "timestamp": "2026-08-06T08:51:14Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[Issue #309] 完成: EACCES 根因已修复并验证(挂载 /var/backups/school_admin 为 nestjs 可写+设置 BACKUP_DIR),手动备份 BK-20260806-HAOH 返回 success,backup_records 新增条目。⚠️ 另发现关键缺陷:镜像缺 pg_dump,备份文件为空却被误判 SUCCESS;源码已修复(Dockerfile+pipefail+空文件校验,commit b5ae579),但本环境 registry/容器外网被阻断,镜像重建未完成,需外网环境 docker build 后部署 v1.6.0 才能产出有效备份。Issue #309 已 comment 说明。",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[Issue #309] 完成: EACCES 根因已修复并验证(挂载 /var/backups/school_admin 为 nestjs 可写+设置 BAC"
     }
   }
 ]

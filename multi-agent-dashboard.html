@@ -53,7 +53,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="agent">
     <div class="agent-icon">🔧</div>
     <div class="agent-name">DEVOPS</div>
-    <div class="agent-task">[Issue #310] 排查完成：cloudflared 本环境不可</div>
+    <div class="agent-task">[Issue #309] 完成: EACCES 根因已修复并验证(挂载</div>
     <span class="status-badge status-idle">idle</span>
 </div><div class="agent  running">
     <div class="agent-icon">🤖</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/05)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-failed">
+<div class="message-list"><div class="message-item msg-passed">
+    <div class="message-time">16:51</div>
+    <div class="message-content">DEVOPS → PM: [Issue #309] 完成: EACCES 根因已修复并验证(挂载 /var/backups/school</div>
+</div><div class="message-item msg-failed">
     <div class="message-time">16:36</div>
     <div class="message-content">DEVOPS → PM: [Issue #310] 排查完成：cloudflared 本环境不可修(egress 禁止持久连接, qui</div>
 </div><div class="message-item msg-info">
@@ -120,7 +123,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-06 16:43:26 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-06 16:51:22 (GMT+8)</div>
 </div>
 </body>
 </html>
