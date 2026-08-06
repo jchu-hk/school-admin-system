@@ -1,3 +1,16 @@
+# 20:30 — Heartbeat (Thu) 🟡 #309仍未部署(连续第34轮)阻塞持续缓解待主机授权 #310公网🔴持续
+
+### System Status 🟢 (内网正常) / 🟡 (#309阻塞缓解但未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 172.19.0.3:3000/api/health → **200**。(内网正常)
+- **Docker**: backend **Up 4 hours**(Image=**v1.5.7**, 早于 b5ae579 fix commit); docker exec 确认 **`pg_dump` MISSING** → **#309 修复第34轮仍未部署**; **cloudflared Exited(2)** 4h ago（公网仍不可达 #310）; postgres/redis/kafka/opa healthy; host up 3d7h28m; load 0.46。
+- **备份文件**: `backup_20260806083712..sql.gz` 仍 **20B 空文件**（#309 pg_dump 缺失静默失败现场，属主 1001:1001 权限正确）。
+- **Git**: main(**0387fac** chore dashboard rebuild) synced(behind 0); fix commit b5ae579 在历史但容器未重建。
+- **GitHub**: **21 open — 0 P0 / 2 P1**(#309 in-progress/devops、#310 provider-action 均 OPEN) | 0 PRs | 无新 issue。
+- **System**: load 0.46 | Disk 31/40Gi(81%) | Mem ~119Mi avail。
+- **⚠️ Action**: 与 20:15 一致，无变化。#309 阻塞已完全缓解，但环境仅 main agent、无 DEVOPS 可派发，PM 受 SVA 约束不可代做 deploy。**需用户在主机端授权执行 `cd infra && docker compose build backend && up -d`** → 验证 pg_dump 存在 + 备份>0B 方可 close #309。#310 公网持续（cloudflared Exited，host egress 故障）。无新 P0。
+
+---
+
 # 20:15 — Heartbeat (Thu) 🟡 #309仍未部署(连续第33轮)阻塞持续缓解待主机授权 #310公网🔴持续
 
 ### System Status 🟢 (内网正常) / 🟡 (#309阻塞缓解但未部署) / 🔴 (公网持续)
@@ -4618,3 +4631,10 @@
 - **GitHub**: **21 open — 0 P0 / 2 P1**(#309 in-progress/devops、#310 provider-action 均 OPEN) | 0 PRs | 无新 issue。
 - **System**: load 0.99 | Disk 31/40Gi(81%)。
 - **⚠️ Action**: 与 20:15 一致，完全无变化。#309 阻塞已完全缓解，但环境仅 main agent、无 DEVOPS 可派发，PM 受 SVA 约束不可代做 deploy。**需用户在主机端授权执行 `cd infra && docker compose build backend && up -d`** → 验证 pg_dump 存在 + 备份>0B 方可 close #309。#310 公网持续（cloudflared Exited, host egress 故障）。无新 P0。
+
+---
+
+# 20:25 — Heartbeat (Thu) 🟡 #309仍未部署(连续第35轮)阻塞持续待主机授权 #310公网🔴持续
+内网主服务全绿（backend 3000/api/health 200, frontend 8080 200, v2 8081 200, gateway 5001/health 200；9000→401 auth 正常）。Docker: backend **Up 4 hours**（Image=v1.5.7, Created 08:35Z 早于 b5ae579 fix）— docker exec 确认 **`pg_dump` NOT FOUND** → #309 修复第35轮仍未部署；postgres/redis/kafka/opa healthy；**cloudflared Exited(2)**（RestartPolicy:no，公网不可达 → #310 持续）。备份 `backup_20260806083712..sql.gz` 仍 20B 空文件。Git: main(**0387fac**) synced (0/0)。GitHub: 21 open — **0 P0 / 2 P1**（#309 in-progress/devops + #310 provider-action 均 OPEN）| 0 PRs | 无新 issue。System: load 1.90 | Mem ~458Mi avail | Disk 31/40Gi (81%)。
+**Action**: 与 20:20 一致，无状态变化。#309 阻塞已缓解（daocloud 可达）但 agents_list 仅 main、无 DEVOPS 可派发，PM 受 SVA 约束不可代做 deploy。**需用户在主机端授权 `cd infra && docker compose build backend && up -d`** → 验证 pg_dump 存在 + 备份>0B 方可 close #309。#310 公网持续（cloudflared Exited，host egress/provider 路由故障，非应用可修）。无新 P0/P1，无需 spawn。
+- **#ContinuousGreen (内网) 🟢 | #309 🟡 | #310 🔴 | HEARTBEAT_OK**
