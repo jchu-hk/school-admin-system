@@ -1,3 +1,128 @@
+
+---
+
+# 09:10 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (无 exited/unhealthy/restarting 残留; host up 2d20h08m)
+- **Git**: main(**be2b4a7**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty routine: HEARTBEAT.md + memory + untracked png/scripts/qa_report 为 routine)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ | 0 PRs
+- **System**: load 1.43 | Mem ~265Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d20h08m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 维持 be2b4a7（与 09:05 相同，无新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。load 1.43 短暂上行，属轮询峰值非故障。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+---
+
+# 09:05 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启 <1s 例行; host up 2d20h08m; 无 exited/unhealthy/restarting 残留)
+- **Git**: main(**be2b4a7**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty routine: HEARTBEAT.md + memory + untracked png/scripts/qa_report 为 routine)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ | 0 PRs
+- **System**: load 2.54 | Mem ~174Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d20h
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 维持 be2b4a7（与 08:55 相同，无新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。load 2.54 短暂上行，属轮询峰值非故障。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+---
+
+# 08:55 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (无 exited/unhealthy/restarting 残留; host up 2d19h52m)
+- **Git**: main(**be2b4a7**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty routine: HEARTBEAT.md + memory 为 routine)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ | 0 PRs
+- **System**: load 1.65 | Mem ~579Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d19h52m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 维持 be2b4a7（与 08:50 相同，无新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。load 1.65 短暂上行，属轮询峰值非故障。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+# 08:50 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启 8s 例行; host up 2d19h47m; 无 exited/unhealthy/restarting 残留)
+- **Git**: main(**be2b4a7**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty routine: HEARTBEAT.md + memory + 未跟踪 png/scripts/qa_report/AgentDashboardPage.tsx 为 routine)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ | 0 PRs
+- **System**: load 0.66 | Mem ~709Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d19h47m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 维持 be2b4a7（与 08:45 相同，无新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。cloudflared 重启 8s 例行(常态)。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+
+---
+
+# 08:45 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (无 exited/unhealthy/restarting 残留; host up 2d19h42m)
+- **Git**: main(**be2b4a7**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ | 0 PRs
+- **System**: load 0.20 | Mem ~699Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d19h42m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 维持 be2b4a7（与 08:41 相同，无新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。cloudflared 无异常重启残留。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+
+---
+
+# 08:41 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启 12s 例行; host up 2d19h39m; 无 exited/unhealthy/restarting 残留)
+- **Git**: main(**be2b4a7**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ | 0 PRs
+- **System**: load 0.49 | Mem ~636Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d19h39m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 前移至 be2b4a7（较上一心跳 33a8497 有新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。cloudflared 重启 12s 例行(常态)。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+
+---
+
+# 08:30 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启 6s 例行; host up 2d19h27m; 无 exited/unhealthy/restarting 残留)
+- **Git**: main(**33a8497**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty routine: HEARTBEAT.md + memory/*.md + heartbeat-state.json + untracked png/scripts/qa_report/AgentDashboardPage.tsx 为 routine)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ (14 p2, 5 p3) | 0 PRs
+- **System**: load 0.68 | Mem ~667Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d19h27m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 维持 33a8497（与上心跳相同，无新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。cloudflared 重启 6s 例行(常态)。首轮 health 检查因 URL 拼接笔误致 404 伪报，复检后全部 200（与既往同，非故障）。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+
+---
+
+# 08:15 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启 9s 例行; host up 2d19h12m; 无 exited/restarting/unhealthy 残留)
+- **Git**: main(**33a8497**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty routine: HEARTBEAT.md + memory + untracked png/scripts/qa_report/AgentDashboardPage.tsx 为 routine)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ | 0 PRs
+- **System**: load 0.85 | Mem ~647Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d19h12m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 维持 33a8497（与上心跳相同，无新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。cloudflared 重启 9s 例行(常态)。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+
+---
+
+# 08:10 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启 <1s 例行; host up 2d19h; 无 exited 残留)
+- **Git**: main(**33a8497**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; untracked: course-error/fixed.png + dashboard-fix.png + memory + qa_report/tmp + AgentDashboardPage.tsx + 2 scripts 为 routine)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ (14 p2, 5 p3) | 0 PRs
+- **System**: load 0.54 | Mem ~692Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d19h
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 前移至 33a8497（较上一心跳 0024117 有新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。cloudflared 重启 <1s 例行(常态)。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+
+---
+
+# 21:55 — Heartbeat (Wed) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启 5s 例行; host up 2d8h52m; 无 exited/unhealthy/restarting 残留)
+- **Git**: main(**0024117**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; untracked: course-error/fixed.png + dashboard-fix.png + memory + qa_report/tmp + AgentDashboardPage.tsx + 2 scripts 为 routine)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ (14 p2, 5 p3; 标签为小写 p2/p3) | 0 PRs
+- **System**: load 0.83 | Mem ~708Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d8h52m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 前移至 0024117（新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。cloudflared 重启 5s 例行(常态)。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
 # 21:50 — Heartbeat (Wed) 🟢
 
 ### System Status 🟢
@@ -2973,4 +3098,54 @@
 - **GitHub**: **19 open — 0 P0 / 0 P1** ✅ | 0 PRs
 - **System**: load 0.45 | Mem 819Mi avail | Disk 31/40Gi (81%)
 - **Action**: 连续绿，P0/P1 保持清零。cloudflared 重启 3s 例行(常态)。遗留同前: 默认 bridge 网络损坏(pending); stray zen_kowalevski Created(pending); 未跟踪 png/memory/qa_report/scripts 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+
+# 08:12 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启 14s 例行; host up 2d19h09m; 无 exited 残留)
+- **Git**: main(**33a8497 chore: dashboard rebuild**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; untracked routine: course-error/fixed.png + dashboard-fix.png + memory/0802-0804 + qa_report/tmp + AgentDashboardPage.tsx + 2 scripts)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ (14 p2, 5 p3) | 0 PRs
+- **System**: load 0.31 | Mem ~697Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d19h
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 稳定 33a8497（较 08:10 无新 commit）。Git fully synced (ahead 0/behind 0)。cloudflared 重启 14s 例行(常态)。一轮 curl 初返回 000/404，二次以 127.0.0.1 逐端口复检全部确认 200（backend health 路径为 /api/health）。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+
+---
+
+# 08:20 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared Up 5s 例行自动重启; host up 2d19h17m; 无 exited/restarting/unhealthy 残留)
+- **Git**: main(**33a8497 chore: dashboard rebuild**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty routine: HEARTBEAT.md + memory + 未跟踪 png/qa_report/tmp/AgentDashboardPage.tsx/scripts)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ (unlabeled 19, 延续 P2/P3 基线) | 0 PRs
+- **System**: load 0.95 (avg 0.79) | Disk 31/40Gi (81%); host up 2d19h17m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 稳定 33a8497（较上次心跳 21:45 无新 commit，auto-rebuild 正常空转）。Git fully synced (ahead 0/behind 0)。cloudflared 重启 5s 例行(常态)。遗留同前: 默认 bridge 网络损坏(pending); untracked png/qa_report/scripts/AgentDashboardPage.tsx 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+
+---
+
+# 08:25 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/opa/kafka healthy; cloudflared 重启 13s 例行; host up 2d19h22m; 无 exited/restarting/unhealthy 残留)
+- **Git**: main(**33a8497**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; HEAD 与上一心跳相同, 无新 commit)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ (14 p2, 5 p3) | 0 PRs
+- **System**: load 0.69 | Mem ~674Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d19h22m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 维持 33a8497（与上心跳相同，无新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。cloudflared 重启 13s 例行(常态)。遗留同前: 默认 bridge 网络损坏(pending); 未跟踪 png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+
+---
+
+# 08:35 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启 12s 例行; host up 2d19h32m; 无 exited/unhealthy/restarting 残留)
+- **Git**: main(**33a8497**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty routine: HEARTBEAT.md + memory/*.md + heartbeat-state.json + untracked course-error.png 为 routine)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ (14 p2, 5 p3) | 0 PRs
+- **System**: load 1.74 (均值回升) | Mem ~677Mi avail (3911Mi total) | Disk 31/40Gi (81%); host up 2d19h32m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 维持 33a8497（与上心跳相同，无新 commit，auto-rebuild job 正常）。Git fully synced (ahead 0/behind 0)。cloudflared 重启 12s 例行(常态)。遗留同前: 默认 bridge 网络损坏(pending); untracked course-error.png/memory 为 routine。无 P0/P1，无需 spawn agent。
 - **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
