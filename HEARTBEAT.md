@@ -1,6 +1,24 @@
 
 ---
 
+# 12:35 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health**: 全部 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **公网端点仍不可达** 🔴: school-admin.coze.site → 404、portal.student.coze.site → 000（持续，与 12:20 确诊 #310 一致）
+- **Docker**: 14/14 Up（内网无 exited/unhealthy；cloudflared crash-loop 持续，Up 仅 1s）
+- **Git**: main(7adc327) **ahead 0 / behind 0** ✅（dirty routine: memory + untracked png/scripts/qa_report）
+- **GitHub**: **21 open — P0=0 / P1=2**（#309 备份 + #310 公网不可达）| 0 PRs
+- **System**: load 1.00 | Mem ~647Mi avail | Disk 82%
+
+### Action
+- 公网暴露持续确诊（#310 open，host 级 egress 受限），态势与 12:20 一致，无新变化。
+- 内网主服务稳定连续绿。未 spawn（环境仍仅 main agent）。
+- 遗留: #310 公网不可达(DEVOPS)、#309 备份失败(pending)、默认 bridge 网络损坏(pending)。
+- **内网 #ContinuousGreen 🏆 | 公网暴露 🔴 持续（#310）**
+
+---
+
 # 12:20 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
 
 ### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
