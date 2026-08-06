@@ -1,4 +1,25 @@
-# 16:50 — Heartbeat (Thu) 🔴⚠️ #309运行容器未生效(修复已提交未部署) / #310公网🔴持续
+# 17:06 — Heartbeat (Thu) 🔴⚠️ #309仍未部署(连续第3轮) #310公网🔴持续
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网持续) / ⚠️ (#309修复仍未部署，连续第3轮检测到)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200。（全绿，与既往一致）
+- **Docker**: **13 Up + 1 Exited** — backend **Up 31 min**(Image=v1.5.7, Created 08:35Z **早于** b5ae579 fix commit)；**postgres 客户端缺失**: `pg_dump` not found、src `pipefail` count=0 → **#309 修复仍未部署**（修复需 Dockerfile 装 postgresql-client + compose rebuild，但本环境无外网无法拉 base 镜像/装包，**环境级阻塞，需具外网+DEVOPS权限执行者重建 v1.6.0**）; postgres/redis/kafka/opa healthy; **cloudflared Exited(2)**（公网仍不可达）; host up 3d4h05m。
+- **备份文件**: `/var/backups/school_admin/backup_20260806083712..sql.gz` = **20B 空文件**（16:37, #309 pg_dump 缺失静默失败的现场证据，修复未生效）。
+- **Git**: main(**4dc8017** chore dashboard, synced) — `b5ae579 fix(backup)` 在历史中但未重建容器。
+- **GitHub**: **21 open — 0 P0 / 2 P1**（#309 备份失败 in-progress/devops + #310 公网不可达 provider-action，均 open；无新 issue）| 0 PRs
+- **System**: load 0.58 | Mem ~649Mi avail | Disk 31/40Gi(81%)。
+- **⚠️ 关键: #309 连续第3轮未部署** — 环境级阻塞（无外网拉镜像/装 pg_dump），需具外网+DEVOPS权限执行者 `compose build backend && up -d` 验证 v1.6.0。
+
+---
+
+# 17:00 — Heartbeat (Thu) 🔴⚠️ #309仍未部署(连续第2轮) #310公网🔴持续
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网持续) / ⚠️ (#309修复仍未部署，连续第2轮检测到)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200。（全绿，与既往一致）
+- **Docker**: **13 Up + 1 Exited** — backend **Up 24 min**（16:35 重建，Image=v1.5.7, Created 08:35Z **早于** b5ae579 修复 commit，容器 src 无 pg_dump/pipefail 引用 = 修复未部署）; postgres/redis/kafka/opa healthy; **cloudflared Exited(2)**（公网仍不可达）; host up 3d3h58m。
+- **Git**: main(**542255c** chore dashboard) — `b5ae579 fix(backup): resolve #309 EACCES + add pg_dump & pipefail guard` 仍在历史中但**未重建后端容器**。工作区 clean 仅 memory 改动。
+- **GitHub**: **21 open — 0 P0 / 2 P1**（#309 备份失败 + #310 公网不可达，仍 open；#309 标 in-progress/devops）| 0 PRs（本轮未查 gh，沿上轮）
+- **System**: load 0.51/1.79/5.01 正常 | Mem ~574Mi avail | Disk 31/40Gi (81%)
+- **⚠️ 关键: #309 连续第2轮未部署** — 16:50 已记录
 
 ### System Status 🟢 (内网主服务正常) / 🔴 (公网持续) / ⚠️ (#309修复未部署到运行容器)
 - **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200。（与既往一致，全绿）
