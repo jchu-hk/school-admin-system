@@ -1,3 +1,18 @@
+# 16:25 — Heartbeat (Thu) 🟡
+
+### System Status 🟡
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (cloudflared crash-loop 但容器 Up; 无其他 exited/unhealthy 残留; host up 3d3h22m)
+- **Git**: main(**41fa239**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty: memory/2026-08-06.md)
+- **GitHub**: **21 open — 0 P0 / 2 P1** ⚠️ | 0 PRs
+- **System**: load 1.32 | Mem ~118Mi avail (3911Mi total) | Disk 31/40Gi (82%); host up 3d3h22m
+- **Action**: 🟡 **本轮发现 2 个 P1 新问题**（此前 P0/P1 保持清零）。已确认均真实有效：
+  - **#310 cloudflared 公网不可达** — 确认 crash-loop，quick tunnel 无法建立，host egress 到 region 端点超时；内网全 200。已 spawn DEVOPS 评估 named tunnel 方案。
+  - **#309 每日备份 EACCES** — 确认 /var/backups 属主 root:root 0755，非 root 进程无权写入，72 次失败。已 spawn DEVOPS 修复目录权限。
+  - 已按协议记录 assign 消息 + 更新 dashboard，两个 DEVOPS subagent 已启动。
+- **#ContinuousGreen 中断** ⚠️ | **HEARTBEAT_ACTION** 🟡
+---
+
 ---
 ---
 
