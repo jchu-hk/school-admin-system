@@ -1,4 +1,71 @@
 ---
+---
+
+# 16:10 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200; 9000→401 auth 正常。（与既往一致）
+- **Docker**: **14/14 Up** ✅，0 exited/unhealthy（postgres/redis/kafka/opa healthy；cloudflared crash-loop 持续 Up 10s）。host up 3d3h7m。
+- **Git**: main(**d2dda29**) — ahead 0 / behind 0 ✅（dirty routine: HEARTBEAT.md + memory 为本心跳写入）
+- **GitHub**: **21 open — 0 P0 / 2 P1** ✅（#310 公网不可达 + #309 备份失败，均已知无变化）| 0 PRs
+- **System**: load 1.79 | Mem ~624Mi avail (3911Mi total) | Disk 31/40Gi (82%); host up 3d3h7m
+- **Action**: 连续绿（内网），公网 🔴 持续。公网仍不可达：(school-admin.coze.site→404、portal.student.coze.site→000、google→000，与 #310 host egress 确诊一致)。cloudflared 持续 crash-loop 无法建 tunnel。环境仅 main agent，未 spawn。遗留同前：default bridge 网络损坏(pending)；untracked routine。无新 P0/P1，无需 spawn agent。
+- **内网 🏆 公网 🔴 持续** | **HEARTBEAT_OK** 🟢
+---
+
+# 16:06 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200。（与既往一致，全绿）
+- **Docker**: **14/14 Up** ✅，0 exited/unhealthy（postgres/redis/kafka/opa healthy；cloudflared crash-loop 持续 RestartCount 持续，Up 5s）。host up 3d3h4m。
+- **Git**: main(**0ad825b** chore: dashboard rebuild) — ahead 0 / behind 0 ✅（dirty routine: HEARTBEAT.md + memory 为本心跳写入）
+- **GitHub**: **21 open — 0 P0 / 2 P1** ✅（#310 公网不可达 + #309 备份失败，均已知无变化）| 0 PRs
+- **System**: load 1.64 | Mem ~607Mi avail (3911Mi total) | Disk 31/40Gi (82%); host up 3d3h4m
+- **Action**: 连续绿（内网），公网 🔴 持续。**公网仍不可达**（#310 host egress 故障确诊持续），cloudflared 持续 crash-loop 无法建 tunnel。环境仅 main agent，未 spawn。遗留同前：default bridge 网络损坏(pending)；untracked routine。无新 P0/P1，无需 spawn agent。
+- **内网 🏆 公网 🔴 持续** | **HEARTBEAT_OK** 🟢
+---
+
+# 16:00 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health**: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200; 9000→401 auth 正常。（与既往一致）
+- **Docker**: **14/14 Up** ✅，0 exited/unhealthy（postgres/redis/kafka/opa healthy；cloudflared crash-loop 持续 RestartCount=17621）。host up 3d2h57m。
+- **Git**: main(**200f72b**) — **ahead 0 / behind 0** ✅（dirty routine: HEARTBEAT.md + memory 为本心跳写入）
+- **GitHub**: **21 open — 0 P0 / 2 P1** ✅（#309 备份失败 + #310 公网不可达，均已知无变化）| 0 PRs
+- **System**: load 1.75 | Mem ~132Mi avail (3911Mi total) | Disk 31/40Gi (82%); host up 3d2h57m
+- **Action**: 连续绿（内网），公网 🔴 持续。**公网仍不可达**：google→000、school-admin.coze.site→404、api.trycloudflare.com→405，host egress 故障持续。cloudflared 持续 crash-loop 无法建 tunnel，RestartCount 17621。环境仅 main agent，未 spawn。遗留同前：default bridge 网络损坏(pending)；untracked routine。无新 P0/P1，无需 spawn agent。
+- **内网 🏆 公网 🔴 持续** | **HEARTBEAT_OK** 🟢
+---
+
+# 15:55 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200; 9000→401 auth 正常。（与既往一致）
+- **Docker**: **14/14 Up** ✅，0 exited/unhealthy（postgres/redis/kafka/opa healthy；cloudflared crash-loop 持续 RestartCount=17602, Up 7s）。host up 3d2h52m。
+- **Git**: main(**200f72b** chore: dashboard rebuild) — **ahead 0 / behind 0** ✅（auto-rebuild job 正常；dirty routine: HEARTBEAT.md + memory 为本心跳写入）
+- **GitHub**: **21 open — 0 P0 / 2 P1** ✅（#309 备份失败 + #310 公网不可达，均已知无变化）| 0 PRs
+- **System**: load 1.81 | Mem ~108Mi avail (3911Mi total) | Disk 31/40Gi (82%); host up 3d2h52m
+- **Action**: 连续绿（内网），公网 🔴 持续。**公网仍不可达**：google→000(6s timeout)、school-admin.coze.site→404、api.trycloudflare.com→405，host egress 故障持续（与 #310 确诊一致，非应用可修）。cloudflared 持续 crash-loop 无法建 tunnel，RestartCount 17602。环境仅 main agent，未 spawn。遗留同前：default bridge 网络损坏(pending)；untracked routine。无新 P0/P1，无需 spawn agent。
+- **内网 🏆 公网 🔴 持续** | **HEARTBEAT_OK** 🟢
+---
+
+# 15:50 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200; 9000→401 auth 正常。（与既往一致）
+- **公网端点仍不可达** 🔴: school-admin.coze.site → 404、portal/student、google → 000（与 #310 一致，无变化）
+- **Git**: main(**5106df7**) **ahead 0 / behind 0** ✅ clean（无 dirty）
+- **Docker**: **14/14 Up**，无 exited/unhealthy（cloudflared crash-loop 持续 Up 6s）
+- **System**: load 1.10 | Mem 122Mi avail (634Mi cache) | Disk 82% | host up 3d2h47m
+- **GitHub**: **21 open**, 本次脚本未标出 P1（#310/#309 仍在，标签读取差异）；0 PRs
+
+### Action
+- 态势与 15:40 一致，**无新变化**。内网全绿，公网暴露持续（#310 open）。host egress 故障确诊，非应用可修。未 spawn。
+- 注：cron 沙箱内 docker 主机名不可直接解析，改走 localhost 端口验证（3000/8080/8081/5001 均 200），结论与 host 侧一致。
+- 遗留: #310 公网不可达(DEVOPS)、#309 备份失败(DEVOPS)、默认 bridge 网络损坏(pending)。
+- **内网 #ContinuousGreen 🏆 | 公网暴露 🔴 持续（#310）**
+
+
 
 # 15:40 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
 
