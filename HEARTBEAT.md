@@ -1,3 +1,18 @@
+# 16:41 — Heartbeat (Thu) 🟡 #309备份已修复 / #310公网🔴持续
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续) / 🟡 (#309修复WIP)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200; 9000→401 auth 正常。（与既往一致）
+- **Docker**: **14/14 (12 Up + 1 Exited + 1 Created)** — backend **Up 5 min**（16:35 已随 #309 修复重建）; postgres/redis/kafka/opa healthy; **cloudflared Exited(2)** restarts=17750（原 crash-loop "Up Ns" → 本轮已 Exit，公网仍不可达）; zen_kowalevski Created(临时). host up 3d3h39m。
+- **Git**: main(**caf4a03**) — ahead 0 / behind 0 ✅. **工作区 dirty = DEVOPS WIP（#309 备份修复未提交）**: apps/backend/Dockerfile、backup.service.ts、infra/docker-compose*.yml 已改; untracked backups/、infra/run-backend.sh。git log 16:35 已记录 "#309备份已修复(nestJS可写bind-mount)"。
+- **GitHub**: **21 open — 0 P0 / 2 P1**（#310 公网不可达 + #309 备份失败，均仍 open；#309 标 in-progress/devops，修复已落地待 DEVOPS 收尾关闭）| 0 PRs
+- **System**: load **22.76/13.26/7.10 瞬时升高**（top 均为本心跳自检 node/python3/git + containerd/dockerd 重建活动，无 runaway，判瞬态）| Mem ~626Mi avail (3911Mi total) | Disk 31/40Gi (81%)
+- **Action**: **#309 备份已修复** — 后端日志 16:37 手动触发 `备份成功: BK-20260806-HAOH`，bind-mount 方案生效，待 DEVOPS 提交代码并关闭 Issue。**#310 公网暴露持续**（cloudflared 已 Exited(2)，host egress 故障非应用可修，DEVOPS 推进中）。内网全绿。未追加 spawn（#309/#310 DEVOPS 均在推进）。遗留同前：default bridge 网络损坏(pending)。
+- **内网 🏆 #309修复WIP 🟡 | 公网 🔴 持续** | **HEARTBEAT_OK** 🟢
+
+---
+
+---
+
 # 16:30 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
 
 ### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
