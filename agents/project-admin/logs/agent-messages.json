@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-20T23:04:17Z",
-    "from": "CHECKER",
-    "to": "PM",
-    "message": "状态同步: 等待任务 (idle)",
-    "type": "info",
-    "agent_status": {
-      "agent": "CHECKER",
-      "status": "idle",
-      "task": "状态同步: 等待任务 (idle)"
-    }
-  },
-  {
     "timestamp": "2026-07-21T05:00:10Z",
     "from": "PM",
     "to": "SYSTEM",
@@ -1127,6 +1115,18 @@
       "agent": "DEVOPS",
       "status": "running",
       "task": "[Issue #310] 开始工作"
+    }
+  },
+  {
+    "timestamp": "2026-08-06T08:25:56Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[Issue #309] 开始工作",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "[Issue #309] 开始工作"
     }
   }
 ]
