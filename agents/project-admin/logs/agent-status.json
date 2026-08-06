@@ -16,9 +16,9 @@
       "lastUpdate": "2026-08-02T07:40:56Z"
     },
     "DEVOPS": {
-      "status": "idle",
-      "task": "[Issue #307/#308] 部署完成: #308 getToken 修复 bundle (index-B7Al6Piz) 已上线 :8080，index",
-      "lastUpdate": "2026-08-02T08:01:28Z"
+      "status": "running",
+      "task": "[Issue #310] 开始工作",
+      "lastUpdate": "2026-08-06T08:25:56Z"
     },
     "CHECKER": {
       "status": "idle",

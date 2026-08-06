@@ -50,11 +50,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">PM</div>
     <div class="agent-task">[Issue #309] 每日备份失败 EACCES /var/bac</div>
     <span class="status-badge status-running">running</span>
-</div><div class="agent">
+</div><div class="agent  running">
     <div class="agent-icon">🔧</div>
     <div class="agent-name">DEVOPS</div>
-    <div class="agent-task">[Issue #307/#308] 部署完成: #308 getTok</div>
-    <span class="status-badge status-idle">idle</span>
+    <div class="agent-task">[Issue #310] 开始工作</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent  running">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/05)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-assign">
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">16:25</div>
+    <div class="message-content">DEVOPS → PM: [Issue #310] 开始工作</div>
+</div><div class="message-item msg-assign">
     <div class="message-time">16:25</div>
     <div class="message-content">PM → DEVOPS: [Issue #309] 每日备份失败 EACCES /var/backups 权限不足, 需修复备份目录权限</div>
 </div><div class="message-item msg-assign">
@@ -108,7 +111,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-06 16:25:38 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-06 16:25:56 (GMT+8)</div>
 </div>
 </body>
 </html>
