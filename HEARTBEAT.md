@@ -1,6 +1,63 @@
 
 ---
 
+# 12:10 — Heartbeat (Thu) 🔴🔴 公网暴露持续 + host egress 确诊 + 已建档 #310
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health**: 全部 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **公网端点仍不可达** 🔴: school-admin.coze.site → 404、portal.student.coze.site → 000（持续 >1h，自 ~11:00）
+- **Docker**: 14/14 Up（内网无 exited/unhealthy）；cloudflared 仍 crash-loop（Up time 仅数秒）
+- **Git**: main(9a225bf) ahead 0/behind 0 ✅（dirty routine: HEARTBEAT + memory）
+- **GitHub**: 20 open — P0=0 / P1=2（#309 备份 + **#310 公网不可达**）| 0 PRs
+- **System**: load 0.34 | Mem 606Mi avail | Disk 82%
+
+### 🔍 本轮确诊: host 级 egress 故障（非容器/非临时）
+从 gateway host 直连测试（非沙箱）：
+| 端点 | 结果 |
+|------|------|
+| api.trycloudflare.com (v4) | ✅ 可达 405（正常）|
+| region.trycloudflare.com | ❌ 000 超时 |
+| region2 / bf / cftunnel.com | ❌ 全 000 超时 |
+| www.google.com (v4) | ❌ 000 超时（通用 IPv4 出口受限）|
+
+→ host 到 Cloudflare API 入口可达，但到 quick-tunnel 实际使用的 SSE/region/bastion 端点全部超时，且通用公网 IPv4 出口也受限。**cloudflared 永远无法建立 quick tunnel**。疑宿主网络策略/供应商出站过滤所致，非应用配置可修。
+
+### Action
+- 已从「观察」升级为「确诊持续故障」并**建档 GitHub Issue #310** [P1]（ops/bug/p1），含 host 级证据 + 建议（DEVOPS 排查出站策略 / 评估 named tunnel 替代）。
+- 未 spawn（环境仍仅 main agent，无独立 DEVOPS）；经 issue 路由多 agent 工作流。
+- 遗留: 默认 bridge 网络损坏(pending)；P1 #309 备份失败仍待修。
+- **内网 #ContinuousGreen 🏆 | 公网暴露 🔴 持续（#310 已建档）**
+
+---
+
+# 12:06 — Heartbeat (Thu) 🔴 公网暴露异常
+
+### System Status 🟢 (内网主服务正常)
+- **Health**: 全部 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **但 coze.site 公网端点异常** ⚠️: school-admin.coze.site → 404、portal.student.coze.site → 000（多轮复测一致）
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; host up 2d23h04m; 无 exited/unhealthy 残留)
+- **cloudflared**: 🔴 **RestartCount=16708**，crash-loop 反复 `context deadline exceeded` 连 api.trycloudflare.com → quick tunnel 无法建立 → 公网 404/000。（11:00 时 coze.site 尚 200，本轮回归）
+- **Git**: main(d6029f3) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty routine: HEARTBEAT.md + memory/2026-08-06.md)
+- **GitHub**: **20 open — 0 P0 / 1 P1(#309)** | 0 PRs | #309 备份失败仍 open，无新推进
+- **System**: load 0.33 | Mem 655Mi avail (3911Mi total) | Disk 31/40Gi (82%); host up 2d23h04m
+- **Action**: 内网主服务健康无影响；**公网暴露路径（cloudflared quick tunnel）当前不可用**，疑临时性（trycloudflare API 连接超时，account-less 无 uptime 保证）。已建档观察，未 spawn（先行观察，若持续则需 DEVOPS）。P1 #309 备份失败仍待修。遗留: 默认 bridge 网络损坏(pending)。
+- **内网 #ContinuousGreen 🏆 | 但公网暴露 🔴 需关注**
+
+---
+
+# 11:55 — Heartbeat (Thu) 🟢
+
+### System Status 🟢 (主服务正常)
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启 5s 例行; host up 2d22h52m; 无 exited/restarting 残留)
+- **Git**: main(85e03b0) — ahead 0 / behind 0 ✅ (与 origin 完全同步; dirty routine: memory + untracked png/memory/scripts/qa_report/AgentDashboardPage.tsx)
+- **GitHub**: **20 open — 0 P0 / 1 P1(#309)** | 0 PRs | #309 备份失败仍 open，无新推进
+- **System**: load / Mem 661Mi avail (3911Mi total) | Disk 31/40Gi (82%); host up 2d22h52m
+- **Action**: 主服务健康、公网可达。P1 #309(每日备份失败)状态与 11:30 一致，尚未路由修复。注: 本轮脚本初筛 P1=0 系 label 大小写(matches lowercase `p1`)过滤笔误，复检确认 #309 仍 open。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory 为 routine。无新增 P0/P1，无需 spawn agent。
+- **#ContinuousGreen(主服务) 延续 🏆 | 但 P1 #309 仍待修 → 需 DEV 关注**
+
+---
+
 # 11:30 — Heartbeat (Thu) 🟢
 
 ### System Status 🟢 (主服务正常)
