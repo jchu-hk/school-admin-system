@@ -1,3 +1,41 @@
+# 21:00 — Heartbeat (Thu) 🟡 #309仍未部署(连续第37轮)阻塞持续缓解待主机授权 #310公网🔴持续
+
+### System Status 🟢 (内网正常) / 🟡 (#309阻塞缓解但未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 172.19.0.3:3000/api/health → **200**。(内网正常)
+- **Docker**: backend **Up 4 hours**(Image=**v1.5.7**, 早于 b5ae579 fix commit); docker exec 确认 **`pg_dump` MISSING** → **#309 修复第37轮仍未部署**; **cloudflared Exited(2)** 4h ago(公网仍不可达 #310); 13 容器 Up; host up 3d7h59m; load 3.36。
+- **备份文件**: `backup_20260806083712..sql.gz` 仍 **20B 空文件**(#309 pg_dump 缺失静默失败现场)。
+- **Git**: main(**6643ade** chore dashboard rebuild) synced; fix commit b5ae579 在历史但容器未重建。
+- **GitHub**: **21 open — 0 P0 / 2 P1**(#309 in-progress/devops、#310 provider-action 均 OPEN) | 0 PRs | 无新 issue。
+- **System**: load 3.36 | Disk 31/40Gi(81%)。
+- **⚠️ Action**: 与 20:55 一致，无变化。#309 阻塞已完全缓解，但环境仅 main agent、无 DEVOPS 可派发，PM 受 SVA 约束不可代做 deploy。**需用户在主机端授权执行 `cd infra && docker compose build backend && up -d`** → 验证 pg_dump 存在 + 备份>0B 方可 close #309。#310 公网持续(cloudflared Exited，host egress 故障)。无新 P0。
+
+---
+# 21:00 — Heartbeat (Thu) 🟡 #309仍未部署(连续第37轮)阻塞持续缓解待主机授权 #310公网🔴持续
+
+### System Status 🟢 (内网正常) / 🟡 (#309阻塞缓解但未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 172.19.0.3:3000/api/health → **200**。(内网正常)
+- **Docker**: backend **Up 4 hours**(Image=**v1.5.7**, 早于 b5ae579 fix commit); docker exec 确认 **`pg_dump` MISSING** → **#309 修复第37轮仍未部署**; **cloudflared Exited(2)** 4h ago(公网仍不可达 #310); postgres/redis/kafka/opa healthy; host up 3d7h58m; load 1.84。
+- **备份文件**: `backup_20260806083712..sql.gz` 仍 **20B 空文件**(#309 pg_dump 缺失静默失败现场)。
+- **Git**: main(**6643ade** chore dashboard rebuild) synced; fix commit b5ae579 在历史但容器未重建。
+- **GitHub**: **21 open — 0 P0 / 2 P1**(#309 in-progress/devops、#310 provider-action 均 OPEN) | 0 PRs | 无新 issue。
+- **System**: load 1.84 | Disk 31/40Gi(81%) | Mem ~116Mi avail。
+- **⚠️ Action**: 与 20:55 一致，无变化。#309 阻塞已完全缓解，但环境仅 main agent、无 DEVOPS 可派发，PM 受 SVA 约束不可代做 deploy。**需用户在主机端授权执行 `cd infra && docker compose build backend && up -d`** → 验证 pg_dump 存在 + 备份>0B 方可 close #309。#310 公网持续(cloudflared Exited，host egress 故障)。无新 P0。
+
+---
+
+# 20:55 — Heartbeat (Thu) 🟡 #309仍未部署(连续第36轮)阻塞持续缓解待主机授权 #310公网🔴持续
+
+### System Status 🟢 (内网正常) / 🟡 (#309阻塞缓解但未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 172.19.0.3:3000/api/health → **200**; 9000→401 auth 正常。(内网正常)
+- **Docker**: backend **Up 4 hours**(Image=**v1.5.7**, 早于 b5ae579 fix commit); docker exec 确认 **`pg_dump` MISSING** → **#309 修复第36轮仍未部署**; **cloudflared 未在 Up 列表**(Exited，公网仍不可达 #310); postgres/redis/kafka/opa healthy; host up 3d7h52m; load 0.87。
+- **备份文件**: `backup_20260806083712..sql.gz` 仍 **20B 空文件**（#309 pg_dump 缺失静默失败现场，属主 1001:1001 权限正确）。
+- **Git**: main(**6643ade** chore dashboard rebuild) synced; fix commit b5ae579 在历史但容器未重建。
+- **GitHub**: **21 open — 0 P0 / 2 P1**(#309 in-progress/devops、#310 provider-action 均 OPEN) | 0 PRs | 无新 issue。
+- **System**: load 0.87 | Disk 31/40Gi(81%) | Mem ~430Mi avail。
+- **⚠️ Action**: 与 20:35 一致，无变化。#309 阻塞已完全缓解，但环境仅 main agent、无 DEVOPS 可派发，PM 受 SVA 约束不可代做 deploy。**需用户在主机端授权执行 `cd infra && docker compose build backend && up -d`** → 验证 pg_dump 存在 + 备份>0B 方可 close #309。#310 公网持续（cloudflared Exited，host egress 故障）。无新 P0。
+
+---
+
 # 20:35 — Heartbeat (Thu) 🟡 #309仍未部署(连续第35轮)阻塞持续缓解待主机授权 #310公网🔴持续
 
 ### System Status 🟢 (内网正常) / 🟡 (#309阻塞缓解但未部署) / 🔴 (公网持续)
