@@ -1,3 +1,32 @@
+# 16:50 — Heartbeat (Thu) 🔴⚠️ #309运行容器未生效(修复已提交未部署) / #310公网🔴持续
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网持续) / ⚠️ (#309修复未部署到运行容器)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200。（与既往一致，全绿）
+- **Docker**: **13 Up + 1 Exited** — backend **Up 14 min**（16:35 重建，Image=v1.5.7）; postgres/redis/kafka/opa healthy; **cloudflared Exited(2)** 13 min ago（原 crash-loop → Exit，公网仍不可达）; host up 3d3h47m。
+- **Git**: main(**b5ae579** 16:5x `fix(backup): resolve #309 EACCES + add pg_dump & pipefail guard`) ✅ — 工作区 clean（仅 HEARTBEAT.md 改动 + untracked backups/）。DEVOPS 已提交 #309 修复代码。
+- **⚠️ 关键发现: 运行容器未生效** — docker exec 确认: 运行中 backend Image=v1.5.7（Created 16:35）内 **`pg_dump` 不存在**、dist 中 **`pipefail` 计数=0**。即 #309 修复代码已 commit 到 main，但**未 rebuild/redeploy 到运行容器**；16:37 手动备份日志「备份成功」实为 **20 字节空文件**(backup_20260806083712..sql.gz)，正是 #309 描述的 pg_dump 缺失静默失败(pipe 掩码)。修复未落地运行环境。
+- **GitHub**: **21 open — 0 P0 / 2 P1**（#309 备份失败 + #310 公网不可达，均仍 open；#309 标 in-progress/devops，updatedAt 08:25Z，修复代码已提交但容器未部署，#309 不可 close）| 0 PRs
+- **System**: load 1.41/8.99/8.83 回落（此前瞬态）| Mem ~582Mi avail | Disk 31/40Gi (81%)
+- **Action**: **#309 需 DEVOPS rebuild+redeploy** — 修复代码已在 main(b5ae579)，但 backend 运行容器仍为旧镜像(无 pg_dump、无 pipefail)，每日定时备份仍会静默产出空文件。需重新 `docker compose build backend && up -d` 使修复生效，并验证真实备份文件>0B。未 spawn（#309/#310 均已有 DEVOPS 指派推进）。**#310 公网持续**（cloudflared Exited，host egress 故障非应用可修）。遗留同前：default bridge 网络损坏(pending)。
+- **内网 🏆 #309待部署 ⚠️ | 公网 🔴 持续** | **HEARTBEAT_ACTION** 🟡
+
+---
+
+# 16:46 — Heartbeat (Thu) 🟡 #309备份已修复(待提交) / #310公网🔴持续
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200; 9000→401 auth 正常。（与既往一致）
+- **Docker**: **14 Up + 1 Exited** — backend **Up 10 min**（#309 修复重建后）; postgres/redis/kafka/opa healthy; **cloudflared Exited(2)**（原 crash-loop → 本轮已 Exit，公网仍不可达）; host up 3d3h44m。
+- **Git**: main(**2f93a88** heartbeat 16:41) — ahead 0 / behind 0 ✅. **工作区 dirty = DEVOPS WIP（#309 备份修复未提交）**: apps/backend/Dockerfile、backup.service.ts、infra/docker-compose*.yml 已改; untracked backups/、infra/run-backend.sh。
+- **GitHub**: **21 open — 0 P0 / 2 P1**（#310 公网不可达 + #309 备份失败，均仍 open；#309 标 in-progress/devops，修复已落地待 DEVOPS 收尾关闭）| 0 PRs
+- **System**: load **20.07/18.51/11.12 瞬时升高**（top 均为本心跳自检 python3/git + containerd/dockerd 活动，无 runaway，判瞬态）| Mem ~553Mi avail | Disk 31/40Gi (81%)
+- **Action**: 态势与 16:41 一致，**无新变化**。内网全绿；**#309 备份已修复**（日志确认 `备份成功: BK-20260806-HAOH`，bind-mount 生效），待 DEVOPS 提交代码并关闭 Issue。**#310 公网暴露持续**（cloudflared 已 Exited(2)，host egress 故障非应用可修，DEVOPS 推进中）。未追加 spawn。遗留同前：default bridge 网络损坏(pending)。
+- **内网 🏆 公网 🔴 持续** | **HEARTBEAT_OK** 🟢
+
+---
+
+---
+
 # 16:41 — Heartbeat (Thu) 🟡 #309备份已修复 / #310公网🔴持续
 
 ### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续) / 🟡 (#309修复WIP)
