@@ -99,17 +99,23 @@ export class BackupService {
       const dbPassword = this.configService.get('DB_PASSWORD', '');
       const dbName = this.configService.get('DB_NAME', 'school_admin');
 
-      const pgDumpCmd = `PGPASSWORD="${dbPassword}" pg_dump -h ${dbHost} -p ${dbPort} -U ${dbUser} -d ${dbName} --no-owner --no-acl -F p | gzip > "${filePath}"`;
+      const pgDumpCmd = `set -o pipefail; PGPASSWORD="${dbPassword}" pg_dump -h ${dbHost} -p ${dbPort} -U ${dbUser} -d ${dbName} --no-owner --no-acl -F p | gzip > "${filePath}"`;
 
       this.logger.log(`开始执行备份: ${record.backupNo}`);
 
-      // 执行备份命令
-      await execAsync(pgDumpCmd, {
+      // 使用 bash 的 pipefail：确保 pg_dump 失败时命令整体失败，
+      // 避免管道掩码错误（gzip 成功而 pg_dump 失败时退出码仍为 0）导致空备份被误判成功。
+      await execAsync(`bash -o pipefail -c ${JSON.stringify(pgDumpCmd)}`, {
         maxBuffer: 50 * 1024 * 1024, // 50MB buffer
       });
 
-      // 检查文件是否存在
+      // 检查文件是否非空（防止伪成功/空备份被保存）
       const stats = await fs.stat(filePath);
+      if (stats.size === 0) {
+        throw new Error(
+          `备份文件为空 (${filePath})，pg_dump 未产生任何数据，已中止`,
+        );
+      }
 
       // 计算文件大小
       const fileSizeBytes = stats.size;

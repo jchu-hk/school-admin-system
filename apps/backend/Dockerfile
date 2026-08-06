@@ -6,6 +6,12 @@
 
 FROM docker.m.daocloud.io/library/node:22-bookworm
 
+# 安装 PostgreSQL 客户端工具（pg_dump/pg_restore），供 BackupService 数据库备份使用
+# Issue #309/#310: 缺少 pg_dump 导致备份文件为空（pipe 掩码错误，退出码为 0）
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # Copy package files first for better caching

@@ -110,12 +110,22 @@ services:
 
       # Logging
       LOG_LEVEL: ${LOG_LEVEL:-info}
+
+      # Backup
+      # 备份目标目录。宿主机目录 /var/backups/school_admin 已 chown 为 nestjs(1001) 可写，
+      # 绑定挂载进容器，避免镜像内 /var/backups 属 root:root 0755 导致的 EACCES。
+      # (Issue #309)
+      BACKUP_DIR: /var/backups/school_admin
     ports:
       - "${BACKEND_PORT:-3000}:3000"
     volumes:
       # Mount source code in development for hot reload
       - ../apps/backend/src:/app/src:ro
       - ../packages:/app/packages:ro
+      # 持久化数据库备份文件（宿主目录 /var/backups/school_admin，nestJS 可写，Issue #309）
+      - type: bind
+        source: ${BACKUP_HOST_DIR:-/var/backups/school_admin}
+        target: /var/backups/school_admin
     depends_on:
       postgres:
         condition: service_healthy

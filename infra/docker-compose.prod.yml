@@ -28,13 +28,20 @@ services:
         NODE_ENV: production
         NPM_REGISTRY: ${NPM_REGISTRY:-}
     restart: always
-    volumes: []
+    volumes:
+      # 生产环境挂载数据库备份目录（宿主绑定，nestJS 可写，Issue #309）
+      # 注：此列表会与 base compose 的 dev 源码 mount 合并；实际部署以 docker run 为准
+      - type: bind
+        source: /var/backups/school_admin
+        target: /var/backups/school_admin
     environment:
       NODE_ENV: production
       LOG_LEVEL: warn
       TZ: Asia/Hong_Kong
       DB_SSL: "true"
       SESSION_SECURE_COOKIE: "true"
+      # 备份目录（宿主绑定卷，nestJS 可写，避免 /var/backups 属 root 的 EACCES）
+      BACKUP_DIR: /var/backups/school_admin
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
       interval: 20s
