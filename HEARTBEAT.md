@@ -1,6 +1,24 @@
 
 ---
 
+# 13:50 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health**: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200; 9000→401 auth 正常 ✅
+- **公网端点仍不可达** 🔴: school-admin.coze.site → 404、portal.student.coze.site → 000（与 #310 确诊一致，无变化）
+- **Git**: main **ahead 0 / behind 0** ✅（dirty routine: healthcheck_history + untracked png/scripts/qa_report/AgentDashboardPage.tsx）
+- **GitHub**: **21 open — P0=0 / P1=2**（#310 公网不可达 + #309 备份失败）| 0 PRs
+- **Docker**: 14/14 Up（内网无 exited/unhealthy；cloudflared crash-loop 持续 RestartCount=17112）
+- **System**: load 0.27 | Mem 624Mi avail | Disk 82%（host up 3d48m）
+
+### Action
+- 公网暴露持续（#310 open，host 级 egress 受限），态势与 13:40 一致，**无新变化**。
+- 内网主服务稳定连续绿。未 spawn（环境仍仅 main agent）。
+- 遗留: #310 公网不可达(DEVOPS)、#309 备份失败(pending)、默认 bridge 网络损坏(pending)。
+- **内网 #ContinuousGreen 🏆 | 公网暴露 🔴 持续（#310）**
+
+---
+
 # 13:25 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
 
 ### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
@@ -3714,6 +3732,24 @@
 
 ### Action
 - 复测 host 级 egress 仍确诊（#310 open，host 出站受限非应用可修）: api.trycloudflare.com 405 可达, region.trycloudflare.com + google.com 均 000 超时 → cloudflared 永远建不成 tunnel。
+- 内网主服务稳定连续绿。未 spawn（环境仍仅 main agent）。
+- 遗留: #310 公网不可达(DEVOPS)、#309 备份失败(pending)、默认 bridge 网络损坏(pending)。
+- **内网 #ContinuousGreen 🏆 | 公网暴露 🔴 持续（#310）**
+
+---
+
+# 13:45 — Heartbeat (Thu) 🔴 公网暴露持续 (host egress 已确诊 #310)
+
+### System Status 🟢 (内网主服务正常) / 🔴 (公网暴露持续)
+- **内网 Health**: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200; 9000→401 auth 正常 ✅
+- **公网端点仍不可达** 🔴: school-admin.coze.site → 404、portal.student.coze.site → 000（与 #310 确诊一致，无变化）
+- **Git**: main(a8fa3f9) **ahead 0 / behind 0** ✅（dirty routine: memory + healthcheck_history）
+- **GitHub**: **21 open — P0=0 / P1=2**（#310 公网不可达 + #309 备份失败）| 0 PRs
+- **Docker**: 14/14 Up（内网无 exited/unhealthy；cloudflared crash-loop 持续，Up 13s）
+- **System**: load 0.44 | Mem 591Mi avail | Disk 82%（host up 3d42m）
+
+### Action
+- 公网暴露持续（#310 open，host 级 egress 受限），态势与 13:25 一致，**无新变化**。
 - 内网主服务稳定连续绿。未 spawn（环境仍仅 main agent）。
 - 遗留: #310 公网不可达(DEVOPS)、#309 备份失败(pending)、默认 bridge 网络损坏(pending)。
 - **内网 #ContinuousGreen 🏆 | 公网暴露 🔴 持续（#310）**
