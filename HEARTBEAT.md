@@ -1,6 +1,38 @@
 
 ---
 
+# 10:55 — Heartbeat (Thu) 🔍 P1
+
+### System Status 🟢 (主服务正常)
+- **Health**: /**school-admin/** 200、/**portal/student** 200（coze.site 均 200）✅
+- **Docker**: **14/14 Up** ✅ (backend/postgres/redis/kafka/opa healthy; cloudflared 例行续连——重启数秒 catch，trycloudflare quick tunnel 反复请求, RestartCount 高, 不影响公网 200; host up 2d21h48m)
+- **Git**: main — ahead 0 / behind 0 ✅ (dirty routine: HEARTBEAT.md + memory)
+- **GitHub**: **19 open — 0 P0 / 1 P1(#309)** | 0 PRs | **🆕 本轮新增 Issue #309**
+- **System**: load / Mem / Disk 与既往持平
+
+### 🔍 新发现 P1: 每日定时备份持续失败
+- 后端日志: `备份失败: EACCES: permission denied, mkdir '/var/backups/school_admin'`
+- 自 **07/14** 起累计 **72 次**，每日 2:00 AM 定时备份全失败 → 数据恢复点缺失（数据丢失风险）
+- 根因初步: 容器内备份进程非 root 无法写 host /var/backups（root 0755）
+- 此为**此前记忆误判全绿的遗漏项**，本轮发现并建档。
+- **已建 Issue #309** [P1] 每日定时备份持续失败(w/ backend+devops+ops+bug labels)，路由待修。
+- Action: 主服务健康、公网可达，无即时可用性影响；备份属数据安全短板需修。环境仅 main agent 配置，经 issue 由工作流路由。
+- **#ContinuousGreen(主服务) 延续 🏆 | 但新增 P1 待修 → 需 DEV 关注**
+
+---
+
+# 10:50 — Heartbeat (Thu) 🟢
+
+### System Status 🟢
+- **Health**: All 200 ✅ (backend:3000/api/health 200, frontend:8080 200, v2:8081 200, gateway:5001/health 200; 9000→401 auth 正常)
+- **Docker**: **14/14 Up** ✅ (postgres/redis/kafka/opa healthy; cloudflared 重启后 Up 4s 例行; host up 2d21h47m; 无 exited/unhealthy/restarting 残留)
+- **Git**: main(**1dbe638**) — **ahead 0 / behind 0** ✅ (与 origin 完全同步; dirty routine: memory/2026-08-05.md + untracked png/memory/scripts/qa_report/AgentDashboardPage.tsx 为 routine)
+- **GitHub**: **19 open — 0 P0 / 0 P1** ✅ (14 p2, 5 p3) | 0 PRs
+- **System**: load 0.91 | Mem ~656Mi avail (3911Mi total) | Disk 31/40Gi (82%); host up 2d21h47m
+- **Action**: 连续绿，P0/P1 保持清零。HEAD 前移至 1dbe638（较 10:45 的 5a818ec 有新 heartbeat commit，正常）。Git fully synced (ahead 0/behind 0)。load 0.91 平稳。cloudflared 重启 4s 例行(常态)。Disk 82% 与既往持平。遗留同前: 默认 bridge 网络损坏(pending); untracked png/memory/scripts/qa_report 为 routine。无 P0/P1，无需 spawn agent。
+- **#ContinuousGreen continues 🏆** | **HEARTBEAT_OK** 🟢
+---
+
 # 10:45 — Heartbeat (Thu) 🟢
 
 ### System Status 🟢
