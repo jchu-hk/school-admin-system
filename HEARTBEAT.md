@@ -1,3 +1,17 @@
+# 17:10 — Heartbeat (Thu) 🔴⚠️→🟡 #309仍未部署(连续第4轮)但阻塞缓解(镜像源可达) | #310公网🔴持续
+
+### System Status 🟢 (内网主服务正常) / 🟡 (#309阻塞缓解) / 🔴 (公网持续)
+- **内网 Health** ✅: backend:3000/api/health 200、frontend:8080 200、v2:8081 200、gateway:5001/health 200。（全绿，与既往一致）
+- **Docker**: **13 Up + 1 Exited** — backend **Up 34 min**(Image=v1.5.7, Created 08:35Z **早于** b5ae579 fix commit)；docker exec 确认: **`pg_dump` MISSING**、dist `pipefail` refs=0 → **#309 修复仍未部署**; postgres/redis/kafka/opa healthy; **cloudflared Exited(2)** 33min ago（公网仍不可达）; host up 3d4h07m。
+- **备份文件**: `/var/backups/school_admin/backup_20260806083712..sql.gz` 仍为 **20B 空文件**（#309 pg_dump 缺失静默失败现场，修复未生效）。
+- **🔑 本轮关键变化 — 阻塞缓解**: 此前 3 轮判「环境级阻塞 无外网拉镜像」。本轮实测 egress: **Dockerfile base 镜像源 `docker.m.daocloud.io` → 302 可达**、`deb.debian.org` → 200、github → 200；仅 `registry-1.docker.io`/dockerhub → 000。即 **#309 重建解除镜像拉取阻塞，`docker compose build backend && up -d` 现在大概率可行**（base `node:22-bookworm` 拉自 daocloud 镜像，非常规 dockerhub）。已无 DEVOPS 独立 agent 可指派（agents_list 仅 main），需具权限执行者尝试重建为 v1.6.0 并验证真实备份文件>0B。
+- **Git**: main(**63d0d22** chore dashboard) synced clean；`b5ae579 fix(backup)` 在历史但运行容器未重建。
+- **GitHub**: **21 open — 0 P0 / 1 P1 列表**（本轮 gh 查询 P1=0 异常，可能 labels 过滤差异；#309 in-progress/devops、#310 provider-action 均 OPEN 确认存在）| 0 PRs。
+- **System**: load 0.37/0.68/2.89 | Mem ~186Mi avail | Disk 31/40Gi(81%)。
+- **⚠️ Action**: #309 **阻塞已缓解**（daocloud 镜像源可达）— 建议具权限执行者 `cd infra && docker compose build backend && up -d` 重建 backend 至修复版，随后 docker exec 验证 `pg_dump` 存在 + 触发备份生成 >0B 文件方可 close #309。#310 公网持续（cloudflared Exited，host egress 到 region 端点仍故障）。无新 P0。
+
+---
+
 # 17:06 — Heartbeat (Thu) 🔴⚠️ #309仍未部署(连续第3轮) #310公网🔴持续
 
 ### System Status 🟢 (内网主服务正常) / 🔴 (公网持续) / ⚠️ (#309修复仍未部署，连续第3轮检测到)
