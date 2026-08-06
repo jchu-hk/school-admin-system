@@ -1,0 +1,42 @@
+Smart Campus
+Dashboard
+Student Management
+Attendance
+Asset Management
+Asset Rental
+Leave Management
+Parent Inquiry
+Inquiry Queue
+Notifications
+Course Management
+Exam Management
+Finance Management
+About
+English
+Logout
+课程管理
+
+管理学校的课程信息
+
+获取课程列表失败
+所有年级
+中一
+中二
+中三
+中四
+中五
+中六
+所有科目
+中文
+英文
+数学
+理科
+文科
+其他
+所有状态
+启用
+禁用
+应用筛选
+新增课程
+
+暂无课程数据
