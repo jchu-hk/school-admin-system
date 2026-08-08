@@ -108,7 +108,7 @@
 
     <script>
         // 内嵌最新状态数据 (无 CORS 问题)
-        const EMBEDDED_STATE = {"agents": [{"icon": "🧑💼", "name": "PM", "status": "idle", "task": "调度中枢", "color": "#fbbf24"}, {"icon": "🤖", "name": "DEV", "status": "idle", "task": "开发实现", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "idle", "task": "质量验收", "color": "#4ade80"}, {"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "上次: 0b573f3", "color": "#f97316"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "代码审查", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "架构设计", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "idle", "task": "需求分析", "color": "#ec4899"}], "stats": {"openIssues": 21, "commits": 20, "todayCommits": 3, "recentActivity": 20}, "lastUpdate": "2026-08-08 09:20:56"};
+        const EMBEDDED_STATE = {"agents": [{"icon": "🧑💼", "name": "PM", "status": "idle", "task": "调度中枢", "color": "#fbbf24"}, {"icon": "🤖", "name": "DEV", "status": "idle", "task": "开发实现", "color": "#60a5fa"}, {"icon": "🔍", "name": "QA", "status": "idle", "task": "质量验收", "color": "#4ade80"}, {"icon": "🔧", "name": "DEVOPS", "status": "idle", "task": "运维部署", "color": "#f97316"}, {"icon": "✓", "name": "CHECKER", "status": "idle", "task": "代码审查", "color": "#a855f7"}, {"icon": "🏗️", "name": "ARCH", "status": "idle", "task": "架构设计", "color": "#6b7280"}, {"icon": "📝", "name": "REQ", "status": "idle", "task": "需求分析", "color": "#ec4899"}], "stats": {"openIssues": 21, "commits": 20, "todayCommits": 3, "recentActivity": 20}, "lastUpdate": "2026-08-08 09:20:56"};
 
         function render(state) {
             if (!state) return;
