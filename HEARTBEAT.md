@@ -1,3 +1,35 @@
+# 21:04 — Heartbeat (Sun) 🟡 第65轮 #309未部署待主机授权 #310公网🔴持续 (状态与既往完全相同)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200。postgres/redis/kafka/opa healthy (2d)。
+- **Docker**: backend Up 2d; frontend + frontend-v2 Up 4h (午间 nginx 重启); cloudflared 未列 (Exited, #310持续)。
+- **Git**: main 无新提交 (仅 heartbeat 自动更新)。最新 commit 为 16:04 第70轮 heartbeat 日志。
+- **System**: load 0.36 | host up 2d 20h39m | disk 82% (7.0G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第65轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
+- **建议**: 连续 65 轮零变化,强烈建议暂停 #309/#310 重复播报或降低心跳频率;阻塞纯待人工介入,非 agent 可推进。
+
+---
+
+# 21:00 — Heartbeat (Sun) 🟡 第64轮 #309未部署待主机授权 #310公网🔴持续 (状态与既往完全相同)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200。postgres/redis/kafka/opa healthy (2d)。
+- **Docker**: backend Up 2d(v1.5.7); frontend+frontend-v2 Up; cloudflared 未列 (Exited, #310持续)。
+- **GitHub**: 21 open — 0 P0 / 2 P1 (#309 + #310) 均 OPEN | 0 PRs | 无新 issue (最后一个 8/6)。
+- **System**: load 0.48 | disk 82% (7.0G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第64轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
+- **建议**: 连续 64 轮零变化,强烈建议暂停 #309/#310 重复播报或降低心跳频率;阻塞纯待人工介入,非 agent 可推进。
+
+# 20:04 — Heartbeat (Sun) 🟡 第63轮 #309未部署待主机授权 #310公网🔴持续 (状态与既往完全相同)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200。postgres/redis/kafka/opa healthy (2d)。
+- **Docker**: backend Up 2d(v1.5.7); frontend+frontend-v2 **Up 3h**(午间 nginx 例行重启,18h 前一次); cloudflared 未列 (Exited, #310持续)。
+- **GitHub**: 21 open — 0 P0 / 2 P1 (#309 + #310) 均 OPEN | 0 PRs | 无新 issue (最后一个 8/6)。
+- **System**: load 0.38 | host up 2d 19h39m | disk 82% (7.0G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第63轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
+- **建议**: 连续 63 轮零变化,强烈建议暂停 #309/#310 重复播报或降低心跳频率;阻塞纯待人工介入,非 agent 可推进。
+
 # 09:04 — Heartbeat (Sun) 🟡 第62轮 #309未部署待主机授权 #310公网🔴持续 (状态与既往完全相同)
 
 ### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
