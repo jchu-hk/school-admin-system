@@ -95,14 +95,17 @@ def infer_status(issues, commits):
 
 def build_html(agent_status, stats):
     """构建 HTML"""
-    agents_json = json.dumps([
-        {"icon": AGENT_CONFIG[a]["icon"], "name": a,
-         "status": s["status"], "task": s["task"],
-         "color": AGENT_CONFIG[a]["color"]}
-        for a, s in agent_status.items()
-    ], ensure_ascii=False)
-
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    full_state = json.dumps({
+        "agents": [
+            {"icon": AGENT_CONFIG[a]["icon"], "name": a,
+             "status": s["status"], "task": s["task"],
+             "color": AGENT_CONFIG[a]["color"]}
+            for a, s in agent_status.items()
+        ],
+        "stats": stats,
+        "lastUpdate": now_str
+    }, ensure_ascii=False)
 
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -214,7 +217,7 @@ def build_html(agent_status, stats):
 
     <script>
         // 内嵌最新状态数据 (无 CORS 问题)
-        const EMBEDDED_STATE = {agents_json};
+        const EMBEDDED_STATE = {full_state};
 
         function render(state) {{
             if (!state) return;
@@ -281,6 +284,15 @@ def main():
     html = build_html(agent_status, stats)
     Path(DASHBOARD_HTML_FILE).write_text(html, encoding='utf-8')
     print(f"\n✅ Dashboard HTML written: {DASHBOARD_HTML_FILE}")
+
+    # 4.5 同步到 nginx /agents 路径（防止 /agents 与 multi-agent-dashboard.html 不同步）
+    agents_html_path = "/var/www/html/agents.html"
+    try:
+        Path(agents_html_path).write_text(html, encoding='utf-8')
+        print(f"✅ Synced to: {agents_html_path}")
+    except PermissionError:
+        print(f"⚠️ Cannot write {agents_html_path} (permission denied), trying sudo...")
+        subprocess.run(["sudo", "cp", DASHBOARD_HTML_FILE, agents_html_path], check=False, timeout=10)
 
     # 5. 提交并推送
     try:

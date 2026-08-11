@@ -197,13 +197,20 @@ class DashboardUpdater:
     def update_timestamp(html: str) -> str:
         """更新时间戳"""
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        html = re.sub(r'"lastUpdate":\s*"\$\(date.*?\)"', f'"lastUpdate": "{now}"', html)
+        # Match both real timestamp and $(date) placeholder
+        html = re.sub(r'"lastUpdate":\s*"[^"]*"', f'"lastUpdate": "{now}"', html)
         return html
 
     @staticmethod
     def save_dashboard(html: str):
-        """保存 Dashboard"""
+        """保存 Dashboard 并同步到 nginx /agents"""
         Path(DASHBOARD_FILE).write_text(html, encoding='utf-8')
+        # 同步到 nginx /agents 路径，确保单一数据源
+        agents_html = "/var/www/html/agents.html"
+        try:
+            Path(agents_html).write_text(html, encoding='utf-8')
+        except PermissionError:
+            subprocess.run(["sudo", "cp", DASHBOARD_FILE, agents_html], check=False, timeout=10)
 
     @staticmethod
     def commit_and_push():

@@ -1,3 +1,33 @@
+## 2026-08-08 — Dashboard 数据造假事故 🚨
+
+**问题**: `/agents` 页面展示 DEV "running" 但实际没有任何 agent 在运行。数据来自 2026-07-02（一个多月前），纯假数据。
+
+**根因**:
+1. 主机 Nginx 挂了（8/7 07:10 停止），端口 5000 无人监听 → 所有外部请求 502
+2. `/agents` 和 `multi-agent-dashboard.html` 是**两套完全不同的 HTML**：
+   - `/agents` → 手动维护的静态 HTML（`/var/www/html/agents.html`），从未自动更新
+   - `/school-admin/multi-agent-dashboard.html` → `generate-dashboard.py` 自动生成
+3. `generate-dashboard.py` 的 `build_html()` 有 bug：`EMBEDDED_STATE` 只塞了 agents 数组，`render()` 期望 `{agents, stats, lastUpdate}` 对象 → JS 渲染失败
+
+**修复**:
+- Nginx 重启
+- `generate-dashboard.py` 修复 EMBEDDED_STATE 数据格式 + 增加自动同步到 `/var/www/html/agents.html`
+- 新增 cron job `dashboard-refresh` 每 5 分钟自动刷新
+
+**教训（不可接受）**:
+1. ❌ Dashboard 数据必须真实 — 假数据比没数据更恶劣
+2. ❌ 两套独立 HTML 是设计缺陷 — 必须单一来源
+3. ❌ 不能依赖手动更新 — 必须 cron 自动化
+4. ✅ 心跳应检查 nginx 进程是否存活（不只是 HTTP 响应）
+5. ✅ 任何"显示状态"的页面必须有 freshness 检查机制
+
+**预防措施**:
+- Cron `dashboard-refresh` 每 5 分钟运行 `generate-dashboard.py` → 同步到 nginx
+- `generate-dashboard.py` 现在自动写入 `/var/www/html/agents.html`
+- 心跳增加 nginx 进程检查
+
+---
+
 ## 🛡️ PM 操作白名单 (Operating Whitelist) — 最高优先级
 
 **每个 Agent 按自身设计运行。PM 的角色是协调调度，不是执行。**
