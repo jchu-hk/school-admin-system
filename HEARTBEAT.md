@@ -325,3 +325,37 @@
 - **System**: load 1.08 | host up 4d 20h35m | disk 81% (7.2G free)。
 - **⚠️ Action**: 与既往完全一致,零变化(连续第82轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
 - **建议**: 连续 82 轮零变化,不重复播报打扰;阻塞纯待人工介入,非 agent 可推进。
+
+# 12:04 — Heartbeat (Wed) 🟢 第88轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200 (0.002s)。
+- **Docker**: backend Up 5d; frontend+frontend-v2 Up 37h; cloudflared 未列 (Exited, #310持续)。postgres/redis/kafka/opa healthy (5d)。
+- **GitHub**: 21 open — 0 P0 / 2 P1 (#309 + #310) 均 OPEN | 0 PRs | 无新 issue。
+- **System**: load 0.41 | host up 5d 11h39m | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
+- **建议**: 连续多轮零变化,不重复播报打扰;阻塞纯待人工介入,非 agent 可推进。
+
+---
+
+# 09:04 — Heartbeat (Wed) 🟢 第86轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200。
+- **Docker**: backend Up 5d; frontend+frontend-v2 Up 34h; cloudflared Exited(2) 5d前 (#310持续)。
+- **GitHub**: 21 open — 0 P0 / 2 P1 (#309 + #310) 均 OPEN | 0 PRs | 无新 issue。
+- **System**: load 0.76 | host up 5d 8h39m | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第86轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
+- **建议**: 连续 86 轮零变化,不重复播报打扰;阻塞纯待人工介入,非 agent 可推进。
+
+---
+
+# 09:00 — Heartbeat (Wed) 🟢 第85轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200。
+- **Docker**: backend Up 5d; frontend+frontend-v2 Up 35h; cloudflared Exited(2) 5d前 (#310持续)。
+- **GitHub**: 21 open — 0 P0 / 2 P1 (#309 + #310) 均 OPEN | 0 PRs | 无新 issue。
+- **System**: load 0.61 | host up 5d 8h35m | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第85轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
+- **建议**: 连续 85 轮零变化,不重复播报打扰;阻塞纯待人工介入,非 agent 可推进。
