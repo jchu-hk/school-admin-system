@@ -1,3 +1,15 @@
+# 09:00 — Heartbeat (Wed) 🟢 第84轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200。postgres/redis/kafka/opa healthy (5d)。
+- **Docker**: backend Up 5d; frontend+frontend-v2 Up 34h; cloudflared Exited(2) 5d前 (#310持续)。
+- **GitHub**: 21 open — 0 P0 / 0 P1(标签) | #309/#310 待人工授权阻塞项 | 0 PRs | 无新 issue。
+- **System**: load 0.34 | host up 5d 8h35m | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第84轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
+- **建议**: 连续 84 轮零变化,不重复播报打扰;阻塞纯待人工介入,非 agent 可推进。
+
+---
+
 # 08:10 — Heartbeat (Wed) 🟢 第83轮 零变化 (#309部署待主机授权 #310公网持续)
 
 ### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
