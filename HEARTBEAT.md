@@ -1,3 +1,39 @@
+# 17:04 — Heartbeat (Wed) 🟢 第92轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200 (0.011s)。
+- **Docker**: backend Up 5d; frontend+frontend-v2 Up 42h; cloudflared 未列 (Exited, #310持续)。
+- **GitHub**: 21 open — 0 P0 / 2 P1 (#309 + #310) 均 OPEN | 0 PRs | 无新 issue。
+- **System**: load 0.71 | host up 5d 16h39m | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第92轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
+- **建议**: 连续 92 轮零变化,不重复播报打扰;阻塞纯待人工介入,非 agent 可推进。
+
+---
+
+# 16:04 — Heartbeat (Wed) 🟢 第91轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200 (0.012s)。
+- **Docker**: backend Up 5d; frontend+frontend-v2 Up 41h; cloudflared 未列 (Exited, #310持续)。
+- **GitHub**: 21 open — 0 P0 / 2 P1 (#309 + #310) 均 OPEN | 0 PRs | 无新 issue。
+- **System**: load 0.65 | host up 5d 15h39m | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第91轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
+- **建议**: 连续 91 轮零变化,不重复播报打扰;阻塞纯待人工介入,非 agent 可推进。
+
+---
+
+# 15:04 — Heartbeat (Wed) 🟢 第90轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200 (0.001s)。
+- **Docker**: backend Up 5d; frontend+frontend-v2 Up 40h; cloudflared 未列 (Exited, #310持续)。
+- **GitHub**: 21 open — 0 P0 / 2 P1 (#309 + #310) 均 OPEN | 0 PRs | 无新 issue。
+- **System**: load 0.43 | host up 5d 14h39m | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第90轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
+- **建议**: 连续 90 轮零变化,不重复播报打扰;阻塞纯待人工介入,非 agent 可推进。
+
+---
+
 # 13:04 — Heartbeat (Wed) 🟢 第89轮 零变化 (#309部署待主机授权 #310公网持续)
 
 ### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
