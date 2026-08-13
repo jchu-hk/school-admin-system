@@ -1,3 +1,48 @@
+# 19:04 — Heartbeat (Thu) 🟢 第107轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200 (0.0028s)。
+- **GitHub**: open 74 — 0 P0 / 0 P1(标签) | **P1 bug #309 + #310 均 OPEN 未变**。其余为已导入 design/enhancement backlog。无新 bug 事件。
+- **System**: load 0.78 | host up 6d 18h | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第107轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新活跃 incident,无需 spawn。未播报(遵循零噪声建议)。
+- **建议**: 阻塞纯待人工介入,非 agent 可推进;不重复播报。
+
+---
+
+# 18:04 — Heartbeat (Thu) 🟢 第106轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200 (0.009s)。
+- **GitHub**: open ~74 — 仍为已导入的 design/enhancement backlog(#354-#364)。**P0/P1 bug #309 + #310 均 OPEN 未变**。无新 bug 事件。
+- **System**: load 2.10(略升但正常)| host up 6d 17h | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第106轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新活跃 incident,无需 spawn。未播报(遵循零噪声建议)。
+- **建议**: 阻塞纯待人工介入,非 agent 可推进;不重复播报。
+
+---
+
+# 16:07 — Heartbeat (Thu) 🟢 第105轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200 (0.0047s)。
+- **GitHub**: open ~74 — 包含今日批量导入的 design/enhancement backlog (#354-#364, documentation/arch 规划类,非 bug)。**P0/P1 bug #309 + #310 均 OPEN 未变**。无新 bug 事件。
+- **System**: load 0.61 | host up 6d 15h | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第105轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。新增项为规划 backlog 非活跃 incident,无需 spawn。未播报(遵循零噪声建议)。
+- **建议**: 阻塞纯待人工介入,非 agent 可推进;不重复播报。
+
+---
+
+# 15:04 — Heartbeat (Thu) 🟢 第104轮 仅批量backlog导入,无新bug (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200 (0.0019s)。
+- **Docker**: backend Up 6d; frontend+frontend-v2 Up 2d; zookeeper Up 35h; cloudflared 未列 (#310持续)。
+- **GitHub**: **信号中断零变化(第104轮)** → open 升至 60 (+30 个 P0-labeled `enhancement` backlog 项 #312-#354,今日批量导入,非 bug 事件)。**无 P0 bug** | **2 个 P1 bug (#309+#310) 均 OPEN 未变**。
+- **System**: load 0.56 | host up 6d 14h39m | disk 81% (7.2G free)。
+- **⚠️ Action**: 唯一变化=今日批量 backlog 导入(#312-#354 特性项,含 P0 优先级的 enhancement),非活跃 incident,无需 spawn。#309 仍待主机授权 `cd infra && docker compose build backend && up -d`。#310 仍需 host egress。无新 P1/P0 bug,不重复播报(遵循零噪声建议)。
+- **建议**: 新导入为规划特性 backlog,非 agent 可推进的 bug;阻塞项仍纯待人工介入。
+
+---
+
 # 13:04 — Heartbeat (Thu) 🟢 第103轮 零变化 (#309部署待主机授权 #310公网持续)
 
 ### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
