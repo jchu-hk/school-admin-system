@@ -1,3 +1,15 @@
+# 12:04 — Heartbeat (Fri) 🟢 第115轮 零变化 (#309待今晚18:00备份E2E | 磁盘稳定89% #310公网🔴持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
+- 与 11:04 第114轮完全一致,零变化。
+- **磁盘稳定 89% (4.3G free)** — 98% 危机缓解后无回弹。✅
+- **#309**: backend image e824acb4 Up 4h(08:11重启),health 200 (0.0009s),pg_dump 16.15 可用,path=/var/backups/school_admin/。最新备份仍 `backup_20260813180000..sql.gz`(20B,8/14 02:00 生成,早于 08:11 部署)→ **预期**。真正 E2E 验证 = **今晚 18:00 调度**(明晨 02:00 应产出非空 dump)→ 届时 close #309。
+- **#310 公网 🔴 持续**(cloudflared Exited(2) 7d,host egress,非 agent 可推)。
+- GitHub: 无新 bug。P0/P1 均为已导入 design/enhancement backlog。
+- Docker 其余 Up 12h 正常。load 1.79(略升但正常)。零播报(零变化)。
+
+---
+
 # 11:04 — Heartbeat (Fri) 🟢 第114轮 零变化 (#309待今晚18:00备份E2E | 磁盘稳定89% #310公网🔴持续)
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
