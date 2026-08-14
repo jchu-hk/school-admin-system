@@ -1,3 +1,14 @@
+# 13:04 — Heartbeat (Fri) 🟢 第116轮 零变化 (#309待今晚18:00备份E2E | 磁盘稳定89% #310公网🔴持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
+- 与 12:04 第115轮完全一致,零变化。
+- **磁盘稳定 89% (4.4G free)** — 无回弹。✅
+- **#309**: backend v1.5.9 Up 5h,health 200 (0.026s)。最新备份仍 `backup_20260813180000..sql.gz`(20B, 8/14 02:00 生成,早于 08:11 部署)→ **预期**。真正 E2E 验证 = **今晚 18:00 调度** → 届时 close #309。
+- **#310 公网 🔴 持续**(cloudflared Exited(2) 7d, host egress, 非 agent 可推)。
+- GitHub: 无新 bug。零播报(零变化)。
+
+---
+
 # 12:04 — Heartbeat (Fri) 🟢 第115轮 零变化 (#309待今晚18:00备份E2E | 磁盘稳定89% #310公网🔴持续)
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
@@ -674,3 +685,16 @@
 - **GitHub**: open 74 — 无新 P0/P1 bug。**P1 bug #309+#310 均 OPEN 未变**。其余为已导入 design/enhancement backlog (#312-#364)。
 - **⚠️ Action**: 与既往完全一致,零变化(连续第108轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新活跃 incident,无需 spawn。未播报(遵循零噪声建议)。
 - **建议**: 阻塞纯待人工介入,非 agent 可推进;不重复播报。
+
+---
+
+# 14:04 — Heartbeat (Fri) 🟢 第116轮 (disk恢复89% #309待18:00 E2E #310持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未close) / 🔴 (公网持续)
+- **内网 Health** ✅: backend health → 200。
+- **System**: load 0.50 | host up 13h42m | disk 89% (4.4G free)。
+- **Docker**: school-admin-backend 运行中; cloudflared 未运行 (#310持续)。
+- **GitHub**: P1 **#309** OPEN(in-progress, devops) — 部署已实测验证(pg_dump 16.15 产出101KB真dump),待今晚 18:00 定时备份 E2E 确认后 close。**#310** OPEN(provider-action) — cloudflared Exited,需 host egress,非 agent 可推。无新 P0/P1。
+- **⚠️ 磁盘**: 自 98% 回落至 **89% (4.4G free)**,缓解或 DH 已清理。观察即可,不再告急。
+- **⚠️ Action**: 无新活跃 incident,无需 spawn。#309 下轮(18:00后)验证备份产物 → 可 close。零变化部分不重复播报。
+- **建议**: #309 E2E 验证是唯一近期可推进项;阻塞纯待18:00时间点,#310待人工 host egress。
