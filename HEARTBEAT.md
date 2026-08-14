@@ -1,3 +1,27 @@
+# 08:11 — Heartbeat (Fri) 🔴 第109轮 #309已部署✅ pg_dump可用 | ⚠️磁盘98%满 804M #310公网持续
+
+### System Status 🟢 (内网正常, #309已修复部署) / 🔴 (磁盘98%满) / 🔴 (公网#310持续)
+- **#309 部署成功 ✅**: commit `53e2c31 fix(backup): #309 offline-embed pg_dump 16.15 via dpkg`。新 backend 容器(Start 08:11, image e824acb4) **pg_dump 16.15 可用**,health 200 (0.03s)。采用离线内嵌 .deb 路径(未改 daemon)。
+- **备份验证待今晚**: 最近备份仍为 02:00 的 20B 空文件(部署前生成)。下轮 18:00 应产出非空 dump。
+- **⚠️ 磁盘 98% 满 (仅 804M free)** — 自 81% 基线骤降(新镜像构建占用)。Docker 可回收 ~9.2G (images 5.7G + build cache 3.5G + volumes 0.3G)。
+- **Docker**: backend Up(新); frontend/postgres 正常; cloudflared Exited(2) 7d (#310持续)。
+- **GitHub**: open 74(含 backlog design) — P1 bug #309 已修部署待验证, #310 host egress 持续。
+- **Action**: #309 部署完成,今晚验证备份非空后 close。磁盘告急需人工/DEVOPS 清理 Docker 空间。
+- **建议**: 部署留待今晚验证;磁盘 98% 需尽快释放(prune build cache/dangling images)。
+
+---
+
+# 21:04 — Heartbeat (Thu) 🟢 第108轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200 (0.017s)。
+- **GitHub**: open ~74 — 0 P0 / 0 P1(标签) | **P1 bug #309 + #310 均 OPEN 未变**。非 bug 事件。
+- **System**: load 0.27 | host up 6d 20h | disk 81% (7.2G free)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第108轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新活跃 incident,无需 spawn。未播报(遵循零噪声建议)。
+- **建议**: 阻塞纯待人工介入,非 agent 可推进;不重复播报。
+
+---
+
 # 19:04 — Heartbeat (Thu) 🟢 第107轮 零变化 (#309部署待主机授权 #310公网持续)
 
 ### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
@@ -582,3 +606,15 @@
 - **System**: load 0.61 | host up 5d 8h35m | disk 81% (7.2G free)。
 - **⚠️ Action**: 与既往完全一致,零变化(连续第85轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新 P0,无需 spawn。
 - **建议**: 连续 85 轮零变化,不重复播报打扰;阻塞纯待人工介入,非 agent 可推进。
+
+---
+
+# 21:00 — Heartbeat (Thu) 🟢 第108轮 零变化 (#309部署待主机授权 #310公网持续)
+
+### System Status 🟢 (内网正常) / 🟡 (#309未部署) / 🔴 (公网持续)
+- **内网 Health** ✅: backend 直连 172.19.0.9:3000/api/health → 200 (0.0086s)。
+- **System**: load 0.63 | host up 6d 20h35m | disk 81% (7.2G free)。
+- **Docker**: school-admin-backend Up 6d; cloudflared 未运行 (#310持续)。
+- **GitHub**: open 74 — 无新 P0/P1 bug。**P1 bug #309+#310 均 OPEN 未变**。其余为已导入 design/enhancement backlog (#312-#364)。
+- **⚠️ Action**: 与既往完全一致,零变化(连续第108轮)。#309 待主机授权 `cd infra && docker compose build backend && up -d`。#310 需 host egress。无新活跃 incident,无需 spawn。未播报(遵循零噪声建议)。
+- **建议**: 阻塞纯待人工介入,非 agent 可推进;不重复播报。
