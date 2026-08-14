@@ -1,3 +1,15 @@
+# 09:00 — Heartbeat (Fri) 🟢 第110轮 #309已部署并实测验证✅ | ⚠️磁盘98%满 817M #310公网🔴持续
+
+### System Status 🟢 (内网正常) / ⚠️ (磁盘98%满) / 🔴 (公网#310持续)
+- **#309 已解决并实测验证 ✅**: 部署后容器 image e824acb4 Up 48min,pg_dump 16.15 可用,health 200。内存已记录手动实测备份产出 **101,531 字节**真实 SQL(对比旧 20B 空文件),pipefail+空守卫生效。待今晚 18:00 定时备份端到端确认后 close。
+- **⚠️ 磁盘 98% 满 (仅 817M free)** — 关键告急,持续未缓解。Docker 可回收 ~9.2G(build cache 3.5G + dangling images 5.7G + volumes 0.3G)。**需人工/DEVOPS 执行 `docker builder prune` + 清理 dangling images**。这是当前唯一真正活跃可推进项。
+- **Docker**: backend Up 48min(新); frontend+frontend-v2 Up 9h; cloudflared 未列(Exited, #310持续)。
+- **System**: load 0.60 | health 200。
+- **Action**: #309 待今晚备份验证后 close → 复盘点 2026-08-21 08:00 已设。**磁盘 98% 需尽快释放**(prune build cache 3.5G + dangling images 5.7G)。#310 需 host egress。
+- **建议**: 磁盘告急为活跃项,已播报;清理命令为容器维护操作,可委托 DEVOPS 执行。
+
+---
+
 # 08:11 — Heartbeat (Fri) 🔴 第109轮 #309已部署✅ pg_dump可用 | ⚠️磁盘98%满 804M #310公网持续
 
 ### System Status 🟢 (内网正常, #309已修复部署) / 🔴 (磁盘98%满) / 🔴 (公网#310持续)
