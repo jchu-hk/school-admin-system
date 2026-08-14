@@ -1,3 +1,25 @@
+# 11:04 — Heartbeat (Fri) 🟢 第114轮 零变化 (#309待今晚18:00备份E2E | 磁盘稳定89% #310公网🔴持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
+- 与 10:04 第113轮完全一致,零变化。
+- **磁盘稳定 89% (4.3G free)** — 98% 危机彻底缓解后无回弹(prune + dangling 清理生效)。✅
+- **#309**: backend v1.5.9 Up 3h(08:11 重启),health 200 (0.001s),每小时清理任务正常(删 0 旧)。最新备份仍为 `backup_20260813180000..sql.gz`(20B, 8/14 02:00 生成,早于 08:11 部署)→ **预期**。真正 E2E 验证 = **今晚 18:00 调度**(明晨 02:00 应产出非空 dump)→ 届时 close #309。
+- **#310 公网 🔴 持续**(cloudflared 未列,host egress,非 agent 可推)。
+- GitHub: 无新 bug。P0/P1 均为已导入 design/enhancement backlog(#354-#364 documentation/arch),非活跃 bug。#309+#310 仅剩的两个 bug 均 OPEN。
+- Docker 其余 Up 11h 正常。load 0.44。零播报(零变化)。
+
+---
+
+# 10:04 — Heartbeat (Fri) 🟢 第113轮 磁盘98%→89%已缓解✅ | #309待今晚备份E2E | #310公网🔴持续
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘已缓解 89%) / 🔴 (公网#310持续)
+- **⚠️ 磁盘 98% (814M free) → 89% (4.4G free) 已缓解 ✅**: Docker 确认 build cache 3.5G→0(pruned) + dangling images 5.7G→0(已清理)。正是此前长期建议的 `docker builder prune`+清理 dangling 操作。**唯一活跃危机项解除。** 仍余 reclaimable images 5.7G + volumes 302MB(active, 非紧急)。
+- **#309**: backend v1.5.9 (pg_dump 16.15) Up 2h, health 200 (0.026s)。最新备份 `backup_20260813180000..sql.gz`(02:00) 仍 20B — **预期**(该文件由 8/13 18:00 调度生成,早于今日 08:11 部署)。真正 E2E 验证在**今晚 18:00 调度**(明晨 02:00 文件应非空)→ 届时 close #309。
+- **#310 公网 🔴 持续**(cloudflared 未列, host egress, 非 agent 可推)。
+- GitHub: 无新 P0/P1。Docker 其余 Up 10h 正常。load 0.45。零播报(磁盘解决为正向,无需打扰)。
+
+---
+
 # 09:04 — Heartbeat (Fri) 🟢 第112轮 零变化 (#309待今晚备份验证 | ♠磁盘98%满 813M #310公网🔴持续)
 
 ### System Status 🟢 (内网正常) / ⚠️ (磁盘98%满) / 🔴 (公网#310持续)
