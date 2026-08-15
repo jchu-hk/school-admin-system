@@ -1,3 +1,49 @@
+
+---
+
+# 12:04 — Heartbeat (Sat) 🟢 第127轮 零变化 (#309备份E2E持续有效 | 磁盘稳定89% #310公网🔴持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
+- 与 10:04 第126轮完全一致,零变化。
+- **#309 备份E2E 持续有效**: `backup_20260814180000..sql.gz` 101580 bytes 非空, #309 保持 CLOSED ✅。
+- **磁盘 89% (4.3G free)** 稳定,无回弹。✅
+- **backend v1.5.9 Up 26h**, health 200 (0.06s)。Docker 全绿 (postgres/redis/kafka/opa healthy)。
+- **#310 公网 🔴 持续** (cloudflared Exited(2) 8d, host egress, 非 agent 可推)。
+- GitHub: 73 open 均为 design/arch backlog (#355-#364),无新 bug。零播报(零变化)。
+
+# 10:00 — Heartbeat (Sat) 🟢 第125轮 零变化 (内网稳定89%磁盘 #309已关 #310公网🔴持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
+- 与 09:00 第124轮完全一致,零变化。
+- **#309 备份E2E 持续有效**: 8/15 02:00 验证通过, 文件非空+VALID, #309 保持 CLOSED ✅。
+- **磁盘 89% (4.3G free)** 稳定,无回弹。✅
+- **backend v1.5.9 Up 25h**, health 200 (0.008s)。Docker 全绿 (postgres/redis/kafka/opa healthy)。
+- **#310 公网 🔴 持续** (cloudflared Exited(2) 8d, host egress, 非 agent 可推)。
+- GitHub: open 均为 design/arch backlog (#355-#364),无新 bug。零播报(零变化)。
+# 09:00 — Heartbeat (Sat) 🟢 第124轮 零变化 (#309备份E2E持续有效 | 磁盘稳定89% #310公网🔴持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
+- 与 08:07 第123轮完全一致,零变化。
+- **#309 备份E2E 持续有效**: `backup_20260814180000..sql.gz` 101580 bytes 非空, `gzip -t` VALID, PostgreSQL dump (original 478KB)。#309 保持 CLOSED ✅。
+- **磁盘 89% (4.3G free)** 稳定,无回弹。✅
+- **backend v1.5.9 Up 25h**, health 200 (0.003s)。Docker 全绿 (postgres/redis/kafka/opa healthy)。
+- **#310 公网 🔴 持续** (cloudflared Exited(2) 8d, host egress, 非 agent 可推)。
+- GitHub: 73 open 均为 design/arch backlog (#355-#364),无新 bug。零播报(零变化)。
+
+---
+
+# 08:07 — Heartbeat (Sat) 🟢 第123轮 🎉 #309已关闭 (备份E2E验证通过) | 磁盘稳定89% #310公网🔴持续
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
+- **🎉 #309 已修复并关闭 (8/15 02:00 E2E 验证通过)**
+- **备份恢复正常**: `backup_20260814180000..sql.gz` 于 8/15 02:00 生成,**101580 bytes (100K) 非空**, `gzip -t` VALID, 真实 PostgreSQL dump。对比此前 72 次均 20B 空文件。v1.5.9 权限修复生效, P1 数据丢失风险消除。
+- **动作**: `gh issue close 309` 附验证证据。**#309: OPEN → CLOSED** ✅
+- 磁盘 89% (4.3G free) 稳定, backend v1.5.9 Up 24h 正常。
+- **#310 公网 🔴 持续** (cloudflared Exited(2) 8d, host egress 非 agent 可推) — 未变。
+- GitHub: 无新 bug。零播报。#309 里程碑达成, 剩余无 P1 内网项。
+
+---
+
 # 21:04 — Heartbeat (Fri) 🟢 第122轮 零变化 (#309待明晨02:00备份E2E | 磁盘稳定89% #310公网🔴持续)
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
@@ -773,3 +819,25 @@
 - **#309**: backend v1.5.9 Up 13h,health `/api/health` 200 (0.003s)。最新备份仍 `backup_20260813180000..sql.gz`(20B, 8/14 02:00 生成,早于 08:11 部署)→ **预期**。今日 18:00 定时备份已触发,真正 E2E 验证 = **明晨 02:00 (8/15)** 应产出 `backup_20260814180000..sql.gz` 非空文件 → 届时 validate 后 close #309。
 - **#310 公网 🔴 持续**(cloudflared 未列,host egress,非 agent 可推)。
 - Docker 14 容器全 Up(frontend/postgres/redis/kafka/opa healthy)。GitHub 无新 P0/P1。零播报(零变化)。
+
+---
+
+# 10:04 — Heartbeat (Sat) 🟢 第126轮 零变化 (内网稳定89%磁盘 #309已关 #310公网🔴持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
+- 与 09:00 第125轮完全一致,零变化。
+- **#309 备份E2E 持续有效**: 8/15 02:00 验证通过, 文件非空+VALID, #309 保持 CLOSED ✅。
+- **磁盘 89% (4.3G free)** 稳定,无回弹。✅
+- **backend v1.5.9 Up 25h**, health 200 (0.008s)。Docker 全绿 (postgres/redis/kafka/opa healthy)。
+- **#310 公网 🔴 持续** (cloudflared Exited(2) 8d, host egress, 非 agent 可推)。
+- GitHub: 73 open 均为 design/arch backlog (#355-#364),无新 bug。零播报(零变化)。
+
+# 11:04 — Heartbeat (Sat) 🟢 第127轮 零变化 (内网稳定89%磁盘 #309备份有效 #310公网🔴持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
+- 与 10:04 第126轮完全一致,零变化。
+- **#309 备份E2E 持续有效**: `backup_20260814180000..sql.gz` 101580 bytes 非空, `gzip -t` VALID。最新备份(8/15 02:00)确认修复生效。 #309 CLOSED ✅。
+- **磁盘 89% (4.3G free)** 稳定,无回弹。✅
+- **backend v1.5.9 Up 27h**, health 200 (0.0068s)。Docker 全绿 (postgres/redis/kafka/opa healthy)。
+- **#310 公网 🔴 持续** (school-admin-cloudflared Exited(2) 8d, host egress, 非 agent 可推)。
+- GitHub: open 均为 design/arch backlog (#360-#364),无新 bug。零播报(零变化)。
