@@ -63,7 +63,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="agent">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
-    <div class="agent-task">[外部UI终验] 开始</div>
+    <div class="agent-task">[Issue #262][外部UI终验] done: 门户/家长/QR</div>
     <span class="status-badge status-idle">idle</span>
 </div><div class="agent">
     <div class="agent-icon">✓</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-received">
+<div class="message-list"><div class="message-item msg-done">
+    <div class="message-time">17:03</div>
+    <div class="message-content">QA → PM: [Issue #262][外部UI终验] done: 门户/家长/QR/扫码 白屏已消除(PASS); 但 /</div>
+</div><div class="message-item msg-received">
     <div class="message-time">16:59</div>
     <div class="message-content">QA → PM: [外部UI终验] 开始</div>
 </div><div class="message-item msg-assign">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-received">
     <div class="message-time">16:34</div>
     <div class="message-content">DEV → PM: [portal basename] 开始修复</div>
-</div><div class="message-item msg-assign">
-    <div class="message-time">16:31</div>
-    <div class="message-content">PM → DEV: [portal白屏] QA发现P1：8081门户/QR页误指向admin bundle(basename=/s</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 16:59:08 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 17:03:43 (GMT+8)</div>
 </div>
 </body>
 </html>

@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T14:35:40Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[QA Report] 已完成3个Issue验证。结果: #284 FAILED — 侧边栏大部分项目未翻译成英文(仅Finance Management和About正确)，且无子菜单结构; #285 PASSED — 侧边栏标题显示Smart Campus, Dashboard图表标签正确英文; #287 PASSED — staff1无系统设置/用户管理, qa_test完全显示。详细证据：截图(screenshot-*.jpg)，OTP从DB获取(代码431930)",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[QA Report] 已完成3个Issue验证。结果: #284 FAILED — 侧边栏大部分项目未翻译成英文(仅Finance Management和Ab"
-    }
-  },
-  {
     "timestamp": "2026-07-25T14:58:05Z",
     "from": "PM",
     "to": "QA",
@@ -1132,6 +1120,18 @@
       "agent": "QA",
       "status": "idle",
       "task": "[外部UI终验] 开始"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T09:03:35Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #262][外部UI终验] done: 门户/家长/QR/扫码 白屏已消除(PASS); 但 /school-admin/ 仍白屏(FAIL, admin构建素材根 /assets/ 404); 另 portal/student+QR 数据接口经 proxy 返回SPA-HTML 报Unauthorized。详见 #262 评论+截图。",
+    "type": "done",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Issue #262][外部UI终验] done: 门户/家长/QR/扫码 白屏已消除(PASS); 但 /school-admin/ 仍白屏(FAIL, a"
     }
   }
 ]

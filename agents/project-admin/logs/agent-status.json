@@ -7,8 +7,8 @@
     },
     "QA": {
       "status": "idle",
-      "task": "[外部UI终验] 开始",
-      "lastUpdate": "2026-08-18T08:59:08Z"
+      "task": "[Issue #262][外部UI终验] done: 门户/家长/QR/扫码 白屏已消除(PASS); 但 /school-admin/ 仍白屏(FAIL, a",
+      "lastUpdate": "2026-08-18T09:03:35Z"
     },
     "DEV": {
       "status": "idle",
