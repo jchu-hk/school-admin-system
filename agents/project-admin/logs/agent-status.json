@@ -17,8 +17,8 @@
     },
     "DEVOPS": {
       "status": "idle",
-      "task": "[Issue #261][T25] 完成：新增QR考勤/门户5表迁移(幂等已验证)+infra/deploy部署脚本集(无重建docker cp)+识别3个生产",
-      "lastUpdate": "2026-08-18T07:52:45Z"
+      "task": "[Issue #262][T26] 完成：环境/账号/访问清单与健康快照就绪，4角色登录已实测；产出 docs/UAT-ACCESS-SHEET.md；发现 d",
+      "lastUpdate": "2026-08-18T07:55:54Z"
     },
     "CHECKER": {
       "status": "idle",

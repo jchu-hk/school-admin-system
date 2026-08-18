@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-22T23:11:30Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#281][#282] 修复完成：三个财务管理页面API路径问题 - VITE_API_BASE_URL修复+奖学金路径修复+前端重建部署",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "[#281][#282] 修复完成：三个财务管理页面API路径问题 - VITE_API_BASE_URL修复+奖学金路径修复+前端重建部署"
-    }
-  },
-  {
     "timestamp": "2026-07-23T00:05:45Z",
     "from": "PM",
     "to": "Slack",
@@ -1127,6 +1115,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[Issue #261][T25] 完成：新增QR考勤/门户5表迁移(幂等已验证)+infra/deploy部署脚本集(无重建docker cp)+识别3个生产"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T07:55:54Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[Issue #262][T26] 完成：环境/账号/访问清单与健康快照就绪，4角色登录已实测；产出 docs/UAT-ACCESS-SHEET.md；发现 director/teacher 强制邮箱OTP + portal请假表缺口，已comment #262",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[Issue #262][T26] 完成：环境/账号/访问清单与健康快照就绪，4角色登录已实测；产出 docs/UAT-ACCESS-SHEET.md；发现 d"
     }
   }
 ]
