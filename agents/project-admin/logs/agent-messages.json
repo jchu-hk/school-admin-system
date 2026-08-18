@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-26T14:57:31Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#286] 开始i18n QA验证",
-    "type": "received",
-    "agent_status": {
-      "agent": "QA",
-      "status": "running",
-      "task": "[#286] 开始i18n QA验证"
-    }
-  },
-  {
     "timestamp": "2026-07-26T14:58:42Z",
     "from": "PM",
     "to": "QA",
@@ -1132,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "running",
       "task": "[admin部署] 开始重建+部署"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T14:57:11Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[admin部署] 完成：index-DCEPABUN-20260707.js + 验证结果(/school-admin/ 200 text/html, js 200 application/javascript, css 200 text/css)",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[admin部署] 完成：index-DCEPABUN-20260707.js + 验证结果(/school-admin/ 200 text/html, js "
     }
   }
 ]
