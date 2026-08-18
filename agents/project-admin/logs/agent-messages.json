@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T03:58:09Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#284][#285] Troubleshoot & Fix: i18n英文切换缺陷 - (1) Attendance菜单项缺失 (2) 页面标题/内容仍为中文",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#284][#285] Troubleshoot & Fix: i18n英文切换缺陷 - (1) Attendance菜单项缺失 (2) 页面标题/内容仍为中"
-    }
-  },
-  {
     "timestamp": "2026-07-25T03:58:48Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[portal部署] 完成：电子请假两处修复已编译并部署到测试环境。GET/POST /api/portal/leave 由 404→401，PATCH /ap"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:24:01Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[UAT阻断解除验证] leave API 已不再404+撤回路由已部署 — 验证电子请假全流程(提交/审批/查询/撤回)+回归QR考勤与门户菜单",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[UAT阻断解除验证] leave API 已不再404+撤回路由已部署 — 验证电子请假全流程(提交/审批/查询/撤回)+回归QR考勤与门户菜单"
     }
   }
 ]

@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[portal部署] 路由修复(82681ce)+撤回路由(5f4658e)已合入main — 重新编译后端+部署到测试容器+验证leave API不再404",
-      "lastUpdate": "2026-08-18T08:21:21Z"
+      "task": "[UAT阻断解除验证] leave API 已不再404+撤回路由已部署 — 验证电子请假全流程(提交/审批/查询/撤回)+回归QR考勤与门户菜单",
+      "lastUpdate": "2026-08-18T08:24:01Z"
     },
     "QA": {
       "status": "idle",
