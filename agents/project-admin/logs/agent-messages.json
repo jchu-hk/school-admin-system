@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T10:07:41Z",
-    "from": "PM",
-    "to": "user",
-    "message": "📊 晚间状态汇报完成 (Sat Jul 25 18:00)",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "📊 晚间状态汇报完成 (Sat Jul 25 18:00)"
-    }
-  },
-  {
     "timestamp": "2026-07-25T14:30:24Z",
     "from": "PM",
     "to": "QA",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[公网/assets 404] 根因定位：host nginx(5000)缺 /assets/ 路由→门户bundle落到gateway(5001)404 — "
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:57:16Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[nginx assets] 开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "[nginx assets] 开始"
     }
   }
 ]

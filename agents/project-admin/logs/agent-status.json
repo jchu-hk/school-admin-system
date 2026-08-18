@@ -16,9 +16,9 @@
       "lastUpdate": "2026-08-18T08:36:09Z"
     },
     "DEVOPS": {
-      "status": "idle",
-      "task": "[全量部署] 完成：前后端已部署测试环境。迁移1787200000000已应用(audit_logs_action_enum补4个leave_*值,幂等)+mi",
-      "lastUpdate": "2026-08-18T08:47:42Z"
+      "status": "running",
+      "task": "[nginx assets] 开始",
+      "lastUpdate": "2026-08-18T08:57:16Z"
     },
     "CHECKER": {
       "status": "idle",
