@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T01:13:05Z",
-    "from": "PM",
-    "to": "user",
-    "message": "📊 每日状态汇报完成 (Sat Jul 25 09:00)",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "📊 每日状态汇报完成 (Sat Jul 25 09:00)"
-    }
-  },
-  {
     "timestamp": "2026-07-25T03:21:00Z",
     "from": "PM",
     "to": "DEV",
@@ -1132,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "running",
       "task": "[leave_requests] 应用迁移开始"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:15:40Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[leave_requests] 迁移已应用+验证：leave_requests 表(17列)+3枚举+3FK 已在测试库创建成功并写入 migrations 记录(id=16)，幂等+冒烟验证通过。详见 Issue #262 comment",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[leave_requests] 迁移已应用+验证：leave_requests 表(17列)+3枚举+3FK 已在测试库创建成功并写入 migrations "
     }
   }
 ]
