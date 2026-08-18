@@ -6,9 +6,9 @@
       "lastUpdate": "2026-08-18T14:56:20Z"
     },
     "QA": {
-      "status": "running",
-      "task": "[admin终验] 开始浏览器验证",
-      "lastUpdate": "2026-08-18T14:58:25Z"
+      "status": "idle",
+      "task": "[admin终验] 完成：PASS ✅ — /school-admin/ 非白屏,根目录/index-DCEPABUN-20260707.js=200,/ind",
+      "lastUpdate": "2026-08-18T14:59:58Z"
     },
     "DEV": {
       "status": "idle",

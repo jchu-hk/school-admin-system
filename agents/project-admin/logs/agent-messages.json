@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-26T14:59:01Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#286] RE-ASSIGN: i18n迁移4页面 — 上次DEV声称完成但实际零代码变更，需重新实现。AttendancePage/ScholarshipPage/LunchOrderPage/NotificationPage",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#286] RE-ASSIGN: i18n迁移4页面 — 上次DEV声称完成但实际零代码变更，需重新实现。AttendancePage/Scholarship"
-    }
-  },
-  {
     "timestamp": "2026-07-26T14:59:56Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "QA",
       "status": "running",
       "task": "[admin终验] 开始浏览器验证"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T14:59:58Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[admin终验] 完成：PASS ✅ — /school-admin/ 非白屏,根目录/index-DCEPABUN-20260707.js=200,/index-r0L1LBYC-20260707.css=200,#root已挂载(1子节点),登录表单完整渲染,无404/400请求;portal(/portal/parent)同正常无回归,截图存/tmp/qa_admin_final/",
+    "type": "done",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[admin终验] 完成：PASS ✅ — /school-admin/ 非白屏,根目录/index-DCEPABUN-20260707.js=200,/ind"
     }
   }
 ]
