@@ -48,7 +48,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 <div class="agent-grid"><div class="agent  running">
     <div class="agent-icon">🧑💼</div>
     <div class="agent-name">PM</div>
-    <div class="agent-task">[leave_requests] DEV已修migration并合入m</div>
+    <div class="agent-task">[leave API 404] app.module.ts 误impo</div>
     <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔧</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-done">
+<div class="message-list"><div class="message-item msg-assign">
+    <div class="message-time">16:16</div>
+    <div class="message-content">PM → DEV: [leave API 404] app.module.ts 误import ./portal/portal.m</div>
+</div><div class="message-item msg-done">
     <div class="message-time">16:15</div>
     <div class="message-content">DEVOPS → PM: [leave_requests] 迁移已应用+验证：leave_requests 表(17列)+3枚举+3FK</div>
 </div><div class="message-item msg-received">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-assign">
     <div class="message-time">15:45</div>
     <div class="message-content">PM → QA: [Issue #262][T26] UAT用例准备：QR考勤+学生/家长门户 真实用户试用脚本</div>
-</div><div class="message-item msg-assign">
-    <div class="message-time">15:45</div>
-    <div class="message-content">PM → DEVOPS: [Issue #262][T26] UAT测试环境准备：验证最新代码+测试账号就绪+产出UAT访问清单</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 16:15:44 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 16:16:19 (GMT+8)</div>
 </div>
 </body>
 </html>

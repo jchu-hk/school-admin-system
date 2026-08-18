@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T03:21:00Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#283] Troubleshoot & verify: Agent runs failed due to DeepSeek model deprecation. Root cause identified (deprecated deepseek-chat/reasoner → updated to v4-flash/v4-pro). Verify fix is complete, check no other configs reference old model IDs, update issue with findings.",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#283] Troubleshoot & verify: Agent runs failed due to DeepSeek model deprecatio"
-    }
-  },
-  {
     "timestamp": "2026-07-25T03:21:19Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[leave_requests] 迁移已应用+验证：leave_requests 表(17列)+3枚举+3FK 已在测试库创建成功并写入 migrations "
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:16:19Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[leave API 404] app.module.ts 误import ./portal/portal.module(仅menus路由)，正确应为 ./modules/portal/portal.module(含leave.controller) — 诊断并修复路由接线",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[leave API 404] app.module.ts 误import ./portal/portal.module(仅menus路由)，正确应为 ./mo"
     }
   }
 ]
