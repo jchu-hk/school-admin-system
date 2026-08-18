@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[leave API 404] app.module.ts 误import ./portal/portal.module(仅menus路由)，正确应为 ./mo",
-      "lastUpdate": "2026-08-18T08:16:19Z"
+      "task": "[leave撤回404] 前端 PATCH /api/portal/leave/:id/cancel 无后端路由(后端只有DELETE) — 补 cancel ",
+      "lastUpdate": "2026-08-18T08:19:35Z"
     },
     "QA": {
       "status": "idle",

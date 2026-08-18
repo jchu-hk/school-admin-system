@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T03:48:22Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#281][#282] Troubleshoot & Fix: 系统设置页面+奖学金页面API路径错误。两个Issue均涉及同一根因：VITE_API_BASE_URL在生产环境为空，导致fallback到localhost:3001（Grafana）而非正确的API路径。上次修复(1aa1feb, ddb80a9)未完全解决。",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#281][#282] Troubleshoot & Fix: 系统设置页面+奖学金页面API路径错误。两个Issue均涉及同一根因：VITE_API_BAS"
-    }
-  },
-  {
     "timestamp": "2026-07-25T03:48:50Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "idle",
       "task": "[portal 路由] 完成：根因=app.module 错引 src/portal/portal.module（旧menus模块），新 src/modules"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:19:35Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[leave撤回404] 前端 PATCH /api/portal/leave/:id/cancel 无后端路由(后端只有DELETE) — 补 cancel 路由(status=cancelled)对齐撤回语义",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[leave撤回404] 前端 PATCH /api/portal/leave/:id/cancel 无后端路由(后端只有DELETE) — 补 cancel "
     }
   }
 ]
