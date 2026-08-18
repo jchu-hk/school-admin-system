@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T03:51:44Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#281][#282] 修复完成: API fallback改为'/api/', scholarship路径修复, 前端重建部署, 验证通过",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#281][#282] 修复完成: API fallback改为'/api/', scholarship路径修复, 前端重建部署, 验证通过"
-    }
-  },
-  {
     "timestamp": "2026-07-25T03:53:12Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[leave cancel] 开始修复"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:20:57Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[leave cancel] 完成：新增 PATCH /api/portal/leave/:id/cancel 撤回路由（仅pending可撤回+越权校验，DELETE保留为别名），build通过，commit 5f4658e 分支 feat/leave-cancel-route",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[leave cancel] 完成：新增 PATCH /api/portal/leave/:id/cancel 撤回路由（仅pending可撤回+越权校验，DE"
     }
   }
 ]
