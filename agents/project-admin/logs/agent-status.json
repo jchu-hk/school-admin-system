@@ -16,9 +16,9 @@
       "lastUpdate": "2026-08-18T15:36:29Z"
     },
     "DEVOPS": {
-      "status": "running",
-      "task": "[#365] 开始重建+部署 admin（移除 Agents 菜单项）",
-      "lastUpdate": "2026-08-18T15:37:46Z"
+      "status": "idle",
+      "task": "[#365] 部署完成：新js=index-kX_xteje-20260707.js。index.html grep Agents=0；/school-admi",
+      "lastUpdate": "2026-08-18T15:38:35Z"
     },
     "CHECKER": {
       "status": "idle",

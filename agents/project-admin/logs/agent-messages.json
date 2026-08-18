@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-26T15:16:29Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#286] PM确认: i18n迁移通过 — 19 files, 1123+ insertions, build+deploy verified. Commit: 7e9dab0",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "[#286] PM确认: i18n迁移通过 — 19 files, 1123+ insertions, build+deploy verified. Commi"
-    }
-  },
-  {
     "timestamp": "2026-07-27T03:40:10Z",
     "from": "PM",
     "to": "HUMAN",
@@ -1132,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "running",
       "task": "[#365] 开始重建+部署 admin（移除 Agents 菜单项）"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T15:38:35Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[#365] 部署完成：新js=index-kX_xteje-20260707.js。index.html grep Agents=0；/school-admin/ → 200 text/html；新js → 200 application/javascript；multi-agent-dashboard.html 未受影响。注：bundle中还有1处 '🤖 Agents' 来自 Dashboard.tsx(顶部快捷按钮，非侧边栏)，#365 仅移除了侧边栏。侧边栏已无Agents。",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[#365] 部署完成：新js=index-kX_xteje-20260707.js。index.html grep Agents=0；/school-admi"
     }
   }
 ]
