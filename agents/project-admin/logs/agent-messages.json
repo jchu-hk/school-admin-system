@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-26T15:13:46Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#286] 完成: i18n迁移4页面 (retry v2) — 7 files, 966 insertions, 159 deletions. TypeScript编译通过。4页全部wire完成，3个locale文件完整更新。",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#286] 完成: i18n迁移4页面 (retry v2) — 7 files, 966 insertions, 159 deletions. TypeSc"
-    }
-  },
-  {
     "timestamp": "2026-07-26T15:16:29Z",
     "from": "PM",
     "to": "DEV",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "idle",
       "task": "[#365] 完成：已移除菜单项 + build通过，分支 fix/remove-agents-menu-365 已push"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T15:37:46Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[#365] 开始重建+部署 admin（移除 Agents 菜单项）",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "[#365] 开始重建+部署 admin（移除 Agents 菜单项）"
     }
   }
 ]

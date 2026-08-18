@@ -16,9 +16,9 @@
       "lastUpdate": "2026-08-18T15:36:29Z"
     },
     "DEVOPS": {
-      "status": "idle",
-      "task": "[admin部署] 完成：index-DCEPABUN-20260707.js + 验证结果(/school-admin/ 200 text/html, js ",
-      "lastUpdate": "2026-08-18T14:57:11Z"
+      "status": "running",
+      "task": "[#365] 开始重建+部署 admin（移除 Agents 菜单项）",
+      "lastUpdate": "2026-08-18T15:37:46Z"
     },
     "CHECKER": {
       "status": "idle",
