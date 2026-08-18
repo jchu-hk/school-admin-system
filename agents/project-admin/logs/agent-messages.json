@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-22T22:50:17Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#281] 系统设置页API请求路径错误，NUL DEV来修复",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#281] 系统设置页API请求路径错误，NUL DEV来修复"
-    }
-  },
-  {
     "timestamp": "2026-07-22T22:50:34Z",
     "from": "DEV",
     "to": "PM",
@@ -1127,6 +1115,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #262][T26] UAT用例准备：QR考勤+学生/家长门户 真实用户试用脚本"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T07:46:32Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #262][T26] 开始工作",
+    "type": "received",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[Issue #262][T26] 开始工作"
     }
   }
 ]

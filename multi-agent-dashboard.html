@@ -60,11 +60,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">DEV</div>
     <div class="agent-task">[Issue #308] 开始工作</div>
     <span class="status-badge status-running">running</span>
-</div><div class="agent">
+</div><div class="agent  running">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
-    <div class="agent-task">[Issue #307] QA 验证完成: FAIL — #308 g</div>
-    <span class="status-badge status-idle">idle</span>
+    <div class="agent-task">[Issue #262][T26] 开始工作</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">✓</div>
     <div class="agent-name">CHECKER</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-assign">
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">15:46</div>
+    <div class="message-content">QA → PM: [Issue #262][T26] 开始工作</div>
+</div><div class="message-item msg-assign">
     <div class="message-time">15:45</div>
     <div class="message-content">PM → QA: [Issue #262][T26] UAT用例准备：QR考勤+学生/家长门户 真实用户试用脚本</div>
 </div><div class="message-item msg-assign">
@@ -114,7 +117,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 15:46:00 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 15:46:32 (GMT+8)</div>
 </div>
 </body>
 </html>
