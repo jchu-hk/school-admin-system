@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T05:06:48Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#287] 完成: Sidebar菜单角色过滤 — 新增userService.ts + Layout.tsx按角色过滤menu/finance/settings — 已部署",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#287] 完成: Sidebar菜单角色过滤 — 新增userService.ts + Layout.tsx按角色过滤menu/finance/settin"
-    }
-  },
-  {
     "timestamp": "2026-07-25T05:07:33Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "QA",
       "status": "running",
       "task": "[leave复验] 开始"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:54:53Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[leave复验] 完成：后端API全通过(BUG-A/B/C已修复,BUG-D应用层已修复)；但外部UAT未就绪——Coze proxy未路由根路径/assets/*→门户/家长/QR/admin经外部均白屏。需DEVOPS修proxy路由。文档+Issue#262已更新。",
+    "type": "done",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[leave复验] 完成：后端API全通过(BUG-A/B/C已修复,BUG-D应用层已修复)；但外部UAT未就绪——Coze proxy未路由根路径/asse"
     }
   }
 ]

@@ -60,11 +60,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">DEV</div>
     <div class="agent-task">[leave 3bug] 完成：BUG-A审计枚举500→补leave</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent  running">
+</div><div class="agent">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
-    <div class="agent-task">[leave复验] 开始</div>
-    <span class="status-badge status-running">running</span>
+    <div class="agent-task">[leave复验] 完成：后端API全通过(BUG-A/B/C已修复,</div>
+    <span class="status-badge status-idle">idle</span>
 </div><div class="agent">
     <div class="agent-icon">✓</div>
     <div class="agent-name">CHECKER</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-received">
+<div class="message-list"><div class="message-item msg-done">
+    <div class="message-time">16:54</div>
+    <div class="message-content">QA → PM: [leave复验] 完成：后端API全通过(BUG-A/B/C已修复,BUG-D应用层已修复)；但外部UAT未</div>
+</div><div class="message-item msg-received">
     <div class="message-time">16:48</div>
     <div class="message-content">QA → PM: [leave复验] 开始</div>
 </div><div class="message-item msg-assign">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-done">
     <div class="message-time">16:23</div>
     <div class="message-content">DEVOPS → PM: [portal部署] 完成：电子请假两处修复已编译并部署到测试环境。GET/POST /api/portal/</div>
-</div><div class="message-item msg-received">
-    <div class="message-time">16:21</div>
-    <div class="message-content">DEVOPS → PM: [portal部署] 开始</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 16:48:24 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 16:54:57 (GMT+8)</div>
 </div>
 </body>
 </html>

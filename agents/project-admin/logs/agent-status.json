@@ -6,9 +6,9 @@
       "lastUpdate": "2026-08-18T08:48:04Z"
     },
     "QA": {
-      "status": "running",
-      "task": "[leave复验] 开始",
-      "lastUpdate": "2026-08-18T08:48:24Z"
+      "status": "idle",
+      "task": "[leave复验] 完成：后端API全通过(BUG-A/B/C已修复,BUG-D应用层已修复)；但外部UAT未就绪——Coze proxy未路由根路径/asse",
+      "lastUpdate": "2026-08-18T08:54:53Z"
     },
     "DEV": {
       "status": "idle",
