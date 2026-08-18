@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-22T08:30:09Z",
-    "from": "PM",
-    "to": "SYSTEM",
-    "message": "[Heartbeat 16:30] 系统稳定运行",
-    "type": "passed",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "[Heartbeat 16:30] 系统稳定运行"
-    }
-  },
-  {
     "timestamp": "2026-07-22T22:50:17Z",
     "from": "PM",
     "to": "DEV",
@@ -1127,6 +1115,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #262][T26] UAT测试环境准备：验证最新代码+测试账号就绪+产出UAT访问清单"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T07:45:58Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[Issue #262][T26] UAT用例准备：QR考勤+学生/家长门户 真实用户试用脚本",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #262][T26] UAT用例准备：QR考勤+学生/家长门户 真实用户试用脚本"
     }
   }
 ]
