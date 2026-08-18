@@ -11,9 +11,9 @@
       "lastUpdate": "2026-08-18T14:59:58Z"
     },
     "DEV": {
-      "status": "idle",
-      "task": "[admin base] 完成: commit 29cab27 (main)。vite.config.ts 添加 base='/school-admin/'，重",
-      "lastUpdate": "2026-08-18T09:09:44Z"
+      "status": "running",
+      "task": "[#365] 开始移除 Agents 菜单项",
+      "lastUpdate": "2026-08-18T15:35:50Z"
     },
     "DEVOPS": {
       "status": "idle",

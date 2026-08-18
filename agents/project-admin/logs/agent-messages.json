@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-26T14:59:56Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#286] 开始i18n迁移 (retry v2)",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[#286] 开始i18n迁移 (retry v2)"
-    }
-  },
-  {
     "timestamp": "2026-07-26T15:06:10Z",
     "from": "QA",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "QA",
       "status": "idle",
       "task": "[admin终验] 完成：PASS ✅ — /school-admin/ 非白屏,根目录/index-DCEPABUN-20260707.js=200,/ind"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T15:35:50Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[#365] 开始移除 Agents 菜单项",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[#365] 开始移除 Agents 菜单项"
     }
   }
 ]

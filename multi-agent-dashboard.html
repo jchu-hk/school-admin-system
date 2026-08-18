@@ -55,11 +55,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">DEVOPS</div>
     <div class="agent-task">[admin部署] 完成：index-DCEPABUN-2026070</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent">
+</div><div class="agent  running">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
-    <div class="agent-task">[admin base] 完成: commit 29cab27 (ma</div>
-    <span class="status-badge status-idle">idle</span>
+    <div class="agent-task">[#365] 开始移除 Agents 菜单项</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-done">
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">23:35</div>
+    <div class="message-content">DEV → PM: [#365] 开始移除 Agents 菜单项</div>
+</div><div class="message-item msg-done">
     <div class="message-time">22:59</div>
     <div class="message-content">QA → PM: [admin终验] 完成：PASS ✅ — /school-admin/ 非白屏,根目录/index-DCEP</div>
 </div><div class="message-item msg-received">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-assign">
     <div class="message-time">16:56</div>
     <div class="message-content">PM → DEVOPS: [公网/assets 404] 根因定位：host nginx(5000)缺 /assets/ 路由→门户bu</div>
-</div><div class="message-item msg-done">
-    <div class="message-time">16:54</div>
-    <div class="message-content">QA → PM: [leave复验] 完成：后端API全通过(BUG-A/B/C已修复,BUG-D应用层已修复)；但外部UAT未</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 22:59:58 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 23:35:50 (GMT+8)</div>
 </div>
 </body>
 </html>
