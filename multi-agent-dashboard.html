@@ -48,7 +48,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 <div class="agent-grid"><div class="agent  running">
     <div class="agent-icon">🧑💼</div>
     <div class="agent-name">PM</div>
-    <div class="agent-task">[admin白屏] 根因已定位(PM读代码): admin vite.</div>
+    <div class="agent-task">[admin白屏部署] 根因确认: :8080容器仍旧构建(base=</div>
     <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔧</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-done">
+<div class="message-list"><div class="message-item msg-assign">
+    <div class="message-time">22:56</div>
+    <div class="message-content">PM → DEVOPS: [admin白屏部署] 根因确认: :8080容器仍旧构建(base=/)引用根/assets→404。修复2</div>
+</div><div class="message-item msg-done">
     <div class="message-time">17:09</div>
     <div class="message-content">DEV → PM: [admin base] 完成: commit 29cab27 (main)。vite.config.ts 添</div>
 </div><div class="message-item msg-received">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-received">
     <div class="message-time">16:42</div>
     <div class="message-content">DEVOPS → PM: [全量部署] 开始</div>
-</div><div class="message-item msg-assign">
-    <div class="message-time">16:42</div>
-    <div class="message-content">PM → DEVOPS: [合入完成] 前端basename(60b7bee)+后端3bug(8a08b09)已合入main(807d9</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 17:09:44 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 22:56:20 (GMT+8)</div>
 </div>
 </body>
 </html>

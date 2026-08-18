@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T15:00:53Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#288/#289] QA验证结果: PASSED — attendance页面HTTP 200, courses API返回5条记录无500错误",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[#288/#289] QA验证结果: PASSED — attendance页面HTTP 200, courses API返回5条记录无500错误"
-    }
-  },
-  {
     "timestamp": "2026-07-26T14:57:10Z",
     "from": "PM",
     "to": "QA",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "idle",
       "task": "[admin base] 完成: commit 29cab27 (main)。vite.config.ts 添加 base='/school-admin/'，重"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T14:56:20Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[admin白屏部署] 根因确认: :8080容器仍旧构建(base=/)引用根/assets→404。修复29cab27已合main(base=/school-admin/)，需重建+部署到:8080",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[admin白屏部署] 根因确认: :8080容器仍旧构建(base=/)引用根/assets→404。修复29cab27已合main(base=/school"
     }
   }
 ]

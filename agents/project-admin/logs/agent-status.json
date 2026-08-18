@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[admin白屏] 根因已定位(PM读代码): admin vite.config缺base=/school-admin/→index.html引用根/asse",
-      "lastUpdate": "2026-08-18T09:09:05Z"
+      "task": "[admin白屏部署] 根因确认: :8080容器仍旧构建(base=/)引用根/assets→404。修复29cab27已合main(base=/school",
+      "lastUpdate": "2026-08-18T14:56:20Z"
     },
     "QA": {
       "status": "idle",
