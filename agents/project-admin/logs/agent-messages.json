@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-23T04:28:21Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#282] 开始修复奖学金页面路径问题",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[#282] 开始修复奖学金页面路径问题"
-    }
-  },
-  {
     "timestamp": "2026-07-23T04:35:12Z",
     "from": "PM",
     "to": "HEARTBEAT",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[leave_requests] 开始诊断"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:08:22Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[leave_requests] 上次运行中断(失上下文)，migration已改写但未提交/未验证build — 重派：验证编译+实体字段与migration列对齐+提交",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[leave_requests] 上次运行中断(失上下文)，migration已改写但未提交/未验证build — 重派：验证编译+实体字段与migration"
     }
   }
 ]

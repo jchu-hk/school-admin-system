@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[UAT阻断] leave_requests 表缺失：portal 电子请假实体映射 leave_requests 但测试库无此表，migration 1782",
-      "lastUpdate": "2026-08-18T08:01:50Z"
+      "task": "[leave_requests] 上次运行中断(失上下文)，migration已改写但未提交/未验证build — 重派：验证编译+实体字段与migration",
+      "lastUpdate": "2026-08-18T08:08:22Z"
     },
     "QA": {
       "status": "idle",
