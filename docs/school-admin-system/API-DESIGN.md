@@ -848,10 +848,12 @@
 
 ### 6.7 撤回请假
 
-**DELETE /api/portal/leave/:id**
+**PATCH /api/portal/leave/:id/cancel**
 
-认证: Student JWT (仅本人)
-说明: 仅当 status=PENDING 时可撤回
+认证: Student JWT / Parent JWT（仅本人/关联子女，且仅 status=PENDING 可撤回）
+
+> 语义：撤回 = `status` 置为 `cancelled`，**非物理删除记录**。
+> 兼容旧路径：`DELETE /api/portal/leave/:id` 保留为软撤回别名（同样置为 `cancelled`）。
 
 **Response 200**
 ```json
@@ -860,7 +862,12 @@
 
 **Response 400** — 不能撤回
 ```json
-{ "error": "CANNOT_CANCEL", "message": "该请假状态不允许撤回" }
+{ "error": "CANNOT_CANCEL", "message": "该请假状态不允许撤回（仅 pending 可撤回）" }
+```
+
+**Response 403** — 越权
+```json
+{ "error": "FORBIDDEN", "message": "无权操作此请假记录" }
 ```
 
 ### 6.8 审批请假
@@ -899,7 +906,8 @@
 |-----|------|------|
 | /api/portal/profile PUT | 5次 | 1小时 |
 | /api/portal/leave POST | 10次 | 1天 |
-| /api/portal/leave/:id DELETE | 10次 | 1天 |
+| /api/portal/leave/:id/cancel PATCH | 10次 | 1天 |
+| /api/portal/leave/:id DELETE（软撤回别名）| 10次 | 1天 |
 
 ---
 

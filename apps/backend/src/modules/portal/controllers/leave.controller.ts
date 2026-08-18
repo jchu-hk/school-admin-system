@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Delete,
   Body,
   Param,
@@ -68,13 +69,25 @@ export class LeaveController {
     return this.leaveService.findOne(id, req.user.id, req.user.role);
   }
 
-  @Delete(':id')
+  @Patch(':id/cancel')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: '撤回请假（仅 pending 状态可撤回）' })
   @ApiResponse({ status: 200, description: '请假已撤回' })
   @ApiResponse({ status: 400, description: '不能撤回（非 pending 状态）' })
+  @ApiResponse({ status: 403, description: '无权撤回此请假' })
   @Roles(UserRole.STUDENT, UserRole.PARENT)
   async cancel(@Param('id') id: string, @Request() req) {
+    return this.leaveService.cancel(id, req.user.id, req.user.role, req.ip);
+  }
+
+  // 兼容旧调用：DELETE /:id 同样执行软撤回（status → cancelled，非物理删除）
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '撤回请假（软删除，置为 cancelled；兼容 DELETE 旧路径）' })
+  @ApiResponse({ status: 200, description: '请假已撤回' })
+  @ApiResponse({ status: 400, description: '不能撤回（非 pending 状态）' })
+  @Roles(UserRole.STUDENT, UserRole.PARENT)
+  async cancelLegacy(@Param('id') id: string, @Request() req) {
     return this.leaveService.cancel(id, req.user.id, req.user.role, req.ip);
   }
 
