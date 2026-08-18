@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-26T14:58:42Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[#286] 取消QA: DEV实际未提交代码，需重新分配DEV实现i18n迁移",
-    "type": "failed",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "[#286] 取消QA: DEV实际未提交代码，需重新分配DEV实现i18n迁移"
-    }
-  },
-  {
     "timestamp": "2026-07-26T14:59:01Z",
     "from": "PM",
     "to": "DEV",
@@ -1132,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[admin部署] 完成：index-DCEPABUN-20260707.js + 验证结果(/school-admin/ 200 text/html, js "
+    }
+  },
+  {
+    "timestamp": "2026-08-18T14:58:25Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[admin终验] 开始浏览器验证",
+    "type": "received",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[admin终验] 开始浏览器验证"
     }
   }
 ]
