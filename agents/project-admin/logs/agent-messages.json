@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-07-23T00:05:45Z",
-    "from": "PM",
-    "to": "Slack",
-    "message": "🟢 心跳 07:05 GMT+8 — All 200 ✅ | Docker 15Up(all healthy) | Git main(c155ea4) dirty(141files) | GitHub 10 open | System stable | 🟢",
-    "type": "default"
-  },
-  {
     "timestamp": "2026-07-23T04:28:12Z",
     "from": "DEV",
     "to": "PM",
@@ -1127,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[Issue #262][T26] 完成：环境/账号/访问清单与健康快照就绪，4角色登录已实测；产出 docs/UAT-ACCESS-SHEET.md；发现 d"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:01:50Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[UAT阻断] leave_requests 表缺失：portal 电子请假实体映射 leave_requests 但测试库无此表，migration 1782530900000 未落库，4/5表已建唯缺此表 — 诊断根因并产出修复",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[UAT阻断] leave_requests 表缺失：portal 电子请假实体映射 leave_requests 但测试库无此表，migration 1782"
     }
   }
 ]

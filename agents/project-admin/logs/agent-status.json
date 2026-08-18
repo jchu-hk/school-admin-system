@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #262][T26] UAT用例准备：QR考勤+学生/家长门户 真实用户试用脚本",
-      "lastUpdate": "2026-08-18T07:45:58Z"
+      "task": "[UAT阻断] leave_requests 表缺失：portal 电子请假实体映射 leave_requests 但测试库无此表，migration 1782",
+      "lastUpdate": "2026-08-18T08:01:50Z"
     },
     "QA": {
       "status": "idle",
