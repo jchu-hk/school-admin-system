@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T01:00:53Z",
-    "from": "PM",
-    "to": "user",
-    "message": "开始生成每日状态汇报 (Sat Jul 25 09:00)",
-    "type": "received",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "开始生成每日状态汇报 (Sat Jul 25 09:00)"
-    }
-  },
-  {
     "timestamp": "2026-07-25T01:13:05Z",
     "from": "PM",
     "to": "user",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[leave_requests] DEV已修migration并合入main(b0b6d5f) — 转派DEVOPS：应用迁移到测试库+验证leave_requ"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:11:19Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[leave_requests] 应用迁移开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "[leave_requests] 应用迁移开始"
     }
   }
 ]

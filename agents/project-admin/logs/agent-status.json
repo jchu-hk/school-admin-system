@@ -16,9 +16,9 @@
       "lastUpdate": "2026-08-18T08:09:44Z"
     },
     "DEVOPS": {
-      "status": "idle",
-      "task": "[Issue #262][T26] 完成：环境/账号/访问清单与健康快照就绪，4角色登录已实测；产出 docs/UAT-ACCESS-SHEET.md；发现 d",
-      "lastUpdate": "2026-08-18T07:55:54Z"
+      "status": "running",
+      "task": "[leave_requests] 应用迁移开始",
+      "lastUpdate": "2026-08-18T08:11:19Z"
     },
     "CHECKER": {
       "status": "idle",
