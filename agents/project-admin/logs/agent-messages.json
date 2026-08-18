@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T04:51:21Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#286] Start i18n migration for 4 pages: AttendancePage/FinanceScholarshipPage/LunchOrderPage/NotificationPage. ⚠️ Build only, NO Docker deploy until PM approval.",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#286] Start i18n migration for 4 pages: AttendancePage/FinanceScholarshipPage/L"
-    }
-  },
-  {
     "timestamp": "2026-07-25T04:51:43Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[全量部署] 完成：前后端已部署测试环境。迁移1787200000000已应用(audit_logs_action_enum补4个leave_*值,幂等)+mi"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:48:04Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[复验] 前后端已重新部署(3P0后端+1P1前端白屏) — 复验电子请假全流程+撤回+越权+白屏修复+回归",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[复验] 前后端已重新部署(3P0后端+1P1前端白屏) — 复验电子请假全流程+撤回+越权+白屏修复+回归"
     }
   }
 ]
