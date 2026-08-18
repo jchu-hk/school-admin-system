@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T04:50:24Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#287] 开始修复sidebar角色过滤",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[#287] 开始修复sidebar角色过滤"
-    }
-  },
-  {
     "timestamp": "2026-07-25T04:51:21Z",
     "from": "PM",
     "to": "DEV",
@@ -1132,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "running",
       "task": "[全量部署] 开始"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:47:42Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[全量部署] 完成：前后端已部署测试环境。迁移1787200000000已应用(audit_logs_action_enum补4个leave_*值,幂等)+migrations表已同步(id=17)。后端重建部署(3个P0修复全部生效,/.api/portal/leave路由注册,health 200)。前端portal重建(base=/ 修复白屏,:8081 bundle 200,/portal/student与/attendance/qr 200),admin(:8080)未动。冒烟:leave接口401不再404/500。详见Issue #262 comment。QA可复核前端白屏。",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[全量部署] 完成：前后端已部署测试环境。迁移1787200000000已应用(audit_logs_action_enum补4个leave_*值,幂等)+mi"
     }
   }
 ]
