@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[公网/assets 404] 根因定位：host nginx(5000)缺 /assets/ 路由→门户bundle落到gateway(5001)404 — ",
-      "lastUpdate": "2026-08-18T08:56:56Z"
+      "task": "[外部UI终验] nginx/assets路由已修(DEVOPS) — 用浏览器复验外部Coze proxy门户/QR无白屏 + 截图证据",
+      "lastUpdate": "2026-08-18T08:58:46Z"
     },
     "QA": {
       "status": "idle",

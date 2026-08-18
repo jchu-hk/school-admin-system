@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T14:30:35Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[#288/#289] QA验证: attendance页面nginx路由 + courses表修复",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#288/#289] QA验证: attendance页面nginx路由 + courses表修复"
-    }
-  },
-  {
     "timestamp": "2026-07-25T14:33:29Z",
     "from": "QA",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[nginx assets] 完成：host nginx 已加 /assets/ 路由并 reload，公网 /assets/index-*.js|css 从 "
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:58:46Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[外部UI终验] nginx/assets路由已修(DEVOPS) — 用浏览器复验外部Coze proxy门户/QR无白屏 + 截图证据",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[外部UI终验] nginx/assets路由已修(DEVOPS) — 用浏览器复验外部Coze proxy门户/QR无白屏 + 截图证据"
     }
   }
 ]
