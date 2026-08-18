@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T15:00:38Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#284/#285/#287] QA验证结果: PASSED — i18n(EN菜单+页面标题)+菜单角色过滤均已通过",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[#284/#285/#287] QA验证结果: PASSED — i18n(EN菜单+页面标题)+菜单角色过滤均已通过"
-    }
-  },
-  {
     "timestamp": "2026-07-25T15:00:53Z",
     "from": "QA",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[admin base] 开始"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T09:09:44Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[admin base] 完成: commit 29cab27 (main)。vite.config.ts 添加 base='/school-admin/'，重建成功。dist/index.html 的 <script>/<link> 已变为 /school-admin/assets/index-*.js/.css（非根路径），dist/assets/ 产物已生成。范围：仅改 vite.config.ts + 重建 + 提交推送，未部署（DEVOPS 后续）。",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[admin base] 完成: commit 29cab27 (main)。vite.config.ts 添加 base='/school-admin/'，重"
     }
   }
 ]

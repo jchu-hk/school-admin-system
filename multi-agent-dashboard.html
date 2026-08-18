@@ -55,11 +55,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">DEVOPS</div>
     <div class="agent-task">[nginx assets] 完成：host nginx 已加 /as</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent  running">
+</div><div class="agent">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
-    <div class="agent-task">[admin base] 开始</div>
-    <span class="status-badge status-running">running</span>
+    <div class="agent-task">[admin base] 完成: commit 29cab27 (ma</div>
+    <span class="status-badge status-idle">idle</span>
 </div><div class="agent">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-received">
+<div class="message-list"><div class="message-item msg-done">
+    <div class="message-time">17:09</div>
+    <div class="message-content">DEV → PM: [admin base] 完成: commit 29cab27 (main)。vite.config.ts 添</div>
+</div><div class="message-item msg-received">
     <div class="message-time">17:09</div>
     <div class="message-content">DEV → PM: [admin base] 开始</div>
 </div><div class="message-item msg-assign">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-assign">
     <div class="message-time">16:42</div>
     <div class="message-content">PM → DEVOPS: [合入完成] 前端basename(60b7bee)+后端3bug(8a08b09)已合入main(807d9</div>
-</div><div class="message-item msg-done">
-    <div class="message-time">16:36</div>
-    <div class="message-content">DEV → PM: [leave 3bug] 完成：BUG-A审计枚举500→补leave_apply/approve/rejec</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 17:09:22 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 17:09:44 (GMT+8)</div>
 </div>
 </body>
 </html>
