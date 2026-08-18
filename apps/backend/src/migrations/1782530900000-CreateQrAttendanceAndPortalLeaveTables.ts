@@ -119,7 +119,23 @@ export class CreateQrAttendanceAndPortalLeaveTables1782530900000
       END $$;
     `);
 
-    // ============ 3. offline_sync_buffer ============
+    // ============ 3. offline_sync_buffer（门户/离线缓冲） ============
+    // 历史遗留：dev synchronize 曾在旧阶段以复数表名 offline_sync_buffers 建过一张
+    // 旧 schema 的表（列 payload/status/last_sync_at，与当前实体完全不符）。
+    // 该表不对应任何当前实体，属残留垃圾表（当前实体映射 singular offline_sync_buffer）。
+    // 为避免困惑，若旧复数表仍存在且无数据，则清理之。
+    await queryRunner.query(`
+      DO $$ DECLARE
+        orphan_count bigint;
+      BEGIN
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='offline_sync_buffers') THEN
+          EXECUTE 'SELECT count(*) FROM "offline_sync_buffers"' INTO orphan_count;
+          IF orphan_count = 0 THEN
+            DROP TABLE IF EXISTS "offline_sync_buffers";
+          END IF;
+        END IF;
+      END $$;
+    `);
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS "offline_sync_buffer" (
         "id" uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -157,6 +173,23 @@ export class CreateQrAttendanceAndPortalLeaveTables1782530900000
       DO $$ BEGIN
         CREATE TYPE daily_report_status_enum AS ENUM ('pending','generated','failed');
       EXCEPTION WHEN duplicate_object THEN null; END $$;
+    `);
+    // 幂等性+旧架构兼容：历史上该表曾在 dev synchronize 阶段以旧 schema 被创建过
+    // （旧列 present_count/leave_count/report_data/status=varchar 'draft'）。
+    // 若检测到该旧 schema（存在旧列 present_count 或 report_data），则先 DROP 以便
+    // 下方 CREATE TABLE 以当前实体权威 schema 重建，避免 IF NOT EXISTS 跳过旧表。
+    // 仅当旧库有数据时清空会被拒绝，此处以 DROP 重建为准（旧表在测试库无数据，安全）。
+    await queryRunner.query(`
+      DO $$ DECLARE
+        has_old_col integer;
+      BEGIN
+        SELECT count(*) INTO has_old_col
+        FROM information_schema.columns
+        WHERE table_name='attendance_daily_reports' AND column_name IN ('present_count','report_data');
+        IF has_old_col > 0 THEN
+          DROP TABLE IF EXISTS "attendance_daily_reports";
+        END IF;
+      END $$;
     `);
     await queryRunner.query(`
       CREATE TABLE IF NOT EXISTS "attendance_daily_reports" (

@@ -3,7 +3,7 @@
 
 **文档版本：** v1.8.0-draft.1
 **创建日期：** 2026-05-25
-**最后更新：** 2026-07-14
+**最后更新：** 2026-08-13
 **审查标准：** NIST SP 800-53, OWASP, Cloud Native Best Practices, ISO/IEC 27001, PDPO 香港隐私条例
 **审查报告：** `/docs/school-admin-system/archive/ARCH-REVIEW-v1.0.0.md`
 **状态：** 草稿（待二轮审查）
@@ -13,6 +13,10 @@
 > - 本次 P1 整改新增：Module 11（F-OPS 运维功能完整架构，覆盖全部 9 项）、Module 12（DSE/HKEAA SDP 对接技术规范）
 > - Module 11/12 为 v1.7.0 新增内容，其余章节已与 SPEC v1.7.0 对齐
 > - v1.8.0-draft.1 新增：Module 13（QR Code 校园签到考勤系统设计）和 Module 14（学生&家长门户权限管理系统），对应 CR-20260714-001
+> - v1.8.0-draft.2 新增：§22 校车点名与查询模板模块技术设计（F-BUS-002 校车点大名记录、F-INQ-002 快速回复模板），对应 Issue #361
+> - v1.8.0-draft.3 新增：§23 AI 自动化模块技术设计（F-AI-002 FAQ 智能匹配、F-AUTO-001 周期性任务触发器、F-AUTO-002 智能提醒系统），对应 Issue #362
+> - v1.8.0-draft.4 新增：§24 运维自动化模块技术设计（F-OPS-002/003/006/007/008/009），对应 Issue #363
+> - v1.8.0-draft.5 新增：§25 增强功能模块技术设计（F-AI-003 OCR 识别、F-I18N-003 实时翻译、F-I18N-004 Locale 本地化、F-NEW-002 多渠道通知模板、F-NEW-005 自定义报表+定时推送），对应 Issue #364
 > - 本版本状态为"草稿（待二轮审查）"，待架构评审委员会二轮通过后升为正式发布
 
 ---
@@ -33,6 +37,7 @@
 12. [Module 14: 学生&家长门户权限管理系统](#15-module-14-学生家长门户权限管理系统)
 13. [多语言支持架构](#14-多语言支持架构)
 14. [附录](#附录)
+15. [校车点名与查询模板模块 — 技术设计 (F-BUS-002, F-INQ-002)](#22-校车点名与查询模板模块--技术设计f-bus-002-f-inq-002-issue-361)
 
 ---
 
@@ -2815,4 +2820,1831 @@ const navItems = useMemo(
 **最后更新：** 2026-07-14
 **版本：** v1.8.0-draft.1（草稿，待二轮审查）
 **文档链接：** https://github.com/jchu-hk/school-admin-system/blob/main/docs/school-admin-system/SPEC-SYSTEM-DESIGN.md
+
+---
+
+## 16. Issue #355 补全：用户权限与认证模块技术设计（F-USER-003~007）
+
+> 🔧 **补全说明（Issue #355）**：本节为「用户权限与认证」模块补齐技术设计，作为 DEV 实现 **F-USER-003~007** 的输入。此前 §5 与 §15 已覆盖 RBAC/ABAC（OPA 引擎）的数据模型与角色-菜单映射，本节与其衔接，重点补齐：① 会话与 Token 管理、② 凭证重置、③ 权限变更审批流程、④ ABAC 策略管理（DB 落库）、⑤ 审计查询 的系统设计。
+>
+> 数据表定义见 `DB-SCHEMA.md` / `DATA-DICTIONARY.md`；接口定义见 `API-DESIGN.md` §7。
+
+### 16.1 模块边界与组件拓扑
+
+**模块前缀：** `USR`（权限与认证）
+
+**核心组件：**
+
+| 组件 | 职责 | 关联既有组件 |
+|------|------|--------------|
+| **JwtAuthGuard** | 校验 Access Token，解析请求方身份（已有） | §5 身份认证 |
+| **RolesGuard** | RBAC 角色判定（已有） | §5 RBAC |
+| **OpaGuard / PolicyDecisionPoint (PDP)** | 将请求输入 OPA Rego 引擎做 ABAC 评估（已有） | §15 ABAC/OPA |
+| **SessionModule** | 会话生命周期管理、并发限制、强制登出、空闲超时 | F-USER-004 |
+| **TokenService** | Access/Refresh Token 签发、轮换、作废黑名单 | F-USER-004 |
+| **CredentialResetService** | 邮箱/SMS OTP 自助重置、管理员代重置 | F-USER-006 |
+| **PermissionApprovalService** | 高风险权限变更审批链编排、二次认证触发 | F-USER-007 |
+| **AuditService** | 审计日志写入、SIEM 推送、保留策略 | F-USER-005 |
+| **OPA Policy Store** | ABAC 策略（Rego）版本化管理与 DB 落库 | F-USER-003 |
+
+**模块依赖图：**
+
+```
+用户请求 → JwtAuthGuard → RolesGuard(RBAC) → OpaGuard(ABAC)
+     ↓ 通过则继续
+业务 Service ──→ (需要时) PermissionApprovalService（高风险变更）
+              ──→ SessionService / TokenService（会话类）
+  统一在入口/出口调用 AuditService（F-USER-005）
+```
+
+### 16.2 F-USER-004：会话与 Token 管理设计
+
+#### 16.2.1 Token 类型与生命周期
+
+| Token 类型 | 用途 | 有效期 | 存储 | 轮换策略 |
+|-----------|------|--------|------|----------|
+| Access Token | API 鉴权 | 30 分钟 | 内存 / HttpOnly Cookie | 过期后凭 Refresh 换新 |
+| Refresh Token | 续期 Access | 7 天 | HttpOnly Cookie + `sessions` 表 | 每次使用即轮换（旧的立即作废）；7 天滑动续期，累计 >14 天强制重登 |
+| 临时 Token（Temp） | OTP 验证前携带身份 | 5 分钟 | 内存 | 一次性，验证 OTP 后作废（已有） |
+| API Key | 系统间调用 | 可配置 | 加密存储 | 管理员手动轮换 |
+| SSO Assertion | 单点登录 | 8 小时 | Session | 由 SSO IdP 管理 |
+
+#### 16.2.2 并发会话限制（最多 3 个）
+
+- 每签发一个新的有效会话前，查询 `sessions` 表中该 `user_id` 且 `status='active'`、`expires_at > now()` 的数量。
+- 若已达 `MAX_SESSIONS=3`，按 **最近最少活跃（LRU）** 淘汰最旧会话（`last_active_at` 最早者），并在审计中记录 `SESSION_EVICTED`。
+- 决定逻辑集中在 `SessionService.enforceSessionLimit()`，供所有登录/刷新路径统一调用。
+
+#### 16.2.3 异地登录检测（风险告警）
+
+- 登录成功后比对用户最近登录地理位置（`last_login_city`，由 IP → GeoIP 解析）。
+- 若新位置与历史显著不同且历史存在 `SESSION_EXPIRED`/前 3 次登录均在该城市之外 → 标记为新位置，签发 token 的同时触发风险告警事件 `SESSION_RISK_ALERT`（推送通知 + 审计日志）。
+- 不阻断登录（可用配置开关升级为阻断），默认仅告警。
+
+#### 16.2.4 空闲超时与主动作废
+
+- 空闲超时默认 60 分钟（可配置 `SESSION_IDLE_TIMEOUT_MIN`）：客户端心跳/请求头 `X-Last-Active` 超过阈值，`SessionService` 将 `status` 置为 `expired`，`SESSION_EXPIRED` 审计，强制重新登录。
+- 主动作废触发点（全部 `sessions.invalidateAll(userId)`）：`change_password`、权限变更审批通过、账户禁用/离职、管理员强制登出。
+- 黑名单实现：`sessions.jti`（access token 的 JWT ID）写入 `token_blacklist`，OpaGuard 之外由 JwtAuthGuard 依 `revoked=true` 拒绝。
+
+#### 16.2.5 时序（刷新 Token）
+
+```
+Client                JwtAuthGuard           TokenService            SessionService
+  |  Access Token 过期      |                        |                        |
+  |-- POST /auth/refresh -->|-- 校验 Refresh(轮换) -->|                        |
+  |                        |                        |-- 校验 session active -->|
+  |                        |                        |-- 签发新 Access/Refresh->|
+  |                        |                        |-- 作废旧 refresh(jti) -->|
+  |<-- 200 + 新 token ------|                        |                        |
+```
+
+### 16.3 F-USER-005：审计日志与登录记录设计
+
+- `AuditService.write()` 为唯一写入入口，Service 层业务动作完成后调用，事务外提交（避免业务回滚连带日志回滚，日志失败不影响主流程，采用「失败降级」+ 后台重试队列）。
+- 预留 `audit_logs.metadata` JSONB 存扩展字段（请求体脱敏摘要、风险等级、异常上下文）。
+- **脱敏写入**：`request_params`/`metadata` 中的敏感字段（身份证、密码、OTP）写入前强制正则脱敏，由 `AuditService.sanitize()` 统一处理，任何调用方不可绕过。
+- **保留策略**由 `AuditRetentionJob`（cron）执行：登录事件 3 年、权限/敏感/系统管理 7 年，到期归档至冷存（SIEM 对接件），主库标记 `archived=true` 并物理清理（分批，避免锁表）。
+- **登录事件**（`LOGIN_SUCCESS`/`LOGIN_FAILED`/`LOGIN_LOCKED`/`LOGOUT`/`SESSION_EXPIRED`/`PASSWORD_CHANGED`/`MFA_ENABLED`/`UNAUTHORIZED_ACCESS`）统一落在 `audit_logs`，字段对齐 `audit_action` 枚举（新增值见 DB-SCHEMA §16.4）。
+
+### 16.4 F-USER-006：密码与凭证重置设计
+
+#### 16.4.1 自助重置（邮箱/SMS OTP）
+
+```
+用户请求 → 校验账号+去向(邮箱/手机) → 生成一次性 reset token/OTP（`password_resets`）
+   → 发送链接/SMS(6位OTP) → 用户回填 → 校验(15min/5min、3次失败锁定)
+   → 密码复杂度校验 → 更新密码 → 作废全部会话 → 通知 + 审计日志
+```
+
+- **一次性令牌**：`password_resets.token`（哈希存储）、`otp` 非明文存储，`expires_at`、`attempts`、`used_at` 约束防重放。
+- **密码历史**：校验新密码不在 `users.password_history` 最近 5 次内（复用检测）。
+- **作废会话**：重置成功调用 `SessionService.invalidateAll()`。
+- **家长密码（独立于登录密码）**：走同一张 `password_resets`（`purpose='parent_password'`），仅支持短信 OTP 或到校人工代办（校务处核验身份后走管理员代重置路径）。
+
+#### 16.4.2 管理员代重置（双验证）
+
+- 仅 `SCHOOL_ADMIN` / `SYSTEM` 角色可执行。
+- 执行前二次授权：当前管理员密码 + 本人手机验证码（短信 OTP），服务端强制校验（`CredentialResetService.adminVerify()`）。
+- 被重置用户收邮件/短信通知，完整操作写审计（`user_password_reset`）。
+
+### 16.5 F-USER-007：权限变更审批流程设计
+
+#### 16.5.1 触发规则与审批链
+
+- **5 类高风险操作**进入审批流（临时提升为校务主任、跨班级访问、数据导出授权、SYSTEM 角色变更、家长解绑），由 `PermissionApprovalService.detectHighRiskChange()` 在角色/权限写入前识别并截断（改为先建 `permission_approval_requests` PENDING 记录，**不直接落库权限**）。
+- **审批链**：`permission_approval_requests`(总表) + `permission_approval_steps`(步骤) 多级审批。默认两级（校务主任 → 校长），`risk_level=high`（SYSTEM 变更）为三级（校务主任 → 校长 → 系统管理员）。
+- **二次认证**：审批人在「提交审批决定」动作时触发短信 OTP/硬件 Token（而非申请提交时），`approval_steps.approver_id` 记录实际审批人。
+- **证明文件**：敏感权限操作须上传附件（PDF/JPG/PNG，≤10MB），`permission_approval_requests.attachments`；无证明文件系统自动退回（`AUTO_REJECTED_REASON_EMPTY_ATTACHMENT`）。
+- **有效期**：`valid_from`/`valid_until` 约束授权生效窗口，到期自动回收（`PermissionExpiryJob` cron 扫描并收回）。
+
+#### 16.5.2 状态机
+
+```
+pending ──提交──▶ pending_review ──逐级审批──▶ approved / rejected
+   │                        │
+   └──取消──▶ cancelled      └──超时未审(24h cron)──▶ expired
+批准后：写入角色/权限 + 作废目标用户相关会话 + 审计
+```
+
+#### 16.5.3 时序（跨班级访问授权）
+
+```
+Officer                 ApprovalSvc              Approver(SMS OTP)         SessionSvc    AuditSvc
+  |-- 提交申请(含附件) -->| 建 request+steps(PENDING)|                          |            |
+  |<-- 201 request_id ----|                        |  -- 审批查询列表 -->      |            |
+  |                       |<-- 二次认证(OTP) ------|                          |            |
+  |                       |-- 校验 -> 审核附件 ->批准|                          |            |
+  |                       |-- 写权限+作废目标会话 ---->|                        |            |
+  |                       |-- 审计日志 ---------------------------------------->|            |
+```
+
+### 16.6 F-USER-003：ABAC 策略管理（DB 落库）设计
+
+- 除 OPA Rego 文件外，新增 **策略元数据表** `abac_policies`，用于版本化、灰度发布、追责：
+  - 策略变更先写入 `abac_policies`（`status=preview`），人工审查后 `published`（`status=active`），OpaGuard 运行时加载 `active` 版本。
+  - 每次发布记录 `version`（自增）、`rego` 原文、`created_by`、`published_at`、`rolled_back_from` 支持回滚。
+  - 策略标题/描述/目标角色（`target_roles`）便于检索与审计。
+- **RBAC 数据流固化**：
+  - 角色 `user_roles`（含 `is_system` 标记，系统内置角色不可删除/改名，仅可维护 `permissions` 关联）。
+  - 权限 `permissions`（`code` 唯一，`module`/`resource_type`/`action` 描述操作）。
+  - 关联表 `user_role_assignments`（用户-角色）、`role_permissions`（角色-权限）。
+  - 新增 `role_permissions` 规范化关联（不依赖 `user_roles.permissions` JSONB 数组，改为主从一致的组合键）。
+- **安全边界**：
+  - RBAC 判角色，ABAC 判数据范围/字段级脱敏/操作权限，二者**都通过才算 allow**（叠加而非替代，已在 OPA Rego 主评估入口体现）。
+  - 默认拒绝（fail-closed）：Rego 无匹配规则返回 deny，并有兜底 `default authorize = {"decision": "deny", "reason": "no_matching_rule"}`。
+  - 敏感字段查看/导出/紧急例外等一律触发审计（F-USER-005）。
+
+### 16.7 安全边界与一致性保证
+
+| 边界 | 保证 |
+|------|------|
+| Token 泄露 | Access 短期（30min）、Refresh 轮换、jti 黑名单、HttpOnly Cookie |
+| 会话超限 | 并发上限 3，LRU 淘汰最旧 |
+| 提权防护 | 高风险变更走审批流 + 审批人本人二次认证 |
+| 重置滥用 | OTP 一次性 + 短效期 + 失败锁定 |
+| 审计缺失 | 所有鉴权拒绝与敏感操作统一经 AuditService 写入 |
+| 文档一致性 | 表结构见 DB-SCHEMA 「用户权限与认证模块」，字段说明见 DATA-DICTIONARY §19，接口见 API-DESIGN §7 |
+
+**已实现能力衔接**：JwtAuthGuard / RolesGuard / OpaGuard / OTP 登录已存在（§5、§15），本节仅新增其上层的会话生命周期、凭证重置、审批编排、策略落库与审计统一入口，未改动既有鉴权链路。
+
+---
+
+## 17. Module 5: 整合及合规 — 技术设计（F-INT-001/002, F-COMP-001/002/003）
+
+> 🔧 **补全说明（Issue #356）**：本节为「整合及合规」模块（WebSAMS 同步、eClass 集成、PDPO 隐私合规、双人见证、审计留存）补全技术设计，作为 DEV 实现 F-INT-001/002 + F-COMP-001/002/003 的输入。
+> 本节定位为「我方系统整合层 + 数据模型 + 我方接口 + 同步状态机」的可冻结设计；WebSAMS / eClass / 教育局官方 API 文档在位后按「§17.8 对接契约」对接，不阻塞我方实现。既有 §8.4 已给出 Integration Service 服务边界与本模块统一入口，§9.4 已覆盖 WebSAMS Token 自动刷新（F-OPS-003），本节不复述，仅做衔接引用。
+> 审计事件目录/审计日志表已由 F-USER-005（§16.3、DB-SCHEMA §4.3）覆盖，本节**不重复建表**，仅新增 `audit_action` 枚举值并明确保留策略衔接。
+
+### 17.1 模块边界与组件拓扑
+
+**服务边界（衔接 §1.3）：**
+
+| 服务 | 职责（本模块） | 可扩展副本 |
+|------|--------------|-----------|
+| **Integration Service** | WebSAMS/eClass adapter、数据同步编排、同步状态机、冲突队列 | M (1-2) |
+| **Compliance Service** | PDPO 合规检查引擎、双人见证编排、审计事件封装 | S (1) |
+| **Audit Service**（既有，§8.4）| 审计日志统一写入（F-USER-005）| H (无状态) |
+
+```
+┌────────────┐   ┌────────────┐   ┌────────────┐
+│  WebSAMS    │   │  eClass     │   │ 我局/外部源 │
+│  教育局官方  │   │  教育平台   │   │  提供方     │
+└─────┬──────┘   └─────┬──────┘   └─────┬──────┘
+      │   对接契约(§17.8)  │  对接契约       │
+      ▼                  ▼               ▼
+┌────────────────────────────────────────────────┐
+│            Integration Layer (adapter)         │
+│  WebSAMSAdapter · eClassAdapter · ProviderAD  │
+│  ➜ 认证/Token(§9.4) · 字段映射 · 节流 · 重试   │
+└────────────────────────┬────────────────────────┘
+                         │   事件总线 (写入/成功/失败/冲突)
+                         ▼
+┌────────────────────────────────────────────────┐
+│       Sync Orchestrator (状态机 + 批处理)       │
+│  sync_tasks · sync_logs · sync_conflicts       │
+└───────────┬────────────────────────┬───────────┘
+            │                        │
+  需要合规判定                            完成/失败
+            ▼                        ▼
+┌──────────────────────────┐   ┌──────────────────────┐
+│  Compliance Service      │   │  Audit Service        │
+│  pdpo_compliance_check   │   │  写入 audit_logs      │
+│  witness orchestration   │   │  (F-USER-005 §16.3)  │
+└──────────────────────────┘   └──────────────────────┘
+```
+
+**设计原则：**
+- **对接隔离**：所有外部系统交互经由 adapter，adapter 内部实现「对接契约」；我方领域模型只依赖 adapter 暴露的规范化 `SyncPullDTO` / `SyncPushDTO`，不感知具体第三方协议。
+- **幂等与可重跑**：同步任务具备全局唯一 `sync_ref`（幂等键），失败可安全重试，不产生重复数据。
+- **合规前置**：涉及敏感/财务数据的同步与操作，先经 Compliance Service 判定（F-COMP-001），命中触发规则者进入双人见证（F-COMP-002），全程写审计（F-COMP-003）。
+- **契约可冻结**：我方整合层设计与外部文档解耦，第三方字段/协议以「对接契约」形式固化（§17.8），文档到位即在 adapter 内按契约填充，不改我方主流程。
+
+---
+
+### 17.2 集成层 Design（adapter 架构）
+
+#### 17.2.1 Adapter 统一接口
+
+每个外部系统对应一个 adapter，实现统一接口：
+
+| 方法 | 语义 | 幂等键 | 说明 |
+|------|------|--------|------|
+| `authenticate()` | 获取/刷新凭据（含 Token 自动刷新，衔接 F-OPS-003 §9.4）| - | OAuth2 client_credentials / 密钥 / 证书 |
+| `pull(sync_spec)` | 从外部拉取数据（按需/定时/批量）| `sync_ref` | 返回规范化 `SyncPullDTO` |
+| `push(sync_spec)` | 推送数据至外部 | `sync_ref` | 返回外部确认回执 |
+| `healthCheck()` | 连通性 & 配额探活 | - | 供 Ops 探针与监控 |
+| `map(payload)` | 字段映射（我方⇄外部代码）| - | 单 adapter 内实现，含枚举映射 |
+
+**adapter 实例：**
+- `WebSAMSAdapter` — 教育局 WebSAMS（学籍/出席/成绩/健康）
+- `eClassAdapter` — eClass 平台（出席/作业/沟通）
+- （预留 `DSESDPAdapter` 已在 Module 12 §10 覆盖，此处不复述）
+
+#### 17.2.2 同步数据域映射（F-INT-001 WebSAMS）
+
+| 我方表/域 | 方向 | 频率 | 说明 |
+|-----------|------|------|------|
+| 学生基本资料（students → WebSAMS）| 双向 | 实时（事件驱动）| 学生新增/更新即时同步 |
+| 学籍资料 | 双向 | 实时 | 班别/学年变更 |
+| 出席记录（attendances → WebSAMS）| 学校→WebSAMS | 每日 23:00 | 定时同步 |
+| 成绩资料 | 学校→WebSAMS | 每日 23:00 / 批量 | 成绩发布后推送 |
+| 健康记录 | 学校→WebSAMS | 每日 23:00 | 敏感（P1），全程合规+审计 |
+
+#### 17.2.3 eClass 集成（F-INT-002）
+
+eClass 以 REST 消费为主，由 adapter 在同步任务中拉取/推送：出席记录、作业、家校沟通消息。字段映射与端点在 §17.8 对接契约中固化。敏感字段（如涉及个人 ID/健康）按 F-COMP-001 分级处理。
+
+---
+
+### 17.3 数据同步流程与状态机（F-INT-001/002）
+
+#### 17.3.1 同步任务状态机
+
+`sync_tasks.status` 取值：
+
+```
+                     ┌─ 校验失败 ──▶ FAILED
+                     │               ▲
+   QUEUED ──▶ RUNNING ── 外部失败/超时 ─┴─▶ RETRYABLE（指数退避重试，上限 N 次）
+      │              │                                 │
+      │              ├─ 冲突检测 ─▶ CONFLICT ──人工处理──▶ RESOLVED / CANCELLED
+      │              │                                  │
+      │              └─ 成功 ──────▶ SUCCEEDED ──(审计完整打点)──▶ DONE
+      └─ 取消 ────▶ CANCELLED
+```
+
+| 状态 | 含义 | 退出动作 |
+|------|------|----------|
+| `QUEUED` | 已入队待执行 | 调度器领取 → RUNNING |
+| `RUNNING` | 执行中（含外部 HTTP 等待）| 成功/失败/冲突/超时 |
+| `RETRYABLE` | 可重试失败（网络/限流/瞬时）| 指数退避后回 RUNNING，达上限 → FAILED |
+| `CONFLICT` | 数据冲突（版本/主键/值不一致）| 生成 sync_conflicts 记录 → 人工/RESOLVED |
+| `SUCCEEDED` | 单次执行成功 | 审计打点 → DONE |
+| `FAILED` | 不可重试失败（校验/认证/数据非法）| 告警 + 审计 |
+| `CANCELLED` | 手动取消 | - |
+| `RESOLVED` | 冲突已人工裁决 | 落库回写 |
+
+**调度规则：**
+- 实时：事件驱动（消息队列触发），`sync_mode=realtime`
+- 定时：每日 23:00（出席/成绩/健康），`sync_mode=scheduled`（cron）
+- 批量：每周/每月年度处理，`sync_mode=batch`
+- 按需：`sync_mode=manual`（管理员手动触发拉取）
+- 幂等：每次执行用唯一 `sync_ref`；失败重试不产生重复记录。
+
+#### 17.3.2 重试与退避
+
+- `max_retry` 默认 3（可配），退避 30s → 2min → 10min，写入 `sync_logs.attempt`。
+- 限流（429/配额）自动进入 RETRYABLE，尊重 `Retry-After`。
+- 认证失败（4xx 认证）直接 FAILED 并告警（衔接 F-OPS-003 Token 刷新）。
+
+#### 17.3.3 冲突处理（sync_conflicts）
+
+| 冲突类型 | 触发 | 处理策略 |
+|----------|------|----------|
+| `version_mismatch` | 本地/外部数据版本号不一致 | 记录双方值，人工裁决（保留外部/保留本地/合并）| 
+| `key_conflict` | 主键/唯一键映射冲突 | 人工映射或重指 |
+| `value_discrepancy` | 同字段值不同（无版本）| 默认「外部优先」规则，可人工覆盖 |
+| `link_break` | 关联记录缺失（班级/学生不存在）| 挂起待外键就绪，超时转 FAILED |
+
+冲突记录进入 `sync_conflicts`，由校务处审核（写审计）。解决后同步任务回到 `RESOLVED`。
+
+---
+
+### 17.4 合规检查流程（F-COMP-001）
+
+**数据分级（衔接 SPEC-COMPLETE F-COMP-001 数据分类）：**
+
+| 级别 | 处理规则（系统强制）|
+|------|--------------------|
+| **P1** | 加密 + 双重授权 + 完整审计 + 默认脱敏展示 |
+| **P2** | 加密 + 用途限制 + 审计 |
+| **P3** | 标准保护 |
+
+**检查引擎（`ComplianceService.check`）逐项判定，全部通过才放行：**
+1. **目的限制（Purpose Limitation）**：`action` 与 `purpose` 须落在该数据级别允许集合内，否则 `deny(purpose_violation)`。
+2. **资料最小化（Data Minimization）**：请求字段不得超出目的所需最小集，识别冗余字段采集（`EXCESSIVE_FIELD_REQUEST`）。
+3. **存取控制（Access Control）**：委托 OPA/RBAC（§5.4/§16.7）判定当前角色对该资源/敏感字段的权限，并叠加「敏感查看需二次认证」。
+4. **保留期限（Retention）**：读取数据的保留期配置（见 §17.6），超出保留期数据的访问/导出被拒绝或要求先行合规归口。
+
+```
+pdpo_compliance_check(action, data_class, purpose, user_role, fields[])
+  │
+  ├─ 1 purpose 合法 ? 否 ─▶ deny(purpose_violation) + 审计
+  ├─ 2 fields ⊆ 最小集 ? 否 ─▶ deny(excessive_field) + 审计
+  ├─ 3 OPA access allow ? 否 ─▶ deny(access_denied) + 审计
+  ├─ 4 保留期内 ? 否 ─▶ deny(retention_expired) + 审计
+  └─ 全部通过 ─▶ allow + 审计（合规通过记录 compliance_checks）
+```
+
+**判定结果落库**至 `compliance_checks`（含 action、data_class、purpose、decision、reason、risk_level），每一条均同步写审计日志（F-COMP-003）。
+
+---
+
+### 17.5 双人见证编排（F-COMP-002）
+
+**触发规则（衔接 SPEC-COMPLETE F-COMP-002）：**
+
+| 场景 | 阈值 | 见证要求 |
+|------|------|----------|
+| 现金收取 | 任何金额 | 1 员工 + 1 见证人 |
+| 现金支付 | >HK$500 | 2 名授权员工 |
+| 备用金补充 | 任何 | 2 名授权员工 |
+| 保险箱开启 | 任何 | 2 名授权员工 |
+| 支票签署 | 任何 | 2 名授权签署人 |
+
+**状态机（`witness_verifications.status`）：**
+
+```
+ TRIGGERED ──▶ AWAIT_FIRST ──▶ AWAIT_SECOND ──▶ COMPLETED(锁定交易)
+     │            │   ▲              │   ▲
+     └─CANCELLED  │   └── REJECTED   │   └── REJECTED
+                  └── 超时30min──▶ 校务主任介入 ──▶替换见证人/REJECTED/CANCELLED
+```
+
+| 状态 | 含义 |
+|------|------|
+| `TRIGGERED` | 检测到见证场景，自动创建见证单 |
+| `AWAIT_FIRST` | 等待第一见证人（现金收取时＝员工本人）|
+| `AWAIT_SECOND` | 第一见证完成后，等待第二见证人 |
+| `COMPLETED` | 全部见证人确认 → 交易锁定，回写业务单据 |
+| `REJECTED` | 任一见证人拒绝（记录原因，退回申请人）|
+| `CANCELLED` | 交易取消/见证单作废 |
+| `ESCALATED` | 超时/异常升级至校务主任 |
+
+**编排要点：**
+- 触发即创建 `witness_verifications` 并写入审计（`witness_triggered`）。
+- 第一/第二见证人操作分别写审计（`witness_approved_step` / `witness_rejected`）。
+- 每次见证确认需见证人本人二次认证（短信 OTP）防止代确认（衔接双人见证实时推送规范）。
+- 见证确认在 `DISTINCT` 的两个用户之间（`requester` 与 `witness_1`/`witness_2` 不得同人 / 同角色池限定）。
+- 超时：30 分钟未处理 → 提醒见证人，1 小时未处理 → 通知校务主任可指定替代见证人（衔接 SPEC F-COMP-002）。
+- 完成 → 通过回调锁业务单据（报销/收支/备用金状态机联动，写审计 `witness_completed`）。
+
+---
+
+### 17.6 审计留存策略（F-COMP-003）
+
+> 审计日志表 `audit_logs` 已在 §16.3 / DB-SCHEMA §4.3 定义，本节**不新建审计事件目录表**，仅补充 F-COMP-003 的保留策略与新增事件枚举。完整事件目录与写入链路见 F-USER-005（§16.3）。
+
+| 事件类别 | 事件示例 | 保留期 | 存储 |
+|----------|----------|--------|------|
+| 资料存取 | 查询/下载/打印个人资料 | 7 年 | 主库 + SIEM |
+| 资料修改 | 新增/更新/删除记录 | 7 年 | 主库 + SIEM |
+| 系统操作 | 登入/登出/权限变更 | 5 年 | 主库 |
+| 财务交易 | 收款/付款/报销 | 7 年 | 主库 + SIEM |
+| 合规事件 | 同意书查阅/销毁记录/见证触发/合规判定 | 7 年 | 主库 + SIEM |
+| 同步事件 | 同步任务/冲突/回写 | 3 年 | 主库 |
+
+**新增 `audit_action` 枚举（追加至 §7.6 枚举，见 DB-SCHEMA §17 扩展）：**
+```
+compliance_check_allowed, compliance_check_denied, witness_triggered,
+witness_approved_step, witness_rejected, witness_completed, witness_escalated,
+sync_task_created, sync_task_started, sync_task_succeeded, sync_task_failed,
+sync_task_retried, sync_task_conflict, sync_conflict_resolved, sync_data_pushed
+```
+
+**保留策略落地：** `AuditRetentionJob`（cron）按类别归档/清除；`audit_logs.metadata.retained` 标记保留期，F-OPS-005 审计完整性监控覆盖同步/合规事件写入成功率的完整性校验。
+
+---
+
+### 17.7 我方接口总览
+
+接口定义见 **API-DESIGN §8「整合及合规模块 API」**，本模块新增接口分组：
+
+| 接口 | 说明 |
+|------|------|
+| `POST /api/compliance/check` | PDPO 合规判定（F-COMP-001）|
+| `GET /api/compliance/checks` | 合规检查记录查询 |
+| `POST /api/witness/verifications` | 双人见证发起（F-COMP-002）|
+| `POST /api/witness/verifications/:id/confirm` | 见证人确认 |
+| `POST /api/witness/verifications/:id/reject` | 见证人拒绝 |
+| `GET /api/audit/logs`（既有，§7.5 扩展）| 审计查询（F-COMP-003，兼容已有端点）|
+| `GET /api/sync/tasks` | 同步任务列表 |
+| `GET /api/sync/tasks/:id` | 同步任务详情 |
+| `POST /api/sync/tasks/trigger` | 手动触发同步（按需）|
+| `POST /api/sync/tasks/:id/retry` | 重试失败任务 |
+| `GET /api/sync/conflicts` | 冲突列表 |
+| `POST /api/sync/conflicts/:id/resolve` | 冲突裁决 |
+
+---
+
+### 17.8 对接契约（外部提供方需满足的字段与协议）
+
+> 以下为「我方对接契约」——外部方（WebSAMS / eClass / 教育局官方系统）需按本契约提供字段与协议，我方设即可冻结。外部官方文档到位后在对应 adapter 内按契约字段名映射即可，不阻塞我方实现。若第三方字段命名不同，仅在 adapter 的 `map()` 内映射，不改变我方领域模型。
+
+#### 17.8.1 WebSAMS 对接契约
+
+- **认证**：OAuth2 `client_credentials` 或官方签发的 API 密钥；Token 有效期短、需定期刷新（衔接 §9.4 F-OPS-003）。
+- **基本协议**：HTTPS + JSON（或官方指定 SOAP/XML，由 WebSAMSAdapter 内统一转换）。
+- **需提供字段 / 数据对象**：
+  - 学生：`student_no`（校号）、`name_zh/en`、`hkdse_no`（如适用）、`hkid`（仅映射非明文存储）、`class_code`、`academic_year`、`enrollment_status`（在读/註冊/離校）
+  - 学籍：`entry_date`、`class_allocations[]`、`grade`
+  - 出席：`attendance_date`、`period_code`、`attendance_code`（早退/遲到/缺席/病假）
+  - 成绩：`subject_code`、`score`、`grade_point`、`assessment_period`
+  - 健康：`allergy/medical`（P1，须加密通道 + 合规模板标识）
+- **版本/冲突**：任一记录提供 `version`（乐观锁）或 `last_updated_at`，供冲突检测（§17.3.3）。
+- **确认回执**：写操作（push）须返回成功/失败 + 外部记录 ID，供 `sync_logs` 记录。
+
+#### 17.8.2 eClass 对接契约
+
+- **认证**：eClass 平台账号/密钥或 OAuth2。
+- **端点（消费为主）**：出席批量拉取、作业增查、家校沟通消息收发（对应 F-INT-002 端点）。
+- **需提供字段**：
+  - 出席：`student_id`、`class_id`、`date`、`status_code`
+  - 作业：`task_id`、`class_id`、`title`、`due_date`、`student_submissions[]`
+  - 沟通：`message_id`、`sender_type`（teacher/parent）、`recipient`、`body`、`sent_at`
+- **版本/冲突**：提供 `updated_at` 或 `etag`。
+- **确认回执**：POST 返回 `record_id` + `status`。
+
+#### 17.8.3 通用契约约束
+
+- 我方每次 pull/push 携带 `sync_ref`（幂等键），外部需支持幂等去重（相同 `sync_ref` 不重复处理）。
+- 限流：外部返回 `429` + `Retry-After`，我方按退避策略重试（§17.3.2）。
+- 字段命名冲突以我方 `SYNC_FIELD_*` 常量映射；不可映射字段进入 `sync_logs` 告警而非静默丢弃。
+- 涉及 P1 数据的传输须使用受信加密通道，且记录传输审计事件。
+
+---
+
+### 17.9 安全边界与一致性保证
+
+| 边界 | 保证 |
+|------|------|
+| 外部凭据泄露 | 存于 Vault（§4.4 secrets），adapter 内存中短暂持有；失败不落明文日志 |
+| 同步幂等 | 全局唯一 `sync_ref` 防重复；失败重试安全 |
+| 冲突数据 | 不自动覆盖，进入 `sync_conflicts` 人工裁决 |
+| 合规绕过 | 所有敏感/见证/同步路径统一经 ComplianceService + AuditService，不可绕行 |
+| 见证舞弊 | 见证人须不同人 + 本人二次认证 + 全程审计，见证确认后交易才锁定 |
+| 审计缺失 | F-OPS-005 完整性监控覆盖同步/合规/见证事件写入 |
+| 文档一致性 | 表结构见 DB-SCHEMA 「整合及合规模块」，字段说明见 DATA-DICTIONARY §20，接口见 API-DESIGN §8 |
+
+**已实现能力衔接**：Integration Service 边界（§1.3）、WebSAMS Token 刷新（§9.4 F-OPS-003）、审计统一入口（§16.3）、OPA/RBAC（§5.4/§16.7）均已存在；本节仅新增其上层的 adapter 整合层、同步状态机、合规引擎、见证编排与留存策略，未改动既有链路。
 </text_never_used_51bce0c785ca2f68081bfa7d91973934>
+
+
+---
+
+## 18. 考试与成绩管理模块 — 技术设计（F-EXAM-001~004）
+
+> 🔧 **补全说明（Issue #357）**：本节为「考试与成绩管理」模块补齐技术设计，作为 DEV 实现 **F-EXAM-001（DSE 报考管理）、F-EXAM-002（试卷管理）、F-EXAM-003（特别考试安排）、F-EXAM-004（成绩单生成与发布）** 的输入。
+> **模块前缀：** `EXM`
+> **与既有模块的边界：**
+> - 既有 `exam` 模块（后端 `apps/backend/src/modules/exam`，表 `exams`）承载**校内考试排期**（`examDate`/`subject`/`classroom`/`invigilator`/`examType`/`status`），本节**不复述**，DSE 报考/试卷/特别安排均以 `exams.id` 为考试实例外键关联。
+> - 既有 `grade` 模块与 `GRADE-PUBLISH-DESIGN.md`（表 `grade_records`、`grade_publish_requests`/`grade_publish_approvals`/`grade_publish_notifications`/`grade_publish_settings`）承载**校内平时成绩的录入、审核与发布**。本节 F-EXAM-004 **成绩单（报告单 report_card）生成与发布**在其**上层**构建：从 `grade_records` 汇总生成整班/整级成绩单批次，复用 `grade_publish_requests/approvals` 的发布审批与家长查看链路，**不重复设计成绩录入与发布审批内核**。
+> - 既有 `dse` 模块（表 `dse_release`/`dse_result`/`dse_review`/`dse_offer_tracking`）承载 **DSE 放榜后的成绩追踪**（Module 12 §10、F-DSE）。本节 F-EXAM-001 DSE 报考是**考前报名**，录入报名数据后**通过 `dse_release` / HKEAA SDP（§10）在放榜后回流实际成绩**，两者一前一后衔接，不存在重复。
+
+### 18.1 模块边界与组件拓扑
+
+**业务子域：**
+
+| 子域 | 覆盖功能 | 新建服务 | 数据表 |
+|------|----------|----------|--------|
+| DSE 报考 | F-EXAM-001 | `DseRegistrationService` | `dse_exam_batches`、`dse_registrations`、`dse_subjects` |
+| 试卷管理 | F-EXAM-002 | `ExamPaperService` | `exam_papers`、`exam_paper_requests`、`exam_paper_distributions` |
+| 特别考试安排 | F-EXAM-003 | `SpecialArrangementService` | `special_exam_arrangements`、`special_arrangement_approvals` |
+| 成绩单生成发布 | F-EXAM-004 | `ReportCardService` | `report_card_batches`、`report_cards`、`report_card_approvals`、`report_card_revokes` |
+
+**依赖关系（只增不改，复用既有服务/表）：**
+
+```
+DseRegistrationService ──► DseService(dse_release 回流，§10/F-DSE) ──► HKEAA SDP adapter(§17.8.2 契约扩展 DSE 报考字段)
+ExamPaperService ────────► ExamService(exams 表，校内考试排期) + UserService(班级/科目)
+SpecialArrangementService ─► ExamService(exams) + StudentProfileService(students/SEN)
+ReportCardService ───────► GradeRecordService(grade_records) + GradePublishService(grade_publish_requests/approvals) + AI CommentService(评价生成) + PdfService(成绩单PDF)
+```
+
+**鉴权与权限：** 所有接口经 API Gateway → OPA/RBAC（§5.4/§16.7）。操作人角色约束见 §18.5 权限矩阵；教师自撤回成绩单需 48h 窗口 + 审计（衔接 F-USER-005 `audit_logs`）。
+
+### 18.2 DSE 报考管理流程（F-EXAM-001）
+
+#### 18.2.1 报考批次（学年度报考窗口）
+
+系统按学年创建报考批次，划定报名起止、逾期报名费（每科 HK$560）、单生科数上下限（最少 6 科含 4 核心，最多 8 科）与截止规则。
+
+**状态机（`dse_exam_batches.status`）：**
+
+```
+DRAFT ──► OPEN ──► CLOSED ──► SUBMITTED ──► CONFIRMED
+             │         │           │
+             │         │           └─► (HKEAA 确认后) CONFIRMED
+             │         └─► CANCELLED
+             └─► (参考) ONGOING
+```
+
+| 状态 | 说明 |
+|------|------|
+| DRAFT | 草稿，报名未开放 |
+| OPEN | 报名开放中，可报考/退选 |
+| CLOSED | 报名截止，进入整理核对 |
+| SUBMITTED | 已整体提交 HKEAA |
+| CONFIRMED | HKEAA 确认报考结果 |
+| CANCELLED | 批次取消 |
+| ONGOING | 报考进行中（可选题/改选但仍接受增删的中间态，可选） |
+
+#### 18.2.2 报考记录状态机（`dse_registrations.status`）
+
+```
+DRAFT ──► PREPARED ──► LATE ──► SUBMITTED ──► HKEAA_CONFIRMED
+  │          │          │          │
+  │          │          └─► WITHDRAWN(截止后退选需医疗证明)
+  │          └─► CANCELLED
+  └─► CANCELLED
+```
+
+| 状态 | 说明 |
+|------|------|
+| DRAFT | 草稿，未完成 |
+| PREPARED | 资料齐全可提交 |
+| LATE | 逾期报考（记逾期费 HK$560/科）|
+| SUBMITTED | 已提交 HKEAA |
+| HKEAA_CONFIRMED | HKEAA 已确认 |
+| WITHDRAWN | 退选（截止后需医疗证明）|
+| CANCELLED | 取消 |
+
+**报考校验规则：**
+- 科目总数≥6 且≤8；同时类别 A 核心（中文/英文/数学/公民与社会）4 科必须全部包含。
+- 科目分类：A_core（核心）、A_elective（选修）、B（应用学习）、C（其他语言）。枚举 `dse_subject_category_enum`：`A_core/A_elective/B/C`。
+- 涉及特别安排（F-EXAM-003）须上传医疗/SEN 报告方可标记 `special_arrangements`。
+- `declaration_signed = true` 为提交前置条件；阶段必传报名照 `photo`。
+
+#### 18.2.3 与既有 DSE 模块衔接
+
+报考确认后，`dse_registrations.registration_id` 写入 `dse_exam_batches`；放榜后实际成绩经 §10 Module 12 `dse_release`/`dse_result` 回流，按 `student_no`/`hkdse_no`/`subject_code` 关联，不在此建重复成绩表。
+
+### 18.3 试卷管理流程（F-EXAM-002）
+
+完整生命周期映射子功能 F-EXAM-002a~f：
+
+```
+F-EXAM-002a 试卷需求统计  → 需求确认（按每科/每班计算应印总数）
+F-EXAM-002b 印刷申请管理  → exam_paper_requests(status=PRINT_ORDERED)，生成供应商印刷订单
+F-EXAM-002c 密封追踪      → exam_papers.seal_no + 保管链(chained custody)，tracking_sealed
+F-EXAM-002d 保险箱管理    → exam_papers.storage(SAFE) + 保险箱访问审计(复用 audit_logs)
+F-EXAM-002e 分发记录      → exam_paper_distributions(签到/签收)
+F-EXAM-002f 回收与销毁    → exam_papers.status ARCHIVED/DESTROYED，保存期限与审批销毁记录
+```
+
+**试卷状态机（`exam_papers.status`）：**
+
+```
+REQUIRED ──► PRINT_ORDERED ──► PRINTED ──► SEALED ──► IN_SAFE ──► DISTRIBUTED ──► USED
+       │          │              │             │             │             │
+       │          │              │             │             ▼             ▼
+       └─► CANCELLED             └─► REJECTED   └─► LOST     └─► RETURNED   └─► ARCHIVED
+                                                                                │
+                                                                                ▼
+                                                                             DESTROYED
+```
+
+| 状态 | 说明 |
+|------|------|
+| REQUIRED | 需求确认 |
+| PRINT_ORDERED | 已下单印刷 |
+| PRINTED | 已印制 |
+| SEALED | 已密封（记录 seal_no）|
+| IN_SAFE | 已入保险箱 |
+| DISTRIBUTED | 已分发（监考员签收）|
+| USED | 考试使用中 |
+| RETURNED | 已回收 |
+| ARCHIVED | 归档保存 |
+| DESTROYED | 审批销毁 |
+| REJECTED | 印刷退回 |
+| CANCELLED | 取消 |
+| LOST | 遗失（触发告警）|
+
+**密封/保管链：** `exam_papers.custody_chain JSONB` 存 `[{actor, action, at}]`；从密封到分发每步追加，形成可审计保管链（衔接 F-COMP-003 审计）。
+
+### 18.4 特别考试安排流程（F-EXAM-003）
+
+**安排类型（`special_arrangement_type_enum`）：**
+
+| 代码 | 描述 | 所需审批 |
+|------|------|----------|
+| EXTRA_TIME | 25% 或 50% 额外时间 | HKEAA |
+| SEP_ROOM | 独立考场 | 学校 + HKEAA |
+| SCRIBE | 抄写员 | HKEAA |
+| READER | 读卷员 | HKEAA |
+| BRAILLE | 盲文试卷 | HKEAA |
+| WHEELCHAIR | 轮椅通道书桌 | 学校 |
+
+**安排单状态机（`special_exam_arrangements.status`）：**
+
+```
+DRAFT ──► PENDING_APPROVAL ──► APPROVED ──► ACTIVE ──► COMPLETED
+  │            │                 │
+  │            ▼                 ▼
+  └─► CANCELLED              REJECTED
+```
+
+| 状态 | 说明 |
+|------|------|
+| DRAFT | 草稿 |
+| PENDING_APPROVAL | 待审批（HKEAA/学校 视类型）|
+| APPROVED | 已审批 |
+| ACTIVE | 当日使用中 |
+| COMPLETED | 已完成 |
+| REJECTED | 被拒（可重新申请）|
+| CANCELLED | 取消 |
+
+**审批约束：** 类型所需审批为 HKEAA 的安排须在 `special_arrangement_approvals` 记录 HKEAA 审批引用（`approval_ref`）；WHEELCHAIR 仅需学校审批。审批记录可多级。
+
+### 18.5 成绩单生成与发布流程（F-EXAM-004）
+
+#### 18.5.1 流程总览（衔接既有成绩模块）
+
+```
+阶段0 数据来源：grade_records（教师已提交录入的成绩，status=PENDING_APPROVAL/APPROVED）
+阶段1 汇总计算：ReportCardService 按班级/年级/学年学期聚合，计算加权分、班级排名、年级排名
+阶段2 AI 评语：AIClassCommentService 生成描述性评语（存 report_cards.comment_json，可人工修正）
+阶段3 教师自撤回：提交后 48 小时内、审批人审批前，教师可自行撤回修改（无限次，审计）
+阶段4 审核批准：教研组长(L1)/校长或副校长(L2) 审核 report_card_batches
+阶段5 生成 PDF：PdfService 批量生成 A4 竖版成绩单 PDF（可加水印）
+阶段6 发布：复用 grade_publish_requests → approvals → notifications 链路发布给家长/学生
+阶段7 家长/学生查看：微信门户/App 查看 + PDF 导出（带水印，家长个人使用）
+```
+
+#### 18.5.2 成绩单批次状态机（`report_card_batches.status`）
+
+```
+DRAFT ──► GENERATING ──► PENDING_APPROVAL ──► APPROVED ──► PDF_READY ──► PUBLISHED
+  │            │              │                 │             │
+  │            │              ▼                 ▼             ▼
+  └─► CANCELLED          REJECTED(FIXED→DRAFT)/教师自撤回(GENERATING/PENDING_APPROVAL)
+```
+
+| 状态 | 说明 |
+|------|------|
+| DRAFT | 草稿汇总完成，未生成 |
+| GENERATING | 生成中（AI 评语 + 计算）|
+| PENDING_APPROVAL | 待审核（教师评语完成 → 校长/副校长审核）|
+| APPROVED | 已审核批准 |
+| PDF_READY | PDF 已生成 |
+| PUBLISHED | 已发布（家长/学生可见）|
+| CANCELLED | 取消批次 |
+
+**教师自撤回（SPEC 补充 + 评审修正）：**
+- 期限：教师提交（`report_cards.status` 由 DRAFT→SUBMITTED）后 **48 小时**内；条件：审批人尚未审批（批次 `PENDING_APPROVAL`）。
+- 次数不限；每次撤回写 `report_card_revokes` 并触发审计告警 `alert_type_enum.grade_revoked`（衔接 `grade_audit_alerts`，F-USER-005）推送给校务主任。
+- 撤回记录必填理由；字段见 DATA-DICTIONARY §21.6。
+
+#### 18.5.3 班级成绩分布可视化
+
+- 分数分布柱状图：班级各科分数 × 年级平均分对比（由 `report_cards` 各科 score + 年级聚合查询）。
+- 等级分布饼图：A/B/C/D 占比（grade 分布）。
+- 排名变化折线图：学生本次 vs 上次（`report_card_batches` 关联历史批次）排名差。仅向任教教师开放本班数据。
+
+#### 18.5.4 权限矩阵
+
+| 功能 | 教师 | 教研组长 | 校长/副校长 | 教务处 | 校务主任 | 家长 | 学生 |
+|------|------|----------|--------------|--------|----------|------|------|
+| DSE 创建/管理报考批次 | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| DSE 学生报考录入/退选 | ❌ | ✅ | ✅ | ✅ | ✅ | ❌(本人报考除外) | ✅(本人) |
+| 试卷需求/印刷/密封 | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 试卷分发/回收/销毁 | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 特别安排申请 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅(为孩子) | ✅(本人,SEN) |
+| 特别安排审批(学校级) | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 成绩单汇总生成 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 成绩单教师自撤回(48h) | ✅(仅本人) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 成绩单审核(L1 教研组长) | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 成绩单审批(L2 校长/副校长) | ❌ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 成绩单发布(复用发布审批) | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
+| 查看/下载自己成绩单 | ❌ | ❌ | ❌ | ❌ | ❌ | ✅(孩子) | ✅(自己) |
+
+#### 18.5.5 安全与一致性保证
+
+| 边界 | 保证 |
+|------|------|
+| 成绩单数据来源可信 | 仅汇总 status∈{PENDING_APPROVAL, APPROVED} 的 `grade_records`，DRAFT 不进入 |
+| 自撤回竞态 | 撤回前置校验批次未进入审批（PENDING_APPROVAL）且 <48h，用行锁/乐观版本防并发审批后撤回 |
+| PDF 完整性 | 发布用 PDF 固化快照，发布后修改不影响已发布件 |
+| 隐私 | 成绩单含 P1 成绩数据，传输加密、PDF 水印、家长/学生仅见本人 |
+| 审计 | 报考/退选、试卷保管链、特别安排审批、成绩单发布/撤回/审批均写 `audit_logs` |
+| 文档一致性 | 表结构见 DB-SCHEMA 「18. 考试与成绩管理模块」，字段见 DATA-DICTIONARY §21，接口见 API-DESIGN §9 |
+
+
+---
+
+## 19. 注册与收生管理模块 — 技术设计（F-ENRL-001~003, F-ADM-001~002）
+
+> 🔧 **补全说明（Issue #358）**：为 F-ENRL-001（新生注册）、F-ENRL-002（AI 辅助编班）、F-ENRL-003（课本分发管理）、F-ADM-001（中一自行分配学位 SSPA）、F-ADM-002（JUPAS 联招管理）提供技术设计，作为 DEV 实现输入。
+> 数据模型见 DB-SCHEMA §19，字段字典见 DATA-DICTIONARY §22，接口见 API-DESIGN §10。
+
+### 19.1 模块边界与组件拓扑
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        注册与收生管理模块（新）                            │
+│  F-ENRL-001 新生注册  │  F-ENRL-002 AI编班  │  F-ENRL-003 课本分发        │
+│  F-ADM-001  SSPA     │  F-ADM-002  JUPAS  │                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│  主要输入源：家长申请表、OCR扫描文件、WebSAMS、EDB 外部接口                │
+│  主要输出：注册确认、编班结果、课本发放记录、SSPA录取、JUPAS状态追踪         │
+├─────────────────────────────────────────────────────────────────────────┤
+│    │ students / classes / class_allocations / academic_years（既有）     │
+│    │ fees / fee_records / subsidy_eligibility（F-FEE-001 衔接）          │
+│    │ dse_offer_tracking / dse_releases（Module 12，JUPAS 衔接）          │
+│    │ users / audit_logs（鉴权与审计，Module 16）                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+**与既有「教师招聘（recruitment）」模块的边界：**
+- 既有 recruitment 模块（DATA-DICTIONARY §16 `recruitment_positions/applications/interviews/offers/onboarding`）是**教师招聘**（学校雇员的职位发布、候选人面试、入职），属人力资源域；本次设计的**收生（admissions）**是**学生入学**（中一新生与转学生的注册、编班、课本、学位）。两者服务对象（雇员 vs 学生）、业务流程、数据表完全独立，不相交。
+- 收生产生的「申请人」是学生（`student_applications`），不得写入 `recruitment_applications`。
+- 收生产生的「注册学生」进 `students` 主档；教师入职不建学生档。
+
+**与既有「学生档案管理」的边界：**
+- 新生注册完成并核验后由系统写入 `students` + `student_id_sequences`（沿用 §3.1 学生创建逻辑），但 `student_applications` 保留申请侧原始数据（含 OCR 文件、SEN 披露、文件核验清单），不并入学生主档。
+- 编班结果经审批后写 `class_allocations`（`allocation_type='main'`），供 ABAC 按 `class_id` 控制教师数据范围（衔接 F-USER-003）。
+
+**与既有「财务」的边界（F-ENRL-003 课本）：**
+- 课本费独立结算，不并入学费；课本收款可复用 F-FEE-001 的收款流水能力（`fee_records`），但以 `textbook_distributions` 的 `payment_status` 为主要字段。课本相关表新增；不改财务既有表。
+- 学生资助资格读取 `students.subsidy_eligibility`（full_subsidy/half_subsidy/none/pending），用于自动标记 `waived` / 部分豁免。
+
+**与既有「DSE/升学」的边界（F-ADM-002）：**
+- Module 12 的 `dse_offer_tracking` 已含 `jupas_status` 枚举，承载**放榜后申请状态追踪**；本次 F-ADM-002 的 `jupas_applications` 承载**申请期**的志愿收集、推荐信生成、学校推荐提交。两者通过 `jupas_application_no` 关联演进。
+
+### 19.2 新生注册流程（F-ENRL-001）
+
+状态机：
+
+```
+applied → screening → documents_verified → class_assigned → enrolled
+   └────────────► rejected (任何阶段可拒)
+   └────────────► withdrawn (家长撤回)
+```
+
+| 状态 | 含义 | 触发 |
+|------|------|------|
+| applied | 已申请（资料提交）| 家长/收生主任录入申请 |
+| screening | 初审中 | 收生主任受理，核对文件清单 |
+| documents_verified | 文件核验通过 | OCR 比对 + 人工复核 |
+| class_assigned | 已分配班级 | AI 编班审批通过后回写 |
+| enrolled | 已注册（并入学生主档）| 注册确认、身份核验 |
+| rejected | 未录取 | 收生主任/校长审批 |
+| withdrawn | 家长撤回 | 家长发起 |
+
+**关键流程：**
+- 报名受理：采集申请信息 + 上传文件（OCR 扫描）。SEN 披露为自愿，`special_education_needs` 独立标记，不强制。
+- 文件核验：`documents` 逐项比对原件，`document_status` 记录 submitted/verified/missing；核验人留痕。
+- 截止规则：中一注册截止 8 月 31 日（EDB）；转学生到校后 14 天内注册；系统校验 `deadline` 拒绝超期申请（特殊审批除外）。
+- 注册完成：`status→enrolled` 时同步创建 `students` 记录 + 生成学号（`student_id_sequences`）+ 写入 `class_allocations`。
+
+### 19.3 AI 辅助编班（F-ENRL-002）
+
+**设计原则：** 可解释、可回滚、人工审批闭环。AI 只产出「建议」，最终由校长/教务主任审批生效。
+
+**因子与权重（默认，可配置）：**
+
+| 因子 | 默认权重 | 计算说明 |
+|------|----------|----------|
+| gender_ratio | 25% | 各班男女比例逼近 50:50 |
+| academic_ability | 25% | 各班学业打分均值/方差均衡（用成绩表均分归一）|
+| sen_students | 20% | SEN 学生均匀分布（不扎堆）|
+| sibling_conflict | 15% | 避免存在敌对/冲突关系者同班（`sibling_conflicts` 声明）|
+| school_origin | 10% | 同来源小学分散 |
+| special_talent | 5% | 体育/艺术特长均衡 |
+
+**编排流程：**
+1. 创建编班批次（`class_allocation_batches`，指定学年、班级数、权重配置 snapshot）。
+2. 拉取候选学生（申请状态 = class_assigned 阶段或 students 主档待分班者）。
+3. 调用 AI 引擎计算分配 + `balance_score`（0-100）+ 冲突清单。
+4. 人工审阅：校务主任查看推荐结果与冲突说明，可手工微调。
+5. 审批生效：校长审批后，写 `class_allocation_results` 明细 + 回写 `class_allocations`；回写前不改变班级归属。
+6. 审计留痕：批次创建、AI 建议、人工微调、审批、生效全链路写 `audit_logs`。
+
+**边界：** 编班只负责「建议 + 审批」，最终班级归属统一由 `class_allocations` 承载，不新增平行的班级归属数据源。
+
+### 19.4 课本分发管理（F-ENRL-003）
+
+**六大步骤（对应 SPEC Step 1-6）：**
+
+| 步骤 | 处理 | 数据 |
+|------|------|------|
+| 1 批次准备 | 每学年采购生成课本批次 | `textbook_batches`，价格从 `textbook_catalog` 同步 |
+| 2 清单生成 | 按班级拉学生 + 按 `class_subject_config` 定应领科目 | `textbook_distributions` 预生成记录 |
+| 3 分发登记 | 扫码/手动+双人签认 → 记录时间戳操作人 | `distribution_status=distributed` |
+| 4 费用结算 | 汇总数量×单价×折扣；on 资助自动 `waived`；收款更新 `payment_status` | 独立结算，可联动 F-FEE-001 |
+| 5 退换处理 | 错发/损坏/转学；退货按原价 80% 退款 | 旧记录 `replaced`/`returned`，新记录 `distributed` |
+| 6 汇总归档 | 每日/学期汇总报表；库存联动扣减 | 归档 `textbook_distributions` 状态 |
+
+**关键规则：**
+- 每科目每生 1 本（默认），补发另行。
+- `subsidy_eligibility=full_subsidy` → `payment_status=waived`（免缴费）；`half_subsidy` → 系统算 50% 应付。
+- 开学 30 天内可退换，超 30 天需校务主任审批（`approval_required` 标记）。
+- 退换货供应商周期 10 个工作日。
+- 库存：`textbook_inventory_items` 记录批次-书名库存；分发扣减、退回回补、报废核减。
+
+### 19.5 SSPA 中一自行分配学位（F-ADM-001）
+
+**EDB 时间轴映射：**
+
+| 阶段 | 系统处理 | 数据表 |
+|------|----------|--------|
+| 1月公布准则 | `sspa_batches`（本年度自行分配窗口 + 总分权重） | sspa_batches |
+| 家长递交申请表 | 录入/导入申请 | sspa_applications |
+| 2月面试 | 评分录入 | sspa_scores（各准则细分分项）|
+| 公布正取/备取 | 计分汇总、排序、标记正取/备取 | sspa_applications.status |
+| 3-4月 EDB 结果 | 录入/同步 EDB 结果 | sspa_applications.edb_result |
+| 5月确认注册 | 正取确认 → 进入新生注册流 | 关联 F-ENRL-001 |
+
+**评分系统（默认配置，可调）：**
+
+| 准则 | 最高分 |
+|------|--------|
+| 学业表现 | 30 |
+| 面试表现 | 30 |
+| 兄弟姐妹在校 | 10 |
+| 家长校友 | 5 |
+| 其他成就 | 10 |
+| 校长酌情权 | 15 |
+
+**计分与定序：** `sspa_scores` 汇总 → 总分 → 排序 → 依学额标记正取/备取；校长酌情权需审批留痕。
+
+### 19.6 JUPAS 联招管理（F-ADM-002）
+
+**五步流程：**
+1. 收集学生 JUPAS 选择（`jupas_applications` + `jupas_choices`）
+2. 生成学校推荐信（`jupas_reference_letters`，支持 AI 辅助写作）
+3. 处理校长/教师推荐信（状态流转、截止）
+4. 追踪申请状态（与 `dse_offer_tracking` 关联演进）
+5. 处理上诉程序（`jupas_appeals`）
+
+**推荐信 AI 辅助写作（F-ADM-002，含字数统计/大纲建议）：**
+- 实时字数统计（建议 300-500 字，<200 提示补充）；写 `letter_stats`（JSONB：word_count/term_consistency）。
+- AI 生成写作大纲（学业表现/个人特质/课外活动三段），写 `ai_suggestion`。
+- 历史推荐信参考（脱敏）只读查询，不落敏感全文。
+
+**与 Module 12 衔接：** 放榜后各轮 JUPAS 结果状态由既有 `dse_offer_tracking.jupas_status` 承载；申请期数据由本节表承载，二者以 `jupas_application_no` 关联。
+
+### 19.7 状态机与异步编排
+
+| 场景 | 编排方式 |
+|------|----------|
+| AI 编班计算 | 异步任务（batch）：创建批次 → 提交 AI 队列 → 回调写结果 → 通知审阅人 |
+| 课本清单预生成 | 批处理：写入种子分发记录（status=pending）|
+| JUPAS 推荐信生成 | 同步 + AI 辅助（非阻塞，可重试）|
+| WebSAMS 同步 | 复用既有同步通道（F-INT-001），注册/编班成功后触发 |
+
+### 19.8 权限矩阵
+
+| 功能 | 校务主任 | 收生主任 | 教务协调员 | 校长/副校长 | 教师 | 家长 | 学生 |
+|------|----------|----------|------------|-------------|------|------|------|
+| 新生申请录入/查改 | ✅ | ✅ | ✅ | ✅ | ❌ | ❌(见下) | ❌ |
+| AI 编班触发/审阅 | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 编班审批生效 | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| 课本批次/库存管理 | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| 课本分发登记/结算 | ✅ | ❌ | ✅ | ✅ | ✅(本班) | ❌ | ❌ |
+| 课本退换/退款 | ✅ | ❌ | ✅ | ✅ | ❌ | ✅(申请,为孩子) | ❌ |
+| SSPA 申请/评分录入 | ✅ | ✅ | ✅ | ✅ | ❌ | ✅(申请,为孩子) | ❌ |
+| SSPA 结果公布/确认 | ✅ | ✅ | ❌ | ✅ | ❌ | ✅(查看) | ❌ |
+| JUPAS 志愿收集/追踪 | ✅ | ❌ | ✅ | ✅ | ✅(推荐信) | ❌ | ✅(本人) |
+| JUPAS 推荐信 AI/审批 | ✅ | ❌ | ✅ | ✅ | ✅(本人撰写) | ❌ | ❌ |
+| 查看本人/孩子申请进度 | ❌ | ❌ | ❌ | ❌ | ❌ | ✅(孩子) | ✅(本人) |
+
+> 家长自助申报（2026 起 EDB 电子报名趋势）可作为二期；一期由校务处代录，家长仅门户查看进度（`student_application_links` 提供只读授权）。
+
+### 19.9 安全与一致性保证
+
+| 边界 | 保证 |
+|------|------|
+| 申请数据可信 | `student_applications` 为唯一申请来源；注册进 `students` 为单向写入，不反向覆盖 |
+| 编班审批闭环 | AI 结果未审批不写 `class_allocations`；用乐观版本号防并发审批 |
+| 文件核验留痕 | 核验人/时间/结果写申请记录与 `audit_logs`，支持追溯 |
+| 课本费用一致 | 汇总 = Σ(数量×单价×折扣)，以 DB 计算聚合；退款 80% 折旧常量集中定义 |
+| 隐私(PDPO) | 家长/学生资料、SEN 披露、推荐信含 P1 数据，传输加密、按最小权限授权；家长/学生仅见本人 |
+| 审计 | 申请、核验、编班建议/审批/生效、课本分发/结算/退换、SSPA 评分/公布、JUPAS 推荐/提交均写 `audit_logs` |
+| 文档一致性 | 表结构见 DB-SCHEMA §19，字段见 DATA-DICTIONARY §22，接口见 API-DESIGN §10 |
+
+---
+
+## 20. 财务与学年结算模块 — 技术设计（F-FEE-001, F-FIN-002, F-YREND-001/002）
+
+> 🔧 **补全说明（Issue #359）**：为 F-FEE-001（每日收费追踪）、F-FIN-002（零用现金报销）、F-YREND-001（档案清理与销毁）、F-YREND-002（学年财务结算）提供技术设计，作为 DEV 实现输入。
+> 数据模型见 DB-SCHEMA §20，字段字典见 DATA-DICTIONARY §23，接口见 API-DESIGN §11。
+
+### 20.1 模块边界与组件拓扑
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        财务与学年结算模块（新）                            │
+│  F-FEE-001 每日收费追踪  │  F-FIN-002 零用现金报销  │  F-YREND-001 档案清理 │
+│  F-YREND-002 学年财务结算 │                                              │
+├─────────────────────────────────────────────────────────────────────────┤
+│  主要输入源：收费交易、报销申请（收据OCR）、EDB 保存期限指引、年度预算/支出   │
+│  主要输出：收据（电子推送）、对账报表、报销审批单、结算批次、归档销毁记录     │
+├─────────────────────────────────────────────────────────────────────────┤
+│    │ fees / fee_types / fee_records / tuition_payments（既有 F-FIN-001） │
+│    │ textbook_distributions（§19.4 课本，payment_status 可联动）         │
+│    │ witness_verifications / witness_steps（F-COMP-002 双人见证）        │
+│    │ users / audit_logs（鉴权与审计，Module 16）                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+**与既有「财务（F-FIN-001 学费管理）」的边界：**
+- 既有 F-FIN-001（学费/堂费的评估、分期、欠费、豁免）以 `fee_items`/`fee_records`/`tuition_payments` 承载，是**长期费用（学费、堂费）**的「应缴/已缴/欠费」账户模型；本模块的 F-FEE-001 是**每日收费追踪**（日常杂费：冷气、活动、物料、其他）的「收款日结/收据/对账」交易模型。二者共享 `payment_method` 语义，但`fee_types`=一次性日常收费，`fee_records`=每日交易流水；F-FEE-001 不改动既有学费账单结构。
+- F-FIN-002（零用现金报销）与既有财务的**备用金补充**衔接：备用金补充走既有 F-FIN-001 资金流（须双人见证，见 §17.5），报销支出从备用金余额扣减；本模块新增 `petty_cash_reimbursements` 承载报销审批状态机，不新建备用金主账（余额以「补充 − 报销」聚合或独立台账承载）。
+- F-YREND-002（学年财务结算）聚合**全部**收款/支出（学费、日常收费、课本、备用金报销、预算），以 `year_end_settlements` 承载批次报表，只读汇聚既有财务表，不新建并行账目。
+- F-YREND-001（档案清理）按 EDB 保存期限对**既有各业务文档**（学生/成绩/健康/财务/合同等）执行归档/移交/销毁，以 `archive_cleanup_records` 承载处置记录与到期判定，处置对象引用既有表，不复制文档本体到新表。
+
+**与既有「注册收生-课本（F-ENRL-003）」的边界：**
+- 课本收款仍以 `textbook_distributions.payment_status` 为主要字段（见 §19.4）；F-FEE-001 的收款流水能力（`fee_records`）可被课本收款复用，但不并入学费账单。学年结算（F-YREND-002）汇总课本收入到 `year_end_settlements` 的 by_category 快照。
+
+**与既有「双人见证（F-COMP-002）」的边界：**
+- 现金收费、现金支付>HK$500、备用金补充均触发 `witness_verifications`（对应角色见 §17.5 触发规则）；F-FEE-001 日结对账、F-FIN-002 报销见证复用该编排，仅在业务单上记录 `witness_verification_id`，不重复实现见证逻辑。
+
+### 20.2 收费项目与账单（F-FEE-001）
+
+**费用类型（fee_types，衔接 §4.7 既有 `fees`/`fee_types`）：**
+
+| 费用类型代码 | 描述 | 强制性 | 归属 |
+|------------|------|--------|------|
+| air_con | 冷气费 | 可选 | F-FEE-001 日常 |
+| activity | 活动费 | 按活动 | F-FEE-001 日常 |
+| material | 物料费 | 按需 | F-FEE-001 日常 |
+| other | 其他杂费 | 按需 | F-FEE-001 日常 |
+| tuition | 学费 | 是(可豁免) | F-FIN-001 既有 |
+| subsidy | 堂费 | 是 | F-FIN-001 既有 |
+| textbook | 课本费 | 独立结算 | F-ENRL-003 既有 |
+
+**业务设计：**
+- 收费项目（`fee_types`）：校务主任可配置一次性日常收费项目（名称/代码/默认金额/是否启用），与既有 F-FIN-001 的长周期性费用项目区分。
+- 每笔收费须登记 `fee_records`（交易流水：学生、收费项目、金额、方式、经办、见证、收据号）。
+- `支付方式参与`：cash / cheque / fps / octopus / e_payment（对应既有 PaymentMethod 的扩展映射，§4.7 枚举）。
+- **收据出具**：每笔交易必须出具收据（`receipts` 表承载 PDF 引用 + 收据号 + 电子推送记录）。
+- **电子收据自动推送**：非现金缴费（FPS/八达通/e_payment）收款成功后自动推送收据（App 推送 + 邮件，短信备用），`receipts.push_status` 记录各渠道状态。
+- **日结对账**：每日营业结束对账（`daily_reconciliations`），现金金额需双人见证核实；差异>HK$50 需调查（状态置 `investigating`）。
+- **缴费延迟提示**：第三方支付到账延迟，`fee_records.payment_status` 提供 `submitted`(第三方处理中) 中间态；>10 分钟未更新标记 `status_stale` 提示联系校务处（前端展示，状态仍为准，不自动改账）。
+
+**日结对账状态机（daily_reconciliations.status）：**
+
+```
+ OPEN ──▶ REVIEWING ──▶ BALANCED
+   │          │
+   └──────────┴──────▶ INVESTIGATING（差异>50）
+```
+
+| 状态 | 含义 |
+|------|------|
+| OPEN | 对账单已生成，待核对 |
+| REVIEWING | 现金双人见证核实中 |
+| BALANCED | 对平，出具日结报表 |
+| INVESTIGATING | 存在差异，需调查（差异>$50） |
+| REOPENED | 差异处理后重新打开对账 |
+
+### 20.3 零用现金报销（F-FIN-002）
+
+**审批状态机（petty_cash_reimbursements.status）：**
+
+```
+ DRAFT ──▶ OCRA_PENDING ──▶ WITNESS_REQUIRED ──▶ WITNESS_IN_PROGRESS ──▶ PENDING_APPROVAL ──▶ APPROVED
+   │            │                │                   │                        │
+   └─CANCELLED  │                ├──▶ SKIPPED(≤500单人见证)                    └─▶ REJECTED
+                │                └──▶ REJECTED(见证拒绝)                        └─▶ PAID(出账)
+                ├──────────────────▶ (OCR失败→ MANUAL_AMOUNT)
+                └──────────────────▶ 备用金不足阻断(见BLOCKED)
+```
+
+| 状态 | 含义 |
+|------|------|
+| DRAFT | 草稿（填单+上传收据） |
+| OCRA_PENDING | 待 OCR 识别金额 |
+| MANUAL_AMOUNT | OCR 失败，人工录入金额 |
+| WITNESS_REQUIRED | 待见证（>HK$500 需双人；≤HK$500 单人） |
+| WITNESS_IN_PROGRESS | 见证进行中（复用 `witness_verifications`） |
+| PENDING_APPROVAL | 见证完成/锁定，待校务主任审批 |
+| APPROVED | 已批准（未出账） |
+| PAID | 已出账（备用金扣减） |
+| REJECTED | 已拒绝（含原因） |
+| CANCELLED | 申请人取消 |
+| BLOCKED | 备用金不足，阻断提交 |
+
+**关键规则（衔接 SPEC F-FIN-002 AC）：**
+- **单笔动态限额**：基础 HK$3,000，按 CPI 调整：`实际限额 = 基础限额 × (当年CPI指数 / 基准CPI指数)`；学年切换时由 `petty_cash_configs` 保存公式快照，调整结果经校务主任确认生效（`config_status=confirmed`），并在系统公告通知（衔接 F-AUTO-002 通知）。
+- **双人见证触发**：金额 > HK$500 须双人见证，第一见证人完成自动推送第二见证人（App+短信）；≤HK$500 单人见证直接进审批。见证复用 §17.5 `witness_verifications` 编排。
+- **OCR 视觉区分**：`ocr_result`（JSONB）记录 `ocr_amount`、匹配状态（match/mismatch/not_found）；前端以黄色高亮 OCR 金额、红色粗体提示「请人工核对收据原件」，侧栏显示收据缩略图。
+- **备用金余额**：以 `petty_cash_transactions`（补充 + /报销 −）流水聚合当前余额；低于 HK$500 提示补充、为 0 禁止提交报销；单笔补充上限 HK$5,000。
+- **超时提醒**：第一见证人 30 分钟未处理 → 提醒；1 小时 → 通知校务主任可指定替代见证人（衔接 §17.5）。
+- **审计**：OCR、见证、审批、拒绝、出账全链路写 `audit_logs`。
+
+### 20.4 学年财务结算（F-YREND-002）
+
+**结算批次状态机（year_end_settlements.status）：**
+
+```
+ DRAFT ──▶ COMPUTING ──▶ READY_FOR_AUDIT ──▶ LOCKED ──▶ ARCHIVED
+                                  │              │
+                                  └─▶ SUSPENDED（存在未决差异/争议欠费）
+```
+
+| 状态 | 含义 |
+|------|------|
+| DRAFT | 批次已建立（选定财政年度） |
+| COMPUTING | 正在聚合各账源（异步） |
+| READY_FOR_AUDIT | 结算报表生成完成，待审计 |
+| LOCKED | 审计确认后锁定（不可再改账） |
+| ARCHIVED | 已归档 |
+| SUSPENDED | 存在未决差异/欠费争议，暂缓 |
+
+**结算聚合范围（只读汇聚，不新建并行账）：**
+
+| by_category | 数据源 |
+|-------------|--------|
+| tuition / subsidy | 既有 F-FIN-001 `tuition_payments` / `fee_items` |
+| daily_fees | F-FEE-001 `fee_records`（按 fiscal_year 过滤） |
+| textbook | `textbook_distributions`（§19.4） |
+| petty_cash | `petty_cash_reimbursements`（PAID） |
+| expenses | `petty_cash_transactions` 支出 / 预算模块（F-NEW-004） |
+
+**输出：** 与 SPEC `reconciliation_id`（`YREC-2025-2026`）一致；`year_end_settlements` 保存 `summary`、`by_category[]`、`outstanding_fees[]` 快照（JSONB），并提供 PDF 报表导出。挂账未缴/欠费（含 `sub_status`）列入 `outstanding_fees`；结算报表生成涉及的全部数据保持只读快照，锁定后业务方不可再改当年度账目。
+
+**流程：**
+1. 创建批次（`year_end_settlements`，fiscal_year=draft）。
+2. 触发计算（异步，COMPUTING）→ 聚合各数据源 → 写 `summary`/`by_category`/`outstanding_fees` → READY_FOR_AUDIT。
+3. 审计：校务主任/外审核账 → 确认 → LOCKED（冻结当年度账目）。
+4. 归档：生成 PDF → ARCHIVED。
+
+### 20.5 档案清理与销毁（F-YREND-001）
+
+**归档处置状态机（archive_cleanup_records.status）：**
+
+```
+ PENDING ▶ REVIEW ▶ APPROVED ▶ (DESTROYING|HANDING_OVER) ▶ (DESTROYED|HANDED_OVER|HELD)
+    │        │          └─▶ REJECTED                         └─▶ CONFIRMED
+    └────────┴──────────────────────────────────────────────────────▶ REJECTED / HELD（暂缓保留）
+```
+
+| 状态 | 含义 |
+|------|------|
+| PENDING | 到期待检（按保存期限判定） |
+| REVIEW | 校务处复核处置方式（销毁/移交/保留） |
+| APPROVED | 校长/校务主任批准处置 |
+| DESTROYING | 销毁执行中（物理/电子删除流程） |
+| DESTROYED | 已销毁（双人见证 + 记录销毁证书号） |
+| HANDING_OVER | 移交中（如会议记录移交校监） |
+| HANDED_OVER | 已移交（含接收方/日期） |
+| HELD | 暂缓/保留（有法律/审计争议，移出销毁队列） |
+| REJECTED | 处置被否决 |
+
+**EDB 保存期限映射（配置化，`archive_retention_policies`）：**
+
+| retention_code | 文档类型 | 保存期限 | 处置方式 |
+|----------------|----------|----------|----------|
+| student_registration | 学生注册表 | 毕业后 7 年 | 销毁 |
+| transcripts | 成绩表 | 永久 | 保留(N/A) |
+| discipline | 处分记录 | 7 年 | 销毁 |
+| health | 健康记录 | 离校后 3 年 | 销毁 |
+| financial_receipts | 财务收据 | 7 年 | 销毁 |
+| meeting_minutes | 会议记录 | 5 年 | 移交校监 |
+| employee_contract | 员工合同 | 离职后 7 年 | 销毁 |
+| graduation_photos | 毕业照 | 永久 | 保留(N/A) |
+
+**流程：**
+1. 到期扫描：`ArchiveRetentionCron` 按 `academic_years` + 保存期限判定到期记录，生成 `archive_cleanup_records`（status=pending）。
+2. 复核：校务处复核处置方式与对象范围 → review。
+3. 审批：校长/校务主任批准 → approved。
+4. 执行：销毁（双人见证 + 销毁证书）→ destroyed；移交 → handed_over 并记录接收方。
+5. 例外：争议/法律保留 → held（暂缓，移出销毁队列，注明原因）。
+6. **销毁确认**：销毁须双人见证（复用 §17.5），写 `witness_verification_id` + 销毁证书号（`destroy_cert_no`），并写审计 `archive_destroyed`。
+
+**边界：** 只处置元数据（引用既有文档 ID + 文件存储 URL），物理删除由对象存储生命周期或专项脚本执行；永久保存类型（成绩表/毕业照）不进入销毁队列。
+
+### 20.6 状态机与异步编排
+
+| 场景 | 编排方式 |
+|------|----------|
+| 学年结算计算 | 异步任务（batch）：创建批次 → 提交聚合队列 → 回调写快照 → 通知审计 |
+| 电子收据推送 | 同步 + 异步：收款成功即写收据，推送走消息队列（App/邮件/短信），失败重试 |
+| 报销见证推送 | 复用 `witness_verifications` 编排（§17.5） |
+| 档案到期扫描 | 定时任务（cron）：`ArchiveRetentionCron` 定期生成处置记录 |
+| 缴费状态定时巡检 | cron 每 5 分钟：标记第三方支付 >10min 未更新为 `status_stale`，触发提醒 |
+
+### 20.7 权限矩阵
+
+| 功能 | 校务主任 | 教务协调员 | 会计/出纳 | 校务处同工 | 校长/副校长 | 教师 | 家长 |
+|------|----------|------------|-----------|-----------|-------------|------|------|
+| 收费项目配置 | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| 日常收费登记/日结 | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| 费用查询（本班） | ✅ | ✅ | ✅ | ✅ | ✅ | ✅(本班) | ❌ |
+| 收据查看/补发 | ✅ | ❌ | ✅ | ✅(经办) | ✅ | ❌ | ✅(本人/孩子) |
+| 报销提交 | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| 报销见证 | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| 报销审批 | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| 学年结算触发/审计 | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| 档案到期复核/审批 | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| 档案销毁执行/见证 | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ |
+
+> 家长仅可查看本人/孩子缴费状态与电子收据（ABAC 按 `student_id` 范围限制，衔接 F-USER-003)。现金收取/支付见证人角色须与经办人 DISTINCT（衔接 §17.5）。
+
+### 20.8 安全与一致性保证
+
+| 边界 | 保证 |
+|------|------|
+| 金额一致 | 日结汇总 = Σ(`fee_records`)；备用金余额 = Σ(`petty_cash_transactions`)；结算快照以 DB 聚合生成 |
+| 双人见证 | 现金收费、大额报销、销毁、备用金补充强制见证，见证人与经办人 DISTINCT（§17.5） |
+| 报销限额 | 单笔动态限额（CPI 公式）校验，超限阻断 |
+| 结算只读性 | READY_FOR_AUDIT/LOCKED 后当年度账目冻结，变更须开立调整批次 |
+| 隐私(PDPO) | 收据、报销单、档案含 P1 数据（学生/员工资料），传输加密、最小权限授权、销毁记录可追溯 |
+| 审计 | 收费/收据/对账、报销 OCR/见证/审批/出账、结算、归档处置全链路写 `audit_logs` |
+| 文档一致性 | 表结构见 DB-SCHEMA §20，字段见 DATA-DICTIONARY §23，接口见 API-DESIGN §11 |
+
+---
+
+## 21. 资产与供应商管理模块 — 技术设计（F-ASSET-001/002/003, F-VEND-001, Issue #360）
+
+> 🔧 **补全说明（Issue #360）**：为校产条码盘点（F-ASSET-001）、场地租借管理（F-ASSET-002）、设备保养管理（F-ASSET-003）、供应商注册与评估（F-VEND-001）提供技术设计，作为 DEV 实现输入。
+> **边界**：既有 `asset` 模块（`/api/asset*`，TypeORM 实体 `assets`/`asset_rentals`）已覆盖一般资产 CRUD 与物料借用归还（含量化库存/状态机）。本节 **不重复** 一般资产借用；本节专注更专业化的固定资产条码盘点、**场地（venue）** 租借（按时长+按金+保险定价租赁，区别于既有按件 `asset_rentals`）、**设备保养** 计划/工单、以及 **供应商** 注册与评估。四个子域独立表。
+> **技术栈**：沿用既有 NestJS + TypeORM + PostgreSQL 16（§2 技术栈）；条码/QR 生成与扫描能力可复用 QR 基建（§12 QR 校园签到，`qr_codes`）与既有库存条码 `assets.code`。
+> **文档一致性**：表结构见 DB-SCHEMA §21，字段见 DATA-DICTIONARY §24，接口见 API-DESIGN §12。鉴权/角色复用 Module 16（ABAC），双人见证复用 §17.5 `witness_verifications`。
+
+### 21.1 校产条码盘点（F-ASSET-001）
+
+**目标**：固定资产统一编码（条码）+ 周期性盘点，输出盘点率、差异清单与资产状况汇总。
+
+**资产分类（10 类，来自 SPEC）：** 固定资产 / 电子设备 / 家具 / 乐器 / 运动器材 / 实验室设备 / 图书馆藏书 / 视听器材 / 电脑设备 / 网络设备。
+
+**核心流程：**
+1. **初始化登记**：对每件固定资产分配唯一资产条码 `code`（沿用 `assets.code` 约定，建议格式 `ASSET-YYYY-<类别>-<NNNN>`），登记类别/品牌/型号/序列号/存放位置/责任人/价值/购入日期/供应商。既有 `assets` 表用于通用库存资产；固定资产可用 `fixed_assets` 表（见 DB §21.1）承载条码级固定资产主档，或 DEV 选择在既有 `assets` 上扩展 `is_fixed + barcode + location + responsible_person`。
+2. **创建盘点任务**：按年度/学期创建盘点批次 `inventory_sessions`（如 `INV-2026-ANNUAL-001`），圈定盘点范围（资产类别/地点/责任人）。
+3. **执行盘点**：手持端/扫码枪扫描固定资产条码，逐件记录 `inventory_items` 明细（应盘资产、实盘 found / not_found、实盘地点、状态评估）。支持批量导入离线盘点结果。
+4. **差异判定**：未扫到 = missing；扫描地点 ≠ 登记地点 = location_discrepancy；条码不识别 = unknown。生成差异清单。
+5. **差异调查**：差异项可指派责任人调查，`investigation_status` = pending/resolved。
+6. **生成报告**：按盘点任务汇总 `total_registered` / `assets_verified` / `verification_rate` / `discrepancies[]` / `condition_summary`（excellent/good/fair/poor）。
+7. **结题**：盘点任务 `closed` 后写入审计；数据不可再改动（只读快照）或留调整通道。
+
+**盘点状态机（session）：** `draft → planning → in_progress → verifying → closed`（可 `cancelled`）。
+**差异项状态机（item）：** `scanned_matched / scanned_mismatch / missing / unknown → pending_investigation → resolved / closed`。
+
+### 21.2 场地租借管理（F-ASSET-002）
+
+**目标**：管理校内场地（礼堂/篮球场/课室/活动室/游泳池等）对外/对内租借，含计价、按金与保险要求。
+
+**场地及定价（来自 SPEC）：**
+
+| 场地 | 每小时租金 | 按金 | 保险要求 |
+|------|-----------|------|---------|
+| 礼堂 | HK$800 | HK$2,000 | 是 |
+| 篮球场 | HK$400 | HK$1,000 | 是 |
+| 课室 | HK$200 | HK$500 | 否 |
+| 活动室 | HK$300 | HK$500 | 否 |
+| 游泳池 | HK$600 | HK$1,500 | 是 |
+
+**说明**：以上为内置定价模板，可经 `venues` 表参数化配置（单校多场地可扩展单价/按金/保险）。
+
+**核心流程：**
+1. **场地建档**：登记 `venues`（名称/容量/小时租金/按金/保险要求/地址/可用时段）。
+2. **租借申请**：外部/内部租借方提交 `venue_rentals`，选场地+起止时间，系统自动计算租金与按金，标记保险要求。
+3. **防冲突校验**：同一场地时间区间重叠冲突时拒绝（interval + exclusion constraint / 应用层校验）。
+4. **审批**：校务处/校务主任审批。
+5. **按金与收费**：租借方缴交按金（可选衔接费用/收据模块，或独立记录），出具收据。
+6. **使用与归还/结算**：租借完成归还场地，完成验屋后按金退还或扣损，生成结算记录。
+
+**流程状态机：** `draft → pending_approval → approved → confirmed(payment) → in_progress → completed → closed`；拒绝 `rejected`；取消 `cancelled`。
+**防冲突**：DB 采用 `EXCLUDE USING gist (venue_id WITH =, tsrange(start_at, end_at) WITH &&)`（启用 btree_gist），或在逻辑层按 (venue_id, 时间段) 查重。
+
+### 21.3 设备保养管理（F-ASSET-003）
+
+**目标**：为设备建档保养计划，按频率生成保养工单并跟踪执行，覆盖定期/预防性/故障维修/安全检测四类。
+
+**保养类型（来自 SPEC）：**
+
+| 类型 | 频率 | 示例 |
+|------|------|------|
+| 定期保养 | 每月/每季 | 冷气系统, 升降机, 消防设备 |
+| 预防性保养 | 年度 | 冷气机清洗, 灭火筒更换 |
+| 故障维修 | 按需 | 任何设备故障 |
+| 安全检测 | 年度 | 电力系统, 气体装置, 升降机 |
+
+**核心流程：**
+1. **保养计划**：为设备/资产建立 `maintenance_plans`（保养类型、频率（月/季/年）、下次到期日、责任供应商（衔接供应商 F-VEND-001）、说明）。
+2. **工单生成**：按频率调度（cron）自动生成 `maintenance_work_orders`；故障维修可手动即时建单。
+3. **工单执行**：指派执行人（校内/外判供应商），记录执行时间、结果、费用、附件。
+4. **验收与关闭**：执行人提交 → 校务处验收 → 关闭；安全检测类需资质证书号。
+5. **到期提醒**：临近到期（如提前 7 天）经通知模块提醒负责人。
+6. **历史**：工单归档保留设备保养履历。
+
+**计划状态机：** `active / suspended / retired`。
+**工单状态机：** `scheduled → assigned → in_progress → submitted → verified → closed`；取消 `cancelled`。
+
+### 21.4 供应商注册与评估（F-VEND-001）
+
+**目标**：统一管理供应商注册信息，并周期性评估其资质/绩效，形成合格供应商名录。
+
+**供应商分类（10 类，来自 SPEC）：** 图书供应 / 文具供应 / 膳食供应（饭盒）/ 校车服务 / 设备维修 / 印刷服务 / 清洁服务 / 保险公司 / 网络服务 / 活动物资。
+
+**核心流程：**
+1. **供应商注册**：外部供应商提交注册资料 → `vendors`（名称/统一编号/类别/联系人/联系方式/银行账户/证照/地址），校务处审核 → `approved` / `rejected`。
+2. **资质证照**：上传证照文件（营业执照/注册证/保险单等），记录有效期并到期提醒（衔接 F-OPS/通知）。
+3. **评估周期**：校务处/校务主任按周期（如年度）发起 `vendor_evaluations` 评估，从多个维度打分（质量/价格/交期/服务/合规）。
+4. **评估定级**：汇总加权分 → 级别（A/B/C）与结论（续用/观察/淘汰）。可由多评审人各自打分后汇总。
+5. **名录管理**：合格供应商维护 `qualified_vendors` 名录状态（关联合同/费用，衔接财务模块）。
+6. **关联工时**：保养工单/采购记录可引用供应商 `vendor_id`（衔接 F-ASSET-003 责任供应商）。
+
+**注册状态机：** `draft → pending_review → approved / rejected / suspended`。
+**评估状态机：** `draft → in_progress → scored → concluded`（`cancelled`）。
+
+### 21.5 状态机与异步编排
+
+| 场景 | 编排方式 |
+|------|----------|
+| 盘点任务自动生成 | 年度任务由 cron 创建 `inventory_sessions`（draft），负责人手动规划 |
+| 保养计划到期生成工单 | cron（`MaintenanceScheduleCron`）扫描计划形成 `scheduled` 工单，并触发 7 天到期提醒 |
+| 场地时段冲突校验 | 应用层 + PostgreSQL 排他约束双重保障，冲突即 409 |
+| 供应商证照到期提醒 | cron 扫描 `vendors` 证照有效期，到期前提醒更新 |
+| 维修外判 | 故障维修工单可指派外判供应商（`vendor_id`），完成后回写费用 |
+
+### 21.6 权限矩阵
+
+| 功能 | 校务主任 | 校务处同工 | 会计/出纳 | 教师 | 系统管理员 | 供应商(外部) |
+|------|----------|------------|-----------|------|-----------|-------------|
+| 固定资产/条码登记与维护 | ✅ | ✅ | ❌ | 查看 | ✅ | ❌ |
+| 创建盘点任务 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| 执行/录入盘点 | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| 差异调查/结题 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| 场地档案维护 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| 场地租借申请/审批 | 审批 | 申请/审批 | 收费联动 | 申请 | ✅ | 提交申请 |
+| 保养计划/工单管理 | ✅ | ✅ | 费用联动 | 查看 | ✅ | 被指派执行 |
+| 供应商注册 | 审批 | 审核 | ❌ | ❌ | ✅ | 提交/更新 |
+| 供应商评估 | ✅ | ✅ | ❌ | ❌ | ✅ | 查看(自身评估) |
+
+> 外部供应商仅能通过限定公开端点（提交/更新自身注册、查看自身评估），无内部后台权限（ABAC 按 `vendor_id` 范围限制）。见证/审批人角色约束沿用 §17.5。
+
+### 21.7 安全与一致性保证
+
+| 边界 | 保证 |
+|------|------|
+| 场地冲突 | 相同场地时间段重叠 → 409；DB 排他约束兜底 |
+| 盘点只读性 | 盘点任务 `closed` 后明细只读，防篡改；解锁须走重开流程 |
+| 金额/按金 | 租金 = 时长 × 小时单价（DB 事务计算）；按金收退记录可追溯，衔接财务收据 |
+| 保养数据一致性 | 工单须关联设备/资产与（可选）责任供应商；外判费用可联动财务 |
+| 隐私(PDPO) | 供应商资料含 P1（联系方式/银行账户/证照），传输加密、最小权限授权、评估记录可审计 |
+| 审计 | 资产/盘点、场地租借审批与结算、保养工单、供应商注册与评估全链路写 `audit_logs` |
+| 文档一致性 | 表结构见 DB-SCHEMA §21，字段见 DATA-DICTIONARY §24，接口见 API-DESIGN §12 |
+
+## 22. 校车点名与查询模板模块 — 技术设计（F-BUS-002, F-INQ-002, Issue #361）
+
+> 🔧 **补全说明（Issue #361）**：为校车点大名记录（F-BUS-002）与家长查询快速回复模板（F-INQ-002）提供技术设计，作为 DEV 实现输入。
+> **边界**：
+> - **校车点名（F-BUS-002）** 记录学生在「校车行程」上的上车（onboard）/下车（alight）点名，定位为校车乘搭内点名，**区别于**既有的校园出勤 `attendances`（§7 班级出勤）与 QR 校园签到 `attendance_qr_logs`（§12 校园入校签到）。三者为不同语义：`attendances`=班级日常出勤，`attendance_qr_logs`=校园入校签到，`bus_checkins`=校车乘搭点名。校车点名**不回写** `attendances`，是否映射为出勤数据由 DEV 在§22.6 按配置决定（默认不联动）。
+> - **快速回复模板（F-INQ-002）** 为校务处回复家长查询时的**回复内容模板**（校車/午膳/收费/请假/一般 共 5 类 41 个内置模板），**区别于**既有的通知模板 `NotificationTemplate`（F-NEW-002 多渠道通知模板，用于发送通知/告警，receiver 为通知场景）。快速回复模板服务于 F-INQ-001 家长查询队列的回复生成（AC-05），通过模板变量替换生成回复正文并推送家长。
+> - **家长查询队列**见 §F-INQ-001 既有实现（`inquiries` / `inquiry_replies`）；本节仅新增**快速回复模板**管理及在回复流程中的匹配、渲染与推送联动。
+> **技术栈**：沿用既有 NestJS + TypeORM + PostgreSQL 16（§2 技术栈）；通知/推送复用 §7.3 多渠道通知架构与 `NotificationTemplate` 基建；学生乘搭分配可衔接 F-BUS-001（校车实时追踪与乘搭学生列表）。
+> **文档一致性**：表结构见 DB-SCHEMA §22，字段见 DATA-DICTIONARY §25，接口见 API-DESIGN §13。鉴权/角色复用 Module 16（ABAC）。
+
+### 22.1 校车点名记录（F-BUS-002）
+
+**目标**：记录每次校车行程中学生上车（onboard）与下车（alight）点名，输出 `status`（如 arrived_safely）并可联动发送「已安全登车/到校」家长通知，满足 F-BUS-002 输出示例（`checkin_id`/`bus_id`/`check_type`/`timestamp`/`location`/`status`/`parent_notification_sent`）。
+
+**核心实体**：
+1. **校车（bus）**：复用/扩展既有校车车辆标识，建模为 `buses`（车辆主档：车牌/座位数/登记即可用）。
+2. **线路（bus_route）**：`bus_routes` 线路主档（如 將軍澳線），含线路号、起讫站、停靠站点序列、可配置延误通知阈值（衔接 F-BUS-001 阈值配置）。
+3. **班次/行程（bus_shift）**：`bus_shifts` 即一次校车行程（某线路 × 某校车 × 日期 × 方向（早晨返校 morning / 放学离校 afternoon）），是点名的**粒度容器**。
+4. **乘搭分配（bus_students）**：学生分配到具体线路/班次（衔接 F-BUS-001 乘搭学生列表，含家长通知状态）。
+5. **点名记录（bus_checkins）**：每行程内每学生一条点名记录（onboard / alight），支持 GPS 或手动定位。
+
+**核心流程：**
+1. **建立行程**：校务处按日期创建 `bus_shifts`（线路、校车、方向、计划发车/到站、延误阈值）。可批量按周生成。
+2. **乘搭名单**：行程关联 `bus_students`（应乘名单）；可一键导入/沿用默认线路乘搭表。
+3. **点名执行**：学生上车/下车时，经设备（扫码/刷卡/NFC）或手动录入生成 `bus_checkins`，系统记 `check_type`、时间戳、定位来源（`gps`/`manual`）。
+4. **状态判定**：点名后计算状态 `status`（`arrived_safely`（上车→下车完整到达站点）/ `onboard`（已上车未下车）/ `missed`（应乘未点名）/ `absent`（请假未乘，衔接请假模块可选））。
+5. **家长通知**：上车 `onboard` 推送「已安全登车确认」，下车到校 `alight`（到校）推送「孩子已安全到校」（F-BUS-001 AC-04）；点名完整/异常可向整组或多位家长一键通知（F-BUS-001 AC-05）。通知经 §7.3 多渠道通知架构、可写 `bus_checkins.parent_notification_sent`。
+6. **行程关闭**：到站/放学校车回校后，校务处关闭行程（`closed`），日程报表归档。
+
+**点名校验与幂等：** 同一行程内同一学生同一 `check_type` 只允许一条有效记录（DB 唯一约束）；重复扫描返回 `DUPLICATE`。迟到/漏点名单在行程关闭前可补点，关闭后只读。
+
+**行程状态机：** `draft → active → closed`（可 `cancelled`）。
+**点名状态机（checkin）：** `onboard → alight`（值见枚举 `bus_checkin_status_enum`）；业务派生 `status`（arrived_safely/onboard/missed/absent）见 §22.5 计算说明。
+
+### 22.2 快速回复模板管理（F-INQ-002）
+
+**目标**：管理校务处回复家长查询的快速回复模板，支持 5 类 41 个内置模板，可在 F-INQ-001 回复流程中按意图/分类匹配、变量渲染后一键发送。
+
+**核心流程：**
+1. **模板分类**：内置 5 类（`bus` 校車 / `lunch` 午膳 / `fee` 收费 / `leave` 请假 / `general` 一般），各含基准数量（8/6/10/5/12）。
+2. **模板主档**：`quick_reply_templates` 存分类、标题、正文、变量集、关联意图标签（衔接 F-INQ-001 `intent`）、默认标记、启用状态、适用范围（角色/年级可选）。
+3. **内置模板初始化**：系统启动/迁移时 seed 41 个内置模板（`is_default=true` 只读），校务处可复制派生为新模板或停用。
+4. **匹配推荐**：在家长查询回复页（F-INQ-001），按查询 `intent`（来自 AI 意图分类）推荐匹配模板；也支持关键词检索。
+5. **变量渲染**：模板正文含变量占位符（如 `{{delay_minutes}}`、`{{estimated_arrival}}`、`{{student_name}}`），渲染时按上下文（查询/学生/校车/延误数据）代入生成最终回复（F-INQ-001 AC-05：选择「校車延誤通知」填延误时间=15分钟 → 生成含延误时间/原因/预计到校时间的回复）。
+6. **发送**：渲染后的回复经 §7.3 通知架构推送家长（微信/短信/邮件），并写 `inquiry_replies`。
+
+**模板状态机：** `active / inactive`（停用）。内置模板 `is_default=true` 仅可停用不可物理删除；自定义模板可停用/删除（软删除）。
+
+### 22.3 与既有 attendance / QR 签到的边界
+
+| 维度 | 校园出勤 `attendances` | QR 校园签到 `attendance_qr_logs` | 校车点名 `bus_checkins`（本节） |
+|------|------------------------|----------------------------------|----------------------------------|
+| 语义 | 班级日常出勤（迟到/早退/缺勤） | 校园入校扫码签到（§12） | 校车乘搭内上车/下车点名 |
+| 触发 | 教师/系统录入 | 学生扫码入校 | 上车/下车时设备或手动录入 |
+| 关键实体 | students, classes | qr_codes, attendance_qr_logs | buses, bus_routes, bus_shifts, bus_students, bus_checkins |
+| 是否联动 | — | 可映射出勤 | **默认不联动** `attendances`（见 §22.6 可选开关）|
+| 家长通知 | 缺勤通知 | — | 已安全登车/到校通知 |
+
+> 三条链路各自独立写库，互不覆盖；若 DEV 需要校车点名结果回填校园出勤，须经配置开关 `bus_checkin_sync_to_attendance`（默认 false）并由定时/事件路由转换，不得直接改 `attendances` 主数据。
+
+### 22.4 快速回复 vs 通知模板（F-NEW-002）边界
+
+| 维度 | 通知模板 `NotificationTemplate`（F-NEW-002） | 快速回复模板 `quick_reply_templates`（F-INQ-002） |
+|------|----------------------------------------------|----------------------------------------------------|
+| 用途 | 多渠道通知（告警/日常通知/确认） | 家长查询（F-INQ-001）回复内容 |
+| 入口 | 通知模块发送通知 | 家长查询队列回复流程 |
+| 变量 | `variables[]`（通知类） | 查询上下文变量（学生/校车/延误）|
+| 关联 | notification 发送 | inquiry_replies 回复 |
+| 样式 | 通知标题+内容 | 回复正文（微信/短信/邮件适长）|
+
+### 22.5 状态机与异步编排
+
+| 场景 | 编排方式 |
+|------|----------|
+| 行程自动建立 | cron（`BusShiftGeneratorCron`）按工作日自动生成次日 `bus_shifts`（draft），校务处可调整 |
+| 点名后家长通知 | 点名写库后经事件（`bus_checkin.created`）触发通知服务（§7.3）异步推送，更新 `parent_notification_sent` |
+| 延误阈值判定 | 复用 F-BUS-001 阈值配置（`bus_routes.delay_notify_threshold_minutes`，>10 分钟微信，>20 分钟短信）|
+| 行程到期关闭 | cron 扫描超时未关闭行程并提醒校务处 |
+| 内置模板 seed | 迁移脚本初始化 41 个内置模板（is_default=true）|
+
+**派生状态计算（checkin.status）规则：**
+- `alight` 且本行程结束（到校）= `arrived_safely`
+- 仅 `onboard` 未 `alight`（行程中/未到校）= `onboard`
+- 应乘名单中无任何点名 = `missed`
+- 有请假记录（衔接 F-LEAVE-001）当日 = `absent`（可选）
+
+### 22.6 权限矩阵
+
+| 功能 | 校务主任 | 校务处同工 | 司机/跟车员 | 教师 | 系统管理员 | 家长 |
+|------|----------|------------|-------------|------|-----------|------|
+| 校车/线路/班次维护 | ✅ | ✅ | ❌ | 查看 | ✅ | ❌ |
+| 乘搭名单分配 | ✅ | ✅ | ❌ | 查看 | ✅ | ❌ |
+| 执行校车点名（扫码/手动）| 查看 | ✅ | ✅ | ❌ | ✅ | ❌ |
+| 查看点名记录/日报 | ✅ | ✅ | 查看(本人行程) | 查看(本班) | ✅ | 查看(本人子女) |
+| 关闭/取消行程 | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| 快速回复模板管理 | ✅ | ✅ | ❌ | 查看 | ✅ | ❌ |
+| 用模板回复家长 | 查看 | ✅ | ❌ | 查看 | ❌ | 接收 |
+
+> 学生/家长仅能经门户限定端点查看**本人/自己子女**的点名记录（ABAC 按 `student_id` 范围限制，见 §15 数据隔离层）。司机/跟车员仅能访问被指派的行程进行点名。
+
+### 22.7 安全与一致性保证
+
+| 边界 | 保证 |
+|------|------|
+| 点名幂等 | 同班次同学生同 `check_type` 唯一约束；重复扫描 409 `DUPLICATE` |
+| 行程只读性 | 行程 `closed` 后点名明细只读，防篡改；补点须重新打开或走重开流程 |
+| 数据一致性 | 点名须关联有效行程与乘搭名单；无乘搭分配学生不可点名（或标记异常）|
+| 隐私(PDPO) | 点名含学生身份与位置 P1 数据，传输加密、最小权限授权、门户范围限制；通知带学生姓名需家长授权 |
+| 审计 | 行程创建/关闭、点名、模板新增/停用、回复发送全链路写 `audit_logs` |
+| 文档一致性 | 表结构见 DB-SCHEMA §22，字段见 DATA-DICTIONARY §25，接口见 API-DESIGN §13 |
+
+
+
+---
+
+## 23. AI 自动化模块 — 技术设计（F-AI-002, F-AUTO-001, F-AUTO-002, Issue #362）
+
+> 🔧 **补全说明（Issue #362）**：为「AI 自动化」模块补齐技术设计，作为 DEV 实现 **F-AI-002（FAQ 智能匹配）、F-AUTO-001（周期性任务触发器）、F-AUTO-002（智能提醒系统）** 的输入。
+> **边界（与既有 AI 助理/Coze/通知模块的关系）：**
+> - **FAQ 智能匹配（F-AI-002）** 是「知识检索」层，负责把自然语言查询映射到已入库的 FAQ 答案。语义匹配（Embedding 向量）复用 §2.2 AI/ML 技术栈（OpenAI text-embedding-3 + pgvector）；如需意图识别（`trigger_intents`）或答案生成，可经 Coze/OpenAI LLM Provider（§2.2）编排，但**本节不重造 LLM 通道**，仅定义在 LLM 之上的匹配编排、打分融合与日志（`faq_match_logs`）。与既有 F-AI-001（AI 智能建议，`ai-suggestion.service`，基于出勤/成绩数据分析生成建议）并行不冲突：F-AI-001 面向校务处「建议」，F-AI-002 面向「问答检索」；可共享同一 Coze/OpenAI 配额与回退基建（§9.7 Coze API 配额监控）。
+> - **周期性任务触发器（F-AUTO-001）** 复用既有 `@nestjs/schedule`（SchedulerRegistry）调度基建（现状已有 cron：午膳变更自动拒绝/提醒、出勤日报 18:00、user-lifecycle 每日 9AM、备份、installment 逾期检查等）。本节新增**可配置任务主档** `scheduled_tasks` + `scheduled_task_executions` 执行日志，将「写死的 cron」升级为「可配置 + 可审计 + 可手动触发」，不改动既有 cron 基建。
+> - **智能提醒系统（F-AUTO-002）** 是通知的**策略层**：**发送**与**送达回执**复用 §7.3 多渠道通知架构与 `notifications`/`notification_deliveries`（现有 `notification_deliveries` 已含 `read_at`/`retry_count`/`degraded_to_fallback` 承载送达回执能力）。本节的新表 `reminder_rules`（级别/渠道/升级策略）+ `reminder_records`（级别/升级/未读跟进）在通知基建之上叠加「提醒编排策略」，`reminder_records.notification_id` 外键关联已发送通知，DEV 复用既有通知服务发送，本模块负责升级与未读跟进编排。Token 健康检查（F-AUTO-002 新增：每 24 小时校验微信 token）可作为一条预置 `scheduled_tasks`（action_type=`send_token_health_check`）实现。
+> **技术栈**：沿用既有 NestJS + TypeORM + PostgreSQL 16（§2 技术栈）；Embedding + pgvector（§2.2）；通知复用 §7.3；鉴权/角色复用 Module 16（ABAC）。
+> **文档一致性**：表结构见 DB-SCHEMA §23，字段见 DATA-DICTIONARY §26，接口见 API-DESIGN §14。
+
+### 23.1 FAQ 智能匹配（F-AI-002）
+
+**目标**：将自然语言查询与 FAQ 知识条目匹配并返回候选答案（含分数与命中路），满足 F-AI-002 匹配算法（多路打分融合）与 FAQ 数据库结构。
+
+**核心实体**：`faq_knowledge_base`（FAQ 主档：问题繁/英、多格式答案、关键词、意图标签、嵌入向量、反馈计数）、`faq_match_logs`（匹配请求日志，用于效果分析与模型迭代）。
+
+**FAQ 匹配流程（frozen）：**
+
+```
+查询 query
+  → 1. 规范化（繁简归一、小写、分词）normalize()
+  → 2. 关键词精确匹配 keyword_match(query, keywords) —— 得分 S_keyword
+  → 3. TF-IDF 相似度 cosine_similarity(query_tfidf, faq.tfidf_terms) —— S_tfidf
+  → 4. 语义嵌入相似度 cosine_similarity(query_embedding, faq.embedding)（pgvector HNSW）—— S_semantic
+  → 5. 基于意图路由 intent_match(query_intent, trigger_intents) —— S_intent
+  → final_score = S_keyword*0.3 + S_tfidf*0.2 + S_semantic*0.3 + S_intent*0.2
+  → top-N 写入 faq_match_logs.candidates，返回排序结果
+```
+
+**打分与阈值：**
+- `top_score ≥ 0.7` → 直接返回 top 答案。
+- `0.4 ≤ top_score < 0.7` → 返回候选列表，由调用方选择（家长查询场景供校务处/自助端确认）。
+- `top_score < 0.4` → 未命中，记 `faq_match_logs`（top_faq_id=null），返回空并提示「转为人工查询」（衔接 F-INQ-001 查询队列）。
+
+**向量索引与降级：** `embedding` 列启用 pgvector HNSW（`vector_cosine_ops`）。执行时若 LLM/Embedding 服务不可用或条目无嵌入，自动降级为「关键词 + TF-IDF」（`used_vector=false`），保证匹配可用性（衔接 §9.7 Coze/OpenAI 回退方案）。
+
+**答案形态：** 支持 plain/html/联动快速回复模板（`answer.quick_reply_template_code`，衔接 §22.2 F-INQ-002 快速回复模板渲染，复用家长查询回复链路）。
+
+**反馈闭环：** 家长/校务处对匹配结果反馈「有用/无用」→ 回写 `faq_match_logs.feedback` + 增量 `faq_knowledge_base.helpful_count/not_helpful_count`，`view_count` 递增；供低频 FAQ 关注度排序与内容补全。
+
+### 23.2 周期性任务触发器（F-AUTO-001）
+
+**目标**：把周期性任务从「写死 cron」升级为「可配置 + 可审计 + 可手动触发」的任务主档，满足 F-AUTO-001 任务触发配置（每日/每周/每月示例）。
+
+**核心实体**：`scheduled_tasks`（任务定义）、`scheduled_task_executions`（执行日志）。
+
+**触发模型：** DEV 用 `@nestjs/schedule` 的 SchedulerRegistry。注册方式：启动时加载所有 `status='active'` 的 `scheduled_tasks`，按 `cron_expression` 注册 cron job；`next_run_at` 供调度器与监控参考，避免重复注册（幂等：`task_code` 唯一）。运行期新增/修改/暂停任务时增删对应 cron 注册。
+
+**cron 表达式生成（frozen）：**
+
+| trigger_type | cron 片段 | 说明 |
+|--------------|-----------|------|
+| daily `{time:'06:30'}` | `0 30 6 * * *` | 每日固定时刻 |
+| weekly `{dayOfWeek:5, time:'16:00'}` | `0 0 16 * * 5` | 每周某日（0-6=周日-周六）|
+| monthly `{dayOfMonth:15, time:'09:00'}` | `0 0 9 15 * *` | 每月某日 |
+| cron `{cronExpression}` | 用户自定义 | 进阶自定义 |
+
+**动作类型（action_type）与预置行为：**
+
+| action_type | 行为 | 备注 |
+|-------------|------|------|
+| `refresh_dashboard_data` | 刷新仪表板缓存数据 | 预置「晨检仪表板刷新 daily 06:30」|
+| `generate_inquiry_summary` | 汇总当日家长查询并生成摘要 | 预置「家长查询摘要 daily 18:00」|
+| `generate_absence_report` | 生成缺勤/代课统计报告 | 预置「代课统计报告 weekly 五 16:00」|
+| `send_fee_reminder` | 触发月费缴费提醒（经 reminder_rules）| 预置「月费缴费提醒 monthly 15 09:00」|
+| `send_custom_notification` | 按模板发送自定义通知 | action_params 传 templateId/recipients |
+| `send_token_health_check` | 微信 token 健康检查告警 | 预置「Token 健康检查 daily 每24h」（F-AUTO-002）|
+| `webhook` | 调用外部 webhook | 扩展点 |
+
+**执行与重试：** 每次触发写 `scheduled_task_executions`（status=pending→running→success/failed）。失败按 `max_retries`（默认 3）退避重试（`attempt` 递增、`next_retry_at`）；`consecutive_failures ≥ 3` → 触发 §7.3 告警通知运维。执行成功更新 `scheduled_tasks.last_run_at/next_run_at` 并清零 `consecutive_failures`。手动 `run-now` 忽略 `next_run_at` 立即排队。
+
+**状态机（task）：** `active → paused → active`；`active/paused → disabled`（软删除仍保留审计）。`paused` 反注册 cron；`resumed` 重新注册。
+
+### 23.3 智能提醒系统（F-AUTO-002）
+
+**目标**：按提醒级别编排多渠道触达、升级策略与消息送达回执/未读跟进，满足 F-AUTO-002 级别表与新增的短信备用、送达回执、Token 健康检查需求。
+
+**核心实体**：`reminder_rules`（规则：级别/渠道/升级策略/业务/过滤条件）、`reminder_records`（每次提醒的触发记录：送达/已读/升级历史）。
+
+**级别默认策略（frozen，可规则覆盖）：**
+
+| 级别 | 默认渠道 | 升级时机 | 说明 |
+|------|----------|----------|------|
+| INFO | App Push, SMS(可选) | 无 | 可配置 |
+| NORMAL | App, Email, SMS | +24 小时升级 | 可配置 |
+| URGENT | App, SMS, 电话 | +2 小时升级 | 立即发送 |
+| CRITICAL | 全渠道 + 学校领导 | 立即升级 | 立即发送，升级至校领导 |
+
+**短信备用渠道（F-AUTO-002 新增，应用户模拟反馈 P0-01）规则：**
+
+| 场景 | 渠道优先级 |
+|------|-----------|
+| 学生校车延误 | 微信推送 → 短信备用 |
+| 学生出勤异常（连续迟到/缺席）| 微信推送 → 短信备用 |
+| 紧急通知（台风/停课等）| 短信优先 + 微信推送 |
+| 成绩发布 | 微信推送（无备用）|
+| 日常缴费提醒 | 微信推送（无备用）|
+
+**触发与发送流程（frozen）：**
+1. **规则匹配**：业务事件（校车延误/出勤异常/收费/成绩/紧急）进入提醒编排器 → 按 `business_type` + `filter_condition` 匹配 `reminder_rules`（active）。
+2. **策略解析**：按 `level` + 规则字段确定渠道集合、`delay_minutes`、是否 `smsBackup`、升级参数（`escalation_delay_minutes`/`escalate_to_roles`）。
+3. **发送**：复用 §7.3 通知服务生成 `notifications` 并触发多渠道发送 → 生成 `reminder_records`（`notification_id` 关联；`channel`/`level` 快照）。短信备用场景同写 SMS 渠道（`sms_fallback_sent=true`）。
+4. **送达回执**：家长打开通知 → `notification_deliveries.read_at` 写入（既有能力）→ 同步 `reminder_records.read_status='read'`/`read_at`，家长端显示「家长已读」。
+5. **未读跟进**：`reminder_records.next_followup_at` 到点仍未读（默认 24 小时，URGENT 用 `escalation_delay_minutes` 2 小时）→ 重发一次 + 短信备用（`retry_count++`、`sms_fallback_sent=true`），升级 `escalation_level` 并写 `escalation_history`。
+6. **失败告警**：`deliver_status='failed'` 持续（重试耗尽）→ 告警校务处，界面显示「通知发送失败」。
+
+**升级机制（frozen）：** NORMAL +24h / URGENT +2h 未读 → 升级（`escalate_to_roles` 指定的校领导/校务主任接手 + 更高渠道兜底）；CRITICAL「立即升级」。升级事件全部写入 `escalation_history` 供审计。
+
+**Token 健康检查（F-AUTO-002 新增）：** 预置一条 `scheduled_tasks`（action_type=`send_token_health_check`，`cron_expression='0 0 * * *'` 每 24 小时）。执行时校验微信渠道 token 有效性，异常 → 按 `reminder_rules`（level=urgent/critical）触发告警至校务主任（邮件+短信，复用 §23.3 智能提醒链路）。
+
+### 23.4 与既有 AI 助理 / Coze / 通知 / 调度的复用矩阵
+
+| 能力 | 复用既有点 | 本节新增点 | 说明 |
+|------|-----------|-----------|------|
+| LLM/Embedding 通道 | Coze / OpenAI + pgvector（§2.2）、Coze 配额监控（§9.7）| FAQ 匹配编排 `faq_match_logs` | 不重造 LLM 通道 |
+| AI 建议 | F-AI-001 `ai-suggestion.service` | F-AI-002 FAQ 匹配 | 建议 vs 检索，可共享回退 |
+| 通知发送/送达回执 | §7.3 + `notifications`/`notification_deliveries` | `reminder_rules`/`reminder_records` 策略层 | 发送复用，策略新增 |
+| 快速回复模板 | §22.2 F-INQ-002 `quick_reply_templates` | FAQ `answer` 联动 | 检索命中→模板渲染 |
+| 周期调度 | `@nestjs/schedule`（既有 cron）| `scheduled_tasks`/`scheduled_task_executions` 配置化 | 写死→可配置可审计 |
+| 鉴权/审计 | Module 16（ABAC）+ `audit_logs` | audit_action 扩展 | 复用 |
+
+### 23.5 安全与一致性保证
+
+| 边界 | 保证 |
+|------|------|
+| FAQ 数据质量 | 嵌入失败可降级关键词匹配（不阻断）；反馈闭环驱动内容补全；`view_count` 关注低频条目 |
+| 匹配可解释 | `faq_match_logs.candidates` 保留各候选 `matched_by` 与分数；低分不误答 |
+| 任务幂等 | `task_code`/`faq_code`/`rule_code`/`reminder_no` 唯一；SchedulerRegistry 注册幂等；`run-now` 用 `TASK_ALREADY_RUNNING` 防重 |
+| 任务自愈 | 失败重试（max_retries）+ `consecutive_failures` 阈值告警；调度器崩溃重启后以 DB 状态重注册 cron |
+| 提醒可达 | 高优先级 SMS 备用 + 升级机制 + 未读跟进，保障触达（F-AUTO-002 AC）|
+| 隐私(PDPO) | 提醒含家长/学生 P1 数据；门户与接口经 ABAC 按 `recipient_id`/`student_id` 限制；通知带学生姓名需家长授权 |
+| 审计 | FAQ 维护/匹配反馈、任务增改触发执行、规则增改、提醒触发/升级/跟进全链路写 `audit_logs` |
+| 文档一致性 | 表结构见 DB-SCHEMA §23，字段见 DATA-DICTIONARY §26，接口见 API-DESIGN §14 |
+
+### 23.6 权限矩阵
+
+| 功能 | 校务主任 | 校务处同工 | 教师 | 家长 | 系统管理员 |
+|------|----------|------------|------|------|-----------|
+| FAQ 维护（增改/启停/重建嵌入）| ✅ | ✅ | ❌ | ❌ | ✅ |
+| FAQ 匹配查询 / 反馈 | ✅ | ✅ | 查看(本班相关) | 本人/子女 | ✅ |
+| 周期任务维护（增改/启停/run-now）| ✅ | ✅ | ❌ | ❌ | ✅ |
+| 任务执行日志查看 | ✅ | ✅ | 查看(本人触发) | ❌ | ✅ |
+| 提醒规则维护 | ✅ | ✅ | ❌ | ❌ | ✅ |
+| 提醒记录/未读跟进/升级 | ✅ | ✅ | 查看 | 查看(本人) | ✅ |
+| Token 健康检查告警接收 | ✅(校务主任) | ✅ | ❌ | ❌ | ✅ |
+
+> 学生/家长仅能经门户限定端点查看**本人/自己子女**的提醒记录（ABAC 按 `recipient_id`/`student_id` 范围限制，见 §15 数据隔离层）。
+
+---
+
+## 24. 运维自动化模块技术设计（F-OPS-002/003/006/007/008/009，Issue #363）
+
+> 🔧 **补全说明（Issue #363）**：运营自动化（MOD-OPS-001 / Module 11）涉及 F-OPS-002/003/006/007/008/009 的**持久化数据模型与运维接口**，作为 DEV 实现上述功能的输入。
+> **定位与衔接（不重复建/不复述）**：各功能的技术架构、Prometheus 指标、告警规则与自动续期/限流/审批机制已分别在 §9.3–§9.10 完整定义：
+> - **F-OPS-002 SSL 证书**：技术架构/指标/证书存储见 **§9.3**；
+> - **F-OPS-003 WebSAMS Token**：Token 刷新机制/降级方案/指标/实现见 **§9.4**；
+> - **F-OPS-006 Coze 配额**：指标/三级告警/限流保护/备用方案见 **§9.7**；
+> - **F-OPS-007 敏感字段查看告警**：异常检测/敏感字段定义/指标见 **§9.8**（敏感字段管控另见 **§16**、脱敏与审计写入见 §4.5.4/§16.3）；
+> - **F-OPS-008 DDL 审计**：DDL 捕获/审批流程/指标见 **§9.9**（合规模块 Vault 与审计衔接见 **§17**）；
+> - **F-OPS-009 运维健康仪表板**：9 维度聚合/统一视图/复合指标见 **§9.10**（基础维度 F-NEW-006 见 §8 可观测性）。
+> **本节职责**：只补 §9 未覆盖的三大缺口——(1) 运维事件的**持久化表设计**（§9 以 Prometheus 指标为主，缺乏 DB 落库）；(2) 仪表板/状态查询的**运维 API**；(3) 跨功能的状态汇总模型与一致性约束。Prometheus/Grafana、cert-manager、pgaudit 等既有能力一律引用不改写。
+
+### 24.1 模块边界与数据流向
+
+```
++------------------------------------------------------------------------------+
+|                Module 11 运维自动化（F-OPS-002/003/006/007/008/009）          |
++------------------------------------------------------------------------------+
+| 数据产生源                                                   数据落库（本节新增）|
+|  [cert-manager] ──► F-OPS-002 ──► ssl_cert_status             ┌────────────┐  |
+|  [WebSAMSTokenManager] ─► F-OPS-003 ─► token_refresh_status   │ ops_events │  |
+|  [Coze API Monitor] ──► F-OPS-006 ──► coze_quota_records      │ (运维事件)  │  |
+|  [Audit Service] ──► F-OPS-007 ──► sensitive_field_access_log │            │  |
+|  [pg_event_trigger]─► F-OPS-008 ──► ddl_audit_log（引用§9.9）  └─────┬──────┘  |
+|  [运行状态抽样] ──► F-OPS-009 ──► ops_health_metrics                    │       |
++------------------------------------------------------------------------------│
+  [Ops Health Dashboard / API] ◄───────────  查询集群（§24.4 API）         ◄───┘
+  告警统一经 Alertmanager → §7 通知 → 敏感/DDL 告警另写 audit_logs（§16.3）
++------------------------------------------------------------------------------+
+```
+
+**落库策略（Gap 1 决断）：**
+- **状态快照表**（`ssl_cert_status`、`token_refresh_status`、`coze_quota_records`、`ops_health_metrics`）：记录**最新关系统计快照**与**历史趋势点**，为仪表板提供「当前值 + 时间序列」，避免仅依赖瞬时 Prometheus 拉点。
+- **事件/告警表**（`ops_events`、`sensitive_field_access_log`）：记录每次阈值触发与敏感访问明细，支撑审计查询与合规举证。
+- **DDL 审计**：引用 §9.9 已设计的 `ddl_audit_log` 表（系统设计 §9.9.2 / DB-SCHEMA 见下方 §24.2 统一落库），本节不另起表，仅纳入统一查询。
+- **趋势保留**：`ops_health_metrics` 保留 13 个月（月度汇总），其余明细表保留 7 年（与审计保留策略一致，衔接 §17.6/§16.3 冷存规则）。
+
+### 24.2 持久化表设计总览（Gap 1 落库）
+
+> 表结构全量定义见 **DB-SCHEMA §24**（运维自动化模块），字段说明见 **DATA-DICTIONARY §27**。DDL 审计表沿用 §9.9.2 定义并在 DB-SCHEMA §24 固化。
+
+| 表名 | 承载功能 | 用途 | 写入方 |
+|------|---------|------|--------|
+| `ssl_cert_status` | F-OPS-002 | 每域名 SSL 证书状态快照 + 续期历史 | cert-renew 检查脚本（每日 02:00 / 09:00）|
+| `token_refresh_status` | F-OPS-003 | WebSAMS Token 健康快照 + 每次刷新记录 | websams-token-refresh.sh / TokenManager（每小时）|
+| `coze_quota_records` | F-OPS-006 | Coze 配额快照、使用率、限流动作历史 | 配额监控器（每 5 分钟）|
+| `sensitive_field_access_log` | F-OPS-007 | 敏感字段访问明细（含阈值命中告警）| Audit Service（访问时实时 + 监控脚本聚合）|
+| `ddl_audit_log` | F-OPS-008 | DDL 操作审计明细（引用 §9.9）| pg_event_trigger（DB-SCHEMA §24 固化）|
+| `ops_health_metrics` | F-OPS-009 | 仪表板健康维度评分时间序列 | ops-health 采集器（每 1 分钟，对齐 Prometheus 拉取间隔）|
+| `ops_events` | 全局 | 统一运维事件流（证书/Token/配额/DDL/敏感访问告警事件）| 各功能写入 |
+
+### 24.3 各功能落库细则（Gap 补齐）
+
+#### 24.3.1 F-OPS-002 SSL 证书（衔接 §9.3）
+
+- 每日 02:00 `certbot renew` 执行成功后，更新 `ssl_cert_status`（`days_until_expiry`=实际剩余天数，`renewal_result`=success）。
+- 每日 09:00 分级告警（30/7/1 天）后，将 `alert_level` 落到 `ssl_cert_status.alert_level`；告警触发写入 `ops_events`（event_type=`ssl_cert_expiry_alert`）。
+- 续期成功后服务（Kong/Ingress/应用）热加载，参照 §9.3.4；`ops_events` 记录 `script_ok=true`。
+
+#### 24.3.2 F-OPS-003 WebSAMS Token（衔接 §9.4）
+
+- 每小时检查刷新后，写 `token_refresh_status` 快照（`remaining_hours`、`refreshed_at`、`reason`、`result`）。
+- Token < 24h 自动刷新成功/失败：写 `ops_events`（event_type=`websams_token_refresh`，result=success/failure）；失败按 §9.4.2 降级方案处理并升级告警。
+- 审计日志写 `audit_logs`（audit_action=`websams_token_refreshed`，新枚举值见 DB-SCHEMA §24）。
+
+#### 24.3.3 F-OPS-006 Coze 配额（衔接 §9.7）
+
+- 每 5 分钟写 `coze_quota_records`（used/limit/usage_percent/rate_limited）。
+- > 80% WARNING、> 95% ERROR（自动限流）、=100% CRITICAL：按 §9.7.3 触发；告警事件写 `ops_events`；限流动作（priority 分级）记录 `coze_quota_records.rate_limit_action`。
+
+#### 24.3.4 F-OPS-007 敏感字段访问（衔接 §9.8 / §16）
+
+- 每次敏感字段查看/导出实时写 `sensitive_field_access_log`（user_id/field_type/target/action/accessed_at）。
+- 每 5 分钟 `sensitive-field-view-monitor.sh` 聚合过去 5 分钟窗口，超出 §9.8 阈值（HKID>5/电话>10/地址>3/医疗>2）→ 在 `sensitive_field_access_log` 补 `alert_level` 标记 + 写 `ops_events`；持续异常 3 次/小时联动 §16 权限暂停。
+- 审计联动：audit_action=`sensitive_field_view`（既有，§16.3/DB-SCHEMA §16）+ `sensitive_field_excessive_access`（新枚举值）。
+
+#### 24.3.5 F-OPS-008 DDL 审计（衔接 §9.9 / §17）
+
+- 沿用 §9.9.2 `ddl_audit_log` 表结构；DROP/TRUNCATE 实时告警写 `ops_events`；审批流程与权限控制复用 §9.9.4。
+- 保留 7 年，到期按 §17.6 冷存。
+
+#### 24.3.6 F-OPS-009 运维健康仪表板（衔接 §9.10 / F-NEW-006）
+
+- 每 1 分钟 `ops-health` 采集 9 维度评分写 `ops_health_metrics`（dimension + score，0-100），粒度对齐 §9.10.2 权重折算。
+- 总体健康分 `ops_health_score` 复合指标（§9.10.4）同步写 `ops_health_metrics`（dimension=`overall`）。
+- `ops_events` 作为仪表板「近期事件流」面板数据源，支持告警状态实时同步（AC #4）。
+
+### 24.4 运维 API 设计（Gap 2 补齐）
+
+> 完整接口契约见 **API-DESIGN §15**。鉴权统一 `Bearer + RolesGuard(SYSTEM_ADMIN)`；校务主任（SCHOOL_ADMIN）只读。DDL 审计、敏感访问日志等含 P1/P0 数据，仅 SYSTEM_ADMIN 可查（叠加 ABAC，§16）。
+
+| 方法 | 路径 | 功能 | 说明 |
+|------|------|------|------|
+| GET | /api/ops/ssl-certificates | SSL 证书状态列表 | F-OPS-002 |
+| GET | /api/ops/ssl-certificates/:domain | 单证书详情+续期历史 | F-OPS-002 |
+| GET | /api/ops/token-refresh/websams | WebSAMS Token 刷新状态 | F-OPS-003 |
+| POST | /api/ops/token-refresh/websams | 手动触发 Token 立即刷新 | F-OPS-003 |
+| GET | /api/ops/coze-quota | Coze 配额实时监控 | F-OPS-006 |
+| GET | /api/ops/coze-quota/history | 配额使用率历史时间序列 | F-OPS-006 |
+| GET | /api/ops/sensitive-field-access | 敏感字段访问日志/告警查询 | F-OPS-007 |
+| GET | /api/ops/ddl-audit | DDL 审计日志查询 | F-OPS-008 |
+| GET | /api/ops/health | 运维健康仪表板数据（9 维度+总体）| F-OPS-009 |
+| GET | /api/ops/events | 统一运维事件流（分页过滤）| 全局 |
+| GET | /api/ops/events/:id | 运维事件详情 | 全局 |
+
+**统一响应约定：** 均返回 `{ data, meta:{ page,pageSize,total } }`；时间字段 ISO8601（`+08:00`）。错误码见 API-DESIGN §15.4（统一前缀 `OPS_`）。
+
+### 24.5 一致性、幂等与安全保证（Gap 3）
+
+| 边界 | 保证 |
+|------|------|
+| 幂等 | 每个落库点以业务自然键去重：`ssl_cert_status(domain)`、`token_refresh_status(refresh_no)`、`coze_quota_records(sample_at, metric_name)`、`ops_events(event_no)`；`ddl_audit_log` 以 `session_id+command_tag+audit_timestamp` 去重 |
+| 只允许系统写入 | 上述运维表仅允许运维/采集进程写入（DB 专用只读/写入账号），业务 API 只读，防止篡改审计证据 |
+| 时间一致 | 所有事件带 `event_at`（UTC 存储，Asia/Shanghai 时区展示），`ops_health_metrics.sample_at` 每 1 分钟粒度对齐 Prometheus 拉取间隔（AC #3）|
+| 审计完整性 | 敏感访问、DDL、Token 刷新同时写 `audit_logs`（F-USER-005 §16.3），与 `ops_events` 保持幂等双写（同一 `event_no` 关联）|
+| 数据分级 | 敏感字段访问日志、DDL 语句含 P1/P0 数据 → 仅 SYSTEM_ADMIN 可读、保留 7 年、冷存归档（§17.6）|
+| 不可变审计 | `sensitive_field_access_log`/`ddl_audit_log` 只追加不 UPDATE/DELETE（DB 触发器拒绝），防止抵赖 |
+
+### 24.6 权限矩阵
+
+| 功能 | 校务主任 | 校务处同工 | 教师 | 家长 | 系统管理员 |
+|------|----------|------------|------|------|-----------|
+| SSL 证书状态查看 | ✅ | ❌ | ❌ | ❌ | ✅ |
+| WebSAMS Token 状态查看 / 手动刷新 | ✅(只读) | ❌ | ❌ | ❌ | ✅ |
+| Coze 配额监控查看 | ✅ | ✅(只读) | ❌ | ❌ | ✅ |
+| 敏感字段访问日志 / 告警查询 | ❌ | ❌ | ❌ | ❌ | ✅ |
+| DDL 审计查询 | ❌ | ❌ | ❌ | ❌ | ✅ |
+| 运维健康仪表板 / 事件流 | ✅ | ❌ | ❌ | ❌ | ✅ |
+| 告警接收 | ✅(E/CRITICAL 升级) | ✅(部分) | ❌ | ❌ | ✅ |
+
+> 文档一致性：表结构→DB-SCHEMA §24，字段→DATA-DICTIONARY §27，接口→API-DESIGN §15，规格→SPEC-COMPLETE F-OPS-002/003/006/007/008/009。
+
+---
+
+## 25. 增强功能模块 — 技术设计（F-AI-003, F-I18N-003, F-I18N-004, F-NEW-002, F-NEW-005, Issue #364）
+
+> 🔧 **补全说明（Issue #364）**：为「增强功能」模块补齐技术设计，作为 DEV 实现 **F-AI-003（OCR 文档识别）、F-I18N-003（实时内容翻译 LLM）、F-I18N-004（区域化与格式本地化 Locale）、F-NEW-002（多渠道通知模板管理）、F-NEW-005（自定义报表生成与定时推送）** 的输入。
+>
+> **边界与复用（与既有 i18n / 通知 / OCR / 报表模块的关系）：**
+> - **i18n（F-I18N-001/002/003/004）**：前端已用 i18next + react-i18next（`school-admin-frontend/src/i18n/locales/`，`en.ts / zh-CN.ts / zh-TW.ts`，静态键值翻译；TERMINOLOGY：`zh-TW`↔ SPEC 的 `zh-HK`）。后端目前无独立翻译入口/出口模块（仅静态资源）。**本节 F-I18N-003 / 004 在后端补齐「动态内容 LLM 实时翻译」与「统一 Locale 格式本地化」，与既有前端静态 i18n 分工而非重复**：前端 `i18next` 管静态 UI 文案，本节在后端提供动态 UGC 内容（家长留言、AI 回复、通知多语言）的翻译服务与 Locale 格式化标准化。`translation_cache`、`locale_configs` 由本节新增表承载。
+> - **通知模板（F-NEW-002）**：既有 `notifications` / `notification_deliveries` / `notification_templates`（`apps/backend/src/modules/notification/`，§7.3 多渠道通知架构 + F-AUTO-002 提醒策略层）已实现模板 CRUD、多渠道（app_push/sms/email/feishu/whatsapp）字段、变量列表、发送与送达回执。**本节 F-NEW-002 在其之上补结构化交付规则**（`notification_delivery_rules`）并复用既有 `notification_templates` 表（**不新建重复模板表**），DEV 复用既有 `NotificationService` 发送，本节负责规则化调度（频控/免打扰/备用渠道）。
+> - **OCR（F-AI-003）**：现有 OCR 能力为模块内模拟实现（如 `leave-ai-verification.service.ts` 的 `performOcr`，及零用现金 `petty_cash` 报销的 `ocr_status/ocr_result` 内嵌字段）。**本节 F-AI-003 将 OCR 抽为集中式服务**，新增 `ocr_tasks` / `ocr_results` 任务与结果表，统一对接 Azure Computer Vision（§1 技术选型已定 OCR Engine），供各模块复用，**不替换/不删除各模块既有内嵌 OCR 字段**，各模块可增量切换共享本节服务。
+> - **报表（F-NEW-005）**：既有报表为固定聚合功能（出勤日报 `attendance_daily_reports`、F-EXAM-004 成绩单 `report_card_*`、F-AUTO-001 `generate_absence_report` 周期任务）。**本节 F-NEW-005 提供通用「拖拽式自定义报表」**（`report_definitions` + `report_schedules`），与既有固定报表并行不冲突；定时推送调度复用 §23 `@nestjs/schedule`（SchedulerRegistry）基建，Dev 把 `report_schedules` 注册为 cron 任务；发送复用 §7.3 通知架构。
+>
+> **技术栈**：沿用既有 NestJS + TypeORM + PostgreSQL 16（§2 技术栈）；OCR 对接 Azure Computer Vision（§1）；LLM 复用 §2.2 Coze/OpenAI Provider（含 §9.7 配额与回退基建）；Embedding/pgvector（§2.2，可选用于 OCR 结果模糊匹配）；翻译缓存用 Redis（§2 技术栈）；鉴权/角色复用 Module 16（ABAC）。
+> **文档一致性**：表结构见 DB-SCHEMA §25，字段见 DATA-DICTIONARY §28，接口见 API-DESIGN §16，规格见 SPEC-COMPLETE F-AI-003 / F-I18N-003 / F-I18N-004 / F-NEW-002 / F-NEW-005。
+
+### 25.1 OCR 文档识别（F-AI-003）
+
+**目标**：为系统提供统一的 OCR 文档识别服务，支持出生证明书、香港身份证、学校报告表、医疗证明书、保险证书五类文档的字段提取，满足 SPEC F-AI-003 准确率目标（>90% ~ >99%）。
+
+**核心实体**：`ocr_tasks`（识别任务主档）、`ocr_results`（识别结果字段明细）。
+
+**OCR 流程（frozen）：**
+
+```
+上传/传入文件
+  → 1. 创建 ocr_tasks（status=QUEUED；doc_type；source_entity_type/id 关联业务源）
+  → 2. 异步 Worker 取任务 → 上传 Azure Computer Vision 识别（status=RUNNING）
+  → 3. 按 doc_type 应用对应字段解析模板 parse_schema 抽取字段
+  → 4. 写入 ocr_results（每字段一行：field/…/confidence），更新 ocr_tasks.result_id / status=SUCCEEDED
+  → 5. 写 audit_logs（audit_action=ocr_task_completed）
+失败 → status=FAILED + error_code + 可重试（retry_count ≤ 3）
+低置信 → status=MANUAL_REVIEW 供人工校正（衔接既有各业务人工核对）
+```
+
+**引擎与降级（frozen）：** 主引擎 Azure Computer Vision（简体/繁体/英文读取）。降级次序：Azure → 备用本地 Tesseract → 人工录入。`engine` 列记录实际使用引擎；识别成功率持续偏低（如 <阈值）自动触发 §23 告警（衔接 §9.7 Coze/第三方回退与监控）。
+
+**文档类型（doc_type）与字段模板（frozen）：**
+
+| doc_type | 提取字段（parse_schema 元素） | 目标准确率 |
+|----------|------------------------------|-----------|
+| `birth_certificate` | name, gender, birth_date, father_name, mother_name | >98% |
+| `hk_id` | name, id_number, birth_date, gender | >99% |
+| `school_report` | student_name, class_name, subject_scores, conduct_grade | >95% |
+| `medical_certificate` | student_name, doctor_name, diagnosis, rest_days | >90% |
+| `insurance_cert` | policy_no, effective_date, expiry_date, insured_name | >98% |
+
+**幂等与关联：** `ocr_tasks` 以 `(source_entity_type, source_entity_id, doc_type)` 业务键防重复（同业务单据只一次，新识别以新任务覆盖并通过 `superseded_task_id` 标记旧任务）；`ocr_results.task_id` FK 关联；`raw_text` 存全量识别文本、`parse_schema` 存应用的模板版本（JSONB）。文件以对象存储 URL 引用（`file_url`），含 P1 文档（hk_id / 医疗）按 §F-COMP-001 PDPO 合规（加密、双重授权、审计）。
+
+### 25.2 实时内容翻译（F-I18N-003）
+
+**目标**：为动态 UGC 内容（家长留言、AI 回复、通知多语言、文档提取后翻译）提供 LLM 实时翻译，满足 SPEC F-I18N-003 实时 <3s、批量 <30s/页、术语表一致、翻译错误率 <1%。
+
+**核心实体**：`translation_cache`（翻译结果缓存）。
+
+**翻译流程（frozen）：**
+
+```
+translate(text, source, target, use_cache=true)
+  → 1. source == target 直接返回（cached=false）
+  → 2. cache_key = SHA256(text + source + target)；查 translation_cache（hash 唯一）
+       命中且未过期(24h) → 返回 cached=true
+  → 3. 调 LLM（Coze/OpenAI；context='school_admin_hk'；附术语表 glossary）
+  → 4. 写 translation_cache（upsert，on conflict(hash) do update，expires_at = now + 24h）
+  → 5. 返回 { translated, confidence, glossary_applied, cached }
+批量：逐条同 2-4，上限 50 条/请求（SPEC 验收 #3）；同 source+target 可合并为一次 LLM 调用（实现优化，非强制）
+```
+
+**术语表（glossary）来源：** 复用前端静态 i18n 术语 + 既有业务词库；`glossary_applied` 计入翻译结果。术语更新时以 `translation_cache.meta.glossary_version` 版本使缓存失效（见 25.5 一致性）。
+
+**缓存设计：** `translation_cache` 以 `hash`（SHA256(text+source+target)）唯一；`expires_at = created_at + 24h`。查询侧惰性过期（`expires_at < now()` 判过期并允许覆盖写），另由每日清理任务删除过期行（接入 §23 周期任务，`action_type` 新增 `purge_translation_cache`）。
+
+### 25.3 区域化与格式本地化（F-I18N-004）
+
+**目标**：统一数字、货币、日期、时间、文件大小等展示格式，满足 SPEC F-I18N-004 各语言/地区习惯（zh-HK/zh-CN/en），并保证 PDF 导出与界面语言一致。
+
+**核心实体**：`locale_configs`（默认 Locale 配置 + 可选按学校覆盖）。
+
+**默认格式（frozen，固化于 `locale_configs` 的 `is_default=true` 行）：**
+
+| 数据类型 | zh-HK | zh-CN | en |
+|----------|-------|-------|-----|
+| 日期 | `yyyy年M月d日` / `dd/MM/yyyy` | `yyyy年M月d日` | `MMMM d, yyyy` |
+| 时间 | `a h:mm`（上午/下午） | `A h:mm`（上午/下午） | `h:mm a` |
+| 货币 | `HK$`（HKD） | `¥`/`RMB ¥`（港币业务保留 `HK$`） | `HK$`（HKD） |
+| 数字 | 千位分隔 `1,234.56` | 千位分隔 | 千位分隔 |
+| 百分比 | `85.5%` | `85.5%` | `85.5%` |
+| 学号 | 原样保留 | 原样保留 | 原样保留 |
+| 文件大小 | `1.5 MB` / `2.3 GB` | 同 | 同 |
+
+**设计：** 后端提供 `LocaleFormattingService`（formatDate/formatCurrency/formatNumber/formatPercent/formatFileSize），读取 `locale_configs` 取当前 locale 配置；前端以 `date-fns` + ECMAScript `Intl` 渲染（§2 技术栈），后端保证 PDF 导出与存储侧格式化一致（SPEC 验收 #4）。Locales 判定优先级衔接 §14.3 语言检测：`user.preferred_locale` → URL `?lang` → Cookie `i18n_locale` → Accept-Language → IP → 默认 `zh-HK`。`locale_configs.scope`（`global/school/user`）支持不同粒度覆盖，`school_id` 与 `user_id` 按 scope 引用。
+
+### 25.4 多渠道通知模板管理（F-NEW-002）
+
+**目标**：集中管理通知模板的差异化渠道配置、变量替换、灰度与交付规则，满足 SPEC F-NEW-002 多渠道（微信模板/短信/邮件/飞书/App）管理与验收（多渠道配置、变量无遗漏、紧急自动备用、历史可查）。
+
+**核心实体**：复用既有 `notification_templates` + 既有 `notifications` / `notification_deliveries`；新增 `notification_delivery_rules`。
+
+**边界与分工（frozen）：**
+- **复用**：模板主档、多渠道内容字段、变量列表、发送、送达回执 → 既有 `NotificationService` + `notification_templates` / `notifications` / `notification_deliveries`（§7.3 + F-AUTO-002）。既有 `notification_templates` 已含 `wechat_template_id`/`app_push_content`/`sms_content`/`email_subject`/`email_body`/`whatsapp_content` 渠道字段、`channels`(JSON)、`fallback_channel`、`variables`(JSON)、`min_interval_minutes`/`max_daily_per_parent`/`quiet_hours`（详见 DB-SCHEMA §25 表定义）。
+- **本节新增**：`notification_delivery_rules`——把 SPEC F-NEW-002 `delivery_rules`（`min_interval_minutes`、`max_daily_per_parent`、`quiet_hours`）规范化为与模板一对一的可维护规则记录，并支持渠道级备用（`fallback_channel`）、接收角色过滤（`recipient_roles`）、灰度比例（`rollout_percent`）。DEV 复用既有发送服务，仅在此规则之上做频控/免打扰/备用判定（先查规则再发送）。
+- **渠道**（复用 `NotificationChannel` 枚举）：`app_push`/`sms`/`email`/`feishu`/`whatsapp`。紧急通知（HIGH/CRITICAL）按 SPEC 自动走 SMS 备用（`fallback_channel`）。
+- **模板分类**（复用 `NotificationCategory` 枚举）：`bus`（校车）/`attendance`（出勤）/`academic`（成绩）/`fee`（缴费）/`activity`（活动）/`emergency`（紧急）/`daily`（日常）。
+
+### 25.5 自定义报表生成与定时推送（F-NEW-005）
+
+**目标**：为校务主任及各级管理人员提供自助式报表生成、多维度筛选、分组聚合、图表与导出，并支持定时自动推送与订阅管理，满足 SPEC F-NEW-005 验收（30 分钟建表、定时推送准时、数据一致）。
+
+**核心实体**：`report_definitions`（报表定义/生成器配置）、`report_schedules`（定时推送配置）、`report_subscriptions`（用户订阅/退订）。
+
+**报表定义（frozen）：**
+- 字段选择：多表关联（学生×成绩、出勤×班级），以 JSONB `data_source` 存储数据源与字段映射。
+- 筛选条件：等值/范围/模糊；AND/OR 组合，JSONB `filters`。
+- 排序：多字段、方向可调，JSONB `sorts`。
+- 分组聚合：按班级/年级/月份/教师等维度，JSONB `group_by` + `aggregations`（count/sum/avg/min/max）。
+- 图表类型：`chart_type`：`bar`/`pie`/`line`/`numeric`。
+- 导出格式：`export_formats`：`pdf`/`excel`/`csv`。
+- `sql_template` 存生成后的安全查询（只读 DSL 白名单，防注入），`result_snapshot` 存最近一次生成快照供一致比对（验收 #3）。
+
+**定时推送（frozen）：**
+- 频率：每日/每周/每月/每学期；精确到小时（默认工作日 09:00）。`report_schedules.recurrence_type`：`daily`/`weekly`/`monthly`/`semester`；`weekday`/`day_of_month`/`time` 由 `cron_expression` 承载（复用 §23 规则）。
+- 格式：PDF 附件 + 正文摘要；渠道：App 通知 + 邮件（复用 §7.3 通知架构）。
+- 调度实现：DEV 用 `@nestjs/schedule` SchedulerRegistry 把 `report_schedules`（status=active）注册为 cron job；每次执行写 `report_deliveries`（status=pending→running→success/failed，`notification_id` 关联已发送通知）。
+- 订阅管理：`report_subscriptions` 供用户订阅/退订各报表，推送接收人 = 报表 `owner_id` + 订阅者。
+
+### 25.6 一致性、幂等与安全保证
+
+| 边界 | 保证 |
+|------|------|
+| OCR 幂等 | `ocr_tasks(UNIQUE source_entity_type, source_entity_id, doc_type)` 防重；重识别以 `superseded_task_id` 覆盖 |
+| 翻译幂等 | `translation_cache(UNIQUE hash)`；`ON CONFLICT(hash) DO UPDATE` |
+| Locale 默认 | `locale_configs` 仅一条 `is_default=true+school_id=null`（每种 locale）；school/user 按 scope 覆盖 |
+| 通知规则 | `notification_delivery_rules` 与 `notification_templates` 一对一（`template_id UNIQUE`） |
+| 报表幂等 | `report_schedules` 执行按 `(schedule_id, scheduled_at)` 幂等，防重复推送 |
+| 安全 | OCR 文件、报表导出含 P1/P2 数据 → 加密、RBAC/ABAC 校验、写 `audit_logs`（见 §25.7 权限矩阵） |
+| 术语一致 | 翻译术语更新使 `translation_cache` 按 `glossary_version` 失效 |
+| 时间一致 | 所有 `_at` 计时列 UTC 存储，Asia/Shanghai 展示；`report_schedules` cron 按服务器时区对齐 |
+
+### 25.7 权限矩阵
+
+| 功能 | 校务主任 | 校务处同工 | 教师 | 家长 | 系统管理员 |
+|------|----------|------------|------|------|-----------|
+| OCR 提交/查看（本人业务） | ✅ | ✅(范围内) | ✅(范围内) | ❌ | ✅ |
+| OCR 全量查看 / 人工校正 | ✅ | ✅ | ❌ | ❌ | ✅ |
+| 实时翻译 / 批量翻译 | ✅ | ✅ | ✅ | ✅(聊天) | ✅ |
+| Locale 配置查看 / 修改 | ✅(查看) | ✅(查看) | ✅(查看) | ❌ | ✅(修改) |
+| 通知模板管理 | ✅ | ✅ | ❌(仅引用) | ❌ | ✅ |
+| 通知发送 / 交付规则 | ✅ | ✅ | ✅(可授权) | ❌ | ✅ |
+| 自定义报表定义 / 生成 | ✅ | ✅ | ✅(本人数据) | ❌ | ✅ |
+| 报表订阅 / 退订 | ✅ | ✅ | ✅ | ❌ | ✅ |
+| 报表全量数据导出 | ✅ | ✅(范围内) | ❌ | ❌ | ✅ |
+
+> 文档一致性：表结构→DB-SCHEMA §25，字段→DATA-DICTIONARY §28，接口→API-DESIGN §16，规格→SPEC-COMPLETE F-AI-003 / F-I18N-003 / F-I18N-004 / F-NEW-002 / F-NEW-005。
