@@ -1,29 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T04:35:24Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#281][#282] QA验证通过: 两个API路径修复均已生效。Test1 系统设置页URL正确(/api/settings/configs)但school_staff无权限(403 Forbidden)；Test2 奖学金管理页完全正常/api/scholarships→200；Test3 学费/费用/分期付款页均正常；Test4 课程/考试页已知500预存问题。详细报告见输出。",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[#281][#282] QA验证通过: 两个API路径修复均已生效。Test1 系统设置页URL正确(/api/settings/configs)但schoo"
-    }
-  },
-  {
-    "timestamp": "2026-07-25T04:39:05Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#281][#282] QA验证通过: 系统设置/奖学金/学费/费用/分期付款页面API路径均正确（无localhost:3001），200响应正常。⚠️ 注意：系统设置页对school_staff仍返回403——这是权限问题非路径问题。发现token存储不一致（token vs auth_token）为预存问题。",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[#281][#282] QA验证通过: 系统设置/奖学金/学费/费用/分期付款页面API路径均正确（无localhost:3001），200响应正常。⚠️ 注"
-    }
-  },
-  {
     "timestamp": "2026-07-25T04:50:05Z",
     "from": "PM",
     "to": "DEV",
@@ -1132,6 +1108,30 @@
       "agent": "DEV",
       "status": "idle",
       "task": "[portal basename] 完成：BUG-D portal-app(:8081) 白屏根因=部署层误留 admin 版 stale bundle(ext"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:36:09Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[leave 3bug] 完成：BUG-A审计枚举500→补leave_apply/approve/reject/cancel+幂等迁移与类型安全枚举；BUG-B日期序列化→fmtDate类型安全处理防.toISOString崩溃；BUG-C教职工列表恒空→审批角色可见全校请假记录。commit 8a08b09(分支fix/leave-backend-3bugs-p0)，待合并",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[leave 3bug] 完成：BUG-A审计枚举500→补leave_apply/approve/reject/cancel+幂等迁移与类型安全枚举；BUG-"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:42:03Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[合入完成] 前端basename(60b7bee)+后端3bug(8a08b09)已合入main(807d9bf) — 应用audit枚举迁移+重新编译部署前后端+冒烟",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[合入完成] 前端basename(60b7bee)+后端3bug(8a08b09)已合入main(807d9bf) — 应用audit枚举迁移+重新编译部署前"
     }
   }
 ]
