@@ -11,9 +11,9 @@
       "lastUpdate": "2026-08-18T08:30:43Z"
     },
     "DEV": {
-      "status": "idle",
-      "task": "[leave cancel] 完成：新增 PATCH /api/portal/leave/:id/cancel 撤回路由（仅pending可撤回+越权校验，DE",
-      "lastUpdate": "2026-08-18T08:20:57Z"
+      "status": "running",
+      "task": "[portal basename] 开始修复",
+      "lastUpdate": "2026-08-18T08:34:13Z"
     },
     "DEVOPS": {
       "status": "idle",
