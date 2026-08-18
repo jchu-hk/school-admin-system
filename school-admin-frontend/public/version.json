@@ -1,14 +1,18 @@
 {
   "version": "v1.6.1",
-  "buildDate": "2026-08-02",
-  "gitCommit": "4e5ac8d",
+  "buildDate": "2026-08-18",
+  "gitCommit": "2e00abf",
   "gitBranch": "main",
   "changelog": [
     {
-      "version": "build-2026-08-02",
-      "date": "2026-08-02",
+      "version": "build-2026-08-18",
+      "date": "2026-08-18",
       "changes": [
-        "课程管理 API 路径错误 — VITE_API_BASE_URL 缺少 /school-admin 前缀导致请求路由到 Gateway(404) 而非 Backend(200)"
+        "Merge fix/leave-backend-3bugs-p0: 修复请假审计枚举/日期序列化/教职工可见性 3个P0 (#262)",
+        "Merge fix/portal-basename-262: portal-app 独立构建 basename=/ 修复白屏 (#262)",
+        "fix(portal/leave): 修复电子请假后端 3 个 P0 阻断 bug",
+        "fix(portal): #262 门户/QR白屏 — portal-app 独立构建产物修正 basename=/ (勿用 /school-admin)",
+        "fix(portal/leave): 新增 PATCH /api/portal/leave/:id/cancel 撤回路由，修复撤回404"
       ]
     }
   ]
