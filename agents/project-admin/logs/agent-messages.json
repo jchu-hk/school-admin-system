@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T14:30:24Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[#284/#285/#287] QA验证: i18n修复(EN菜单/页面标题) + 菜单角色过滤",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#284/#285/#287] QA验证: i18n修复(EN菜单/页面标题) + 菜单角色过滤"
-    }
-  },
-  {
     "timestamp": "2026-07-25T14:30:35Z",
     "from": "PM",
     "to": "QA",
@@ -1132,6 +1120,18 @@
       "agent": "DEVOPS",
       "status": "running",
       "task": "[nginx assets] 开始"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:57:45Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[nginx assets] 完成：host nginx 已加 /assets/ 路由并 reload，公网 /assets/index-*.js|css 从 404 修复为 200，portal/attendance 200，school-admin 与 /api/health 回归正常",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[nginx assets] 完成：host nginx 已加 /assets/ 路由并 reload，公网 /assets/index-*.js|css 从 "
     }
   }
 ]

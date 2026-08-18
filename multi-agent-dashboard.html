@@ -50,11 +50,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">PM</div>
     <div class="agent-task">[公网/assets 404] 根因定位：host nginx(500</div>
     <span class="status-badge status-running">running</span>
-</div><div class="agent  running">
+</div><div class="agent">
     <div class="agent-icon">🔧</div>
     <div class="agent-name">DEVOPS</div>
-    <div class="agent-task">[nginx assets] 开始</div>
-    <span class="status-badge status-running">running</span>
+    <div class="agent-task">[nginx assets] 完成：host nginx 已加 /as</div>
+    <span class="status-badge status-idle">idle</span>
 </div><div class="agent">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-received">
+<div class="message-list"><div class="message-item msg-done">
+    <div class="message-time">16:57</div>
+    <div class="message-content">DEVOPS → PM: [nginx assets] 完成：host nginx 已加 /assets/ 路由并 reload，公网 </div>
+</div><div class="message-item msg-received">
     <div class="message-time">16:57</div>
     <div class="message-content">DEVOPS → PM: [nginx assets] 开始</div>
 </div><div class="message-item msg-assign">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-done">
     <div class="message-time">16:30</div>
     <div class="message-content">QA → PM: [leave验证] 完成：失败 — 路由已通但功能仍断，发现4个阻断(BUG-A审计枚举A/B/C/D por</div>
-</div><div class="message-item msg-received">
-    <div class="message-time">16:24</div>
-    <div class="message-content">QA → PM: [leave验证] 开始</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 16:57:16 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 16:57:45 (GMT+8)</div>
 </div>
 </body>
 </html>
