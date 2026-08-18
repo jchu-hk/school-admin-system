@@ -50,11 +50,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">PM</div>
     <div class="agent-task">[合入完成] 前端basename(60b7bee)+后端3bug(8</div>
     <span class="status-badge status-running">running</span>
-</div><div class="agent">
+</div><div class="agent  running">
     <div class="agent-icon">🔧</div>
     <div class="agent-name">DEVOPS</div>
-    <div class="agent-task">[portal部署] 完成：电子请假两处修复已编译并部署到测试环境。G</div>
-    <span class="status-badge status-idle">idle</span>
+    <div class="agent-task">[全量部署] 开始</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-assign">
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">16:42</div>
+    <div class="message-content">DEVOPS → PM: [全量部署] 开始</div>
+</div><div class="message-item msg-assign">
     <div class="message-time">16:42</div>
     <div class="message-content">PM → DEVOPS: [合入完成] 前端basename(60b7bee)+后端3bug(8a08b09)已合入main(807d9</div>
 </div><div class="message-item msg-done">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-received">
     <div class="message-time">16:20</div>
     <div class="message-content">DEV → PM: [leave cancel] 开始修复</div>
-</div><div class="message-item msg-assign">
-    <div class="message-time">16:19</div>
-    <div class="message-content">PM → DEV: [leave撤回404] 前端 PATCH /api/portal/leave/:id/cancel 无后端路</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 16:42:03 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 16:42:24 (GMT+8)</div>
 </div>
 </body>
 </html>

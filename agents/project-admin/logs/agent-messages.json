@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T04:50:05Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#287] Troubleshoot & Fix: Sidebar menu filters by user role. school_staff不应看到admin菜单项。",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#287] Troubleshoot & Fix: Sidebar menu filters by user role. school_staff不应看到ad"
-    }
-  },
-  {
     "timestamp": "2026-07-25T04:50:24Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[合入完成] 前端basename(60b7bee)+后端3bug(8a08b09)已合入main(807d9bf) — 应用audit枚举迁移+重新编译部署前"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:42:24Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[全量部署] 开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "[全量部署] 开始"
     }
   }
 ]
