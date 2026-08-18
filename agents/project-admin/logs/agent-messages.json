@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T04:51:43Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#286] 开始i18n迁移4个页面 (Attendance/Scholarship/Lunch/Notification)",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[#286] 开始i18n迁移4个页面 (Attendance/Scholarship/Lunch/Notification)"
-    }
-  },
-  {
     "timestamp": "2026-07-25T05:06:48Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[复验] 前后端已重新部署(3P0后端+1P1前端白屏) — 复验电子请假全流程+撤回+越权+白屏修复+回归"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:48:24Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[leave复验] 开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[leave复验] 开始"
     }
   }
 ]
