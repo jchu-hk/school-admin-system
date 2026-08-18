@@ -11,9 +11,9 @@
       "lastUpdate": "2026-08-18T08:30:43Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "[portal basename] 开始修复",
-      "lastUpdate": "2026-08-18T08:34:13Z"
+      "status": "idle",
+      "task": "[portal basename] 完成：BUG-D portal-app(:8081) 白屏根因=部署层误留 admin 版 stale bundle(ext",
+      "lastUpdate": "2026-08-18T08:34:55Z"
     },
     "DEVOPS": {
       "status": "idle",

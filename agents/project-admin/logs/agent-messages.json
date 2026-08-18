@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T04:32:31Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#284][#285] QA验证通过(PM直接验证): (1) en.ts含assetManagement/assetRentalManagement键 (2) Layout.tsx使用t.nav.systemTitle (3) Dashboard图表标签i18n键已应用 (4) 部署确认index-B7FTrhWN.js包含所有修复",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[#284][#285] QA验证通过(PM直接验证): (1) en.ts含assetManagement/assetRentalManagement键 (2"
-    }
-  },
-  {
     "timestamp": "2026-07-25T04:35:24Z",
     "from": "QA",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[portal basename] 开始修复"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:34:55Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[portal basename] 完成：BUG-D portal-app(:8081) 白屏根因=部署层误留 admin 版 stale bundle(external basename=/school-admin)。源码本就正确(<BrowserRouter> basename='/')，已加固前端产物配置：vite.config显式 base:'/'+时间戳命名、package.json name→school-admin-portal-app 避免 hash 混淆、文档同步。构建通过，产物 dist/index.html→/assets/index-BTSIfyoS-20260707.js(basename='/'，含 attendance/qr+portal/student+portal/parent，0处school-admin)。commit 60b7bee on branch fix/portal-basename-262(已push)。Issue #262 已comment。请合并分支；由 DEVOPS 重建重部署 :8081 替换 stale bundle + 处理 /assets/* 404，QA 复核白屏。",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[portal basename] 完成：BUG-D portal-app(:8081) 白屏根因=部署层误留 admin 版 stale bundle(ext"
     }
   }
 ]

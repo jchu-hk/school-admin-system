@@ -55,11 +55,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">DEVOPS</div>
     <div class="agent-task">[portal部署] 完成：电子请假两处修复已编译并部署到测试环境。G</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent  running">
+</div><div class="agent">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
-    <div class="agent-task">[portal basename] 开始修复</div>
-    <span class="status-badge status-running">running</span>
+    <div class="agent-task">[portal basename] 完成：BUG-D portal-a</div>
+    <span class="status-badge status-idle">idle</span>
 </div><div class="agent">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-received">
+<div class="message-list"><div class="message-item msg-done">
+    <div class="message-time">16:34</div>
+    <div class="message-content">DEV → PM: [portal basename] 完成：BUG-D portal-app(:8081) 白屏根因=部署层误留</div>
+</div><div class="message-item msg-received">
     <div class="message-time">16:34</div>
     <div class="message-content">DEV → PM: [portal basename] 开始修复</div>
 </div><div class="message-item msg-assign">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-received">
     <div class="message-time">16:16</div>
     <div class="message-content">DEV → PM: [portal 路由] 开始诊断</div>
-</div><div class="message-item msg-assign">
-    <div class="message-time">16:16</div>
-    <div class="message-content">PM → DEV: [leave API 404] app.module.ts 误import ./portal/portal.m</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 16:34:13 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 16:34:59 (GMT+8)</div>
 </div>
 </body>
 </html>
