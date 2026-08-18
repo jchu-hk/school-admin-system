@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T03:53:12Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#281][#282] 修复完成: API fallback统一改为'/api/'，scholarship双路径已修复，前端重建部署完成，验证通过",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#281][#282] 修复完成: API fallback统一改为'/api/'，scholarship双路径已修复，前端重建部署完成，验证通过"
-    }
-  },
-  {
     "timestamp": "2026-07-25T03:53:36Z",
     "from": "PM",
     "to": "QA",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "idle",
       "task": "[leave cancel] 完成：新增 PATCH /api/portal/leave/:id/cancel 撤回路由（仅pending可撤回+越权校验，DE"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:21:21Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[portal部署] 路由修复(82681ce)+撤回路由(5f4658e)已合入main — 重新编译后端+部署到测试容器+验证leave API不再404",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[portal部署] 路由修复(82681ce)+撤回路由(5f4658e)已合入main — 重新编译后端+部署到测试容器+验证leave API不再404"
     }
   }
 ]

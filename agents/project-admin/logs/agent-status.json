@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[leave撤回404] 前端 PATCH /api/portal/leave/:id/cancel 无后端路由(后端只有DELETE) — 补 cancel ",
-      "lastUpdate": "2026-08-18T08:19:35Z"
+      "task": "[portal部署] 路由修复(82681ce)+撤回路由(5f4658e)已合入main — 重新编译后端+部署到测试容器+验证leave API不再404",
+      "lastUpdate": "2026-08-18T08:21:21Z"
     },
     "QA": {
       "status": "idle",
