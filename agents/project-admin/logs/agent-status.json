@@ -11,9 +11,9 @@
       "lastUpdate": "2026-08-18T07:49:03Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "[leave_requests] 收尾开始",
-      "lastUpdate": "2026-08-18T08:08:40Z"
+      "status": "idle",
+      "task": "[leave_requests] 完成：根因=迁移1782530900000从未落库+dev synchronize漏建leave表。修复=幂等化迁移(leav",
+      "lastUpdate": "2026-08-18T08:09:44Z"
     },
     "DEVOPS": {
       "status": "idle",
