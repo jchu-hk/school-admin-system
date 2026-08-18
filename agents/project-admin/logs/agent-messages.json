@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T14:33:29Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#287] qa_test requires OTP/2FA. Checking if test OTP is available...",
-    "type": "received",
-    "agent_status": {
-      "agent": "QA",
-      "status": "running",
-      "task": "[#287] qa_test requires OTP/2FA. Checking if test OTP is available..."
-    }
-  },
-  {
     "timestamp": "2026-07-25T14:35:40Z",
     "from": "QA",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[外部UI终验] nginx/assets路由已修(DEVOPS) — 用浏览器复验外部Coze proxy门户/QR无白屏 + 截图证据"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:59:08Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[外部UI终验] 开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[外部UI终验] 开始"
     }
   }
 ]
