@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-26T15:06:10Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#286] QA验证失败: 4个页面均未实施i18n迁移- AttendancePage: 含约490中文字符，未使用i18n- FinanceScholarshipPage: 含约194中文字符，未使用i18n- LunchOrderPage: 含约528中文字符，未使用i18n- NotificationPage: 含约791中文字符，未使用i18n- 未找到任何与#286相关的commit- 翻译keys在en.ts中存在但页面未引用- 浏览器验证所有页面英文模式下仍显示中文",
-    "type": "failed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[#286] QA验证失败: 4个页面均未实施i18n迁移- AttendancePage: 含约490中文字符，未使用i18n- FinanceScholar"
-    }
-  },
-  {
     "timestamp": "2026-07-26T15:13:46Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[#365] 开始移除 Agents 菜单项"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T15:36:29Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[#365] 完成：已移除菜单项 + build通过，分支 fix/remove-agents-menu-365 已push",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[#365] 完成：已移除菜单项 + build通过，分支 fix/remove-agents-menu-365 已push"
     }
   }
 ]
