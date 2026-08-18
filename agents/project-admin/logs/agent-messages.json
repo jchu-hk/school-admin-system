@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-21T15:51:06Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "[Grafana Fix] OPS Health Overview dashboard query fix deployed. Need: 1) postgres_exporter docker-compose deployment 2) Backend HTTP prometheus metrics middleware",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Grafana Fix] OPS Health Overview dashboard query fix deployed. Need: 1) postgre"
-    }
-  },
-  {
     "timestamp": "2026-07-22T02:20:09Z",
     "from": "PM",
     "to": "PM",
@@ -1127,6 +1115,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #261][T25] 部署脚本：新增DB迁移/Docker配置/环境变量 — 启动生产发布Phase 5关键路径，解除逾期的CR-20260714"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T07:40:14Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[Issue #261][T25] 开始工作",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "[Issue #261][T25] 开始工作"
     }
   }
 ]

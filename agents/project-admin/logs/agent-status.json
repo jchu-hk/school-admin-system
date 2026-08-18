@@ -16,9 +16,9 @@
       "lastUpdate": "2026-08-02T07:40:56Z"
     },
     "DEVOPS": {
-      "status": "idle",
-      "task": "[Issue #309] 完成: EACCES 根因已修复并验证(挂载 /var/backups/school_admin 为 nestjs 可写+设置 BAC",
-      "lastUpdate": "2026-08-06T08:51:14Z"
+      "status": "running",
+      "task": "[Issue #261][T25] 开始工作",
+      "lastUpdate": "2026-08-18T07:40:14Z"
     },
     "CHECKER": {
       "status": "idle",
