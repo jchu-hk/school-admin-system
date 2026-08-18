@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-26T14:57:10Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[#286] QA验证: i18n迁移4页面 — AttendancePage/FinanceScholarshipPage/LunchOrderPage/NotificationPage (DEV已完成，PM之前遗漏分配)",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#286] QA验证: i18n迁移4页面 — AttendancePage/FinanceScholarshipPage/LunchOrderPage/No"
-    }
-  },
-  {
     "timestamp": "2026-07-26T14:57:31Z",
     "from": "QA",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[admin白屏部署] 根因确认: :8080容器仍旧构建(base=/)引用根/assets→404。修复29cab27已合main(base=/school"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T14:56:42Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[admin部署] 开始重建+部署",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "[admin部署] 开始重建+部署"
     }
   }
 ]
