@@ -11,9 +11,9 @@
       "lastUpdate": "2026-08-18T07:49:03Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "[portal 路由] 开始诊断",
-      "lastUpdate": "2026-08-18T08:16:41Z"
+      "status": "idle",
+      "task": "[portal 路由] 完成：根因=app.module 错引 src/portal/portal.module（旧menus模块），新 src/modules",
+      "lastUpdate": "2026-08-18T08:18:54Z"
     },
     "DEVOPS": {
       "status": "idle",

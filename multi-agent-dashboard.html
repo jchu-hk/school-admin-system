@@ -55,11 +55,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">DEVOPS</div>
     <div class="agent-task">[leave_requests] 迁移已应用+验证：leave_req</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent  running">
+</div><div class="agent">
     <div class="agent-icon">🤖</div>
     <div class="agent-name">DEV</div>
-    <div class="agent-task">[portal 路由] 开始诊断</div>
-    <span class="status-badge status-running">running</span>
+    <div class="agent-task">[portal 路由] 完成：根因=app.module 错引 src</div>
+    <span class="status-badge status-idle">idle</span>
 </div><div class="agent">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-received">
+<div class="message-list"><div class="message-item msg-done">
+    <div class="message-time">16:18</div>
+    <div class="message-content">DEV → PM: [portal 路由] 完成：根因=app.module 错引 src/portal/portal.modul</div>
+</div><div class="message-item msg-received">
     <div class="message-time">16:16</div>
     <div class="message-content">DEV → PM: [portal 路由] 开始诊断</div>
 </div><div class="message-item msg-assign">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-received">
     <div class="message-time">15:46</div>
     <div class="message-content">DEVOPS → PM: [Issue #262][T26] 开始工作</div>
-</div><div class="message-item msg-received">
-    <div class="message-time">15:46</div>
-    <div class="message-content">QA → PM: [Issue #262][T26] 开始工作</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 16:16:41 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 16:18:58 (GMT+8)</div>
 </div>
 </body>
 </html>

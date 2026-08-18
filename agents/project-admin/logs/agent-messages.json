@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T03:28:16Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#283] 排查完成: 所有检查通过 - 配置无旧模型引用，cron运行正常，Issue已评论",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#283] 排查完成: 所有检查通过 - 配置无旧模型引用，cron运行正常，Issue已评论"
-    }
-  },
-  {
     "timestamp": "2026-07-25T03:48:22Z",
     "from": "PM",
     "to": "DEV",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[portal 路由] 开始诊断"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:18:54Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[portal 路由] 完成：根因=app.module 错引 src/portal/portal.module（旧menus模块），新 src/modules/portal/portal.module（含leave,映射leave_requests）未接线→404。修复=同时接线两个PortalModule(别名:PortalModule新+LegacyPortalModule旧保留menus)。自测=nest build通过，运行时确认注册 /api/portal/leave POST/GET/:id/DELETE/approve/reject。commit 82681ce @ branch fix/portal-leave-routing-404。已comment #262。附注:前端撤回调PATCH /:id/cancel但后端是DELETE /:id，请QA关注。",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[portal 路由] 完成：根因=app.module 错引 src/portal/portal.module（旧menus模块），新 src/modules"
     }
   }
 ]
