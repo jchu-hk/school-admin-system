@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T03:58:48Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#284][#285] 开始i18n缺陷修复",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[#284][#285] 开始i18n缺陷修复"
-    }
-  },
-  {
     "timestamp": "2026-07-25T04:09:50Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[UAT阻断解除验证] leave API 已不再404+撤回路由已部署 — 验证电子请假全流程(提交/审批/查询/撤回)+回归QR考勤与门户菜单"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:24:20Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[leave验证] 开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[leave验证] 开始"
     }
   }
 ]
