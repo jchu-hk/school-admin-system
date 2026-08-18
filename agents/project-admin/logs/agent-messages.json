@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-23T04:28:12Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#282] 修复奖学金管理页面API路径错误（scholarship/ 多余目录）",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#282] 修复奖学金管理页面API路径错误（scholarship/ 多余目录）"
-    }
-  },
-  {
     "timestamp": "2026-07-23T04:28:21Z",
     "from": "DEV",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[UAT阻断] leave_requests 表缺失：portal 电子请假实体映射 leave_requests 但测试库无此表，migration 1782"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:02:11Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[leave_requests] 开始诊断",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[leave_requests] 开始诊断"
     }
   }
 ]
