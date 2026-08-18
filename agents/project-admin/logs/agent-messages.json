@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T03:53:36Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[#281][#282] QA验证: API路径修复。系统设置页面(settings)、奖学金页面(scholarship)、预算/考试/课程页面的API调用均改为'/api/'相对路径。请验证前端页面是否正常工作。",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#281][#282] QA验证: API路径修复。系统设置页面(settings)、奖学金页面(scholarship)、预算/考试/课程页面的API调用均"
-    }
-  },
-  {
     "timestamp": "2026-07-25T03:53:58Z",
     "from": "QA",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[portal部署] 路由修复(82681ce)+撤回路由(5f4658e)已合入main — 重新编译后端+部署到测试容器+验证leave API不再404"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:21:39Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[portal部署] 开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "[portal部署] 开始"
     }
   }
 ]
