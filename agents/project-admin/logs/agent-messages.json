@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T04:13:20Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[#284][#285] QA验证: i18n英文切换修复 - (1) Attendance菜单4个子项应完整显示 (2) 页面标题/系统标题应切换为英文 (3) Dashboard图表标签应切换为英文",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#284][#285] QA验证: i18n英文切换修复 - (1) Attendance菜单4个子项应完整显示 (2) 页面标题/系统标题应切换为英文 (3"
-    }
-  },
-  {
     "timestamp": "2026-07-25T04:14:53Z",
     "from": "QA",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "QA",
       "status": "idle",
       "task": "[leave验证] 完成：失败 — 路由已通但功能仍断，发现4个阻断(BUG-A审计枚举A/B/C/D portal包白屏)，报告已写+Issue#262已co"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:31:27Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[leave E2E阻断] QA发现3个P0后端bug：A审计枚举缺leave_*值(500) B日期.toISOString报错 C教职工可见性恒空 — 修复",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[leave E2E阻断] QA发现3个P0后端bug：A审计枚举缺leave_*值(500) B日期.toISOString报错 C教职工可见性恒空 — 修复"
     }
   }
 ]

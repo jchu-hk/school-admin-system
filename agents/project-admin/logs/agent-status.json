@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[UAT阻断解除验证] leave API 已不再404+撤回路由已部署 — 验证电子请假全流程(提交/审批/查询/撤回)+回归QR考勤与门户菜单",
-      "lastUpdate": "2026-08-18T08:24:01Z"
+      "task": "[leave E2E阻断] QA发现3个P0后端bug：A审计枚举缺leave_*值(500) B日期.toISOString报错 C教职工可见性恒空 — 修复",
+      "lastUpdate": "2026-08-18T08:31:27Z"
     },
     "QA": {
       "status": "idle",
