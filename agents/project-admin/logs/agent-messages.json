@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-22T23:06:04Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#281] 修复完成：.env.production覆盖.env导致API_BASE_URL为空，已修改并部署新版前端",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "[#281] 修复完成：.env.production覆盖.env导致API_BASE_URL为空，已修改并部署新版前端"
-    }
-  },
-  {
     "timestamp": "2026-07-22T23:11:30Z",
     "from": "PM",
     "to": "DEV",
@@ -1127,6 +1115,18 @@
       "agent": "QA",
       "status": "idle",
       "task": "[Issue #262][T26] 完成：已产出UAT用例(20条)与分角色walkthrough两文件，并comment至Issue#262"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T07:52:45Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[Issue #261][T25] 完成：新增QR考勤/门户5表迁移(幂等已验证)+infra/deploy部署脚本集(无重建docker cp)+识别3个生产缺失env(QR_SIGNING_MASTER_KEY/FRONTEND_URL/WEBHOOK_SECRET)",
+    "type": "done",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[Issue #261][T25] 完成：新增QR考勤/门户5表迁移(幂等已验证)+infra/deploy部署脚本集(无重建docker cp)+识别3个生产"
     }
   }
 ]
