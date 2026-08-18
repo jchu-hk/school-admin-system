@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-21T11:35:21Z",
-    "from": "PM",
-    "to": "HEARTBEAT",
-    "message": "19:35 GMT+8 心跳检查完成 — All 🟢",
-    "type": "passed",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "19:35 GMT+8 心跳检查完成 — All 🟢"
-    }
-  },
-  {
     "timestamp": "2026-07-21T15:51:06Z",
     "from": "PM",
     "to": "DEVOPS",
@@ -1127,6 +1115,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[Issue #309] 完成: EACCES 根因已修复并验证(挂载 /var/backups/school_admin 为 nestjs 可写+设置 BAC"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T07:39:51Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[Issue #261][T25] 部署脚本：新增DB迁移/Docker配置/环境变量 — 启动生产发布Phase 5关键路径，解除逾期的CR-20260714-001里程碑阻塞",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #261][T25] 部署脚本：新增DB迁移/Docker配置/环境变量 — 启动生产发布Phase 5关键路径，解除逾期的CR-20260714"
     }
   }
 ]
