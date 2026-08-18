@@ -16,9 +16,9 @@
       "lastUpdate": "2026-08-18T08:20:57Z"
     },
     "DEVOPS": {
-      "status": "running",
-      "task": "[portal部署] 开始",
-      "lastUpdate": "2026-08-18T08:21:39Z"
+      "status": "idle",
+      "task": "[portal部署] 完成：电子请假两处修复已编译并部署到测试环境。GET/POST /api/portal/leave 由 404→401，PATCH /ap",
+      "lastUpdate": "2026-08-18T08:23:39Z"
     },
     "CHECKER": {
       "status": "idle",
