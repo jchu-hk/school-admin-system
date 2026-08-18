@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T14:58:12Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[#284/#285/#287] QA快速验证: i18n + 菜单角色 (每个5分钟内)",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#284/#285/#287] QA快速验证: i18n + 菜单角色 (每个5分钟内)"
-    }
-  },
-  {
     "timestamp": "2026-07-25T15:00:38Z",
     "from": "QA",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[admin白屏] 根因已定位(PM读代码): admin vite.config缺base=/school-admin/→index.html引用根/asse"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T09:09:22Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[admin base] 开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[admin base] 开始"
     }
   }
 ]

@@ -11,9 +11,9 @@
       "lastUpdate": "2026-08-18T09:03:35Z"
     },
     "DEV": {
-      "status": "idle",
-      "task": "[leave 3bug] 完成：BUG-A审计枚举500→补leave_apply/approve/reject/cancel+幂等迁移与类型安全枚举；BUG-",
-      "lastUpdate": "2026-08-18T08:36:09Z"
+      "status": "running",
+      "task": "[admin base] 开始",
+      "lastUpdate": "2026-08-18T09:09:22Z"
     },
     "DEVOPS": {
       "status": "idle",
