@@ -6,9 +6,9 @@
       "lastUpdate": "2026-08-18T07:45:58Z"
     },
     "QA": {
-      "status": "running",
-      "task": "[Issue #262][T26] 开始工作",
-      "lastUpdate": "2026-08-18T07:46:32Z"
+      "status": "idle",
+      "task": "[Issue #262][T26] 完成：已产出UAT用例(20条)与分角色walkthrough两文件，并comment至Issue#262",
+      "lastUpdate": "2026-08-18T07:49:03Z"
     },
     "DEV": {
       "status": "running",

@@ -60,11 +60,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">DEV</div>
     <div class="agent-task">[Issue #308] 开始工作</div>
     <span class="status-badge status-running">running</span>
-</div><div class="agent  running">
+</div><div class="agent">
     <div class="agent-icon">🔍</div>
     <div class="agent-name">QA</div>
-    <div class="agent-task">[Issue #262][T26] 开始工作</div>
-    <span class="status-badge status-running">running</span>
+    <div class="agent-task">[Issue #262][T26] 完成：已产出UAT用例(20条)与</div>
+    <span class="status-badge status-idle">idle</span>
 </div><div class="agent">
     <div class="agent-icon">✓</div>
     <div class="agent-name">CHECKER</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-received">
+<div class="message-list"><div class="message-item msg-done">
+    <div class="message-time">15:49</div>
+    <div class="message-content">QA → PM: [Issue #262][T26] 完成：已产出UAT用例(20条)与分角色walkthrough两文件，并c</div>
+</div><div class="message-item msg-received">
     <div class="message-time">15:46</div>
     <div class="message-content">DEVOPS → PM: [Issue #262][T26] 开始工作</div>
 </div><div class="message-item msg-received">
@@ -120,7 +123,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 15:46:38 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 15:49:11 (GMT+8)</div>
 </div>
 </body>
 </html>

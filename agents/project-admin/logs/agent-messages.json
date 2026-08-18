@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-22T22:59:43Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[#281] DEV超时，PM直接执行重建部署",
-    "type": "passed",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "[#281] DEV超时，PM直接执行重建部署"
-    }
-  },
-  {
     "timestamp": "2026-07-22T23:06:04Z",
     "from": "PM",
     "to": "DEV",
@@ -1127,6 +1115,18 @@
       "agent": "DEVOPS",
       "status": "running",
       "task": "[Issue #262][T26] 开始工作"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T07:49:03Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #262][T26] 完成：已产出UAT用例(20条)与分角色walkthrough两文件，并comment至Issue#262",
+    "type": "done",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Issue #262][T26] 完成：已产出UAT用例(20条)与分角色walkthrough两文件，并comment至Issue#262"
     }
   }
 ]
