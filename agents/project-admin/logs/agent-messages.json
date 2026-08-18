@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T04:09:50Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#284][#285] 修复完成: (1) en.ts添加缺失的assetManagement/assetRentalManagement菜单键 (2) Layout.tsx硬编码'智慧校园'改为t('nav.systemTitle') (3) Dashboard图表标签从中文改为i18n键。已知剩余：AttendancePage/FinanceScholarshipPage/LunchOrderPage/NotificationPage大量硬编码中文需后续处理。",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#284][#285] 修复完成: (1) en.ts添加缺失的assetManagement/assetRentalManagement菜单键 (2) La"
-    }
-  },
-  {
     "timestamp": "2026-07-25T04:13:20Z",
     "from": "PM",
     "to": "QA",
@@ -1132,6 +1120,18 @@
       "agent": "QA",
       "status": "running",
       "task": "[leave验证] 开始"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:30:43Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[leave验证] 完成：失败 — 路由已通但功能仍断，发现4个阻断(BUG-A审计枚举A/B/C/D portal包白屏)，报告已写+Issue#262已comment",
+    "type": "done",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[leave验证] 完成：失败 — 路由已通但功能仍断，发现4个阻断(BUG-A审计枚举A/B/C/D portal包白屏)，报告已写+Issue#262已co"
     }
   }
 ]

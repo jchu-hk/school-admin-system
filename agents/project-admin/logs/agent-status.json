@@ -6,9 +6,9 @@
       "lastUpdate": "2026-08-18T08:24:01Z"
     },
     "QA": {
-      "status": "running",
-      "task": "[leave验证] 开始",
-      "lastUpdate": "2026-08-18T08:24:20Z"
+      "status": "idle",
+      "task": "[leave验证] 完成：失败 — 路由已通但功能仍断，发现4个阻断(BUG-A审计枚举A/B/C/D portal包白屏)，报告已写+Issue#262已co",
+      "lastUpdate": "2026-08-18T08:30:43Z"
     },
     "DEV": {
       "status": "idle",
