@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[leave E2E阻断] QA发现3个P0后端bug：A审计枚举缺leave_*值(500) B日期.toISOString报错 C教职工可见性恒空 — 修复",
-      "lastUpdate": "2026-08-18T08:31:27Z"
+      "task": "[portal白屏] QA发现P1：8081门户/QR页误指向admin bundle(basename=/school-admin) — 修复前端路由base",
+      "lastUpdate": "2026-08-18T08:31:29Z"
     },
     "QA": {
       "status": "idle",

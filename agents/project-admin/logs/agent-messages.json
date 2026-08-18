@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T04:14:53Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[#284][#285] 开始i18n QA验证",
-    "type": "received",
-    "agent_status": {
-      "agent": "QA",
-      "status": "running",
-      "task": "[#284][#285] 开始i18n QA验证"
-    }
-  },
-  {
     "timestamp": "2026-07-25T04:30:36Z",
     "from": "QA",
     "to": "PM",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[leave E2E阻断] QA发现3个P0后端bug：A审计枚举缺leave_*值(500) B日期.toISOString报错 C教职工可见性恒空 — 修复"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:31:29Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[portal白屏] QA发现P1：8081门户/QR页误指向admin bundle(basename=/school-admin) — 修复前端路由basename",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[portal白屏] QA发现P1：8081门户/QR页误指向admin bundle(basename=/school-admin) — 修复前端路由base"
     }
   }
 ]
