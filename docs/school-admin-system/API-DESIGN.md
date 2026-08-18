@@ -696,6 +696,13 @@
 
 ## 6. 学生/家长门户 API
 
+> **模块接线说明（2026-08-18 修复 `/api/portal/leave` 404）**
+> 门户 API 由两个 `PortalModule` 组成，在 `app.module.ts` 中分别 import：
+> - `PortalModule from './modules/portal/portal.module'` —— 提供 `/api/portal/leave`（电子请假，映射 `leave_requests` 表）、`/api/portal/profile`（个人档案）。
+> - `PortalModule as LegacyPortalModule from './portal/portal.module'` —— 提供 `/api/portal/menus`（门户菜单）+ 旧守卫/拦截器。
+> 两模块导出同名类，故用别名共存。`/api/portal/leave` 此前 404 系 `app.module.ts` 第 40 行错引了旧 `./portal/portal.module`（只含 menus），新模块未接线所致，本次已修正为同时接线二者。
+> 旧 `LeaveModule`（`/api/leaves`，映射旧 `leaves` 表）为独立管理端功能，与本门户电子请假（`leave_requests` 表）并存，表数据互不影响。
+
 ### 6.1 门户菜单列表
 
 **GET /api/portal/menus**

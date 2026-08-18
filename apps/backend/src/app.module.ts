@@ -37,7 +37,8 @@ import { ExamModule } from './modules/exam/exam.module';
 import { BudgetModule } from './modules/budget/budget.module';
 import { RecruitmentModule } from './modules/recruitment/recruitment.module';
 import { StudentModule } from './modules/student/student.module';
-import { PortalModule } from './portal/portal.module';
+import { PortalModule } from './modules/portal/portal.module';
+import { PortalModule as LegacyPortalModule } from './portal/portal.module';
 
 @Module({
   imports: [
@@ -94,6 +95,7 @@ import { PortalModule } from './portal/portal.module';
     BudgetModule,
     RecruitmentModule,
     StudentModule,
+    LegacyPortalModule,
     PortalModule,
   ],
   controllers: [],
