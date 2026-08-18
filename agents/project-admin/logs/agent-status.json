@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[leave_requests] 上次运行中断(失上下文)，migration已改写但未提交/未验证build — 重派：验证编译+实体字段与migration",
-      "lastUpdate": "2026-08-18T08:08:22Z"
+      "task": "[leave_requests] DEV已修migration并合入main(b0b6d5f) — 转派DEVOPS：应用迁移到测试库+验证leave_requ",
+      "lastUpdate": "2026-08-18T08:11:01Z"
     },
     "QA": {
       "status": "idle",

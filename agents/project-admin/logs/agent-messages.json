@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-24T10:07:57Z",
-    "from": "PM",
-    "to": "USER",
-    "message": "📊 晚间状态汇报 (2026-07-24 18:00)",
-    "type": "done",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "📊 晚间状态汇报 (2026-07-24 18:00)"
-    }
-  },
-  {
     "timestamp": "2026-07-25T01:00:53Z",
     "from": "PM",
     "to": "user",
@@ -1132,6 +1120,18 @@
       "agent": "DEV",
       "status": "idle",
       "task": "[leave_requests] 完成：根因=迁移1782530900000从未落库+dev synchronize漏建leave表。修复=幂等化迁移(leav"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:11:01Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[leave_requests] DEV已修migration并合入main(b0b6d5f) — 转派DEVOPS：应用迁移到测试库+验证leave_requests表创建+leave API冒烟",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[leave_requests] DEV已修migration并合入main(b0b6d5f) — 转派DEVOPS：应用迁移到测试库+验证leave_requ"
     }
   }
 ]

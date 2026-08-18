@@ -48,7 +48,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 <div class="agent-grid"><div class="agent  running">
     <div class="agent-icon">🧑💼</div>
     <div class="agent-name">PM</div>
-    <div class="agent-task">[leave_requests] 上次运行中断(失上下文)，migra</div>
+    <div class="agent-task">[leave_requests] DEV已修migration并合入m</div>
     <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔧</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-done">
+<div class="message-list"><div class="message-item msg-assign">
+    <div class="message-time">16:11</div>
+    <div class="message-content">PM → DEVOPS: [leave_requests] DEV已修migration并合入main(b0b6d5f) — 转派DEV</div>
+</div><div class="message-item msg-done">
     <div class="message-time">16:09</div>
     <div class="message-content">DEV → PM: [leave_requests] 完成：根因=迁移1782530900000从未落库+dev synchron</div>
 </div><div class="message-item msg-received">
@@ -144,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 16:09:48 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 16:11:01 (GMT+8)</div>
 </div>
 </body>
 </html>
