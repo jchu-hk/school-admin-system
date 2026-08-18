@@ -9,11 +9,11 @@
 
 > **Deployed**: 2026-08-02 15:40 GMT+8 · **Frontend** `school-admin-frontend` (:8080)
 > **Build**: `v1.6.1` · commit `2c7680c` (main) · build 2026-08-02
-> **New JS**: `index-Clv-l0p1-20260707.js` (旧: `index-CHIDs11R-20260707.js`)
+> **New JS**: `index-B52kQjGo-20260707.js` (admin-app :8080; 注: 旧台账 `index-Clv-l0p1-20260707.js` 已过期) · portal-app :8081 = `index-BTSIfyoS-20260707.js` (QR/portal, basename `/`，经 `apps/frontend` 独立构建产物)
 > **Fixes deployed (test env)**:
 > - #306 — 课程管理 API 路径修复 (VITE_API_BASE_URL = `/school-admin/api/`) → 修复 Gateway(404) 路由问题
 > - #308 — token key 修复 (`token` → `auth_token`)
-> **Verified**: container md5 == local dist · `localhost:8080` → 200 · Coze proxy `/school-admin/` → 200
+> **Verified (2026-08-18 T26)**: admin :8080 `version.json`=v1.6.1/commit 2c7680c | portal :8081 QR+学生/家长门户功能在产物中确认 | backend 容器(image `v1.5.9` tag) Dockerfile与HEAD(`53e2c31`)一致、`pg_dump 16.15`在位、夜间备份14+晚非空 → **版本=main** · `localhost:8080/8081`→200 · Coze proxy `/school-admin/ /portal/student /portal/parent /attendance/qr /school-admin/api/health`→200
 
 ---
 

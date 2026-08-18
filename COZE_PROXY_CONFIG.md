@@ -42,8 +42,8 @@ Sandbox Port 5000 (Nginx — host machine)
 | `/school-admin/assets/*` | `:8080/assets/*` | Static Files | JS/CSS bundles — 旧UI |
 | `/api/*` | `:3000/api/*` | Backend API | Direct API access (backup) |
 | `/assets/*` | `:8080/assets/*` | Static Files | Static assets (backup) |
-| `/attendance/*` | `:8080` | ⚠️ 新QR考勤 | **不被旧前端识别** — 需部署新前端 |
-| `/portal/*` | `:8080` | ⚠️ 新学生/家长门户 | **不被旧前端识别** — 需部署新前端 |
+| `/attendance/*` | `:8081` | portal-app | QR考勤（`/attendance/qr` 学生展示、`/attendance/scan` 教职工扫码）|
+| `/portal/*` | `:8081` | portal-app | 学生/家长门户（`/portal/student`、`/portal/parent`）|
 | `/grafana/` | `:3001` | Grafana | OPS Dashboard → `admin/admin123` |
 | `/prometheus/` | `:9091` | Prometheus | OPS Metrics |
 | `/alertmanager/` | `:9093` | Alertmanager | OPS Alerts |
@@ -111,12 +111,15 @@ school-admin-frontend-v2  | 8081 -> 80 | apps/frontend/Dockerfile | ❌ 待建
 - **端口**: 8080 (Docker)
 - **功能**: 教职工后台管理（学生管理、出勤、用户、资产等）
 
-### 新前端 — apps/frontend/ (CR-20260714-001)
-- **basename**: `/` (路由以 `/attendance/` 和 `/portal/` 为前缀)
+### 新前端 — apps/frontend/ (CR-20260714-001, portal-app)
+- **basename**: `/` (React Router `<BrowserRouter>` 默认 basename=`/`，路由以 `/attendance/` 和 `/portal/` 为前缀；**绝不使用 `/school-admin`** — admin-app 专属)
+- **vite base**: `/`（已显式配置）
 - **API base URL**: 相对路径 → `/api/*`
-- **端口**: 8081 (计划，Docker)
+- **端口**: 8081 (Docker)
 - **功能**: QR考勤展示/扫码、学生门户、家长门户
-- **部署状态**: ⛔ 代码完成但**尚未部署**
+- **构建产物**（`npm run build` → `apps/frontend/dist/`）: `index.html` 引用根路径 `/assets/index-<hash>-20260707.js`，bundle 内含 `attendance/qr`、`portal/parent`、`portal/student` 路由且**不含任何 `/school-admin` 引用**（验证通过）
+- **部署状态**: 容器 bind-mount `apps/frontend/dist`；**必须重建/重部署**以替换 stale dist（BUG-D 根因：:8081 误留旧 admin 版 bundle）
+- ⚠️ **package.json name** = `school-admin-portal-app`（与 admin-app `school-admin-frontend` 区分，避免 hash 命名混淆）
 
 ## Nginx Configuration File (Host)
 
