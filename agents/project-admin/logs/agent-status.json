@@ -12,8 +12,8 @@
     },
     "DEV": {
       "status": "running",
-      "task": "[leave_requests] 开始诊断",
-      "lastUpdate": "2026-08-18T08:02:11Z"
+      "task": "[leave_requests] 收尾开始",
+      "lastUpdate": "2026-08-18T08:08:40Z"
     },
     "DEVOPS": {
       "status": "idle",

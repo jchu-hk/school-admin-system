@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-23T04:35:12Z",
-    "from": "PM",
-    "to": "HEARTBEAT",
-    "message": "12:35 心跳 — All 200 🟢 | Docker 15Up(6h, all healthy) | Git main(16aa462) dirty(142files) | GitHub 19 open (unchanged) | Agents idle | check_rules verify ✅",
-    "type": "passed",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "12:35 心跳 — All 200 🟢 | Docker 15Up(6h, all healthy) | Git main(16aa462) dirty(14"
-    }
-  },
-  {
     "timestamp": "2026-07-24T01:23:50Z",
     "from": "PM",
     "to": "USER",
@@ -1132,6 +1120,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[leave_requests] 上次运行中断(失上下文)，migration已改写但未提交/未验证build — 重派：验证编译+实体字段与migration"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:08:40Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[leave_requests] 收尾开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[leave_requests] 收尾开始"
     }
   }
 ]
