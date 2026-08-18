@@ -273,7 +273,7 @@ used    — 已使用
 user_create, user_update, user_delete, user_restore, user_status_change,
 user_password_reset, permission_change, login, logout,
 attendance_check_in, attendance_check_out, leave_apply, leave_approve,
-leave_reject, fee_create, fee_update, inquiry_create, inquiry_reply
+leave_reject, leave_cancel, fee_create, fee_update, inquiry_create, inquiry_reply
 ```
 
 ---
@@ -686,7 +686,7 @@ inquiries (id)
 
 | 枚举名 | 值 |
 |--------|-----|
-| audit_action | user_create, user_update, user_delete, user_restore, user_status_change, user_password_reset, permission_change, login, logout, attendance_check_in, attendance_check_out, leave_apply, leave_approve, leave_reject, fee_create, fee_update, inquiry_create, inquiry_reply |
+| audit_action | user_create, user_update, user_delete, user_restore, user_status_change, user_password_reset, permission_change, login, logout, attendance_check_in, attendance_check_out, leave_apply, leave_approve, leave_reject, leave_cancel, fee_create, fee_update, inquiry_create, inquiry_reply |
 
 ---
 
@@ -694,6 +694,7 @@ inquiries (id)
 
 | 版本 | 日期 | 变更 |
 |------|------|------|
+| +电子请假 enum 修复(Issue #262) | 2026-08-18 | 为 audit_logs.action 枚举补全 leave_apply/leave_approve/leave_reject/leave_cancel（幂等迁移 1787200000000）；规格同步 §4.3 / §7.6 |
 | +AI自动化模块(Issue #362) | 2026-08-13 | 新增模块23 AI自动化管理：faq_knowledge_base、faq_match_logs、scheduled_tasks、scheduled_task_executions、reminder_rules、reminder_records 六张表；扩展 audit_action 枚举 |
 | +校车点名与查询模板模块(Issue #361) | 2026-08-13 | 新增模块22 校车点名与查询模板管理：buses、bus_routes、bus_shifts、bus_students、bus_checkins、quick_reply_templates 六张表；扩展 audit_action 枚举 |
 | v1.6.0 | 2026-06-28 | 新增 DSE 放榜成绩追踪模块：dse_releases、dse_results、dse_reviews、dse_offer_tracking 四张表；支持 HKEAA 数据对接、成绩覆核申请、JUPAS 追踪、升学去向统计分析 |

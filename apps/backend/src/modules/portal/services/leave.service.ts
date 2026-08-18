@@ -48,6 +48,7 @@ export class LeaveService {
    * 获取当前用户可访问的学生ID列表
    * - student: 仅自己
    * - parent: 通过 parent_student_links 关联的子女
+   * - teacher / school_staff / school_director: 审批角色，可见全校所有学生（由调用方决定是否按 role 过滤）
    */
   private async getAccessibleStudentIds(
     userId: string,
@@ -64,7 +65,7 @@ export class LeaveService {
       return links.map((l) => l.studentId);
     }
 
-    // Teacher/Staff — admin side, not used in portal context
+    // Teacher/Staff/Director — 审批角色，可见全校请假记录（不按学生过滤）
     return [];
   }
 
@@ -147,7 +148,7 @@ export class LeaveService {
 
     // 审计日志
     await this.auditService.log(
-      'leave_apply' as AuditAction,
+      AuditAction.LEAVE_APPLY,
       userId,
       `提交请假申请: ${saved.id}, 类型=${dto.leaveType}, 天数=${totalDays}`,
       ip,
@@ -173,62 +174,54 @@ export class LeaveService {
     total: number;
     page: number;
   }> {
-    const accessibleIds = await this.getAccessibleStudentIds(userId, role);
-
-    if (accessibleIds.length === 0) {
-      return { records: [], total: 0, page: query.page || 1 };
-    }
-
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
 
-    const where: any = {
-      studentId: role === UserRole.TEACHER ? undefined : accessibleIds.length === 1 ? accessibleIds[0] : undefined,
-    };
+    const isApprover =
+      role === UserRole.TEACHER ||
+      role === UserRole.SCHOOL_STAFF ||
+      role === UserRole.SCHOOL_DIRECTOR;
 
-    // For teacher/staff, they can see all student leaves
-    if (role === UserRole.TEACHER || role === UserRole.SCHOOL_STAFF || role === UserRole.SCHOOL_DIRECTOR) {
-      delete where.studentId;
-    } else {
-      if (accessibleIds.length === 0) {
-        return { records: [], total: 0, page };
+    // 审批角色（教师/校务/主任）可见全校所有学生的请假记录，不按学生过滤
+    if (isApprover) {
+      const qb = this.leaveRepository
+        .createQueryBuilder('leave')
+        .leftJoinAndSelect('leave.student', 'student')
+        .leftJoinAndSelect('leave.approver', 'approver');
+
+      if (query.status) {
+        qb.andWhere('leave.status = :status', { status: query.status });
       }
-      where.studentId = accessibleIds.length === 1 ? accessibleIds[0] : undefined;
-      if (accessibleIds.length > 1) {
-        // Use IN query
-        const qb = this.leaveRepository.createQueryBuilder('leave')
-          .leftJoinAndSelect('leave.student', 'student')
-          .where('leave.studentId IN (:...ids)', { ids: accessibleIds });
-
-        if (query.status) {
-          qb.andWhere('leave.status = :status', { status: query.status });
-        }
-        if (query.startDate) {
-          qb.andWhere('leave.startDate >= :startDate', { startDate: query.startDate });
-        }
-        if (query.endDate) {
-          qb.andWhere('leave.endDate <= :endDate', { endDate: query.endDate });
-        }
-
-        qb.orderBy('leave.createdAt', 'DESC')
-          .skip(skip)
-          .take(limit);
-
-        const [records, total] = await qb.getManyAndCount();
-
-        return {
-          records: records.map((r) => this.formatLeaveRecord(r)),
-          total,
-          page,
-        };
+      if (query.startDate) {
+        qb.andWhere('leave.startDate >= :startDate', { startDate: query.startDate });
       }
+      if (query.endDate) {
+        qb.andWhere('leave.endDate <= :endDate', { endDate: query.endDate });
+      }
+
+      qb.orderBy('leave.createdAt', 'DESC').skip(skip).take(limit);
+
+      const [records, total] = await qb.getManyAndCount();
+
+      return {
+        records: records.map((r) => this.formatLeaveRecord(r)),
+        total,
+        page,
+      };
     }
 
-    // Single studentId path
+    // 学生/家长路径：仅能访问自己的/关联子女的请假
+    const accessibleIds = await this.getAccessibleStudentIds(userId, role);
+
+    // 非审批角色，无任何可访问学生 → 返回空（而非 500）
+    if (accessibleIds.length === 0) {
+      return { records: [], total: 0, page };
+    }
+
     const whereConditions: any = {};
-    if (where.studentId) {
-      whereConditions.studentId = where.studentId;
+    if (accessibleIds.length === 1) {
+      whereConditions.studentId = accessibleIds[0];
     }
     if (query.status) {
       whereConditions.status = query.status;
@@ -238,6 +231,37 @@ export class LeaveService {
     }
     if (query.endDate) {
       whereConditions.endDate = LessThanOrEqual(query.endDate) as any;
+    }
+
+    // 多学生（家长关联多个子女）用 IN 查询，否则用单 studentId
+    if (accessibleIds.length > 1) {
+      const qb = this.leaveRepository
+        .createQueryBuilder('leave')
+        .leftJoinAndSelect('leave.student', 'student')
+        .leftJoinAndSelect('leave.approver', 'approver')
+        .where('leave.studentId IN (:...ids)', { ids: accessibleIds });
+
+      if (query.status) {
+        qb.andWhere('leave.status = :status', { status: query.status });
+      }
+      if (query.startDate) {
+        qb.andWhere('leave.startDate >= :startDate', {
+          startDate: query.startDate,
+        });
+      }
+      if (query.endDate) {
+        qb.andWhere('leave.endDate <= :endDate', { endDate: query.endDate });
+      }
+
+      qb.orderBy('leave.createdAt', 'DESC').skip(skip).take(limit);
+
+      const [records, total] = await qb.getManyAndCount();
+
+      return {
+        records: records.map((r) => this.formatLeaveRecord(r)),
+        total,
+        page,
+      };
     }
 
     const [records, total] = await this.leaveRepository.findAndCount({
@@ -323,7 +347,7 @@ export class LeaveService {
 
     // 审计日志
     await this.auditService.log(
-      'leave_cancel' as AuditAction,
+      AuditAction.LEAVE_CANCEL,
       userId,
       `撤回请假: ${id}`,
       ip,
@@ -381,7 +405,7 @@ export class LeaveService {
       leave.approvalComment = dto.approvalComment || null;
 
       await this.auditService.log(
-        'leave_approve' as AuditAction,
+        AuditAction.LEAVE_APPROVE,
         userId,
         `审批通过请假: ${id}`,
         ip,
@@ -395,7 +419,7 @@ export class LeaveService {
       leave.approvalComment = dto.approvalComment || null;
 
       await this.auditService.log(
-        'leave_reject' as AuditAction,
+        AuditAction.LEAVE_REJECT,
         userId,
         `审批驳回请假: ${id}`,
         ip,
@@ -417,8 +441,21 @@ export class LeaveService {
 
   /**
    * 格式化请假记录输出
+   * startDate/endDate 实体列类型为 date：在部分查询路径（findAndCount 单主 student/parent 路径）
+   * 返回的是字符串，其他路径返回 Date。此工具对两者做类型安全处理，避免 .toISOString 崩溃。
    */
   private formatLeaveRecord(leave: LeaveRequest): any {
+    const fmtDate = (v: Date | string | null | undefined): string | null => {
+      if (v == null) return null;
+      if (v instanceof Date && !isNaN(v.getTime())) {
+        return v.toISOString().split('T')[0];
+      }
+      // 字符串（'YYYY-MM-DD' 或 ISO 串）直接用；非法则回退原值避免抛错
+      const s = String(v);
+      const d = new Date(s);
+      return isNaN(d.getTime()) ? s : d.toISOString().split('T')[0];
+    };
+
     return {
       leaveId: leave.id,
       student: leave.student
@@ -429,8 +466,8 @@ export class LeaveService {
           }
         : null,
       leaveType: leave.leaveType,
-      startDate: leave.startDate.toISOString().split('T')[0],
-      endDate: leave.endDate.toISOString().split('T')[0],
+      startDate: fmtDate(leave.startDate),
+      endDate: fmtDate(leave.endDate),
       totalDays: leave.totalDays,
       reason: leave.reason,
       attachmentUrl: leave.attachmentUrl,
@@ -439,7 +476,7 @@ export class LeaveService {
       status: leave.status,
       approvedBy: leave.approver ? leave.approver.name : null,
       approvalComment: leave.approvalComment,
-      createdAt: leave.createdAt.toISOString(),
+      createdAt: leave.createdAt instanceof Date ? leave.createdAt.toISOString() : String(leave.createdAt),
       canCancel: leave.status === PortalLeaveStatus.PENDING,
     };
   }

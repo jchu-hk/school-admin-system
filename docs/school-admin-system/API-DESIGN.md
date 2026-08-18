@@ -809,7 +809,9 @@
 
 **GET /api/portal/leave?status={filter}&page=1&limit=20**
 
-认证: Student JWT / Parent JWT
+认证: Student JWT / Parent JWT / Teacher JWT / School Staff JWT / School Director JWT
+
+> 可见范围：Student 仅本人；Parent 仅关联子女；Teacher / School Staff / School Director（审批角色）可见全校所有学生的请假记录（用于审批入口，可按 status 筛选待审批），不按学生过滤。
 
 **Response 200**
 ```json
