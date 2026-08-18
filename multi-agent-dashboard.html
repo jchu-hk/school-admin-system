@@ -48,7 +48,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 <div class="agent-grid"><div class="agent  running">
     <div class="agent-icon">🧑💼</div>
     <div class="agent-name">PM</div>
-    <div class="agent-task">[复验] 前后端已重新部署(3P0后端+1P1前端白屏) — 复验电子</div>
+    <div class="agent-task">[公网/assets 404] 根因定位：host nginx(500</div>
     <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔧</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (08/17)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-done">
+<div class="message-list"><div class="message-item msg-assign">
+    <div class="message-time">16:56</div>
+    <div class="message-content">PM → DEVOPS: [公网/assets 404] 根因定位：host nginx(5000)缺 /assets/ 路由→门户bu</div>
+</div><div class="message-item msg-done">
     <div class="message-time">16:54</div>
     <div class="message-content">QA → PM: [leave复验] 完成：后端API全通过(BUG-A/B/C已修复,BUG-D应用层已修复)；但外部UAT未</div>
 </div><div class="message-item msg-received">
@@ -137,9 +140,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-assign">
     <div class="message-time">16:24</div>
     <div class="message-content">PM → QA: [UAT阻断解除验证] leave API 已不再404+撤回路由已部署 — 验证电子请假全流程(提交/审批/</div>
-</div><div class="message-item msg-done">
-    <div class="message-time">16:23</div>
-    <div class="message-content">DEVOPS → PM: [portal部署] 完成：电子请假两处修复已编译并部署到测试环境。GET/POST /api/portal/</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -147,7 +147,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-08-18 16:54:57 (GMT+8)</div>
+<div class="refresh">Updated: 2026-08-18 16:56:56 (GMT+8)</div>
 </div>
 </body>
 </html>

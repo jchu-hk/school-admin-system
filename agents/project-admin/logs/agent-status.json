@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[复验] 前后端已重新部署(3P0后端+1P1前端白屏) — 复验电子请假全流程+撤回+越权+白屏修复+回归",
-      "lastUpdate": "2026-08-18T08:48:04Z"
+      "task": "[公网/assets 404] 根因定位：host nginx(5000)缺 /assets/ 路由→门户bundle落到gateway(5001)404 — ",
+      "lastUpdate": "2026-08-18T08:56:56Z"
     },
     "QA": {
       "status": "idle",

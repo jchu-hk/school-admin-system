@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-25T05:07:33Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#286] 完成: i18n迁移4页面 — AttendancePage(9 keys) / ScholarshipPage(5) / LunchOrderPage(27) / NotificationPage(25) — 构建通过 ✅ — 未部署(按PM指令)",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#286] 完成: i18n迁移4页面 — AttendancePage(9 keys) / ScholarshipPage(5) / LunchOrderP"
-    }
-  },
-  {
     "timestamp": "2026-07-25T10:07:41Z",
     "from": "PM",
     "to": "user",
@@ -1132,6 +1120,18 @@
       "agent": "QA",
       "status": "idle",
       "task": "[leave复验] 完成：后端API全通过(BUG-A/B/C已修复,BUG-D应用层已修复)；但外部UAT未就绪——Coze proxy未路由根路径/asse"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T08:56:56Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[公网/assets 404] 根因定位：host nginx(5000)缺 /assets/ 路由→门户bundle落到gateway(5001)404 — 加 location /assets/ → :8081 并reload",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[公网/assets 404] 根因定位：host nginx(5000)缺 /assets/ 路由→门户bundle落到gateway(5001)404 — "
     }
   }
 ]
