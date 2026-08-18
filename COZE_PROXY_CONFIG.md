@@ -41,7 +41,7 @@ Sandbox Port 5000 (Nginx — host machine)
 | `/school-admin/multi-agent-dashboard.html` | `:8080/multi-agent-dashboard.html` | Dashboard | Agent状态仪表板 — 即时更新,无需认证 |
 | `/school-admin/assets/*` | `:8080/assets/*` | Static Files | JS/CSS bundles — 旧UI |
 | `/api/*` | `:3000/api/*` | Backend API | Direct API access (backup) |
-| `/assets/*` | `:8080/assets/*` | Static Files | Static assets (backup) |
+| `/assets/*` | `:8081/assets/*` | Static Files | portal 静态资源 (basename=/，根 /assets/ → :8081) |
 | `/attendance/*` | `:8081` | portal-app | QR考勤（`/attendance/qr` 学生展示、`/attendance/scan` 教职工扫码）|
 | `/portal/*` | `:8081` | portal-app | 学生/家长门户（`/portal/student`、`/portal/parent`）|
 | `/grafana/` | `:3001` | Grafana | OPS Dashboard → `admin/admin123` |
@@ -61,8 +61,7 @@ Sandbox Port 5000 (Nginx — host machine)
 | `/portal/parent/*` | `:8081` | 家长门户 | 孩子切换查看、请假管理 |
 | `/school-admin/*` | `:8080` | 旧前端（保持不变） | 教职工后台管理系统 |
 
-> ⚠️ **现状**: 新前端 (`apps/frontend/`) 的代码已编写完成 (Phase 3)，但**尚未部署**到Docker容器。
-> Phase 5 T25 将负责：新前端Docker镜像创建 + Nginx多容器路由 + 环境变量配置。
+> ✅ **现状**: 新前端 (`apps/frontend/`) 已部署并 running（`school-admin-frontend-v2`，:8081，bind mount `apps/frontend/dist`）。QR考勤 + 学生/家长门户已可经 Coze 代理访问。
 
 ## Access URLs
 
@@ -78,7 +77,7 @@ Sandbox Port 5000 (Nginx — host machine)
 | Prometheus Metrics | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/prometheus/` |
 | Alertmanager Alerts | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/alertmanager/` |
 
-> ⚠️ QR考勤和门户链接在**旧前端部署**下无法访问（旧v1.6.0不包含这些路由），需等Phase 5部署后启用。
+> ✅ QR考勤和门户链接已上线（:8081 portal-app 部署完成，可经 Coze 代理访问）。
 
 ## Docker Services
 
@@ -123,7 +122,7 @@ school-admin-frontend-v2  | 8081 -> 80 | apps/frontend/Dockerfile | ❌ 待建
 
 ## Nginx Configuration File (Host)
 
-Location: `/etc/nginx/sites-available/school-admin`
+Location: `/etc/nginx/sites-available/openclaw-full` (symlink → `/etc/nginx/sites-enabled/openclaw-full`)
 
 Key routing rules:
 - 端口 5000 监听
@@ -192,5 +191,5 @@ nginx -t && cat /etc/nginx/sites-available/school-admin
 
 ---
 
-*Last updated: 2026-07-15 07:10 GMT+8 (CR-20260714-001 Phase 3 完成，Phase 5 T25 待部署)*
+*Last updated: 2026-08-18 22:45 GMT+8 (门户/QR 已上线，/assets/→:8081 已补，admin vite base 修复中)*
 *OpenClaw model: deepseek/deepseek-chat (direct API, not Coze tokens)*

@@ -1,6 +1,6 @@
 # Project Wiki — School Admin System
 
-> **Last updated**: 2026-08-02 15:45 GMT+8
+> **Last updated**: 2026-08-18 22:45 GMT+8
 > **Latest commit**: `a332c4ed` — main branch
 
 ---
@@ -40,14 +40,14 @@
 | **admin-app** | [localhost:8080](http://localhost:8080) | [coze.site/school-admin/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/) | 教职工后台管理 |
 | **portal-app** | [localhost:8081](http://localhost:8081) | [coze.site/portal/student](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/portal/student) | QR考勤 + 学生/家长门户 |
 | **QR 考勤** | [localhost:8081](http://localhost:8081) | [coze.site/attendance/qr](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr) | 扫码考勤页 |
-| **Backend API** | [localhost:3000](http://localhost:3000) | — | NestJS REST API |
+| **Backend API** | [localhost:3000](http://localhost:3000) | [coze.site/school-admin/api/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/api/) | NestJS REST API |
 | **Gateway** | [localhost:5001](http://localhost:5001) | [coze.site/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/) | OpenClaw Gateway |
 
 ### Monitoring (🔐 OPS)
 
 | Tool | External URL | Credentials |
 |------|-------------|-------------|
-| **Grafana** | [coze.site/grafana/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/grafana/) | `admin` / see `.env` |
+| **Grafana** | [coze.site/grafana/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/grafana/) | `admin` / `admin123` |
 | **Prometheus** | [coze.site/prometheus/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/prometheus/) | open-source, no auth |
 | **Alertmanager** | [coze.site/alertmanager/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/alertmanager/) | open-source, no auth |
 | **Agent Dashboard** | [coze.site/agents](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/agents) | public, no login |
