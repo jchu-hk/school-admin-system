@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-22T22:50:34Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#281] 开始修复系统设置页API路径",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[#281] 开始修复系统设置页API路径"
-    }
-  },
-  {
     "timestamp": "2026-07-22T22:59:43Z",
     "from": "PM",
     "to": "DEV",
@@ -1125,6 +1113,18 @@
     "type": "received",
     "agent_status": {
       "agent": "QA",
+      "status": "running",
+      "task": "[Issue #262][T26] 开始工作"
+    }
+  },
+  {
+    "timestamp": "2026-08-18T07:46:37Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[Issue #262][T26] 开始工作",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
       "status": "running",
       "task": "[Issue #262][T26] 开始工作"
     }
