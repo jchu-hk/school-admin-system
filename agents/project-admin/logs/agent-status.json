@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[外部UI终验] nginx/assets路由已修(DEVOPS) — 用浏览器复验外部Coze proxy门户/QR无白屏 + 截图证据",
-      "lastUpdate": "2026-08-18T08:58:46Z"
+      "task": "[admin白屏] 根因已定位(PM读代码): admin vite.config缺base=/school-admin/→index.html引用根/asse",
+      "lastUpdate": "2026-08-18T09:09:05Z"
     },
     "QA": {
       "status": "idle",
