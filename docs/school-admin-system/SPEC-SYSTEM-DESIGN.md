@@ -2626,6 +2626,8 @@ const navItems = useMemo(
 | 个人档案 | ✅ 查看+有限编辑 | ✅ 只读 | Student 可修改联系方式等 |
 | 我的QR码签入 | ✅ 使用 | ❌ | Student-only |
 | 电子请假 | ✅ 提交+查看 | ✅ 查看+代提交 | |
+
+> **审批角色可见性（/api/portal/leave 列表）**：Teacher / School Staff / School Director 审批角色可见全校所有学生的请假记录（用于审批入口，可按 status 筛选待审批）；Student 仅本人、Parent 仅关联子女。
 | 考勤记录 | ✅ 查看本人 | ✅ 查看关联子女 | |
 | 成绩查询 | ✅ 查看本人 | ✅ 查看关联子女 | |
 | 课表查询 | ✅ 查看 | ❌ | Student-only |

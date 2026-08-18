@@ -25,6 +25,7 @@ export enum AuditAction {
   // 请假申请模块
   LEAVE_CREATE = 'leave_create',
   LEAVE_UPDATE = 'leave_update',
+  LEAVE_APPLY = 'leave_apply',
   LEAVE_APPROVE = 'leave_approve',
   LEAVE_REJECT = 'leave_reject',
   LEAVE_CANCEL = 'leave_cancel',
