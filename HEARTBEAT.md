@@ -1,5 +1,17 @@
 ---
 
+# 12:04 — Heartbeat (Wed) 🟡 第137轮 待办:P1 i18n bug连续4轮未派发 | #365分支无PR | 备份/磁盘/健康全绿
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续4轮仍未派发)
+- **🟡 CHANGE/待办: #367/#368 [P1] i18n 仍 OPEN 且 unassigned**(连续第4轮未派发,仍受限)。#366 [P2] 同 open unassigned。
+- **#365 分支仍无 PR**: `fix/remove-agents-menu-365` 本地+远端存在,HEAD 为 `0d976bd chore: dashboard rebuild`(无修复 commit),均无修复内容。issue #365 仍 OPEN 且 **无任何 open PR** → 未归档。
+- ⚠️ 本环境仅 `main` agent 可 spawn,无独立 DEV → 派发受限,需人工/更高权限介入。
+- **#309 备份持续有效**: `backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID, 共14个备份, 连续7天非空递增(104.2K)。✅
+- **磁盘 89% (4.4G free)** 稳定。✅ | backend Up ~19h。**注**: `/api/health` 现返回 401 invalid token(路径需认证),但 `/health` 200 `{"status":"ok"}`(Cloud IDE WebSocket API)。Docker postgres/redis/kafka/opa 全 healthy。load 1.46。
+- Git: main `c87bdb0`(远端)。open bug 4=#365-368(全部前端/i18n)。
+
+---
+
 # 10:04 — Heartbeat (Wed) 🟡 第136轮 待办:P1 i18n bug连续3轮未派发 | #365分支无PR | 备份/磁盘/健康全绿
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续3轮仍未派发)
@@ -978,3 +990,15 @@
 - **backend Up 17h**, `/api/health` 200 `{"status":"ok"}` (01:00:51Z)。Docker 全绿(postgres/redis/kafka/opa healthy)。
 - Git: `ad6868a` (dashboard heartbeat round 134)。分支: main + fix/remove-agents-menu-365。
 - 派发受限说明不变: 本环境仅 main agent,无独立 DEV 可 spawn。零播报。
+
+---
+
+# 11:04 — Heartbeat (Wed) 🟡 第137轮 待办:P1 i18n bug连续4轮未派发 | #365分支含修复(+本地1未推commit)但无PR | 备份/磁盘/健康全绿
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续4轮仍未派发)
+- **🟡 CHANGE/待办: #367/#368 [P1] i18n仍 OPEN 且 unassigned**(第136轮已标连续3轮,本轮连续第4轮未派发)。#366 [P2] 同 open unassigned。
+- **✅ #365 分支**: 远端 `fix/remove-agents-menu-365` HEAD=`9060d58 fix(admin): #365 remove Agents menu item`(修复commit)。本地分支在其上多 1 个未推送 commit `0d976bd chore: dashboard rebuild`。issue #365 仍 **无任何 open PR** → 未归档。
+- ⚠️ 本环境仅 `main` agent 可 spawn,无独立 DEV → 派发受限,需人工/更高权限介入。
+- **#309 备份持续有效**: `backup_20260818180000..sql.gz` 104264B 非空(8/19 02:00), 共14个备份, 连续7天非空。✅
+- **磁盘 89% (4.4G free)** 稳定。✅ | backend Up ~19h, `/api/health` 200(注意外层 9000 返回 401,内网 api/health 正常)。load 0.80。
+- Git: main `c87bdb0`(本地 main 有未提交 version.json 改动)。open bug 4=#365-368(全部前端/i18n)。
