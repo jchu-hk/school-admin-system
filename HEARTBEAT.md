@@ -1,5 +1,17 @@
 ---
 
+# 10:04 — Heartbeat (Wed) 🟡 第136轮 待办:P1 i18n bug连续3轮未派发 | #365分支无PR | 备份/磁盘/健康全绿
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续3轮仍未派发)
+- **🟡 CHANGE/待办: #367/#368 [P1] i18n 仍 OPEN 且 unassigned**(连续第3轮未派发,与上轮一致仍受限)。#366 [P2] 同 open unassigned。
+- **✅ #365 分支仍无 PR**: `fix/remove-agents-menu-365` 本地+远端存在,但该分支 HEAD 为 `0d976bd chore: dashboard rebuild`(无修复 commit),与上轮记录的 `9060d58` 不一致 → 分支内容有变,需复核。issue #365 仍 OPEN 且 **无任何 open PR** → 未归档。
+- ⚠️ 本环境仅 `main` agent 可 spawn,无独立 DEV → 派发受限,需人工/更高权限介入。
+- **#309 备份持续有效**: `/var/backups/school_admin/backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID, 共14个备份, 连续7天非空递增(104.2K)。✅
+- **磁盘 89% (4.4G free)** 稳定。✅ | backend Up ~18h, `/api/health` 200 `{"status":"ok"}`。Docker postgres/redis/kafka/opa 全 healthy。load 0.35。
+- Git: main `beadf17`。open bug 4=#365-368(全部前端/i18n)。
+
+---
+
 # 09:04 — Heartbeat (Wed) 🟡 第135轮 待办:P1 i18n bug已标记2轮未派发 | #365分支无PR(未归档) | 备份/磁盘/健康全绿
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug仍未派发)
