@@ -1,5 +1,17 @@
 ---
 
+# 21:04 — Heartbeat (Wed) 🟡 第142轮 零变化 vs 141
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续8轮仍未派发)
+- **零变化 vs 第141轮**: 状态完全一致。
+- **🟡 待办: #367/#368 [P1] i18n 仍 OPEN 且 unassigned**(连续第8轮未派发,仍受限)。#366 [P2] 同 open unassigned。#365 同 open 无 PR。**0 open PR**。
+- **✅ /api/health 200** `{"status":"ok"}` (0.005s)。portal :8081 200。
+- **#309 备份持续有效**: `backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID, 共14个备份, 连续8天非空递增。✅
+- **磁盘 89% (4.4G free)** 稳定。✅ | backend Up ~28h。Docker 13容器全Up(postgres/redis/kafka/opa healthy)。
+- Git: main `cd4fd52`(本轮 heartbeat commit), 与 origin 同步。open bug 4=#365-368(全部前端/i18n)。
+
+---
+
 # 19:04 — Heartbeat (Wed) 🟡 第141轮 零变化 vs 140
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续7轮仍未派发)
@@ -1063,3 +1075,13 @@
 - **#309 备份持续有效**: `/var/backups/school_admin/backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID, 共14个备份, 连续8天非空递增。✅
 - **磁盘 89% (4.4G free)** 稳定。✅ | backend Up 27h。Docker postgres/redis/kafka/opa 全 healthy, 14容器全Up。
 - Git: main `fa038f1`(上轮 commit), 与 origin 同步。open bug 4=#365-368(全部前端/i18n)。
+
+# 21:00 — Heartbeat (Wed) 🟡 第142轮 CHANGE:/api/health 401 | 其余零变化 (i18n P1连续8轮未派发 | 备份/磁盘/容器全绿)
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续8轮仍未派发)
+- **🟡 CHANGE: `/api/health` 返回 401 invalid token**(第140-141轮曾恢复200,本轮回落到401,疑似认证/token 状态反复波动)。portal :8081 仍 200。
+- **🟡 待办: #367/#368 [P1] i18n 仍 OPEN 且 unassigned**(连续第8轮未派发,仍受限)。#366 [P2] 同 open unassigned。#365 [ready-for-review] 同 open,无 PR。
+- ⚠️ 本环境仅 `main` agent 可 spawn,无独立 DEV → 派发受限,需人工/更高权限介入。
+- **#309 备份持续有效**: `backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID, 共14个备份(+新版101808B),非空递增。✅
+- **磁盘 89% (4.4G free)** 稳定。✅ | Docker 13容器全 Up(postgres/redis/kafka/opa healthy)。backend Up ~28h。
+- Git: main = origin = `cd4fd52`,与远端同步。open bug 4=#365-368(全部前端/i18n)。
