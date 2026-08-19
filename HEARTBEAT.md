@@ -1,5 +1,17 @@
 ---
 
+# 09:04 — Heartbeat (Wed) 🟡 第135轮 待办:P1 i18n bug已标记2轮未派发 | #365分支无PR(未归档) | 备份/磁盘/健康全绿
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug仍未派发)
+- **🟡 CHANGE/待办: #367/#368 [P1] i18n 仍 OPEN 且 unassigned**(第134轮已标记需 spawn DEV,本轮连续第2轮未派发)。#366 [P2] 同 open。
+- **✅ #365 修复分支已有但无 PR**: `fix/remove-agents-menu-365` 含 commit `9060d58` 待 review,但 **未打开 PR** 且 unassigned → 需归档 PR/merge。
+- ⚠️ 已确认本环境仅 `main` agent 可 spawn(`agents_list`),无独立 DEV → 派发受限,需人工/更高权限介入。
+- **#309 备份持续有效**: `backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID, 共14个备份, 连续7天非空递增。✅
+- **磁盘 89% (4.4G free)** 稳定。✅ | backend Up 16h, `/api/health` 200 (0.003s)。Docker 全绿(postgres/redis/kafka/opa healthy), load 0.47。
+- Git: main `ad6868a`。open bug 4=#365-368 (全部含 i18n/前端)。
+
+---
+
 # 09:00 — Heartbeat (Wed) 🟡 第134轮 待办:P1 i18n bug未派发 | #365已修+PR就绪 (#367/368未assign) | 备份/磁盘/健康全绿
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug未派发)
@@ -941,3 +953,16 @@
 - **backend Up 30h**, health 200 (0.003s)。Docker 全绿 (postgres/redis/kafka/opa healthy)。
 - **#310 公网 🔴 持续** (cloudflared Exited(2), host egress, 非 agent 可推)。
 - GitHub: 73 open (design/arch backlog #355-#364 + feature backlog),无新 bug。零播报(零变化)。
+
+---
+
+# 09:00+ — Heartbeat (Wed) 🟡 第135轮 零变化 (P1 i18n #367/#368 仍未派发 | 备份/磁盘/健康全绿)
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug未派发)
+- 与 09:00 第134轮完全一致,零变化。
+- **#365-368 全部 OPEN 且 unassigned** (#365 [ready-for-review] 有分支 `fix/remove-agents-menu-365` commit `9060d58`; #367/#368 仍 P1 i18n 未派发; #366 P2)。open bug 数 4 不变。
+- **#309 备份持续有效** ✅: `backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID (8/19 02:00)。连续 6 天非空递增。
+- **磁盘 89% (4.4G free)** 稳定。✅
+- **backend Up 17h**, `/api/health` 200 `{"status":"ok"}` (01:00:51Z)。Docker 全绿(postgres/redis/kafka/opa healthy)。
+- Git: `ad6868a` (dashboard heartbeat round 134)。分支: main + fix/remove-agents-menu-365。
+- 派发受限说明不变: 本环境仅 main agent,无独立 DEV 可 spawn。零播报。
