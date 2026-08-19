@@ -1,5 +1,35 @@
 ---
 
+# 09:00 — Heartbeat (Wed) 🟡 第134轮 待办:P1 i18n bug未派发 | #365已修+PR就绪 (#367/368未assign) | 备份/磁盘/健康全绿
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug未派发)
+- **🟡 CHANGE/待办: 两个 P1 i18n bug #367/#368 仍 OPEN 且 unassigned**(08:05 第133轮已标记需 spawn DEV,本轮仍未派发)。#366 [P2]、#365 [ready-for-review] 同 open。
+- **✅ #365 已有修复分支**: `fix/remove-agents-menu-365` 含 commit `9060d58 fix(admin): #365 remove Agents menu item`,待 review。
+- ⚠️ 本环境仅 `main` agent 可用,无独立 DEV agent 可 spawn → 派发受限,需人工/更高权限介入或由 main 承接。
+- **#309 备份持续有效**: `backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID(8/19 02:00)。连续 6 天非空递增。✅
+- **磁盘 89% (4.4G free)** 稳定。✅
+- **backend Up 16h**, `/api/health` 200 `{"status":"ok"}`。Docker 全绿(postgres/redis/kafka/opa healthy),仅 cloudflared exited(历史已知#310)。
+- Git: main `c87bdb0`。open 53(47 enhancement backlog),true bug 4=#365-368。
+
+---
+
+# 08:05 — Heartbeat (Wed) 🟡 第133轮 变化:#310已关闭+新增4个前端bug(#365-368,含2个P1 i18n) | 备份持续有效 磁盘89%稳定
+
+### System Status 🟢 (内网正常,备份持续有效) / 🟢 (磁盘89% 稳定) / 🟢 (#310已CLOSED)
+- **🔴 CHANGE: #310 已 CLOSED** ✅ — 长期 P1 公网端点不可达 bug(cloudflared Exited(2) 12天)已关闭,不再在 open bug 列表。(标签 bug/p1/ops/devops/provider-action)
+- **🔴 CHANGE: 新增 4 个前端 bug (2026-08-18 创建)**:
+  - **#368 [P1]** i18n 选 English 后界面文案未切换为英文
+  - **#367 [P1]** i18n 选「繁體中文」后界面未切换为繁体
+  - **#366 [P2]** i18n 语言切换下拉框显示在页面底部且无法滚动到达
+  - **#365 [ready-for-review]** 移除侧边栏 'Agents' 菜单项
+  - ⚠️ 两个 P1 i18n bug 为活跃前端缺陷 → 需 spawn DEV 处理。从「零变化」转「有新增可推项」,本轮播报。
+- **#309 备份持续有效** ✅: 最新 `backup_20260818180000..sql.gz` **104264 bytes 非空**, `gzip -t` VALID(8/19 02:00 生成)。连续 5 天非空备份(101.5K→104.2K 每日递增),BackupScheduler 每日 02:00 正常。
+- **磁盘 89% (4.4G free)** 稳定无回弹。✅
+- **backend Up 15h**, health 200 (0.007s, localhost:3000)。Docker 全绿(postgres/redis/kafka/opa healthy)。
+- Git: main `c87bdb0 chore: dashboard rebuild`。open 总数 53(47 enhancement backlog),true bug 4=#365-368。
+
+---
+
 # 18:04 — Heartbeat (Sat) 🟢 第132轮 零变化 (#309备份E2E持续有效 | 磁盘稳定89% #310公网🔴持续)
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🔴 (公网#310持续)
