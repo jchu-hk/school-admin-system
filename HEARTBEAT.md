@@ -1,5 +1,18 @@
 ---
 
+# 14:04 — Heartbeat (Wed) 🟡 第138轮 待办:P1 i18n bug连续5轮未派发 | #365分支无PR | 备份/磁盘/健康全绿 (+/api/health恢复200)
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续5轮仍未派发)
+- **🟡 CHANGE/待办: #367/#368 [P1] i18n 仍 OPEN 且 unassigned**(连续第5轮未派发,仍受限)。#366 [P2] 同 open unassigned。#365 [ready-for-review] 同 open。
+- **#365 分支仍无 PR**: 无任何 open PR → 未归档。
+- ⚠️ 本环境仅 `main` agent 可 spawn,无独立 DEV → 派发受限,需人工/更高权限介入。
+- **🟢 CHANGE: `/api/health` 恢复 200** `{"status":"ok"}`(上轮曾 401 invalid token,本轮已恢复,疑似认证/token 状态已转好)。`/health` 仍 404(路由已移除,记录为纯路由变化)。
+- **#309 备份持续有效**: `backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID, 共14个备份, 连续7天非空递增(104.2K)。✅
+- **磁盘 89% (4.4G free)** 稳定。✅ | backend Up ~22h(load 0.50)。Docker postgres/redis/kafka/opa 全 healthy。
+- Git: remote main `49bde93`(本轮 heartbeat commit)。open bug 4=#365-368(全部前端/i18n)。
+
+---
+
 # 12:04 — Heartbeat (Wed) 🟡 第137轮 待办:P1 i18n bug连续4轮未派发 | #365分支无PR | 备份/磁盘/健康全绿
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续4轮仍未派发)
