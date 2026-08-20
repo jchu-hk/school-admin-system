@@ -1,5 +1,19 @@
 ---
 
+# 17:04 — Heartbeat (Thu) 🟠 第151轮 与150一致: PR#369 仍被既有CI失败阻塞
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟠 (PR#369 merge 被既有 CI 失败阻塞)
+- **零变化 vs 第150轮**: 状态完全一致。
+- **🟠 PR #369 (i18n fix) 仍 UNSTABLE** — mergeStateStatus=UNSTABLE。lint fail(`@typescript-eslint/no-unused-vars` 已知既有 backlog) + Backend Service `pnpm not found`(CI infra, 均与本次纯前端改动无关)。base=main CI 同样 failure → 仓库级既有问题。
+- **🟣 PR #369 OPEN** 覆盖 #367/#368/#366, head=`fix/i18n-lang-switch` (工作区在分支, ahead 2)。**1 open PR**。
+- **🟡 待办**: #365 [ready-for-review] OPEN 无 PR。open bug 4=#365-368(全前端/i18n)。
+- **✅ 后端健康**: `:3000/api/health` 200 (0.002s), admin :8080 200, portal :8081 200。
+- **✅ #309 备份有效**: `backup_20260819180000..sql.gz` **104438B 非空**, `gzip -t` VALID, 共15个备份全非空。
+- **磁盘 89% (4.3G free)** 稳定。✅ | Docker postgres/redis/kafka/opa 全 healthy。
+- Git: 工作区在 `fix/i18n-lang-switch` (ahead 2), 上轮 heartbeat commit `298210b`。open bug 4=#365-368。
+
+---
+
 # 15:04 — Heartbeat (Thu) 🟠 第150轮 关键发现: PR#369 被2个既有CI失败阻塞
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟠 (PR#369 merge 被既有 CI 失败阻塞)
@@ -1159,3 +1173,17 @@
 - **#309 备份持续有效**: `backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID, 共14个备份(+新版101808B),非空递增。✅
 - **磁盘 89% (4.4G free)** 稳定。✅ | Docker 13容器全 Up(postgres/redis/kafka/opa healthy)。backend Up ~28h。
 - Git: main = origin = `cd4fd52`,与远端同步。open bug 4=#365-368(全部前端/i18n)。
+
+---
+
+# 16:04 — Heartbeat (Thu) 🟠 第151轮 零变化 vs 150
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟠 (PR#369 merge 仍被既有 CI 失败阻塞)
+- **零变化 vs 第150轮**: 状态完全一致。
+- **🟠 PR #369 (i18n fix, +775/-276) mergeStateStatus=UNSTABLE, 2 checks FAIL** — 「Backend Service」fail (`pnpm` 缺失, 既有 infra) + 「lint」fail (apps/backend 已知既有 unused-var backlog, 全库扫描阻塞)。**PR diff 仅含前端文件, 与本次改动无关**。Test Summary + test 均 pass。自 04:59Z 起已 UNSTABLE ~11h。
+- **🟣 PR #369 OPEN** 覆盖 #367/#368/#366, 改动正确待 merge, 被 CI 门阻塞。**1 open PR (#369)**。
+- **🟡 待办**: #365 [ready-for-review] OPEN 无 PR。#354/353/352/351/350…(M3/M4 enhancement) OPEN 未排期。
+- **✅ 后端健康: `:3000/api/health` 200** (0.003s), admin :8080 200, portal :8081 200。
+- **✅ #309 备份有效**: `backup_20260819180000..sql.gz` **104438B 非空**, `gzip -t` VALID, 共15个备份全非空。
+- **磁盘 89% (4.3G free)** 稳定。✅ | backend Up ~47h。Docker postgres/redis/kafka/opa 全 healthy。
+- Git: 工作区在 `fix/i18n-lang-switch` (ahead 2, 有 healthcheck_history.json 未提交), 与 origin 同步。open bug 4=#365-368。
