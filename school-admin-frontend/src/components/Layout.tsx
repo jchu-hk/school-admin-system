@@ -57,12 +57,12 @@ export default function Layout() {
   // Filter items based on user role
   const navItems = useMemo(
     () => allNavItems.filter(item => item.roles.includes(userRole || '')),
-    [userRole]
+    [userRole, t]
   )
 
   const financeItems = useMemo(
     () => allFinanceItems.filter(item => item.roles.includes(userRole || '')),
-    [userRole]
+    [userRole, t]
   )
 
   const canSeeFinance = financeItems.length > 0
