@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import apiClient, { isAxiosError } from '../api/client'
 import { getToken } from '../utils/tokenService'
+import { useI18n } from '../i18n'
 
 // ============ Types ============
 enum Gender {
@@ -64,73 +65,81 @@ interface PaginatedResponse<T> {
 type ClassApiResponse = { id: string; name: string; grade?: string }[]
 
 // ============ Validation Schema ============
-const createStudentSchema = z.object({
-  student_id: z.string().max(10).optional().or(z.literal('')),
-  name_zh: z.string().min(1, '中文姓名不能为空').max(100),
-  class_id: z.string().optional().or(z.literal('')),
-  name_en: z.string().max(100).optional().or(z.literal('')),
-  gender: z.string(), // Allow empty string for form, validate on submit
+const hkidRe = /^[A-Z][0-9]{6}\([0-9A]\)$/
+function buildSchemas(sp: Translations['student']) {
+  const createStudentSchema = z.object({
+    student_id: z.string().max(10).optional().or(z.literal('')),
+    name_zh: z.string().min(1, sp.nameZhRequired).max(100),
+    class_id: z.string().optional().or(z.literal('')),
+    name_en: z.string().max(100).optional().or(z.literal('')),
+    gender: z.string(), // Allow empty string for form, validate on submit
+    birth_date: z.string().min(1, sp.birthDateRequired),
+    admission_date: z.string().min(1, sp.admissionDateRequired),
+    hk_id: z.string().regex(hkidRe, sp.hkIdInvalid).optional().or(z.literal('')),
+    phone: z.string().max(20).optional().or(z.literal('')),
+    email: z.string().email(sp.emailInvalid).optional().or(z.literal('')),
+    address: z.string().max(255).optional().or(z.literal('')),
+    guardian_name: z.string().max(100).optional().or(z.literal('')),
+    guardian_phone: z.string().max(20).optional().or(z.literal('')),
+    guardian_relationship: z.string().max(50).optional().or(z.literal('')),
+    emergency_contact: z.string().max(100).optional().or(z.literal('')),
+    emergency_phone: z.string().max(20).optional().or(z.literal('')),
+    notes: z.string().optional().or(z.literal('')),
+    status: z.string().optional().or(z.literal('')),
+  })
+  const editStudentSchema = createStudentSchema
 
-  birth_date: z.string().min(1, '请选择出生日期'),
-  admission_date: z.string().min(1, '请选择入学日期'),
-  hk_id: z.string().regex(/^[A-Z][0-9]{6}\([0-9A]\)$/, '香港身份证格式不正确').optional().or(z.literal('')),
-  phone: z.string().max(20).optional().or(z.literal('')),
-  email: z.string().email('邮箱格式不正确').optional().or(z.literal('')),
-  address: z.string().max(255).optional().or(z.literal('')),
-  guardian_name: z.string().max(100).optional().or(z.literal('')),
-  guardian_phone: z.string().max(20).optional().or(z.literal('')),
-  guardian_relationship: z.string().max(50).optional().or(z.literal('')),
-  emergency_contact: z.string().max(100).optional().or(z.literal('')),
-  emergency_phone: z.string().max(20).optional().or(z.literal('')),
-  notes: z.string().optional().or(z.literal('')),
-  status: z.string().optional().or(z.literal('')),
-})
+  // Submission validation schema (enforces required fields)
+  const studentSubmissionSchema = z.object({
+    student_id: z.string().max(10).optional().or(z.literal('')),
+    name_zh: z.string().min(1, sp.nameZhRequired).max(100),
+    class_id: z.string().optional().or(z.literal('')),
+    name_en: z.string().max(100).optional().or(z.literal('')),
+    gender: z.enum([Gender.MALE, Gender.FEMALE, Gender.OTHER], {
+      required_error: sp.genderRequired,
+    }),
+    birth_date: z.string().min(1, sp.birthDateRequired),
+    admission_date: z.string().min(1, sp.admissionDateRequired),
+    hk_id: z.string().regex(hkidRe, sp.hkIdInvalid).optional().or(z.literal('')),
+    phone: z.string().max(20).optional().or(z.literal('')),
+    email: z.string().email(sp.emailInvalid).optional().or(z.literal('')),
+    address: z.string().max(255).optional().or(z.literal('')),
+    guardian_name: z.string().max(100).optional().or(z.literal('')),
+    guardian_phone: z.string().max(20).optional().or(z.literal('')),
+    guardian_relationship: z.string().max(50).optional().or(z.literal('')),
+    emergency_contact: z.string().max(100).optional().or(z.literal('')),
+    emergency_phone: z.string().max(20).optional().or(z.literal('')),
+    notes: z.string().optional().or(z.literal('')),
+    status: z.enum([StudentStatus.ACTIVE, StudentStatus.GRADUATED, StudentStatus.WITHDRAWN, StudentStatus.TRANSFERRED], {
+      required_error: sp.statusRequired,
+    }),
+  })
+  return { createStudentSchema, editStudentSchema, studentSubmissionSchema }
+}
 
-const editStudentSchema = createStudentSchema
-
-// Submission validation schema (enforces required fields)
-const studentSubmissionSchema = z.object({
-  student_id: z.string().max(10).optional().or(z.literal('')),
-  name_zh: z.string().min(1, '中文姓名不能为空').max(100),
-  class_id: z.string().optional().or(z.literal('')),
-  name_en: z.string().max(100).optional().or(z.literal('')),
-  gender: z.enum([Gender.MALE, Gender.FEMALE, Gender.OTHER], {
-    required_error: '请选择性别',
-  }),
-  birth_date: z.string().min(1, '请选择出生日期'),
-  admission_date: z.string().min(1, '请选择入学日期'),
-  hk_id: z.string().regex(/^[A-Z][0-9]{6}\([0-9A]\)$/, '香港身份证格式不正确').optional().or(z.literal('')),
-  phone: z.string().max(20).optional().or(z.literal('')),
-  email: z.string().email('邮箱格式不正确').optional().or(z.literal('')),
-  address: z.string().max(255).optional().or(z.literal('')),
-  guardian_name: z.string().max(100).optional().or(z.literal('')),
-  guardian_phone: z.string().max(20).optional().or(z.literal('')),
-  guardian_relationship: z.string().max(50).optional().or(z.literal('')),
-  emergency_contact: z.string().max(100).optional().or(z.literal('')),
-  emergency_phone: z.string().max(20).optional().or(z.literal('')),
-  notes: z.string().optional().or(z.literal('')),
-  status: z.enum([StudentStatus.ACTIVE, StudentStatus.GRADUATED, StudentStatus.WITHDRAWN, StudentStatus.TRANSFERRED], {
-    required_error: '请选择状态',
-  }),
-})
-
-type StudentFormData = z.infer<typeof createStudentSchema>
+type StudentFormData = z.infer<ReturnType<typeof buildSchemas>['createStudentSchema']>
 
 // ============ Constants ============
 const PAGE_SIZE = 20
 
-const GENDER_OPTIONS = [
-  { value: Gender.MALE, label: '男' },
-  { value: Gender.FEMALE, label: '女' },
-  { value: Gender.OTHER, label: '其他' },
-]
+type StudentSection = Translations['student']
 
-const STATUS_OPTIONS = [
-  { value: StudentStatus.ACTIVE, label: '在读', color: 'bg-green-100 text-green-800' },
-  { value: StudentStatus.GRADUATED, label: '已毕业', color: 'bg-blue-100 text-blue-800' },
-  { value: StudentStatus.WITHDRAWN, label: '已退学', color: 'bg-gray-100 text-gray-800' },
-  { value: StudentStatus.TRANSFERRED, label: '已转学', color: 'bg-yellow-100 text-yellow-800' },
-]
+function buildGenderOptions(sp: StudentSection) {
+  return [
+    { value: Gender.MALE, label: sp.male },
+    { value: Gender.FEMALE, label: sp.female },
+    { value: Gender.OTHER, label: sp.other },
+  ]
+}
+
+function buildStatusOptions(sp: StudentSection) {
+  return [
+    { value: StudentStatus.ACTIVE, label: sp.active, color: 'bg-green-100 text-green-800' },
+    { value: StudentStatus.GRADUATED, label: sp.graduated, color: 'bg-blue-100 text-blue-800' },
+    { value: StudentStatus.WITHDRAWN, label: sp.withdrawn, color: 'bg-gray-100 text-gray-800' },
+    { value: StudentStatus.TRANSFERRED, label: sp.transferred, color: 'bg-yellow-100 text-yellow-800' },
+  ]
+}
 
 const TODAY = new Date().toISOString().split('T')[0]
 
@@ -198,169 +207,177 @@ interface StudentFormProps {
   register: ReturnType<typeof useForm<StudentFormData>>['register']
   errors: ReturnType<typeof useForm<StudentFormData>>['formState']['errors']
   classes: { id: string; name: string; grade?: string }[]
+  sp: StudentSection
+  genderOptions: { value: string; label: string }[]
+  statusOptions: { value: string; label: string; color: string }[]
 }
 
-function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, isEdit, register, errors, classes }: StudentFormProps) {
+function StudentForm({ onSubmit, handleSubmit, onCancel, isSubmitting, isEdit, register, errors, classes, sp, genderOptions, statusOptions }: StudentFormProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* 基本信息 */}
       <div className="border-b pb-3 mb-3">
-        <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">基本信息</h4>
+        <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{sp.basicInfo}</h4>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <Field label="学号" error={errors.student_id}>
+        <Field label={sp.studentId} error={errors.student_id}>
           <input type="text" {...register('student_id')} data-testid="field-student_id" maxLength={10}
             readOnly={isEdit}
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${isEdit ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'border-gray-300'}`}
-            placeholder="例如：2026-0001" />
+            placeholder={sp.idPlaceholder} />
         </Field>
-        <Field label="中文姓名" required error={errors.name_zh}>
+        <Field label={sp.nameZh} required error={errors.name_zh}>
           <input type="text" {...register('name_zh')} data-testid="field-name_zh"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.name_zh ? 'border-red-500' : 'border-gray-300'}`}
-            placeholder="请输入中文姓名" />
+            placeholder={sp.nameZhPlaceholder} />
         </Field>
-        <Field label="所属班级" error={errors.class_id}>
+        <Field label={sp.className} error={errors.class_id}>
           <select {...register('class_id')} data-testid="field-class_id"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">请选择班级</option>
+            <option value="">{sp.selectClass}</option>
             {classes.map(c => <option key={c.id} value={c.id}>{c.grade ? `${c.grade} - ${c.name}` : c.name}</option>)}
           </select>
         </Field>
-        <Field label="英文姓名" error={errors.name_en}>
+        <Field label={sp.nameEn} error={errors.name_en}>
           <input type="text" {...register('name_en')} data-testid="field-name_en"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="WONG SIU MING" />
         </Field>
-        <Field label="性别" required error={errors.gender}>
+        <Field label={sp.gender} required error={errors.gender}>
           <select {...register('gender')} data-testid="field-gender"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.gender ? 'border-red-500' : 'border-gray-300'}`}>
-            <option value="">请选择</option>
-            {GENDER_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            <option value="">{sp.select}</option>
+            {genderOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </Field>
-        <Field label="出生日期" required error={errors.birth_date}>
+        <Field label={sp.birthDate} required error={errors.birth_date}>
           <input type="date" {...register('birth_date')} data-testid="field-birth_date"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.birth_date ? 'border-red-500' : 'border-gray-300'}`} />
         </Field>
-        <Field label="入学日期" required error={errors.admission_date}>
+        <Field label={sp.admissionDate} required error={errors.admission_date}>
           <input type="date" {...register('admission_date')} data-testid="field-admission_date"
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.admission_date ? 'border-red-500' : 'border-gray-300'}`} />
         </Field>
-        <Field label="状态" error={errors.status}>
+        <Field label={sp.status} error={errors.status}>
           <select {...register('status')} data-testid="field-status"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-            {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            {statusOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
         </Field>
-        <Field label="香港身份证" error={errors.hk_id}>
+        <Field label={sp.hkId} error={errors.hk_id}>
           <input type="text" {...register('hk_id')} data-testid="field-hk_id"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="例如：A123456(7)" />
+            placeholder={sp.hkIdPlaceholder} />
         </Field>
       </div>
 
       {/* 联系方式 */}
       <div className="border-b pb-3 mb-3">
-        <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">联系方式</h4>
+        <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{sp.contactInfo}</h4>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <Field label="联系电话" error={errors.phone}>
+        <Field label={sp.phone} error={errors.phone}>
           <input type="text" {...register('phone')} data-testid="field-phone"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="例如：91234567" />
         </Field>
-        <Field label="邮箱" error={errors.email}>
+        <Field label={sp.email} error={errors.email}>
           <input type="email" {...register('email')} data-testid="field-email"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="parent@example.com" />
         </Field>
         <div className="col-span-2">
-          <Field label="家庭地址" error={errors.address}>
+          <Field label={sp.address} error={errors.address}>
             <input type="text" {...register('address')} data-testid="field-address"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="请输入家庭地址" />
+              placeholder={sp.addressPlaceholder} />
           </Field>
         </div>
       </div>
 
       {/* 监护人信息 */}
       <div className="border-b pb-3 mb-3">
-        <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">监护人信息</h4>
+        <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{sp.guardianInfo}</h4>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        <Field label="监护人姓名" error={errors.guardian_name}>
+        <Field label={sp.guardianName} error={errors.guardian_name}>
           <input type="text" {...register('guardian_name')} data-testid="field-guardian_name"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="请输入监护人姓名" />
+            placeholder={sp.guardianNamePlaceholder} />
         </Field>
-        <Field label="监护人电话" error={errors.guardian_phone}>
+        <Field label={sp.guardianPhone} error={errors.guardian_phone}>
           <input type="text" {...register('guardian_phone')} data-testid="field-guardian_phone"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="例如：91234567" />
         </Field>
-        <Field label="与学生关系" error={errors.guardian_relationship}>
+        <Field label={sp.guardianRelationship} error={errors.guardian_relationship}>
           <input type="text" {...register('guardian_relationship')} data-testid="field-guardian_relationship"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="例如：父亲/母亲" />
+            placeholder={sp.guardianRelPlaceholder} />
         </Field>
       </div>
 
       {/* 紧急联系人 */}
       <div className="border-b pb-3 mb-3">
-        <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">紧急联系人</h4>
+        <h4 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{sp.emergencyContactSection}</h4>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <Field label="紧急联系人" error={errors.emergency_contact}>
+        <Field label={sp.emergencyContactName} error={errors.emergency_contact}>
           <input type="text" {...register('emergency_contact')} data-testid="field-emergency_contact"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="请输入紧急联系人姓名" />
+            placeholder={sp.emergencyContactPlaceholder} />
         </Field>
-        <Field label="紧急联系电话" error={errors.emergency_phone}>
+        <Field label={sp.emergencyPhone} error={errors.emergency_phone}>
           <input type="text" {...register('emergency_phone')} data-testid="field-emergency_phone"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             placeholder="例如：91234567" />
         </Field>
         <div className="col-span-2">
-          <Field label="备注" error={errors.notes}>
+          <Field label={sp.notes} error={errors.notes}>
             <textarea {...register('notes')} data-testid="field-notes" rows={2}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="其他备注信息（可选）" />
+              placeholder={sp.notesPlaceholder} />
           </Field>
         </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-4 border-t">
-        <button type="button" data-testid="btn-cancel" onClick={onCancel} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">取消</button>
+        <button type="button" data-testid="btn-cancel" onClick={onCancel} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">{sp.cancel}</button>
         <button type="submit" data-testid="btn_save" disabled={isSubmitting}
           className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50">
-          {isSubmitting ? '提交中...' : '保存'}
+          {isSubmitting ? sp.submitting : sp.saveLabel}
         </button>
       </div>
     </form>
   )
 }
 
-function StudentDetail({ student }: { student: Student }) {
+function StudentDetail({ student, sp, genderOptions, statusOptions }: {
+  student: Student
+  sp: StudentSection
+  genderOptions: { value: string; label: string }[]
+  statusOptions: { value: string; label: string; color: string }[]
+}) {
   const rows: [string, string, React.ReactNode][] = [
-    ['学号', student.student_id || '-', <span key="id" />],
-    ['中文姓名', student.name_zh, <span key="zh" />],
-    ['英文姓名', student.name_en || '-', <span key="en" />],
-    ['性别', GENDER_OPTIONS.find(g => g.value === student.gender)?.label || student.gender, <span key="gender" />],
-    ['出生日期', student.birth_date, <span key="bd" />],
-    ['入学日期', student.admission_date, <span key="ad" />],
-    ['香港身份证', student.hk_id || '-', <span key="hkid" />],
-    ['联系电话', student.phone || '-', <span key="phone" />],
-    ['邮箱', student.email || '-', <span key="email" />],
-    ['家庭地址', student.address || '-', <span key="addr" />],
-    ['班级', student.class_name || '-', <span key="cls" />],
-    ['监护人', `${student.guardian_name || '-'}${student.guardian_relationship ? ` (${student.guardian_relationship})` : ''}`, <span key="guard" />],
-    ['监护人电话', student.guardian_phone || '-', <span key="gphone" />],
-    ['紧急联系人', student.emergency_contact || '-', <span key="ec" />],
-    ['紧急联系电话', student.emergency_phone || '-', <span key="ephone" />],
-    ['状态', <span key="status" className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${STATUS_OPTIONS.find(o => o.value === student.status)?.color || 'bg-gray-100'}`}>{STATUS_OPTIONS.find(o => o.value === student.status)?.label || student.status}</span>, <span key="s2" />],
-    ['创建时间', new Date(student.created_at).toLocaleString('zh-CN'), <span key="c" />],
-    ['更新时间', new Date(student.updated_at).toLocaleString('zh-CN'), <span key="u" />],
+    [sp.studentId, student.student_id || '-', <span key="id" />],
+    [sp.nameZh, student.name_zh, <span key="zh" />],
+    [sp.nameEn, student.name_en || '-', <span key="en" />],
+    [sp.gender, genderOptions.find(g => g.value === student.gender)?.label || student.gender, <span key="gender" />],
+    [sp.birthDate, student.birth_date, <span key="bd" />],
+    [sp.admissionDate, student.admission_date, <span key="ad" />],
+    [sp.hkId, student.hk_id || '-', <span key="hkid" />],
+    [sp.phone, student.phone || '-', <span key="phone" />],
+    [sp.email, student.email || '-', <span key="email" />],
+    [sp.address, student.address || '-', <span key="addr" />],
+    [sp.className, student.class_name || '-', <span key="cls" />],
+    [sp.guardianName, `${student.guardian_name || '-'}${student.guardian_relationship ? ` (${student.guardian_relationship})` : ''}`, <span key="guard" />],
+    [sp.guardianPhone, student.guardian_phone || '-', <span key="gphone" />],
+    [sp.emergencyContactName, student.emergency_contact || '-', <span key="ec" />],
+    [sp.emergencyPhone, student.emergency_phone || '-', <span key="ephone" />],
+    [sp.status, <span key="status" className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${statusOptions.find(o => o.value === student.status)?.color || 'bg-gray-100'}`}>{statusOptions.find(o => o.value === student.status)?.label || student.status}</span>, <span key="s2" />],
+    [sp.createdAt, new Date(student.created_at).toLocaleString('zh-CN'), <span key="c" />],
+    [sp.updatedAt, new Date(student.updated_at).toLocaleString('zh-CN'), <span key="u" />],
   ]
   return (
     <div className="space-y-3">
@@ -374,12 +391,12 @@ function StudentDetail({ student }: { student: Student }) {
       </div>
       {student.notes && (
         <div className="pt-3 border-t">
-          <p className="text-sm text-gray-500 mb-1">备注</p>
+          <p className="text-sm text-gray-500 mb-1">{sp.notes}</p>
           <p className="text-sm text-gray-900">{student.notes}</p>
         </div>
       )}
       <div className="flex justify-end pt-3 border-t">
-        <button onClick={() => window.close()} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">关闭</button>
+        <button onClick={() => window.close()} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">{sp.close}</button>
       </div>
     </div>
   )
@@ -387,6 +404,12 @@ function StudentDetail({ student }: { student: Student }) {
 
 // ============ Main Component ============
 export default function StudentPage() {
+  const { t } = useI18n()
+  const sp = t.student
+  const { createStudentSchema, editStudentSchema, studentSubmissionSchema } = buildSchemas(sp)
+  const genderOptions = buildGenderOptions(sp)
+  const statusOptions = buildStatusOptions(sp)
+
   const [students, setStudents] = useState<Student[]>([])
   const [loading, setLoading] = useState(true)
   const [total, setTotal] = useState(0)
@@ -476,15 +499,15 @@ export default function StudentPage() {
       reset(DEFAULT_FORM_VALUES)
       setPage(1)
       await fetchStudents()
-      alert('学生创建成功！')
+      alert(sp.createSuccess)
     } catch (error) {
       if (error instanceof z.ZodError) {
-        alert(`表单验证失败: ${error.errors.map(e => e.message).join('; ')}`)
+        alert(`${sp.validationFailed}: ${error.errors.map(e => e.message).join('; ')}`)
       } else if (isAxiosError(error) && error.response?.data?.message) {
-        alert(`创建失败: ${JSON.stringify(error.response.data.message)}`)
+        alert(`${sp.createFailed}: ${JSON.stringify(error.response.data.message)}`)
       } else {
         console.error('Failed to create student:', error)
-        alert('创建失败，请检查网络或联系管理员')
+        alert(`${sp.createFailed}，${sp.netOrAdmin}`)
       }
     }
   }
@@ -501,15 +524,15 @@ export default function StudentPage() {
       setShowEditModal(false)
       reset()
       await fetchStudents()
-      alert('学生信息更新成功！')
+      alert(sp.updateSuccess)
     } catch (error) {
       if (error instanceof z.ZodError) {
-        alert(`表单验证失败: ${error.errors.map(e => e.message).join('; ')}`)
+        alert(`${sp.validationFailed}: ${error.errors.map(e => e.message).join('; ')}`)
       } else if (isAxiosError(error) && error.response?.data?.message) {
-        alert(`更新失败: ${JSON.stringify(error.response.data.message)}`)
+        alert(`${sp.updateFailed}: ${JSON.stringify(error.response.data.message)}`)
       } else {
         console.error('Failed to update student:', error)
-        alert('更新失败，请检查网络或联系管理员')
+        alert(`${sp.updateFailed}，${sp.netOrAdmin}`)
       }
     }
   }
@@ -522,13 +545,13 @@ export default function StudentPage() {
       setShowDeleteConfirm(false)
       setSelectedStudent(null)
       await fetchStudents()
-      alert('学生删除成功！')
+      alert(sp.deleteSuccess)
     } catch (error) {
       if (isAxiosError(error) && error.response?.data?.message) {
-        alert(`删除失败: ${JSON.stringify(error.response.data.message)}`)
+        alert(`${sp.deleteFailed}: ${JSON.stringify(error.response.data.message)}`)
       } else {
         console.error('Failed to delete student:', error)
-        alert('删除失败，请检查网络或联系管理员')
+        alert(`${sp.deleteFailed}，${sp.netOrAdmin}`)
       }
     }
   }
@@ -578,13 +601,13 @@ export default function StudentPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">学生管理</h2>
+        <h2 className="text-2xl font-bold text-gray-800">{sp.title}</h2>
         <button
           onClick={() => { reset(DEFAULT_FORM_VALUES); setShowCreateModal(true) }}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           data-testid="btn_new_student"
         >
-          <Plus size={20} /> 新增学生
+          <Plus size={20} /> {sp.addStudent}
         </button>
       </div>
 
@@ -596,7 +619,7 @@ export default function StudentPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
-                placeholder="搜索学号或姓名..."
+                placeholder={sp.searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => { setSearchTerm(e.target.value); setPage(1) }}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -610,7 +633,7 @@ export default function StudentPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               data-testid="filter_class"
             >
-              <option value="">全部班级</option>
+              <option value="">{sp.allClasses}</option>
               {classes.map(c => <option key={c.id} value={c.id}>{c.grade ? `${c.grade} - ${c.name}` : c.name}</option>)}
             </select>
           </div>
@@ -621,8 +644,8 @@ export default function StudentPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               data-testid="filter_status"
             >
-              <option value="">全部状态</option>
-              {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              <option value="">{sp.allStatuses}</option>
+              {statusOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </div>
         </div>
@@ -634,43 +657,43 @@ export default function StudentPage() {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">学号</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">姓名</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">性别</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">班级</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">操作</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{sp.studentId}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{sp.name}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{sp.gender}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{sp.className}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{sp.status}</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{sp.actions}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {loading ? (
-                <tr><td colSpan={6} className="px-4 py-12 text-center text-gray-500">加载中...</td></tr>
+                <tr><td colSpan={6} className="px-4 py-12 text-center text-gray-500">{sp.loading}</td></tr>
               ) : students.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-12 text-center text-gray-500">暂无数据</td></tr>
+                <tr><td colSpan={6} className="px-4 py-12 text-center text-gray-500">{sp.noData}</td></tr>
               ) : students.map((s) => (
                 <tr key={s.id} className="hover:bg-gray-50 cursor-pointer">
                   <td className="px-4 py-3 text-sm text-gray-900">{s.student_id || '-'}</td>
                   <td className="px-4 py-3 text-sm text-gray-900">{s.name_zh}</td>
                   <td className="px-4 py-3 text-sm text-gray-900">
-                    {GENDER_OPTIONS.find(g => g.value === s.gender)?.label || s.gender}
+                    {genderOptions.find(g => g.value === s.gender)?.label || s.gender}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-900">{(s as any).currentClass?.class_name || '-'}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${
-                      STATUS_OPTIONS.find(o => o.value === s.status)?.color || 'bg-gray-100'
+                      statusOptions.find(o => o.value === s.status)?.color || 'bg-gray-100'
                     }`}>
-                      {STATUS_OPTIONS.find(o => o.value === s.status)?.label || s.status}
+                      {statusOptions.find(o => o.value === s.status)?.label || s.status}
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       <button onClick={(e) => { e.stopPropagation(); openDetailModal(s) }}
-                        className="p-1.5 text-gray-500 hover:text-blue-600 rounded" title="查看"><Eye size={16} /></button>
+                        className="p-1.5 text-gray-500 hover:text-blue-600 rounded" title={sp.detail}><Eye size={16} /></button>
                       <button onClick={(e) => { e.stopPropagation(); openEditModal(s) }}
-                        className="p-1.5 text-gray-500 hover:text-green-600 rounded" title="编辑"><Edit2 size={16} /></button>
+                        className="p-1.5 text-gray-500 hover:text-green-600 rounded" title={sp.editStudent}><Edit2 size={16} /></button>
                       {canDeleteStudent(s.status) && (
                         <button onClick={(e) => { e.stopPropagation(); setSelectedStudent(s); setShowDeleteConfirm(true) }}
-                          className="p-1.5 text-gray-500 hover:text-red-600 rounded" title="删除"><Trash2 size={16} /></button>
+                          className="p-1.5 text-gray-500 hover:text-red-600 rounded" title={sp.delete}><Trash2 size={16} /></button>
                       )}
                     </div>
                   </td>
@@ -683,7 +706,10 @@ export default function StudentPage() {
         {/* Pagination */}
         <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
           <p className="text-sm text-gray-700">
-            显示第 {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} 条，共 {total} 条
+            {t.common.pagination
+              .replace('{{from}}', String((page - 1) * PAGE_SIZE + 1))
+              .replace('{{to}}', String(Math.min(page * PAGE_SIZE, total)))
+              .replace('{{total}}', String(total))}
           </p>
           <div className="flex gap-1">
             <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
@@ -709,32 +735,34 @@ export default function StudentPage() {
 
       {/* Modals */}
       {showCreateModal && (
-        <Modal title="新增学生" onClose={() => setShowCreateModal(false)}>
+        <Modal title={sp.addStudent} onClose={() => setShowCreateModal(false)}>
           <StudentForm onSubmit={handleCreate} onCancel={() => setShowCreateModal(false)}
             isSubmitting={isSubmitting} register={register} errors={errors}
-            handleSubmit={handleSubmit} classes={classes} />
+            handleSubmit={handleSubmit} classes={classes} sp={sp}
+            genderOptions={genderOptions} statusOptions={statusOptions} />
         </Modal>
       )}
       {showEditModal && selectedStudent && (
-        <Modal title="编辑学生" onClose={() => setShowEditModal(false)}>
+        <Modal title={sp.editStudent} onClose={() => setShowEditModal(false)}>
           <StudentForm onSubmit={handleUpdate} onCancel={() => setShowEditModal(false)}
             isSubmitting={isSubmitting} isEdit register={register} errors={errors}
-            handleSubmit={handleSubmit} classes={classes} />
+            handleSubmit={handleSubmit} classes={classes} sp={sp}
+            genderOptions={genderOptions} statusOptions={statusOptions} />
         </Modal>
       )}
       {showDetailModal && selectedStudent && (
-        <Modal title="学生详情" onClose={() => setShowDetailModal(false)}>
-          <StudentDetail student={selectedStudent} />
+        <Modal title={sp.detailTitle} onClose={() => setShowDetailModal(false)}>
+          <StudentDetail student={selectedStudent} sp={sp} genderOptions={genderOptions} statusOptions={statusOptions} />
         </Modal>
       )}
       {showDeleteConfirm && selectedStudent && (
-        <Modal title="删除确认" onClose={() => setShowDeleteConfirm(false)}>
+        <Modal title={sp.deleteTitle} onClose={() => setShowDeleteConfirm(false)}>
           <div className="space-y-4">
-            <p className="text-gray-700">确定要删除学生 <span className="font-semibold">{selectedStudent.name_zh}</span> 吗？</p>
-            <p className="text-sm text-gray-500">此操作将软删除该学生档案。</p>
+            <p className="text-gray-700">{sp.deleteConfirm} <span className="font-semibold">{selectedStudent.name_zh}</span> {sp.confirm}？</p>
+            <p className="text-sm text-gray-500">{sp.softDeleteHint}</p>
             <div className="flex justify-end gap-3 pt-4 border-t">
-              <button onClick={() => setShowDeleteConfirm(false)} data-testid="btn-cancel" className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">取消</button>
-              <button onClick={handleDelete} data-testid="btn-confirm-delete" className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700">确认删除</button>
+              <button onClick={() => setShowDeleteConfirm(false)} data-testid="btn-cancel" className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">{sp.cancel}</button>
+              <button onClick={handleDelete} data-testid="btn-confirm-delete" className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700">{sp.confirmDelete}</button>
             </div>
           </div>
         </Modal>

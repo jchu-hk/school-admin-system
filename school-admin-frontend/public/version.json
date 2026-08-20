@@ -1,20 +1,32 @@
 {
   "version": "v1.6.1",
-  "buildDate": "2026-08-18",
-  "gitCommit": "e7db19a",
-  "gitBranch": "main",
+  "buildDate": "2026-08-20",
+  "gitCommit": "ba2ee60",
+  "gitBranch": "fix/i18n-language-switch-367-368-366",
   "changelog": [
+    {
+      "version": "build-2026-08-19",
+      "date": "2026-08-19",
+      "changes": [
+        "chore(dashboard): heartbeat round 142 — zero change vs round 141 (system healthy, /api/health 200, disk 89%, backup valid), i18n P1 #367/#368 round 8 no-dispatch, #365 no PR, 0 open PR",
+        "chore(dashboard): heartbeat round 142 — zero change vs round 141 (system healthy, /api/health 200, disk 89%, backup valid), i18n P1 #367/#368 round 8 no-dispatch, #365 no PR, 0 open PR",
+        "chore(dashboard): heartbeat round 141 — zero change vs round 140 (system healthy, /api/health 200, disk 89%, backup valid), i18n P1 #367/#368 round 7 no-dispatch, #365 no PR, 0 open PR",
+        "chore(dashboard): heartbeat round 140 — zero change vs round 138 (system healthy, /api/health 200, disk 89%, backup valid), i18n P1 #367/#368 round 6 no-dispatch, #365 no PR",
+        "chore(dashboard): heartbeat round 139 — system healthy (all containers up, /api/health 200 @:8080, 13 containers up, load 0.37, disk 89%), i18n P1 #367/#368 no PR, #365 no PR",
+        "chore(dashboard): heartbeat round 139 — system healthy (all containers up, /api/health 200 @:8080), i18n P1 #367/#368 still no PR, #365 no PR",
+        "chore(dashboard): heartbeat round 138 — P1 i18n pending 5 rounds, #365 no PR, /api/health recovered 200",
+        "chore(dashboard): heartbeat round 137 — P1 i18n pending 4 rounds, #365 no PR, /health endpoint note",
+        "chore(dashboard): heartbeat round 136 — P1 i18n pending 3 rounds, #365 branch no PR",
+        "chore(dashboard): heartbeat round 135 — P1 i18n pending 2 rounds, #365 branch no PR",
+        "chore(dashboard): heartbeat round 134 — P1 i18n pending dispatch, #365 fix branch ready"
+      ]
+    },
     {
       "version": "build-2026-08-18",
       "date": "2026-08-18",
       "changes": [
         "#365 remove Agents menu item",
-        "fix(admin): #365 remove Agents menu item (AI-team internal tool)",
-        "sync Coze proxy access URLs + grafana creds (admin/admin123) + portal deployed state",
-        "fix(admin): #262 白屏 — vite base=/school-admin/ 使资源路径与 basename 一致",
-        "Merge fix/leave-backend-3bugs-p0: 修复请假审计枚举/日期序列化/教职工可见性 3个P0 (#262)",
-        "Merge fix/portal-basename-262: portal-app 独立构建 basename=/ 修复白屏 (#262)",
-        "fix(portal/leave): 修复电子请假后端 3 个 P0 阻断 bug"
+        "fix(admin): #365 remove Agents menu item (AI-team internal tool)"
       ]
     }
   ]

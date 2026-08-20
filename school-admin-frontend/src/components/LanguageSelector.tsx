@@ -33,7 +33,7 @@ export default function LanguageSelector() {
       </button>
       
       {open && (
-        <div className="absolute left-0 top-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl py-2 z-[9999] min-w-[180px] animate-in fade-in slide-in-from-top-2">
+        <div className="absolute left-0 bottom-full mb-2 bg-white border border-gray-200 rounded-xl shadow-xl py-2 z-[9999] min-w-[180px] animate-in fade-in">
           <div className="px-3 py-2 text-xs text-gray-500 border-b border-gray-100">
             选择语言 / Select Language
           </div>
