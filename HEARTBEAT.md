@@ -1,5 +1,19 @@
 ---
 
+# 18:04 — Heartbeat (Thu) 🟠 第152轮 与151一致: PR#369 仍被既有CI失败阻塞
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟠 (PR#369 merge 被既有 CI 失败阻塞)
+- **零变化 vs 第151轮**: 状态完全一致。
+- **🟠 PR #369 (i18n fix) 仍 UNSTABLE** — mergeStateStatus=UNSTABLE。lint fail(`@typescript-eslint/no-unused-vars` 已知既有 backlog) + Backend Service `pnpm not found`(CI infra, 均与本次纯前端改动无关)。base=main CI 同样 failure → 仓库级既有问题。
+- **🟣 PR #369 OPEN** 覆盖 #367/#368/#366, head=`fix/i18n-lang-switch` (工作区在分支, ahead 3)。**1 open PR**。
+- **🟡 待办**: #365 [ready-for-review] OPEN 无 PR。open bug 4=#365-368(全前端/i18n)。
+- **✅ 后端健康**: `:3000/api/health` 200 (0.004s), admin :8080 200, portal :8081 200。
+- **✅ #309 备份有效**: `backup_20260819180000..sql.gz` **104438B 非空**(较上轮104264B递增), `gzip -t` VALID, 共15个备份全非空。
+- **磁盘 89% (4.3G free)** 稳定。✅ | Docker postgres/redis/kafka/opa 全 healthy。
+- Git: 工作区在 `fix/i18n-lang-switch` (ahead 3), 上轮 heartbeat commit `9e2bb8c`。open bug 4=#365-368。
+
+---
+
 # 17:04 — Heartbeat (Thu) 🟠 第151轮 与150一致: PR#369 仍被既有CI失败阻塞
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟠 (PR#369 merge 被既有 CI 失败阻塞)
