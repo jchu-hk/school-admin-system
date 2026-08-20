@@ -1,5 +1,21 @@
 ---
 
+# 15:04 — Heartbeat (Thu) 🟠 第150轮 关键发现: PR#369 被2个既有CI失败阻塞
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟠 (PR#369 merge 被既有 CI 失败阻塞)
+- **🟠 关键发现: PR #369 (i18n fix) mergeStateStatus=UNSTABLE, 2 checks FAIL** —
+  - **lint fail**: apps/backend 大量 `@typescript-eslint/no-unused-vars` (unused imports: Logger/ScheduleModule/Param/ScanQrDto 等) — **已知既有 backlog**(07/15、07/31、08/05 均已记录为 known pre-existing, non-blocking前的同一批 debt), 因 monorepo `pnpm -r lint` 全库扫描而阻塞 PR。
+  - **Backend Service fail**: `Unable to locate executable file: pnpm` (CI 环境缺 pnpm) — 既有 infra 问题。
+  - **PR #369 diff 仅含前端文件**, 上述失败均与本次前端改动无关。base=main 的 CI/CD Pipeline & Deploy Test Environment 近期同样 failure → 仓库级既有问题。
+- **🟣 进展延续**: #367/#368 [P1] i18n 修复 commit `8c95510` 在 `fix/i18n-lang-switch`, PR #369 OPEN 覆盖 #367/#368/#366 (+775/-276)。改动本身正确, 待 merge 但被 CI 门阻塞。
+- **🟡 待办**: #365 [ready-for-review] 仍 OPEN 无 PR。#354/353/352/351/350…(M3/M4 enhancement) OPEN 未排期。**1 open PR (#369)**。
+- **✅ 后端健康: `:3000/api/health` 200** (0.017s), admin :8080 200, portal :8081 200。
+- **✅ #309 备份有效**: `backup_20260819180000..sql.gz` **104438B 非空**, `gzip -t` VALID, 共15个备份全非空。
+- **磁盘 89% (4.3G free)** 稳定。✅ | backend Up ~46h (load 正常)。Docker postgres/redis/kafka/opa 全 healthy。
+- Git: 工作区在 `fix/i18n-lang-switch` (ahead 1), 与 origin 同步。open bug 4=#365-368。
+
+---
+
 # 14:04 — Heartbeat (Thu) 🟣 第149轮 有进展 vs 148
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡→🟣 (首个P1 i18n修复PR已开)
