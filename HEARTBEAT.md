@@ -1,5 +1,17 @@
 ---
 
+# 14:04 — Heartbeat (Thu) 🟣 第149轮 有进展 vs 148
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡→🟣 (首个P1 i18n修复PR已开)
+- **🟣 重要进展: #367/#368 [P1] 终结连续12轮 unassigned 僵局** — 修复 commit `8c95510 fix(i18n): re-render sidebar nav on locale switch (#367, #368)` 落在 `fix/i18n-lang-switch` 分支, **PR #369 OPEN** 覆盖 #367 #368 #366。待 merge。
+- **🟡 待办: #365 [P2→ready-for-review] 仍 OPEN 无 PR**;#366 已由 PR#369 覆盖。#354/353/352/351/350…(M3/M4 enhancement) 仍 OPEN 未排期。**1 open PR (#369)**。
+- **✅ 后端健康: `:3000/api/health` 200** (0.005s), admin :8080 200, portal :8081 200。
+- **#309 备份有效**: `/var/backups/school_admin/backup_20260819180000..sql.gz` **104438B 非空**, `gzip -t` VALID, 共15个备份全非空。✅
+- **磁盘 89% (4.3G free)** 稳定。✅ | backend Up ~45h。Docker postgres/redis/kafka/opa 全 healthy。
+- Git: 工作区在 `fix/i18n-lang-switch` 分支, 与 origin 同步 (behind 0)。open bug 4=#365-368(全前端/i18n)。
+
+---
+
 # 12:04 — Heartbeat (Thu) 🟡 第148轮 零变化 vs 147
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续12轮仍未派发)
