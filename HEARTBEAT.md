@@ -1,5 +1,16 @@
 ---
 
+# 12:04 — Heartbeat (Thu) 🟡 第148轮 零变化 vs 147
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续12轮仍未派发)
+- **零变化 vs 第147轮**: 状态完全一致。
+- **🟡 待办: #367/#368 [P1] i18n 仍 OPEN 且 unassigned**(连续第12轮未派发,仍受限)。#366 [P2] 同 open unassigned。#365 同 open 无 PR。**0 open PR**。
+- **✅ 后端健康: `:3000/api/health` 200** `{"status":"ok"}` (0.001s), admin :8080 /api/health 200。portal :8081 200。*(注: 此前轮次检查的 localhost:80 /api/health 现无监听返回 refused,真实后端在 :3000/:8080 绿色,无异常)*
+- **#309 备份持续有效**: `backup_20260819180000..sql.gz` **104438B 非空**, `gzip -t` VALID, 共15个备份, 连续12天非空。✅
+- **磁盘 89% (4.3G free)** 稳定。✅ | backend Up ~43h。Docker postgres/redis/kafka/opa 全 healthy。
+- Git: main `d7d5b1e`(上轮 heartbeat commit), 与 origin 同步。open bug 4=#365-368(全部前端/i18n)。
+---
+
 # 11:04 — Heartbeat (Thu) 🟡 第147轮 零变化 vs 146
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘89% 稳定) / 🟡 (2个P1前端bug连续11轮仍未派发)
