@@ -5,10 +5,10 @@ import { en } from './locales/en'
 
 export type Locale = 'zh-CN' | 'zh-TW' | 'en'
 
-export const LOCALES: { value: Locale; label: string; flag: string }[] = [
-  { value: 'zh-CN', label: '简体中文', flag: '🇨🇳' },
-  { value: 'zh-TW', label: '繁體中文', flag: '🇹🇼' },
-  { value: 'en', label: 'English', flag: '🇺🇸' },
+export const LOCALES: { value: Locale; label: string; name: string; flag: string }[] = [
+  { value: 'zh-CN', label: '简体中文', name: 'Simplified Chinese', flag: '🇨🇳' },
+  { value: 'zh-TW', label: '繁體中文', name: 'Traditional Chinese', flag: '🇹🇼' },
+  { value: 'en', label: 'English', name: 'English', flag: '🇺🇸' },
 ]
 
 type Translations = typeof zhCN
