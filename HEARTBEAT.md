@@ -1,5 +1,17 @@
 ---
 
+# 13:04 — Heartbeat (Thu) 🟡 第150轮 ⚠️ PR#369 出现但 CONFLICTING
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘88% 稳定) / 🟡 (2个P1前端bug连续14轮未派发) / ⚠️ (PR#369 i18n 修复 CONFLICTING 未合入)
+- **变化 vs 149**: 出现 **open PR #369** `fix/i18n-lang-switch`（修 #367/#368/#366，32 commits，updated 2026-08-23 01:01 ），但 **mergeable=CONFLICTING**（上轮 0 open PR）。需解决冲突后合入。
+- **🟡 待办**: #367/#368 [P1] i18n 仍 open unassigned（连续14轮未派发）。#366 [P2] 同。#365 同 open 无合入。open PR 1 = #369 (CONFLICTING)。
+- **✅ 后端健康**: `:3000/api/health` 200 (0.007s)，admin :8080 200，portal :8081 200。
+- **#309 备份有效**: 18 个备份，最新 `backup_20260822180000..sql.gz` 104764B 非空，`gzip -t` VALID，连续14天非空。✅
+- **磁盘 88% (4.8G free)** 稳定。✅ | backend Up ~41h。Docker 13容器全Up(postgres/redis/kafka/opa healthy)。
+- Git: main `b784f15`(本轮 heartbeat commit)，与 origin 同步。open bug 4=#365-368(全前端/i18n)。
+
+---
+
 # 11:04 — Heartbeat (Thu) 🟡 第149轮 零变化 vs 148
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘88% 稳定) / 🟡 (2个P1前端bug连续13轮仍未派发)
