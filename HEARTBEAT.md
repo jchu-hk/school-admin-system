@@ -1180,3 +1180,25 @@
 - **#309 备份持续有效**: `backup_20260818180000..sql.gz` 104264B 非空, `gzip -t` VALID, 共14个备份(+新版101808B),非空递增。✅
 - **磁盘 89% (4.4G free)** 稳定。✅ | Docker 13容器全 Up(postgres/redis/kafka/opa healthy)。backend Up ~28h。
 - Git: main = origin = `cd4fd52`,与远端同步。open bug 4=#365-368(全部前端/i18n)。
+--- 16:04 — Heartbeat (Sunday) 🟡 第190轮 零变化 vs 189 (PR#369 仍 CONFLICTING)
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 CONFLICTING未合入)
+- **零变化 vs 第189轮**: 状态完全一致。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 **mergeable=CONFLICTING**, 未合入。open PR 计数 = 1。需人工解决冲突后合入。
+- **🟡 待办**: #367/#368 [P1] i18n 仍 open unassigned。 #366 [P2] 同。 #365 [ready-for-review] 同 open 无 PR。
+- **✅ 后端健康**: `:3000/api/health` 200 (0.0042s), admin :8080 200, portal :8081 200。
+- **#309 备份有效**: 18 个备份, 最新 `backup_20260822180000..sql.gz` 104764B 非空, `gzip -t` VALID。✅
+- **磁盘 88% (4.8G free)** 稳定。✅ | Docker 13 容器 Up。Git HEAD `9e182b8` 与 origin 同步。open bug 4=#365-368(全前端/i18n)。
+
+
+---
+
+# 17:04 — Heartbeat (Sun) 🟡 第190轮 零变化 vs 189 (PR#369 仍 CONFLICTING)
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 CONFLICTING未合入)
+- **零变化 vs 第189轮**: 状态完全一致。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368)仍 **mergeable=CONFLICTING**, 未合入。open PR 计数 = 1。需人工解决冲突后合入。HEAD `9e182b8`.
+- **🟡 待办**: #367/#368 [P1] i18n 仍 open unassigned。 #366 [P2] 同。 #365 [ready-for-review] 同 open。 open bug = 4 (#365-368, 全前端/i18n)。
+- **✅ 后端健康**: `:3000/api/health` 200 (0.0018s), admin :8080 200, portal :8081 200。
+- **#309 备份有效**: 18 个备份, 最新 `backup_20260822180000..sql.gz` 104764B 非空, `gzip -t` VALID。✅
+- **磁盘 88% (4.8G free)** 稳定。✅ | Docker 13 容器 Up, postgres/redis/kafka/opa healthy。main 与 origin 同步(0 ahead/behind)。
