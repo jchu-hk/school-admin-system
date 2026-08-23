@@ -1,5 +1,17 @@
 ---
 
+# 15:04 — Heartbeat (Sun) 🟡 第189轮 零变化 vs 188 (PR#369 仍 CONFLICTING)
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 CONFLICTING未合入)
+- **零变化 vs 第188轮**: 状态完全一致。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368)仍 **mergeable=CONFLICTING/DIRTY**, 未合入。open PR 计数 = 1。需人工解决冲突后合入。
+- **🟡 待办**: #367/#368 [P1] i18n 仍 open unassigned。 #366 [P2] 同。 #365 [ready-for-review] 同 open 无 PR。
+- **✅ 后端健康**: `:3000/api/health` 200 (0.0039s), admin :8080 200, portal :8081 200。
+- **#309 备份有效**: 18 个备份, 最新 `backup_20260822180000..sql.gz` 104764B 非空, `gzip -t` VALID。✅
+- **磁盘 88% (4.8G free)** 稳定。✅ | Docker 13 容器 Up。Git HEAD `e9114e3` 与 origin 同步。open bug 4=#365-368(全前端/i18n)。
+
+---
+
 # 14:04 — Heartbeat (Sat) 🟡 第151轮 零变化 vs 150 (PR#369 仍 CONFLICTING)
 
 ### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘88% 稳定) / 🟡 (2个P1前端bug连续15轮未派发) / ⚠️ (PR#369 CONFLICTING未合入)
