@@ -1,3 +1,16 @@
+# 21:00 — Heartbeat (Mon) 🟢 第210轮 零变化 vs 209
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第209轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.006s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy)。
+- **磁盘 88% (4.7G free)** 稳定。✅
+- **#309 备份有效**: 最新 `/var/backups/school_admin/backup_20260823180000..sql.gz` 104852B 非空, `gzip -t` VALID, 连续非空递增, 共 19 个备份。✅
+- **⚠️ PR #369** `fix/i18n-lang-switch` (修 #366/#367/#368) 仍 OPEN, mergeable=CONFLICTING / mergeStateStatus=DIRTY (API 重算噪声, 与既往一致), 未合入。open PR=1。需人工解决冲突后合入。
+- **🟡 待办**: #367/#368 [P1] i18n 仍 open unassigned。 #366 [P2] 同。 #365 [ready-for-review] open 无 PR。open bug 4=#365-368 (全前端/i18n)。
+
+---
+---
+
 # 20:04 — Heartbeat (Mon) 🟢 第209轮 零变化 vs 208
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
