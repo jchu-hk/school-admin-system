@@ -1,5 +1,18 @@
 ---
 
+# 09:00 — Heartbeat (Mon) 🟢 第197轮 零变化 vs 196
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第196轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.004s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy)。Git HEAD `4a026e0` 与 origin/main 同步, 本地 clean。
+- **磁盘 88% (4.7G free)** 稳定。✅
+- **GitHub**: 30+ open issues (含 roadmap M1-M4 enhancements), 无新 P0/P1 活动。近轮无实质变化。✅
+- **⚠️ PR #369** `fix/i18n-lang-switch` (修 #366/#367/#368) 仍 OPEN, mergeable=UNKNOWN (与上轮一致, API 噪声非实质变更), 未合入。open PR=1。需人工解决冲突后合入。
+- **#309 备份有效**: 最新 `backup_20260823180000..sql.gz` 104852B 非空, `gzip -t` VALID, 连续非空递增。✅
+- **🟡 待办**: #367/#368 [P1] i18n 仍 open unassigned。 #366 [P2] 同。 #365 [ready-for-review] open 无 PR。
+
+---
+
 # 09:00 — Heartbeat (Mon) 🟢 第196轮 零变化 vs 195
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
