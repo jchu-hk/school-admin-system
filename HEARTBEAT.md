@@ -1,5 +1,18 @@
 ---
 
+# 09:04 — Heartbeat (Mon) 🟢 第198轮 零变化 vs 197
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第197轮**: 状态实质完全一致(仅 PR mergeable 状态从 UNKNOWN→CONFLICTING 抖动, 与既往一致的 API 重算噪声)。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.041s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy)。Git HEAD `8ffa07d`(即 197 轮 heartbeat 记录) 与 origin/main 同步, 本地 clean (仅 HEARTBEAT.md 待提交)。
+- **磁盘 88% (4.7G free)** 稳定。✅
+- **GitHub**: 30+ open issues (含 roadmap M1-M4 enhancements), P0=30/P1=15(标签视角, 同既往)。无新 P0/P1 实质活动。✅
+- **⚠️ PR #369** `fix/i18n-lang-switch` (修 #366/#367/#368) 仍 OPEN, mergeable=CONFLICTING / mergeStateStatus=DIRTY (上轮 UNKNOWN, 复位确认噪声), 未合入。open PR=1。需人工解决冲突后合入。
+- **#309 备份有效**: 最新 `backup_20260823180000..sql.gz` 104852B 非空 (8/24 02:00 生成), `gzip -t` VALID, 共 19 个非空备份。✅
+- **🟡 待办**: #367/#368 [P1] i18n 仍 open unassigned。 #366 [P2] 同。 #365 [ready-for-review] open 无 PR。open bug 4=#365-368 (全前端/i18n)。
+
+---
+
 # 09:00 — Heartbeat (Mon) 🟢 第197轮 零变化 vs 196
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
@@ -1304,3 +1317,16 @@
 - **✅ 后端健康**: `:3000/api/health` 200 (0.0018s), admin :8080 200, portal :8081 200。
 - **#309 备份有效**: 18 个备份, 最新 `backup_20260822180000..sql.gz` 104764B 非空, `gzip -t` VALID。✅
 - **磁盘 88% (4.8G free)** 稳定。✅ | Docker 13 容器 Up, postgres/redis/kafka/opa healthy。main 与 origin 同步(0 ahead/behind)。
+
+---
+
+# 09:01 — Heartbeat (Mon) 🟢 第198轮 零变化 vs 197
+
+### System Status 🟢 (内网正常,备份有效) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第197轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.002s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy)。Git HEAD `8ffa07d` 与 origin/main 同步, 本地 clean。
+- **磁盘 88% (4.7G free)** 稳定。✅
+- **GitHub**: 30+ open issues (含 roadmap M1-M4 enhancements), 无新 P0/P1 活动。近轮无实质变化。✅
+- **⚠️ PR #369** `fix/i18n-lang-switch` (修 #366/#367/#368) 仍 OPEN, mergeable=UNKNOWN (与上轮一致, API 噪声非实质变更), 未合入。open PR=1。需人工解决冲突后合入。
+- **#309 备份有效**: 最新 `backup_20260823180000..sql.gz` 104852B 非空, `gzip -t` VALID, 连续非空递增。✅ (备份位于 /var/backups/school_admin/)
+- **🟡 待办**: #367/#368 [P1] i18n 仍 open unassigned。 #366 [P2] 同。 #365 [ready-for-review] open 无 PR。
