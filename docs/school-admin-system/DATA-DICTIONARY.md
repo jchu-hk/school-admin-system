@@ -1406,6 +1406,7 @@
 | status | ENUM | | NOT NULL | exam_paper_status_enum |
 | destroy_approved_at | TIMESTAMPTZ | | | 审批销毁时间 |
 | destroy_approved_by | UUID | | FK→users | 审批人 |
+| retention_until | DATE | | | 保存期限（归档时设置保留至日期）|
 | remark | TEXT | | | |
 | created_by | UUID | | FK→users | |
 | created_at | TIMESTAMPTZ | | NOT NULL | |

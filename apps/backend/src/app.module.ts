@@ -16,6 +16,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PermissionModule } from './modules/permission/permission.module';
 import { RoleModule } from './modules/role/role.module';
 import { PermissionApprovalModule } from './modules/permission-approval/permission-approval.module';
+import { WitnessModule } from './modules/witness/witness.module';
+import { ComplianceModule } from './modules/compliance/compliance.module';
 import { CourseModule } from './modules/course/course.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { TuitionModule } from './modules/tuition/tuition.module';
@@ -34,11 +36,15 @@ import { AssetModule } from './modules/asset/asset.module';
 import { SchoolInfoModule } from './modules/school-info/school-info.module';
 import { AddressBookModule } from './modules/address-book/address-book.module';
 import { ExamModule } from './modules/exam/exam.module';
+import { SpecialArrangementModule } from './modules/exam/special-arrangement.module';
+import { PaperManagementModule } from './modules/exam/paper-management.module';
 import { BudgetModule } from './modules/budget/budget.module';
 import { RecruitmentModule } from './modules/recruitment/recruitment.module';
+import { AdmissionsModule } from './modules/admissions/admissions.module';
 import { StudentModule } from './modules/student/student.module';
 import { PortalModule } from './modules/portal/portal.module';
 import { PortalModule as LegacyPortalModule } from './portal/portal.module';
+import { PettyCashModule } from './modules/petty-cash/petty-cash.module';
 
 @Module({
   imports: [
@@ -74,6 +80,8 @@ import { PortalModule as LegacyPortalModule } from './portal/portal.module';
     PermissionModule,
     RoleModule,
     PermissionApprovalModule,
+    WitnessModule,
+    ComplianceModule,
     CourseModule,
     SettingsModule,
     TuitionModule,
@@ -92,11 +100,15 @@ import { PortalModule as LegacyPortalModule } from './portal/portal.module';
     SchoolInfoModule,
     AddressBookModule,
     ExamModule,
+    SpecialArrangementModule,
+    PaperManagementModule,
     BudgetModule,
     RecruitmentModule,
+    AdmissionsModule,
     StudentModule,
     LegacyPortalModule,
     PortalModule,
+    PettyCashModule,
   ],
   controllers: [],
   providers: [],

@@ -1780,12 +1780,15 @@
 |------|------|------|
 | POST | /api/exam/special-arrangements | 申请特别考试安排 |
 | GET | /api/exam/special-arrangements | 安排单列表 |
-| GET | /api/exam/special-arrangements/:id | 安排详情 |
-| PUT | /api/exam/special-arrangements/:id | 修改（DRAFT/PENDING）|
-| POST | /api/exam/special-arrangements/:id/submit | 提交审批 |
-| POST | /api/exam/special-arrangements/:id/approve | 审批通过（学校级）|
-| POST | /api/exam/special-arrangements/:id/reject | 拒绝 |
-| POST | /api/exam/special-arrangements/:id/complete | 标记完成 |
+| GET | /api/exam/special-arrangements/:id | 安排详情（含审批记录）|
+| PUT | /api/exam/special-arrangements/:id | 修改（DRAFT/PENDING/REJECTED）|
+| POST | /api/exam/special-arrangements/:id/submit | 提交审批（DRAFT/REJECTED -> PENDING_APPROVAL）|
+| POST | /api/exam/special-arrangements/:id/approve | 审批通过（学校级 + HKEAA 多级）|
+| POST | /api/exam/special-arrangements/:id/reject | 拒绝（-> REJECTED）|
+| POST | /api/exam/special-arrangements/:id/activate | 标记当日使用中（APPROVED -> ACTIVE）|
+| POST | /api/exam/special-arrangements/:id/complete | 标记完成（APPROVED/ACTIVE -> COMPLETED）|
+| POST | /api/exam/special-arrangements/:id/cancel | 取消（DRAFT/PENDING_APPROVAL -> CANCELLED）|
+| DELETE | /api/exam/special-arrangements/:id | 删除（仅 DRAFT）|
 
 #### POST /api/exam/special-arrangements
 **请求体：** `{ studentId, examId?, subject, paperName?, examDate?, senType?, senSeverity?, arrangements:[{type,description,durationExtension?,room?,invigilatorAssigned?}], hkeaaApproved? }`

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DseController } from './dse.controller';
 import { DseService } from './dse.service';
+import { DseEnrollmentModule } from './enrollment/dse-enrollment.module';
 import { DseRelease } from './entities/dse-release.entity';
 import { DseResult } from './entities/dse-result.entity';
 import { DseReview } from './entities/dse-review.entity';
@@ -10,6 +11,7 @@ import { User } from '../user/user.entity';
 
 @Module({
   imports: [
+    DseEnrollmentModule,
     TypeOrmModule.forFeature([
       DseRelease,
       DseResult,

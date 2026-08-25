@@ -2106,6 +2106,7 @@ sync_task_retried, sync_task_conflict, sync_conflict_resolved, sync_data_pushed
 | status | ENUM | NOT NULL | exam_paper_status_enum |
 | destroy_approved_at | TIMESTAMPTZ | | 审批销毁时间 |
 | destroy_approved_by | UUID | FK→users | 审批人 |
+| retention_until | DATE | | 保存期限（归档设置保留至日期，F-EXAM-002f）|
 | remark | TEXT | | |
 | created_by | UUID | FK→users | |
 | created_at | TIMESTAMPTZ | NOT NULL | |

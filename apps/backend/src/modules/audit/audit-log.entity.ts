@@ -54,6 +54,42 @@ export enum AuditAction {
   PERMISSION_APPROVAL_REQUEST_APPROVED = 'permission_approval_request_approved',
   PERMISSION_APPROVAL_REQUEST_REJECTED = 'permission_approval_request_rejected',
   PERMISSION_APPROVAL_REQUEST_CANCELLED = 'permission_approval_request_cancelled',
+  // 双人见证模块（F-COMP-002）
+  WITNESS_TRIGGERED = 'witness_triggered',
+  WITNESS_APPROVED_STEP = 'witness_approved_step',
+  WITNESS_REJECTED = 'witness_rejected',
+  WITNESS_COMPLETED = 'witness_completed',
+  WITNESS_ESCALATED = 'witness_escalated',
+  WITNESS_CANCELLED = 'witness_cancelled',
+  WITNESS_2FA_FAILED = 'witness_2fa_failed',
+  // 合规模块 F-COMP-001（跨域 PDPO）
+  COMPLIANCE_CHECK_ALLOWED = 'compliance_check_allowed',
+  COMPLIANCE_CHECK_DENIED = 'compliance_check_denied',
+  DAR_SUBMITTED = 'dar_submitted',
+  DAR_REVIEWED = 'dar_reviewed',
+  DAR_APPROVED = 'dar_approved',
+  DAR_REJECTED = 'dar_rejected',
+  DAR_COMPLETED = 'dar_completed',
+  DAR_WITHDRAWN = 'dar_withdrawn',
+  CONSENT_GRANTED = 'consent_granted',
+  CONSENT_REVOKED = 'consent_revoked',
+  CONSENT_EXPIRED = 'consent_expired',
+  // 收生管理 - SSPA 中一自行分配（F-ADM-001）
+  SSPA_BATCH_CREATED = 'sspa_batch_created',
+  SSPA_APPLICATION_CREATED = 'sspa_application_created',
+  SSPA_APPLICATION_UPDATED = 'sspa_application_updated',
+  SSPA_SCORE_ADDED = 'sspa_score_added',
+  SSPA_RESULT_ANNOUNCED = 'sspa_result_announced',
+  SSPA_OFFER_CONFIRMED = 'sspa_offer_confirmed',
+  // 收生管理 - JUPAS 大学联招（F-ADM-002）
+  JUPAS_APP_CREATED = 'jupas_app_created',
+  JUPAS_APP_UPDATED = 'jupas_app_updated',
+  JUPAS_CHOICE_UPDATED = 'jupas_choice_updated',
+  JUPAS_LETTER_CREATED = 'jupas_letter_created',
+  JUPAS_LETTER_UPDATED = 'jupas_letter_updated',
+  JUPAS_LETTER_SUBMITTED = 'jupas_letter_submitted',
+  JUPAS_APPEAL_FILED = 'jupas_appeal_filed',
+  JUPAS_APPEAL_RESOLVED = 'jupas_appeal_resolved',
 }
 
 @Entity('audit_logs')
