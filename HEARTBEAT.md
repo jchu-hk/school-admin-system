@@ -1,3 +1,26 @@
+# 15:04 — Heartbeat (Thu) 🟢 第247轮 零变化 vs 246
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第246轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200, admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy)。磁盘 88% (4.6G free) 稳定。
+- **Git**: HEAD `98fecf7`(246 轮 heartbeat commit) 与 origin/main 同步 (0 behind/0 ahead), 本地仅 HEARTBEAT.md + memory 修改。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 OPEN, mergeable=CONFLICTING(API 重算噪声, 与既往一致), 未合入。open PR=1。
+- **#309 备份有效**: 最新 `backup_20260826180000..sql.gz` 105187B 非空 (8/27 02:00 生成), 备份数 22。✅
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned (8/18 后无活动)。M1-M4 enhancement 为 roadmap backlog, 未达启动条件。
+- **无新 P0/P1, 无新可启动任务, spawn 无必要。本轮零变化, 无需播报。** 记录至 memory。
+
+---
+
+# 14:00 — PM Patrol (Thu) 🟢 第246轮 零变化 vs 245
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第245轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health ok, admin :8080 200, portal :8081 200。
+- **Git**: HEAD 与 origin/main 同步。**PR #369** `fix/i18n-lang-switch`(#366/367/368) 仍 OPEN, mergeable=UNKNOWN, 未合入。
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned (8/18 后无活动)。M1-M4 enhancement 为 roadmap backlog, 未达启动条件。
+- **无新 P0/P1, 无新可启动任务, spawn 无必要。本轮零变化, 无需播报。** 记录至 memory。
+
+---
 
 # 13:04 — Heartbeat (Thu) 🟢 第245轮 零变化 vs 244
 
