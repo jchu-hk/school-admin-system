@@ -1,3 +1,100 @@
+
+# 13:04 — Heartbeat (Thu) 🟢 第245轮 零变化 vs 244
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第244轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.002s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up。磁盘 88% (4.6G free) 稳定。
+- **Git**: HEAD `6f5ae7f` 与 origin/main 同步 (0 behind/0 ahead)。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 OPEN, 未合入。open PR=1。
+- **#309 备份有效**: 最新 `backup_20260826180000..sql.gz` 105187B 非空, `gzip -t` VALID, 备份数 22。✅
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned。open bug = 4。
+- **本轮零变化, 无需播报。**
+
+---
+# 12:04 — Heartbeat (Thu) 🟢 第244轮 零变化 vs 243
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第243轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.004s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy)。磁盘 88% (4.6G free) 稳定。
+- **Git**: HEAD `6f5ae7f` 与 origin/main 同步 (0 behind/0 ahead), 本地仅 HEARTBEAT.md + memory 修改。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 OPEN, mergeable=CONFLICTING(API 重算噪声, 与既往一致), 未合入。open PR=1。
+- **#309 备份有效**: 最新 `backup_20260826180000..sql.gz` 105187B 非空 (8/27 02:00 生成), `gzip -t` VALID, 备份数 22。✅
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned (最近活动 8/18)。open bug = 4。
+- **本轮零变化, 无需播报。**
+
+---
+# 11:04 — Heartbeat (Thu) 🟢 第243轮 零变化 vs 242
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第242轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.002s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy), backend Up 48h。磁盘 88% (4.6G free) 稳定。
+- **Git**: HEAD `6f5ae7f` 与 origin/main 同步 (0 behind/0 ahead), 本地仅 HEARTBEAT.md + memory-8/26 修改。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 OPEN, mergeable=CONFLICTING(API 重算噪声, 与既往一致), 未合入。open PR=1。
+- **#309 备份有效**: 最新 `backup_20260826180000..sql.gz` 105187B 非空 (8/27 02:00 生成), `gzip -t` VALID, 备份数 22。✅
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned (最近活动 8/18)。open bug = 4。
+- **本轮零变化, 无需播报。**
+
+---
+# 10:04 — Heartbeat (Thu) 🟢 第242轮 零变化 vs 241
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第241轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.011s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy), backend Up 47h。磁盘 88% (4.6G free) 稳定。
+- **Git**: HEAD `6f5ae7f` 与 origin/main 同步 (0 behind/0 ahead), 本地仅 HEARTBEAT.md + memory-8/26 修改。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 OPEN, mergeable=CONFLICTING(API 重算噪声, 与既往一致), 未合入。open PR=1。
+- **#309 备份有效**: 最新 `backup_20260826180000..sql.gz` 105187B 非空 (8/27 02:00 生成), `gzip -t` VALID, 备份数 22。✅
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned (最近活动 8/18)。open bug = 4。
+- **本轮零变化, 无需播报。**
+
+---
+# 09:10 — Heartbeat (Thu) 🟢 第241轮 零变化 vs 240
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第240轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.702s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy), backend Up 46h。磁盘 88% (4.6G free) 稳定。
+- **Git**: HEAD `6f5ae7f` 与 origin/main 同步 (0 behind/0 ahead), 本地仅 HEARTBEAT.md + memory-8/26 修改。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 OPEN, mergeable=CONFLICTING(API 重算噪声, 与既往一致), 未合入。open PR=1。
+- **#309 备份有效**: 最新 `backup_20260826180000..sql.gz` 105187B 非空 (8/27 02:00 生成), `gzip -t` VALID, 备份数 22。✅
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned (最近活动 8/18)。open bug = 4。
+- **本轮零变化, 无需播报。**
+
+---
+# 09:09 — Heartbeat (Thu) 🟢 第240轮 零变化 vs 239
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第239轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.027s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy)。磁盘 88% (4.6G free) 稳定。
+- **Git**: HEAD `6f5ae7f` 与 origin/main 同步 (0 behind/0 ahead), 本地仅 HEARTBEAT.md + memory-8/26 修改。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 OPEN, mergeable=CONFLICTING(API 重算噪声, 与既往一致), 未合入。open PR=1。
+- **#309 备份有效**: 最新 `backup_20260826180000..sql.gz` 105187B 非空 (8/27 02:00 生成), `gzip -t` VALID, 备份数 22。✅
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned (最近活动 8/18)。open bug = 4。
+- **本轮零变化, 无需播报。**
+
+---
+# 08:09 — Heartbeat (Thu) 🟢 第239轮 零变化 vs 238
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第238轮**: 状态实质完全一致。唯一增量: 每日备份 8/27 正常生成。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.003s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (无 unhealthy/exited)。磁盘 88% (4.6G free) 稳定。
+- **Git**: HEAD `6f5ae7f`(dashboard rebuild) 与 origin/main 同步 (0 behind/0 ahead), 本地仅 HEARTBEAT.md + memory-8/26 修改。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 OPEN, mergeable=UNKNOWN(API 重算噪声, 与既往一致), 未合入。open PR=1。
+- **#309 备份有效**: 最新 `backup_20260826180000..sql.gz` 105187B 非空 (8/27 02:00 生成), `gzip -t` VALID, 备份数 21→22。✅
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned (最近活动 8/18)。open bug = 4。
+- **本轮零变化, 无需播报。**
+
+---
+# 21:04 — Heartbeat (Wed) 🟢 第238轮 零变化 vs 237
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第237轮**: 状态实质完全一致。
+- **✅ 系统全绿**: backend :3000/api/health 200 (0.002s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/kafka/opa healthy)。磁盘 88% (4.6G free) 稳定。
+- **Git**: HEAD `90f5e4c` 与 origin/main 同步 (0 behind/0 ahead), 本地 clean。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 OPEN, mergeable=UNKNOWN(API 重算噪声, 与既往一致), 未合入。open PR=1。
+- **#309 备份有效**: 最新 `backup_20260825180000..sql.gz` 104994B 非空, `gzip -t` VALID, 备份数 21。✅
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned。open bug = 4。
+- **本轮零变化, 无需播报。**
+
+---
 # 20:04 — Heartbeat (Wed) 🟢 第237轮 零变化 vs 236
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
