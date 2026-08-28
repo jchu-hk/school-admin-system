@@ -1,3 +1,15 @@
+# 09:07 — Heartbeat (Fri) 🟢 第256轮 零变化 vs 255
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第255轮**: 状态实质完全一致。唯一增量: 推平 255 轮本地未推送的 heartbeat commit `c272645` → origin/main 同步 (0/0)。
+- **✅ 系统全绿**: backend :3000/api/health 200, admin :8080 200, portal :8081 200。Docker 13 容器全 Up。磁盘 88% (4.5G free) 稳定。
+- **Git**: HEAD `c272645`(255轮 heartbeat commit) 与 origin/main 同步 (0 behind/0 ahead)。
+- **⚠️ PR #369** `fix/i18n-lang-switch`(修 #366/#367/#368) 仍 OPEN, mergeable=UNKNOWN(API 重算噪声), 未合入。open PR=1。
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned (8/18 后无活动)。M1-M4 enhancement 为 roadmap backlog, 未达启动条件。
+- **无新 P0/P1, 无新可启动任务, spawn 无必要。本轮零变化, 无需播报。** 记录至 memory.
+
+---
+
 # 09:07 — Heartbeat (Fri) 🟢 第255轮 零变化 vs 254
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘88% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
