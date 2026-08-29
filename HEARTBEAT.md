@@ -1,3 +1,25 @@
+# 08:04 — Heartbeat (Sat) 🟢 第268轮 零变化 vs 267
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第267轮**: 状态实质完全一致。HEAD `ddf3ebf`(dashboard rebuild) 与 origin/main 同步 (0 behind/0 ahead), 本地仅 HEARTBEAT.md + memory 修改。磁盘 89% (4.5G free) 稳定。
+- **✅ 服务全绿**: backend :3000/api/health 200, admin :8080 200, portal :8081 200。Docker 13 容器全 Up。
+- **⚠️ PR #369** `fix/i18n-lang-switch` 仍 OPEN, mergeable=UNKNOWN(API 重算噪声, 与既往一致), 未合入。open PR=1。
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned。M1-M4 未达启动条件。
+- **无新 P0/P1, 无新可启动任务, spawn 无必要。本轮零变化, 静默不播报。** 记录至 memory/2026-08-29.md。
+
+---
+
+# 07:00 — Heartbeat (Sat) 🟢 第267轮 零变化 vs 266
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **零变化 vs 第266轮**: 状态实质完全一致。HEAD `cd72ca4` clean 与 origin 同步。磁盘 89% (4.5G free)。备份更新至 `backup_20260828180000..sql.gz`(仅计划日更)。
+- **✅ 服务全绿**: backend :3000/api/health 200, admin :8080 200, portal :8081 200。
+- **⚠️ PR #369** `fix/i18n-lang-switch` 仍 OPEN, mergeable=CONFLICTING, 未合入 (需人工解冲突)。open PR=1。
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned。M1-M4 enhancement 未达启动条件。
+- **无新 P0/P1, 无新可启动任务, spawn 无必要**。本轮零变化, 静默不播报。记录至 memory/2026-08-29.md。
+
+---
+
 # 21:04 — Heartbeat (Fri) 🟢 第266轮 零变化 vs 265
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
