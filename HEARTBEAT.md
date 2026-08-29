@@ -1,3 +1,13 @@
+# 07:00 — Heartbeat (Sun) 🟢 第285轮 微变化 vs 284 (gh token 失效 + dashboard commit)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / ⚠️ (gh 认证失效, issue 巡检受阻)
+- **微变化 vs 第284轮**: 服务全绿; 唯一实质变化是 **gh CLI token 失效 (HTTP 401)**, 本轮无法比对 Open Issue / PR#369 / #365-368。Git HEAD 变为 `6ca40c4` "chore: dashboard rebuild"。(OPENCLAW_NO_RESPAWN=1 blocker 依旧)
+- **✅ 服务全绿**: backend :3000/api/health 200, admin :8080 200, portal :8081 200。Docker 13 容器全 Up。磁盘 89% (4.5G free) 稳定。
+- **⚠️ gh 失效**: `/root/.config/gh/hosts.yml` token invalid (401)。需 `gh auth login` 恢复。PR #369 / #365-368 状态待恢复后确认 (基于既往基线与上轮一致)。
+- **无新可启动任务 (基于既往基线), spawn 无必要 (OPENCLAW_NO_RESPAWN=1 blocker 依旧)。本轮仅记录微变化, 静默不播报。** 记录至 memory/2026-08-30.md。
+
+---
+
 # 21:00 — Heartbeat (Sat) 🟢 第283轮 零变化 vs 282
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
