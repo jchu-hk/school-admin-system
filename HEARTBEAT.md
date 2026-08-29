@@ -1,3 +1,14 @@
+# 12:04 — Heartbeat (Sat) 🟢 第274轮 微变化 vs 273 (补推 round 273 commit)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
+- **微变化 vs 第273轮**: 服务状态实质完全一致。唯一增量: round 273 heartbeat commit `188725a` 未推送 (origin ahead 1), 已 `git push` 修复, 现 **0 behind/0 ahead** 同步。
+- **✅ 服务全绿**: backend :3000/api/health 200 (0.004s), admin :8080 200, portal :8081 200。Docker 13 容器全 Up (postgres/redis/opa/kafka healthy)。磁盘 89% (4.5G free) 稳定。
+- **⚠️ PR #369** `fix/i18n-lang-switch` 仍 OPEN, mergeable=UNKNOWN(API 重算噪声), 未合入。open PR=1。
+- **🟡 待办**: #365-368 前端/i18n bug 仍 open unassigned (8/18 后无活动)。无新 P0/P1。
+- **无新可启动任务, spawn 无必要 (OPENCLAW_NO_RESPAWN=1 blocker 依旧)。本轮仅补推, 静默不播报。** 记录至 memory/2026-08-29.md。
+
+---
+
 # 10:04 — Heartbeat (Sat) 🟢 第272轮 零变化 vs 271
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / 🟡 (前端bug未派发) / ⚠️ (PR#369 未合入)
