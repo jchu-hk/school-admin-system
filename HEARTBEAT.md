@@ -2658,3 +2658,11 @@
 - **✅ 服务全绿**: backend :3000/api/health 200 (0.616s), admin :8080 200, portal :8081 200。磁盘 89% (4.3G free) 稳定。
 - **⚠️ gh 失效持续**: `/root/.config/gh/hosts.yml` token 失效 (Timeout/login)。需 `gh auth login -h github.com` 恢复; 恢复后需补推 27 个本地 commit 并复核 PR#369 / #365-368。
 - **无新可启动任务, spawn 阻断 (OPENCLAW_NO_RESPAWN=1 blocker 依旧)。本轮零实质变化, 静默不播报。** 记录至 memory/2026-09-02.md。
+
+# 15:04 — Heartbeat (Thu) 🟢 零实质变化 vs 14:04 (gh token 失效持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / ⚠️ (gh 认证失效, git push 失败, issue 巡检受阻)
+- **零实质变化 vs 14:04轮**: 服务全绿; disk 89% (4.2G free) 稳定; Git origin/main 仍 **ahead 37** (本心跳 commit `222dfd0`, HEAD 现 `222dfd0`, 与 14:04 HEAD `5c148f5` 增量仅本心跳), push 仍 401 失败 (gh token invalid), 无法比对 Open Issue / PR#369 / #365-368。未提交改动 memory/HEARTBEAT.md + 2026-09-03.md 待 flush。
+- **✅ 服务全绿**: backend :3000/api/health 200 (0.005s), admin :8080 200, portal :8081 200。磁盘 89% (4.2G free) 稳定。Docker 13 容器全 Up。
+- **⚠️ gh 失效持续**: `/root/.config/gh/hosts.yml` token 失效 (HTTP 401)。需 `gh auth login -h github.com` 恢复; 恢复后需补推 37 个本地 commit 并复核 PR#369 / #365-368。
+- **无新可启动任务, spawn 阻断 (OPENCLAW_NO_RESPAWN=1 blocker 依旧)。本轮零实质变化, 静默不播报。** 记录至 memory/2026-09-03.md。
