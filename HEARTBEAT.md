@@ -1,3 +1,33 @@
+# 07:00 — PM Patrol (Thu) 🟢 零实质变化 vs 09-02 21:04 (gh token 失效持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / ⚠️ (gh 认证失效, git push 失败, issue 巡检受阻)
+- **零实质变化 vs 09-02 21:04轮**: 服务全绿; disk 89% (4.2G free) 稳定; Git origin/main 仍 **ahead 28** (+1 新本地 commit `fa39942 chore: dashboard rebuild`, 周期性重建非业务实质变化), push 仍 401 失败 (gh token invalid), 无法比对 Open Issue / PR#369 / #365-368。Git HEAD `fa39942`。
+- **✅ 服务全绿**: backend :3000/api/health 200 (0.010s), admin :8080 200, portal :8081 200。磁盘 89% (4.2G free) 稳定。Docker 13 容器全 Up。
+- **⚠️ gh 失效持续**: `/root/.config/gh/hosts.yml` token 仍失效。需 `gh auth login -h github.com` 恢复; 恢复后需补推 28 个本地 commit 并复核 PR#369 / #365-368。
+- **无新可启动任务, spawn 阻断 (OPENCLAW_NO_RESPAWN=1 blocker 依旧)。本轮零实质变化, 静默不播报。** 记录至 memory/2026-09-03.md。
+
+---
+
+# 19:00 — PM Patrol (Wed) 🟢 零实质变化 vs 18:04 (gh token 失效持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / ⚠️ (gh 认证失效, git push 失败, issue 巡检受阻)
+- **零实质变化 vs 18:04轮**: 服务全绿; disk 89% (4.3G free) 稳定; Git origin/main 仍 **ahead 27**, push 仍 401 失败 (gh token invalid), 无法比对 Open Issue / PR#369 / #365-368。Git HEAD `f2216e5` (与 18:04 一致)。
+- **✅ 服务全绿**: backend :3000/api/health 200 (0.005s), admin :8080 200, portal :8081 200。磁盘 89% (4.3G free) 稳定。Docker 13 容器全 Up。
+- **⚠️ gh 失效持续**: `/root/.config/gh/hosts.yml` token 仍失效。需 `gh auth login -h github.com` 恢复; 恢复后需补推 27 个本地 commit 并复核 PR#369 / #365-368。
+- **无新可启动任务, spawn 阻断 (OPENCLAW_NO_RESPAWN=1 blocker 依旧)。本轮零实质变化, 静默不播报。** 记录至 memory/2026-09-02.md。
+
+---
+
+# 17:04 — Heartbeat (Wed) 🟢 零实质变化 vs 15:04 (gh token 失效持续)
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / ⚠️ (gh 认证失效, git push 失败, issue 巡检受阻)
+- **零实质变化 vs 15:04轮**: 服务全绿; disk 89% (4.3G free) 稳定; Git origin/main 仍 **ahead 27**, push 仍 401 失败 (gh token invalid), 无法比对 Open Issue / PR#369 / #365-368。Git HEAD `f2216e5` (与 15:04 一致)。
+- **✅ 服务全绿**: backend :3000/api/health 200 (0.074s), admin :8080 200, portal :8081 200。磁盘 89% (4.3G free) 稳定。Docker 13 容器全 Up。
+- **⚠️ gh 失效持续**: `/root/.config/gh/hosts.yml` token 仍失效。需 `gh auth login -h github.com` 恢复; 恢复后需补推 27 个本地 commit 并复核 PR#369 / #365-368。
+- **无新可启动任务, spawn 阻断 (OPENCLAW_NO_RESPAWN=1 blocker 依旧)。本轮零实质变化, 静默不播报。** 记录至 memory/2026-09-02.md。
+
+---
+
 # 15:04 — Heartbeat (Wed) 🟢 零实质变化 vs 14:00 (gh token 失效持续)
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / ⚠️ (gh 认证失效, git push 失败, issue 巡检受阻)
