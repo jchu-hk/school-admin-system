@@ -26,9 +26,9 @@
       "lastUpdate": "2026-09-04T23:46:43Z"
     },
     "ARCH": {
-      "status": "idle",
-      "task": "等待任务",
-      "lastUpdate": "2026-07-20T23:04:13Z"
+      "status": "running",
+      "task": "[Issue #370] 架构设计开始",
+      "lastUpdate": "2026-09-04T23:47:46Z"
     },
     "REQ": {
       "status": "idle",
