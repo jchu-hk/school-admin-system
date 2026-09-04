@@ -59,6 +59,66 @@
         "warning": 2,
         "critical": 0
       }
+    },
+    {
+      "timestamp": "2026-09-04T01:04:13.013019+00:00",
+      "results": {
+        "backend_health": {
+          "name": "Backend Health",
+          "url": "http://localhost:3000/api/health",
+          "status": "ok",
+          "response_time_ms": 89,
+          "status_code": 200,
+          "error": null,
+          "critical": true,
+          "checked_at": "2026-09-04T01:04:12.782776+00:00"
+        },
+        "api_users": {
+          "name": "API Access (Users)",
+          "url": "http://localhost:3000/api/users",
+          "status": "warning",
+          "response_time_ms": 9,
+          "status_code": 401,
+          "error": "Unexpected status code: 401 (expected 200)",
+          "critical": false,
+          "checked_at": "2026-09-04T01:04:12.872418+00:00"
+        },
+        "frontend": {
+          "name": "Frontend",
+          "url": "http://localhost:8080",
+          "status": "ok",
+          "response_time_ms": 10,
+          "status_code": 200,
+          "error": null,
+          "critical": false,
+          "checked_at": "2026-09-04T01:04:12.881744+00:00"
+        },
+        "agents_dashboard": {
+          "name": "Agent Dashboard (/agents)",
+          "url": "http://localhost:5000/agents",
+          "status": "ok",
+          "response_time_ms": 13,
+          "status_code": 200,
+          "error": null,
+          "critical": false,
+          "checked_at": "2026-09-04T01:04:12.891899+00:00"
+        },
+        "cloudflare_tunnel": {
+          "name": "Cloudflare Tunnel (External)",
+          "url": "https://school.zhumuai.cn/api/health",
+          "status": "warning",
+          "response_time_ms": 106,
+          "status_code": 0,
+          "error": "Unexpected status code: 0 (expected 200)",
+          "critical": false,
+          "checked_at": "2026-09-04T01:04:12.905103+00:00"
+        }
+      },
+      "stats": {
+        "ok": 3,
+        "warning": 2,
+        "critical": 0
+      }
     }
   ]
 }
