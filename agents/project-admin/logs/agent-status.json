@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] 第三次整改派发(前两轮未落盘)，改用外科式指令直改文件",
-      "lastUpdate": "2026-09-04T23:42:40Z"
+      "task": "[Issue #370] 复审 v0.2.0：REQ 已整改 B1-B3/M1-M6/m1-m7，请复评",
+      "lastUpdate": "2026-09-04T23:44:29Z"
     },
     "QA": {
       "status": "idle",

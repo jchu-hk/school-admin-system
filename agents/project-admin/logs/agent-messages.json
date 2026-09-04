@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-07-29T02:46:45Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "PM: ✅ #294 QA→DEV→验证+部署 完成",
-    "type": "default"
-  },
-  {
     "timestamp": "2026-07-29T04:10:12Z",
     "from": "PM",
     "to": "SYSTEM",
@@ -1182,6 +1175,18 @@
       "agent": "REQ",
       "status": "idle",
       "task": "[Issue #370] 需求规格整改完成 v0.2.0 已落盘"
+    }
+  },
+  {
+    "timestamp": "2026-09-04T23:44:29Z",
+    "from": "PM",
+    "to": "CHECKER",
+    "message": "[Issue #370] 复审 v0.2.0：REQ 已整改 B1-B3/M1-M6/m1-m7，请复评",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #370] 复审 v0.2.0：REQ 已整改 B1-B3/M1-M6/m1-m7，请复评"
     }
   }
 ]
