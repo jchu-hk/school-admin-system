@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] 需求分析开始：设计 AI SRE 运维 Agent 的功能边界与用例",
-      "lastUpdate": "2026-09-04T23:33:42Z"
+      "task": "[Issue #370] 复审 REQ 产出的需求规格 docs/school-admin-system/FUNCTIONAL-SPEC-AI-SRE.md",
+      "lastUpdate": "2026-09-04T23:37:24Z"
     },
     "QA": {
       "status": "idle",
