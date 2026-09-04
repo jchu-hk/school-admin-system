@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-07-29T01:31:44Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "PM: ✅ #292+#293 QA→DEV→验证 完成",
-    "type": "default"
-  },
-  {
     "timestamp": "2026-07-29T02:20:16Z",
     "from": "PM",
     "to": "DASHBOARD",
@@ -1172,6 +1165,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #370] 上轮整改未落盘(文件仍 v0.1.0)，重新执行整改并实际写文件"
+    }
+  },
+  {
+    "timestamp": "2026-09-04T23:41:12Z",
+    "from": "REQ",
+    "to": "PM",
+    "message": "[Issue #370] 需求规格整改开始(重做)",
+    "type": "received",
+    "agent_status": {
+      "agent": "REQ",
+      "status": "running",
+      "task": "[Issue #370] 需求规格整改开始(重做)"
     }
   }
 ]
