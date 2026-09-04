@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-07-29T02:46:44Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "DEV: ✅ #294 修复: exam undefined params → 400",
-    "type": "default"
-  },
-  {
     "timestamp": "2026-07-29T02:46:45Z",
     "from": "PM",
     "to": "PM",
@@ -1177,6 +1170,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #370] 第三次整改派发(前两轮未落盘)，改用外科式指令直改文件"
+    }
+  },
+  {
+    "timestamp": "2026-09-04T23:44:08Z",
+    "from": "REQ",
+    "to": "PM",
+    "message": "[Issue #370] 需求规格整改完成 v0.2.0 已落盘",
+    "type": "passed",
+    "agent_status": {
+      "agent": "REQ",
+      "status": "idle",
+      "task": "[Issue #370] 需求规格整改完成 v0.2.0 已落盘"
     }
   }
 ]

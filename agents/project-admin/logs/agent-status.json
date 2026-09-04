@@ -31,9 +31,9 @@
       "lastUpdate": "2026-07-20T23:04:13Z"
     },
     "REQ": {
-      "status": "running",
-      "task": "[Issue #370] 需求规格整改开始(重做)",
-      "lastUpdate": "2026-09-04T23:41:12Z"
+      "status": "idle",
+      "task": "[Issue #370] 需求规格整改完成 v0.2.0 已落盘",
+      "lastUpdate": "2026-09-04T23:44:08Z"
     },
     "UI_DESIGNER": {
       "status": "idle",
