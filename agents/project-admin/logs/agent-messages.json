@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-07-29T00:17:25Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "QA: ✅ #291 考试API测试: 24项, 发现P0分页bug",
-    "type": "default"
-  },
-  {
     "timestamp": "2026-07-29T00:17:27Z",
     "from": "PM",
     "to": "PM",
@@ -1147,6 +1140,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #370] 复审 REQ 产出的需求规格 docs/school-admin-system/FUNCTIONAL-SPEC-AI-SRE.md"
+    }
+  },
+  {
+    "timestamp": "2026-09-04T23:37:41Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #370] 需求规格复审开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "running",
+      "task": "[Issue #370] 需求规格复审开始"
     }
   }
 ]

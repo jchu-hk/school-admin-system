@@ -65,11 +65,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">QA</div>
     <div class="agent-task">[admin终验] 完成：PASS ✅ — /school-admin</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent">
+</div><div class="agent  running">
     <div class="agent-icon">✓</div>
     <div class="agent-name">CHECKER</div>
-    <div class="agent-task">等待任务</div>
-    <span class="status-badge status-idle">idle</span>
+    <div class="agent-task">[Issue #370] 需求规格复审开始</div>
+    <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🏗️</div>
     <div class="agent-name">ARCH</div>
@@ -95,7 +95,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (09/04)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-assign">
+<div class="message-list"><div class="message-item msg-received">
+    <div class="message-time">07:37</div>
+    <div class="message-content">CHECKER → PM: [Issue #370] 需求规格复审开始</div>
+</div><div class="message-item msg-assign">
     <div class="message-time">07:37</div>
     <div class="message-content">PM → CHECKER: [Issue #370] 复审 REQ 产出的需求规格 docs/school-admin-system/FU</div>
 </div><div class="message-item msg-passed">
@@ -117,7 +120,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-09-05 07:37:26 (GMT+8)</div>
+<div class="refresh">Updated: 2026-09-05 07:37:41 (GMT+8)</div>
 </div>
 </body>
 </html>
