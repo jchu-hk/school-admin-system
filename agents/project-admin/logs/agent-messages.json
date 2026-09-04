@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-07-29T23:46:48Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "PM: 接收 - 🔄 Morning init — 系统巡检中",
-    "type": "received"
-  },
-  {
     "timestamp": "2026-07-29T23:46:53Z",
     "from": "PM",
     "to": "PM",
@@ -1187,6 +1180,18 @@
       "agent": "CHECKER",
       "status": "running",
       "task": "[Issue #370] v0.2.0 复评开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-04T23:46:43Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #370] v0.2.0 复评结论：有条件通过",
+    "type": "passed",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "idle",
+      "task": "[Issue #370] v0.2.0 复评结论：有条件通过"
     }
   }
 ]
