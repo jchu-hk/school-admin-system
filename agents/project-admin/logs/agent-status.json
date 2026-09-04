@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] 上轮整改未落盘(文件仍 v0.1.0)，重新执行整改并实际写文件",
-      "lastUpdate": "2026-09-04T23:40:52Z"
+      "task": "[Issue #370] 第三次整改派发(前两轮未落盘)，改用外科式指令直改文件",
+      "lastUpdate": "2026-09-04T23:42:40Z"
     },
     "QA": {
       "status": "idle",

@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-29T02:20:16Z",
-    "from": "PM",
-    "to": "DASHBOARD",
-    "message": "Health All 200 | Docker 14/14 Up(backend 49min, others ~3h, postgres/redis/opa healthy, kafka starting) | Git main(9aeb43f, PM idle) dirty(2, heartbeat log) | GitHub 19 open(same backlog: #274 ready-for-review, Phase 5 T25-28 backlog p2, p3 backlog) | 0 PRs | Agents idle | CPU 0.08, Mem 2.4/3.8Gi(64%), Disk 29/40Gi(78%)",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "idle",
-      "task": "Health All 200 | Docker 14/14 Up(backend 49min, others ~3h, postgres/redis/opa h"
-    }
-  },
-  {
     "timestamp": "2026-07-29T02:46:44Z",
     "from": "DEV",
     "to": "PM",
@@ -1177,6 +1165,18 @@
       "agent": "REQ",
       "status": "running",
       "task": "[Issue #370] 需求规格整改开始(重做)"
+    }
+  },
+  {
+    "timestamp": "2026-09-04T23:42:40Z",
+    "from": "PM",
+    "to": "REQ",
+    "message": "[Issue #370] 第三次整改派发(前两轮未落盘)，改用外科式指令直改文件",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #370] 第三次整改派发(前两轮未落盘)，改用外科式指令直改文件"
     }
   }
 ]
