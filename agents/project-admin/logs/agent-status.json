@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] 复审 v0.2.0：REQ 已整改 B1-B3/M1-M6/m1-m7，请复评",
-      "lastUpdate": "2026-09-04T23:44:29Z"
+      "task": "[Issue #370] 需求 v0.2.0 复评有条件通过(0 Blocking)，开始架构设计",
+      "lastUpdate": "2026-09-04T23:47:18Z"
     },
     "QA": {
       "status": "idle",

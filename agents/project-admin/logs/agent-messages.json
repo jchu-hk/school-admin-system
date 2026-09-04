@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-07-29T23:46:53Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "PM: ✅ Morning init done — 8 agents, 系统正常",
-    "type": "default"
-  },
-  {
     "timestamp": "2026-07-31T16:03:24Z",
     "from": "DEV",
     "to": "PM",
@@ -1192,6 +1185,18 @@
       "agent": "CHECKER",
       "status": "idle",
       "task": "[Issue #370] v0.2.0 复评结论：有条件通过"
+    }
+  },
+  {
+    "timestamp": "2026-09-04T23:47:18Z",
+    "from": "PM",
+    "to": "ARCH",
+    "message": "[Issue #370] 需求 v0.2.0 复评有条件通过(0 Blocking)，开始架构设计",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #370] 需求 v0.2.0 复评有条件通过(0 Blocking)，开始架构设计"
     }
   }
 ]
