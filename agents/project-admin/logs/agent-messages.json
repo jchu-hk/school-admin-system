@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-07-29T01:28:33Z",
-    "from": "PM",
-    "to": "PM",
-    "message": "PM: 接收 - 创建P1缺陷 #292 #293 + 派发DEV",
-    "type": "received"
-  },
-  {
     "timestamp": "2026-07-29T01:29:31Z",
     "from": "DEV",
     "to": "PM",
@@ -1157,6 +1150,18 @@
       "agent": "CHECKER",
       "status": "idle",
       "task": "[Issue #370] 需求规格复审完成：退回整改"
+    }
+  },
+  {
+    "timestamp": "2026-09-04T23:39:10Z",
+    "from": "PM",
+    "to": "REQ",
+    "message": "[Issue #370] 复审退回：3 Blocking / 6 Major / 7 Minor，请整改需求规格",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #370] 复审退回：3 Blocking / 6 Major / 7 Minor，请整改需求规格"
     }
   }
 ]

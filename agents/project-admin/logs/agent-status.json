@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] 复审 REQ 产出的需求规格 docs/school-admin-system/FUNCTIONAL-SPEC-AI-SRE.md",
-      "lastUpdate": "2026-09-04T23:37:24Z"
+      "task": "[Issue #370] 复审退回：3 Blocking / 6 Major / 7 Minor，请整改需求规格",
+      "lastUpdate": "2026-09-04T23:39:10Z"
     },
     "QA": {
       "status": "idle",
