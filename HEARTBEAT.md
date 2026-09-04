@@ -1,6 +1,16 @@
 
 ---
 
+# 10:04 — Heartbeat (Fri) 🟢 实质变化: gh token 已恢复, git 已同步
+
+### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / ✅ (gh 认证已恢复, git 已同步)
+- **实质变化 vs 09:01轮**: gh CLI token 已恢复有效 (`gh auth status` ✓ Logged in as jchu-hk)。Git origin/main 现 **0 ahead / 0 behind** (HEAD `7c03c18`), 此前积压的 42+ 个本地 commit 已全部推送成功。issue 巡检现可行。
+- **✅ 服务全绿**: backend :3000/api/health 200 (0.077s), admin :8080 200, portal :8081 200。磁盘 89% (4.4G free) 稳定。Docker 13 容器全 Up。
+- **✅ 可巡检**: Open Issue 含 PR#369 (fix/i18n-lang-switch, **CONFLICTING**), #365-368 (i18n 相关 open)。无法比对历史, 本轮仅确认状态。
+- **任务判定**: Open Issue #365-368 + PR#369 冲突合入属 DEV 任务, PM 不代修; spawn 仍阻断 (OPENCLAW_NO_RESPAWN=1 blocker 依旧)。本轮为状态恢复记录, 非业务动作, 静默不播报。待用户清除 spawn blocker / 授权 spawn DEV 才可推进。记录至 memory/2026-09-04.md。
+
+---
+
 # 09:01 — Heartbeat (Fri) 🟢 零实质变化 vs 09:00 (gh token 失效持续)
 
 ### System Status 🟢 (内网正常) / 🟢 (磁盘89% 稳定) / ⚠️ (gh 认证失效, git push 失败, issue 巡检受阻)
