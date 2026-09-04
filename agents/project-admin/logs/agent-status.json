@@ -31,9 +31,9 @@
       "lastUpdate": "2026-07-20T23:04:13Z"
     },
     "REQ": {
-      "status": "running",
-      "task": "[Issue #370] 需求分析开始",
-      "lastUpdate": "2026-09-04T23:36:09Z"
+      "status": "idle",
+      "task": "[Issue #370] 需求规格完成",
+      "lastUpdate": "2026-09-04T23:37:05Z"
     },
     "UI_DESIGNER": {
       "status": "idle",

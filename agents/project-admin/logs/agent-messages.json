@@ -1,12 +1,5 @@
 [
   {
-    "timestamp": "2026-07-29T00:17:06Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "DEV: 修复#292完成",
-    "type": "default"
-  },
-  {
     "timestamp": "2026-07-29T00:17:23Z",
     "from": "DEV",
     "to": "PM",
@@ -1137,6 +1130,18 @@
       "agent": "REQ",
       "status": "running",
       "task": "[Issue #370] 需求分析开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-04T23:37:05Z",
+    "from": "REQ",
+    "to": "PM",
+    "message": "[Issue #370] 需求规格完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "REQ",
+      "status": "idle",
+      "task": "[Issue #370] 需求规格完成"
     }
   }
 ]
