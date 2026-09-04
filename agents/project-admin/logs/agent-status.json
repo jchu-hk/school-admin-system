@@ -21,9 +21,9 @@
       "lastUpdate": "2026-08-18T15:38:35Z"
     },
     "CHECKER": {
-      "status": "idle",
-      "task": "[Issue #370] 需求规格复审完成：退回整改",
-      "lastUpdate": "2026-09-04T23:38:51Z"
+      "status": "running",
+      "task": "[Issue #370] v0.2.0 复评开始",
+      "lastUpdate": "2026-09-04T23:44:47Z"
     },
     "ARCH": {
       "status": "idle",

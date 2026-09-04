@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-29T04:10:12Z",
-    "from": "PM",
-    "to": "SYSTEM",
-    "message": "heartbeat 12:10 — All green",
-    "type": "info",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "heartbeat 12:10 — All green"
-    }
-  },
-  {
     "timestamp": "2026-07-29T23:46:48Z",
     "from": "PM",
     "to": "PM",
@@ -1187,6 +1175,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #370] 复审 v0.2.0：REQ 已整改 B1-B3/M1-M6/m1-m7，请复评"
+    }
+  },
+  {
+    "timestamp": "2026-09-04T23:44:47Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #370] v0.2.0 复评开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "running",
+      "task": "[Issue #370] v0.2.0 复评开始"
     }
   }
 ]
