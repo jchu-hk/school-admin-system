@@ -21,9 +21,9 @@
       "lastUpdate": "2026-08-18T15:38:35Z"
     },
     "CHECKER": {
-      "status": "running",
-      "task": "[Issue #370] v0.3.0 复评开始",
-      "lastUpdate": "2026-09-05T02:46:01Z"
+      "status": "idle",
+      "task": "[Issue #370] v0.3.0 复评结论：退回整改",
+      "lastUpdate": "2026-09-05T02:48:50Z"
     },
     "ARCH": {
       "status": "idle",

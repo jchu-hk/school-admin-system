@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-01T00:36:55Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[#295, #296, #297] 验证P0修复",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[#295, #296, #297] 验证P0修复"
-    }
-  },
-  {
     "timestamp": "2026-08-02T07:40:41Z",
     "from": "PM",
     "to": "DEV",
@@ -1197,6 +1185,18 @@
       "agent": "CHECKER",
       "status": "running",
       "task": "[Issue #370] v0.3.0 复评开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T02:48:50Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #370] v0.3.0 复评结论：退回整改",
+    "type": "passed",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "idle",
+      "task": "[Issue #370] v0.3.0 复评结论：退回整改"
     }
   }
 ]
