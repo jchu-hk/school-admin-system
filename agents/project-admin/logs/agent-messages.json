@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:08:22Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[leave_requests] 上次运行中断(失上下文)，migration已改写但未提交/未验证build — 重派：验证编译+实体字段与migration列对齐+提交",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[leave_requests] 上次运行中断(失上下文)，migration已改写但未提交/未验证build — 重派：验证编译+实体字段与migration"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:08:40Z",
     "from": "DEV",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "CHECKER",
       "status": "running",
       "task": "[Issue #371] DESIGN 复审开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:27:35Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #371] DESIGN 复审完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "idle",
+      "task": "[Issue #371] DESIGN 复审完成"
     }
   }
 ]
