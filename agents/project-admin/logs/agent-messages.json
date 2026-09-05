@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T07:45:53Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "[Issue #262][T26] UAT测试环境准备：验证最新代码+测试账号就绪+产出UAT访问清单",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #262][T26] UAT测试环境准备：验证最新代码+测试账号就绪+产出UAT访问清单"
-    }
-  },
-  {
     "timestamp": "2026-08-18T07:45:58Z",
     "from": "PM",
     "to": "QA",
@@ -1197,6 +1185,18 @@
       "agent": "CHECKER",
       "status": "running",
       "task": "[Issue #371] 复审开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:15:24Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #371] 复审完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "idle",
+      "task": "[Issue #371] 复审完成"
     }
   }
 ]

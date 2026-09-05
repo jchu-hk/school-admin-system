@@ -65,11 +65,11 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
     <div class="agent-name">QA</div>
     <div class="agent-task">[admin终验] 完成：PASS ✅ — /school-admin</div>
     <span class="status-badge status-idle">idle</span>
-</div><div class="agent  running">
+</div><div class="agent">
     <div class="agent-icon">✓</div>
     <div class="agent-name">CHECKER</div>
-    <div class="agent-task">[Issue #371] 复审开始</div>
-    <span class="status-badge status-running">running</span>
+    <div class="agent-task">[Issue #371] 复审完成</div>
+    <span class="status-badge status-idle">idle</span>
 </div><div class="agent">
     <div class="agent-icon">🏗️</div>
     <div class="agent-name">ARCH</div>
@@ -105,7 +105,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (09/04)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-received">
+<div class="message-list"><div class="message-item msg-passed">
+    <div class="message-time">12:15</div>
+    <div class="message-content">CHECKER → PM: [Issue #371] 复审完成</div>
+</div><div class="message-item msg-received">
     <div class="message-time">12:14</div>
     <div class="message-content">CHECKER → PM: [Issue #371] 复审开始</div>
 </div><div class="message-item msg-assign">
@@ -147,9 +150,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-received">
     <div class="message-time">10:56</div>
     <div class="message-content">ARCH → PM: [Issue #370] 架构重构 v0.2.0 开始（通用可插拔）</div>
-</div><div class="message-item msg-assign">
-    <div class="message-time">10:56</div>
-    <div class="message-content">PM → ARCH: [Issue #370] 需求 v0.3.1 复评通过。架构改为通用可插拔(适配器/自学习/多租户)，DESI</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -157,7 +157,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-09-05 12:14:54 (GMT+8)</div>
+<div class="refresh">Updated: 2026-09-05 12:15:29 (GMT+8)</div>
 </div>
 </body>
 </html>
