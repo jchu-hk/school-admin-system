@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T07:45:58Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[Issue #262][T26] UAT用例准备：QR考勤+学生/家长门户 真实用户试用脚本",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #262][T26] UAT用例准备：QR考勤+学生/家长门户 真实用户试用脚本"
-    }
-  },
-  {
     "timestamp": "2026-08-18T07:46:32Z",
     "from": "QA",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "CHECKER",
       "status": "idle",
       "task": "[Issue #371] 复审完成"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:16:57Z",
+    "from": "PM",
+    "to": "REQ",
+    "message": "[Issue #371] 按 CHECKER 复审整改 (M1 PII 冲突 + m1-m3)",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #371] 按 CHECKER 复审整改 (M1 PII 冲突 + m1-m3)"
     }
   }
 ]
