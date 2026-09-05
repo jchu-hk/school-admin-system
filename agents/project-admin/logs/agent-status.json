@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #371] 按 CHECKER 复审整改 (M1 PII 冲突 + m1-m3)",
-      "lastUpdate": "2026-09-05T04:16:57Z"
+      "task": "[Issue #371] 更新 DESIGN：F-SRE-014 用户报障 intake 通道 + 功能正确性边界",
+      "lastUpdate": "2026-09-05T04:18:47Z"
     },
     "QA": {
       "status": "idle",
