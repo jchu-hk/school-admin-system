@@ -21,9 +21,9 @@
       "lastUpdate": "2026-09-05T03:22:27Z"
     },
     "CHECKER": {
-      "status": "idle",
-      "task": "[Issue #371] 复审完成",
-      "lastUpdate": "2026-09-05T04:15:24Z"
+      "status": "running",
+      "task": "[Issue #371] DESIGN 复审开始",
+      "lastUpdate": "2026-09-05T04:25:48Z"
     },
     "ARCH": {
       "status": "idle",
