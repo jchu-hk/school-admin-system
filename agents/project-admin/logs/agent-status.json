@@ -26,9 +26,9 @@
       "lastUpdate": "2026-09-05T02:55:48Z"
     },
     "ARCH": {
-      "status": "running",
-      "task": "[Issue #370] 架构重构 v0.2.0 开始（通用可插拔）",
-      "lastUpdate": "2026-09-05T02:56:37Z"
+      "status": "idle",
+      "task": "[Issue #370] 架构重构完成，DESIGN-AI-SRE v0.2.0 已写入",
+      "lastUpdate": "2026-09-05T03:00:15Z"
     },
     "REQ": {
       "status": "idle",

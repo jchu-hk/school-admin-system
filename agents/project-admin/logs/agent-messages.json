@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-02T08:00:06Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[Issue #307] QA 验证完成: FAIL — #308 getToken 修复未真正部署，:8080 仍服务旧 bundle（含 auth_token bug），版本号误导",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[Issue #307] QA 验证完成: FAIL — #308 getToken 修复未真正部署，:8080 仍服务旧 bundle（含 auth_toke"
-    }
-  },
-  {
     "timestamp": "2026-08-02T08:00:38Z",
     "from": "PM",
     "to": "DEVOPS",
@@ -1197,6 +1185,18 @@
       "agent": "ARCH",
       "status": "running",
       "task": "[Issue #370] 架构重构 v0.2.0 开始（通用可插拔）"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T03:00:15Z",
+    "from": "ARCH",
+    "to": "PM",
+    "message": "[Issue #370] 架构重构完成，DESIGN-AI-SRE v0.2.0 已写入",
+    "type": "passed",
+    "agent_status": {
+      "agent": "ARCH",
+      "status": "idle",
+      "task": "[Issue #370] 架构重构完成，DESIGN-AI-SRE v0.2.0 已写入"
     }
   }
 ]
