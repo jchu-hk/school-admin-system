@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-31T16:32:12Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[QA验证] 开始验证 #295-#305",
-    "type": "received",
-    "agent_status": {
-      "agent": "QA",
-      "status": "running",
-      "task": "[QA验证] 开始验证 #295-#305"
-    }
-  },
-  {
     "timestamp": "2026-07-31T16:37:13Z",
     "from": "QA",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "REQ",
       "status": "idle",
       "task": "[Issue #370] 需求规格 v0.3.0 已修订（可部署/可学习/多系统）"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T02:45:41Z",
+    "from": "PM",
+    "to": "CHECKER",
+    "message": "[Issue #370] 复审 v0.3.0：新增可部署/可学习/多系统需求(F-SRE-010~013)，请复评",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #370] 复审 v0.3.0：新增可部署/可学习/多系统需求(F-SRE-010~013)，请复评"
     }
   }
 ]
