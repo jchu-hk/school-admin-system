@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:18:54Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[portal 路由] 完成：根因=app.module 错引 src/portal/portal.module（旧menus模块），新 src/modules/portal/portal.module（含leave,映射leave_requests）未接线→404。修复=同时接线两个PortalModule(别名:PortalModule新+LegacyPortalModule旧保留menus)。自测=nest build通过，运行时确认注册 /api/portal/leave POST/GET/:id/DELETE/approve/reject。commit 82681ce @ branch fix/portal-leave-routing-404。已comment #262。附注:前端撤回调PATCH /:id/cancel但后端是DELETE /:id，请QA关注。",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[portal 路由] 完成：根因=app.module 错引 src/portal/portal.module（旧menus模块），新 src/modules"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:19:35Z",
     "from": "PM",
     "to": "DEV",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #371] 验证 F-SRE-014 intake 实现（commit adba265）"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:39:01Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #371] QA 验证开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[Issue #371] QA 验证开始"
     }
   }
 ]
