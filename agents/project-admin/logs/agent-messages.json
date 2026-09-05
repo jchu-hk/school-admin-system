@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T07:39:51Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "[Issue #261][T25] 部署脚本：新增DB迁移/Docker配置/环境变量 — 启动生产发布Phase 5关键路径，解除逾期的CR-20260714-001里程碑阻塞",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #261][T25] 部署脚本：新增DB迁移/Docker配置/环境变量 — 启动生产发布Phase 5关键路径，解除逾期的CR-20260714"
-    }
-  },
-  {
     "timestamp": "2026-08-18T07:40:14Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "REQ",
       "status": "idle",
       "task": "[Issue #371] REQ 修订完成"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:14:37Z",
+    "from": "PM",
+    "to": "CHECKER",
+    "message": "[Issue #371] 复审 REQ 修订 v0.4.0（F-SRE-014 + 功能正确性边界）",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #371] 复审 REQ 修订 v0.4.0（F-SRE-014 + 功能正确性边界）"
     }
   }
 ]

@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #371] 新增 F-SRE-014 用户报障接入 + 明确 AI SRE 功能正确性边界",
-      "lastUpdate": "2026-09-05T04:12:30Z"
+      "task": "[Issue #371] 复审 REQ 修订 v0.4.0（F-SRE-014 + 功能正确性边界）",
+      "lastUpdate": "2026-09-05T04:14:37Z"
     },
     "QA": {
       "status": "idle",
