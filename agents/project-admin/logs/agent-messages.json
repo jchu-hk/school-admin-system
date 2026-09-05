@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-31T16:37:13Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[QA验证] 验证完成: 11/11 PASS, 0/11 FAIL. 全部10个修复均已独立验证通过。#295-#305 全部PASS",
-    "type": "passed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[QA验证] 验证完成: 11/11 PASS, 0/11 FAIL. 全部10个修复均已独立验证通过。#295-#305 全部PASS"
-    }
-  },
-  {
     "timestamp": "2026-08-01T00:36:55Z",
     "from": "PM",
     "to": "QA",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #370] 复审 v0.3.0：新增可部署/可学习/多系统需求(F-SRE-010~013)，请复评"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T02:46:01Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #370] v0.3.0 复评开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "running",
+      "task": "[Issue #370] v0.3.0 复评开始"
     }
   }
 ]
