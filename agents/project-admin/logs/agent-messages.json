@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:11:19Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[leave_requests] 应用迁移开始",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "running",
-      "task": "[leave_requests] 应用迁移开始"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:15:40Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "ARCH",
       "status": "idle",
       "task": "[Issue #371] DESIGN 整改完成"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:30:04Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #371] 实施 F-SRE-014 用户报障 intake（M2 增量）",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #371] 实施 F-SRE-014 用户报障 intake（M2 增量）"
     }
   }
 ]

@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #371] DESIGN 整改 (M1 括号 + m2 intake 空态澄清)",
-      "lastUpdate": "2026-09-05T04:28:16Z"
+      "task": "[Issue #371] 实施 F-SRE-014 用户报障 intake（M2 增量）",
+      "lastUpdate": "2026-09-05T04:30:04Z"
     },
     "QA": {
       "status": "idle",
