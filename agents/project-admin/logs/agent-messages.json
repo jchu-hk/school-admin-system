@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-02T08:01:10Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[Issue #307/#308] 开始部署 #308 getToken 修复 bundle",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "running",
-      "task": "[Issue #307/#308] 开始部署 #308 getToken 修复 bundle"
-    }
-  },
-  {
     "timestamp": "2026-08-02T08:01:28Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #370] M1 开始：ai-sre-service 骨架 + Agent 生态注册"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T03:19:41Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[Issue #370] M1 运维侧：GitHub label/Docker 编排/Dashboard 面板注册",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #370] M1 运维侧：GitHub label/Docker 编排/Dashboard 面板注册"
     }
   }
 ]
