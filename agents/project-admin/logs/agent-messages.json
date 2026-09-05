@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T07:46:32Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[Issue #262][T26] 开始工作",
-    "type": "received",
-    "agent_status": {
-      "agent": "QA",
-      "status": "running",
-      "task": "[Issue #262][T26] 开始工作"
-    }
-  },
-  {
     "timestamp": "2026-08-18T07:46:37Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #371] 按 CHECKER 复审整改 (M1 PII 冲突 + m1-m3)"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:17:18Z",
+    "from": "REQ",
+    "to": "PM",
+    "message": "[Issue #371] 整改开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "REQ",
+      "status": "running",
+      "task": "[Issue #371] 整改开始"
     }
   }
 ]
