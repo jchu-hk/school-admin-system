@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] 需求 v0.2.0 复评有条件通过(0 Blocking)，开始架构设计",
-      "lastUpdate": "2026-09-04T23:47:18Z"
+      "task": "[Issue #370] 新增核心需求：AI SRE 须可部署/可学习/支持新系统，非仅 SAS。重新修订需求规格",
+      "lastUpdate": "2026-09-05T02:43:53Z"
     },
     "QA": {
       "status": "idle",

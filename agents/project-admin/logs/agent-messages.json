@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-07-31T16:12:46Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[#295,#296,#297,#299,#300,#303] 完成：6个P0前端缺陷已修复并部署(v1.6.1)。#295学号回填+只读；#296无draft状态已在issue说明(改为active才可删)；#297补status字段；#299加班级列；#300补错误显示；#303改读token键。commit 250441f。详情见各issue评论",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[#295,#296,#297,#299,#300,#303] 完成：6个P0前端缺陷已修复并部署(v1.6.1)。#295学号回填+只读；#296无draft"
-    }
-  },
-  {
     "timestamp": "2026-07-31T16:15:18Z",
     "from": "DEV",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "ARCH",
       "status": "idle",
       "task": "[Issue #370] 架构设计完成，已写入 docs/school-admin-system/DESIGN-AI-SRE.md"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T02:43:53Z",
+    "from": "PM",
+    "to": "REQ",
+    "message": "[Issue #370] 新增核心需求：AI SRE 须可部署/可学习/支持新系统，非仅 SAS。重新修订需求规格",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #370] 新增核心需求：AI SRE 须可部署/可学习/支持新系统，非仅 SAS。重新修订需求规格"
     }
   }
 ]
