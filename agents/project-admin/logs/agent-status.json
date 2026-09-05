@@ -11,9 +11,9 @@
       "lastUpdate": "2026-08-18T14:59:58Z"
     },
     "DEV": {
-      "status": "running",
-      "task": "[Issue #370] M1 编码续做开始",
-      "lastUpdate": "2026-09-05T03:29:00Z"
+      "status": "idle",
+      "task": "[Issue #370] M1 编码续做完成",
+      "lastUpdate": "2026-09-05T03:29:56Z"
     },
     "DEVOPS": {
       "status": "idle",

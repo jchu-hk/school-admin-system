@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-06T08:25:56Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[Issue #309] 开始工作",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "running",
-      "task": "[Issue #309] 开始工作"
-    }
-  },
-  {
     "timestamp": "2026-08-06T08:31:59Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[Issue #370] M1 编码续做开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T03:29:56Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #370] M1 编码续做完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[Issue #370] M1 编码续做完成"
     }
   }
 ]
