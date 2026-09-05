@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-02T07:52:24Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[Issue #307] 验证失败：8080 线上仍是旧构建(17处 auth_token 直读)，getToken() 修复未部署；/school-admin 路径修复已在；version.json 已更新但 gitCommit 滞后。已发 GH 评论，Issue 保持 OPEN。",
-    "type": "failed",
-    "agent_status": {
-      "agent": "QA",
-      "status": "idle",
-      "task": "[Issue #307] 验证失败：8080 线上仍是旧构建(17处 auth_token 直读)，getToken() 修复未部署；/school-admin"
-    }
-  },
-  {
     "timestamp": "2026-08-02T07:58:08Z",
     "from": "PM",
     "to": "QA",
@@ -1197,6 +1185,18 @@
       "agent": "CHECKER",
       "status": "running",
       "task": "[Issue #370] v0.3.1 复评开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T02:55:48Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #370] v0.3.1 复评结论：通过",
+    "type": "passed",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "idle",
+      "task": "[Issue #370] v0.3.1 复评结论：通过"
     }
   }
 ]
