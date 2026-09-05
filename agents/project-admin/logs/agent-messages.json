@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:16:19Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[leave API 404] app.module.ts 误import ./portal/portal.module(仅menus路由)，正确应为 ./modules/portal/portal.module(含leave.controller) — 诊断并修复路由接线",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[leave API 404] app.module.ts 误import ./portal/portal.module(仅menus路由)，正确应为 ./mo"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:16:41Z",
     "from": "DEV",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[Issue #371] DEV 编码开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:36:23Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #371] DEV 编码完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[Issue #371] DEV 编码完成"
     }
   }
 ]
