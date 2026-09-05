@@ -16,9 +16,9 @@
       "lastUpdate": "2026-09-05T04:45:58Z"
     },
     "DEVOPS": {
-      "status": "idle",
-      "task": "[Issue #370] M1 运维侧完成",
-      "lastUpdate": "2026-09-05T03:22:27Z"
+      "status": "running",
+      "task": "[#370/#371] 部署开始",
+      "lastUpdate": "2026-09-05T12:46:56Z"
     },
     "CHECKER": {
       "status": "idle",
