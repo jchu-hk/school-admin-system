@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:31:27Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[leave E2E阻断] QA发现3个P0后端bug：A审计枚举缺leave_*值(500) B日期.toISOString报错 C教职工可见性恒空 — 修复",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[leave E2E阻断] QA发现3个P0后端bug：A审计枚举缺leave_*值(500) B日期.toISOString报错 C教职工可见性恒空 — 修复"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:31:29Z",
     "from": "PM",
     "to": "DEV",
@@ -1197,6 +1185,18 @@
       "agent": "DEVOPS",
       "status": "running",
       "task": "[#370/#371] 部署开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T12:55:24Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[#370/#371] 部署完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[#370/#371] 部署完成"
     }
   }
 ]
