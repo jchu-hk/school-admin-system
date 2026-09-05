@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T07:46:37Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[Issue #262][T26] 开始工作",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "running",
-      "task": "[Issue #262][T26] 开始工作"
-    }
-  },
-  {
     "timestamp": "2026-08-18T07:49:03Z",
     "from": "QA",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "REQ",
       "status": "running",
       "task": "[Issue #371] 整改开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:17:58Z",
+    "from": "REQ",
+    "to": "PM",
+    "message": "[Issue #371] 整改完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "REQ",
+      "status": "idle",
+      "task": "[Issue #371] 整改完成"
     }
   }
 ]

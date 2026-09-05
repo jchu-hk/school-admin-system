@@ -31,9 +31,9 @@
       "lastUpdate": "2026-09-05T03:00:15Z"
     },
     "REQ": {
-      "status": "running",
-      "task": "[Issue #371] 整改开始",
-      "lastUpdate": "2026-09-05T04:17:18Z"
+      "status": "idle",
+      "task": "[Issue #371] 整改完成",
+      "lastUpdate": "2026-09-05T04:17:58Z"
     },
     "UI_DESIGNER": {
       "status": "idle",
