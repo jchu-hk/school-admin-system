@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #371] 验证 F-SRE-014 intake 实现（commit adba265）",
-      "lastUpdate": "2026-09-05T04:38:39Z"
+      "task": "[Issue #371] 修复 QA 缺陷 B1(known 未落库)+M1(指纹含 severity)+B2(电话掩码)",
+      "lastUpdate": "2026-09-05T04:44:23Z"
     },
     "QA": {
       "status": "idle",

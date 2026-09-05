@@ -48,7 +48,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 <div class="agent-grid"><div class="agent  running">
     <div class="agent-icon">🧑💼</div>
     <div class="agent-name">PM</div>
-    <div class="agent-task">[Issue #371] 验证 F-SRE-014 intake 实现</div>
+    <div class="agent-task">[Issue #371] 修复 QA 缺陷 B1(known 未落库)</div>
     <span class="status-badge status-running">running</span>
 </div><div class="agent">
     <div class="agent-icon">🔧</div>
@@ -105,7 +105,10 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
   <button class="tab" onclick="switchTab('yesterday', this)">📅 T-1 昨日 (09/04)</button>
 </div>
 <div class="tab-content active" id="tab-today">
-<div class="message-list"><div class="message-item msg-failed">
+<div class="message-list"><div class="message-item msg-assign">
+    <div class="message-time">12:44</div>
+    <div class="message-content">PM → DEV: [Issue #371] 修复 QA 缺陷 B1(known 未落库)+M1(指纹含 severity)+B2</div>
+</div><div class="message-item msg-failed">
     <div class="message-time">12:41</div>
     <div class="message-content">QA → PM: [Issue #371] QA 验证完成：总裁决 FAIL(退回 DEV)。构建/typecheck/smok</div>
 </div><div class="message-item msg-received">
@@ -147,9 +150,6 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div><div class="message-item msg-received">
     <div class="message-time">12:19</div>
     <div class="message-content">ARCH → PM: [Issue #371] DESIGN 更新开始</div>
-</div><div class="message-item msg-assign">
-    <div class="message-time">12:18</div>
-    <div class="message-content">PM → ARCH: [Issue #371] 更新 DESIGN：F-SRE-014 用户报障 intake 通道 + 功能正确性</div>
 </div></div>
 </div>
 <div class="tab-content" id="tab-yesterday" style="display:none">
@@ -157,7 +157,7 @@ function switchTab(tab, el) { document.querySelectorAll('.tab').forEach(t => t.c
 </div>
 </div>
 
-<div class="refresh">Updated: 2026-09-05 12:41:44 (GMT+8)</div>
+<div class="refresh">Updated: 2026-09-05 12:44:26 (GMT+8)</div>
 </div>
 </body>
 </html>
