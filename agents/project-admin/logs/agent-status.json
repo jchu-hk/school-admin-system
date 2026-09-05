@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] 复审 v0.3.0：新增可部署/可学习/多系统需求(F-SRE-010~013)，请复评",
-      "lastUpdate": "2026-09-05T02:45:41Z"
+      "task": "[Issue #370] v0.3.0 复评退回(2 Blocking/6 Major/5 Minor)，修订 v0.3.1",
+      "lastUpdate": "2026-09-05T02:49:12Z"
     },
     "QA": {
       "status": "idle",

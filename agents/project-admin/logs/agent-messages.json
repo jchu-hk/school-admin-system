@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-02T07:40:41Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[Issue #308] P0 课程管理 401 — token localStorage key 不一致 (token vs auth_token)。根因已由 QA 诊断：tokenService.setToken() 写 'token'，但 course/settings/budget/dse/Finance*.tsx 用 fetch() 读 'auth_token' 导致 Bearer null → 401。要求统一所有 fetch() 调用读取 'token' key。请按通信模板在任务开始时回执，完成后 report。",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #308] P0 课程管理 401 — token localStorage key 不一致 (token vs auth_token)。根因已由"
-    }
-  },
-  {
     "timestamp": "2026-08-02T07:40:56Z",
     "from": "DEV",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "CHECKER",
       "status": "idle",
       "task": "[Issue #370] v0.3.0 复评结论：退回整改"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T02:49:12Z",
+    "from": "PM",
+    "to": "REQ",
+    "message": "[Issue #370] v0.3.0 复评退回(2 Blocking/6 Major/5 Minor)，修订 v0.3.1",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #370] v0.3.0 复评退回(2 Blocking/6 Major/5 Minor)，修订 v0.3.1"
     }
   }
 ]
