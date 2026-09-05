@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-02T07:40:56Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[Issue #308] 开始工作",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[Issue #308] 开始工作"
-    }
-  },
-  {
     "timestamp": "2026-08-02T07:50:38Z",
     "from": "PM",
     "to": "QA",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #370] v0.3.0 复评退回(2 Blocking/6 Major/5 Minor)，修订 v0.3.1"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T02:53:34Z",
+    "from": "REQ",
+    "to": "PM",
+    "message": "[Issue #370] 需求规格 v0.3.1 已修订（系统无关化+自学习可测）",
+    "type": "passed",
+    "agent_status": {
+      "agent": "REQ",
+      "status": "idle",
+      "task": "[Issue #370] 需求规格 v0.3.1 已修订（系统无关化+自学习可测）"
     }
   }
 ]

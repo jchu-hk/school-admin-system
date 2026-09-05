@@ -32,8 +32,8 @@
     },
     "REQ": {
       "status": "idle",
-      "task": "[Issue #370] 需求规格 v0.3.0 已修订（可部署/可学习/多系统）",
-      "lastUpdate": "2026-09-05T02:45:18Z"
+      "task": "[Issue #370] 需求规格 v0.3.1 已修订（系统无关化+自学习可测）",
+      "lastUpdate": "2026-09-05T02:53:34Z"
     },
     "UI_DESIGNER": {
       "status": "idle",
