@@ -11,9 +11,9 @@
       "lastUpdate": "2026-08-18T14:59:58Z"
     },
     "DEV": {
-      "status": "idle",
-      "task": "[#365] 完成：已移除菜单项 + build通过，分支 fix/remove-agents-menu-365 已push",
-      "lastUpdate": "2026-08-18T15:36:29Z"
+      "status": "running",
+      "task": "[Issue #370] M1 编码开始",
+      "lastUpdate": "2026-09-05T03:21:11Z"
     },
     "DEVOPS": {
       "status": "running",
