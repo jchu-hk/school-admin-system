@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #371] 重验 DEV 修复 B1/M1/B2（commit cc31afe）",
-      "lastUpdate": "2026-09-05T04:46:24Z"
+      "task": "[#370/#371] 部署 AI-SRE 到测试环境 + 启用 intake + 产出部署 runbook",
+      "lastUpdate": "2026-09-05T12:46:22Z"
     },
     "QA": {
       "status": "idle",

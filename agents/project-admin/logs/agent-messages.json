@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:24:20Z",
-    "from": "QA",
-    "to": "PM",
-    "message": "[leave验证] 开始",
-    "type": "received",
-    "agent_status": {
-      "agent": "QA",
-      "status": "running",
-      "task": "[leave验证] 开始"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:30:43Z",
     "from": "QA",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "QA",
       "status": "idle",
       "task": "[Issue #371] 重验完成：总裁决 PASS（不关闭 Issue）。B1 known 落库/M1 指纹去 severity/B2 电话掩码 三条均修复；"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T12:46:22Z",
+    "from": "PM",
+    "to": "DEVOPS",
+    "message": "[#370/#371] 部署 AI-SRE 到测试环境 + 启用 intake + 产出部署 runbook",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[#370/#371] 部署 AI-SRE 到测试环境 + 启用 intake + 产出部署 runbook"
     }
   }
 ]
