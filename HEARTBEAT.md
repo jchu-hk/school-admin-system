@@ -1,6 +1,17 @@
 
 ---
 
+# 21:00 — Heartbeat (Sat) 🟢 实质变化: ai-sre-service (#370/#371) 已部署上线 test env + intake 使能, #371 闭环
+
+### System Status 🟢 (内网正常) / 🟡 (磁盘91% 3.5G free, 持平) / ✅ (gh 有效, git 同步 0/0)
+- **实质变化 vs 20:04轮**: 新增 `ai-sre-service` 容器 **Up 7min (healthy)**, Docker 现 14 业务容器 (含 ai-sre-service)。commit `0d4eaa7 deploy(ai-sre): #370/#371 deploy ai-sre-service to test env + enable intake (F-SRE-014)`@20:55 已落地+push。**#371 已 CLOSED** (updated 20:55/12:55Z, 携带 F-SRE-014 边界定稿)。#370 仍 OPEN+ready-for-review,
+  但状态已从「文档待派发」推进到「实际部署 + intake 使能」里程碑 — 先前的 REQ/ARCH 派发阻断情境已被此自主部署路径消化。
+- **✅ 服务全绿**: backend :3000/api/health 200 (0.04s), admin :8080 200, portal :8081 200。ai-sre-service :9090 /health 200 (status ok), intake POST /api/sre/intake/ops_webhook 通道已启用 (system_id=school-admin-system, adapter=generic_http)。所有 14 容器 Up (cloudflared exited 常态; 早前 zen_kowalevski throwaway 已不在列表)。磁盘 91% (3.5G free) 持平, 关注未告警。
+- **Open Issue**: 无新增 P0/P1。PR#369 仍 OPEN (mergeable UNKNOWN)。#365-368 + M1-M4 backlog 未变 (DEV 任务 PM 不代修)。spawn blocker (OPENCLAW_NO_RESPAWN=1 env) 仍存在, 但本轮无需 spawn (部署为 memory-sync 自主完成)。
+- **任务判定**: 属自主完成的基础设施里程碑, 服务健康无需干预, 无遗留待启动任务。记入 daily memory, 本轮如实记录该实质进展(非零变化)。
+
+---
+
 # 19:04 — Heartbeat (Sat) 🟢 零实质变化 vs 18:04
 
 ### System Status 🟢 (内网正常) / 🟡 (磁盘91% 3.7G free, 持平) / ✅ (gh 有效, git 同步 0/0)
