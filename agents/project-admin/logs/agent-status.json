@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] 需求 v0.3.1 复评通过。架构改为通用可插拔(适配器/自学习/多租户)，DESIGN → v0.2.0",
-      "lastUpdate": "2026-09-05T02:56:08Z"
+      "task": "[Issue #370] M1 开始：ai-sre-service 骨架 + Agent 生态注册",
+      "lastUpdate": "2026-09-05T03:19:37Z"
     },
     "QA": {
       "status": "idle",

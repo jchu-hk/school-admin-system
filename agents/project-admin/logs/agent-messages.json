@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-02T08:00:38Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "[Issue #307/#308] Deploy #308 getToken 修复构建到 school-admin-frontend (:8080): dist 中已存在修复 bundle (index-B7Al6Piz-20260707.js, 0 auth_token), 但容器只含旧 bundle (index-Clv-l0p1-20260707.js, 带 auth_token bug). 需 docker cp 新 bundle + 更新容器 index.html + 将 version.json gitCommit 更新为 3b05193, 完成后 QA 重新验证。",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #307/#308] Deploy #308 getToken 修复构建到 school-admin-frontend (:8080): dist"
-    }
-  },
-  {
     "timestamp": "2026-08-02T08:01:10Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "ARCH",
       "status": "idle",
       "task": "[Issue #370] 架构重构完成，DESIGN-AI-SRE v0.2.0 已写入"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T03:19:37Z",
+    "from": "PM",
+    "to": "DEV",
+    "message": "[Issue #370] M1 开始：ai-sre-service 骨架 + Agent 生态注册",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #370] M1 开始：ai-sre-service 骨架 + Agent 生态注册"
     }
   }
 ]
