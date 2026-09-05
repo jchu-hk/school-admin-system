@@ -26,9 +26,9 @@
       "lastUpdate": "2026-09-05T02:55:48Z"
     },
     "ARCH": {
-      "status": "idle",
-      "task": "[Issue #370] 架构设计完成，已写入 docs/school-admin-system/DESIGN-AI-SRE.md",
-      "lastUpdate": "2026-09-04T23:51:25Z"
+      "status": "running",
+      "task": "[Issue #370] 架构重构 v0.2.0 开始（通用可插拔）",
+      "lastUpdate": "2026-09-05T02:56:37Z"
     },
     "REQ": {
       "status": "idle",
