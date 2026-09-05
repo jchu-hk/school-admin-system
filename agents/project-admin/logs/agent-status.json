@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #371] 更新 DESIGN：F-SRE-014 用户报障 intake 通道 + 功能正确性边界",
-      "lastUpdate": "2026-09-05T04:18:47Z"
+      "task": "[Issue #371] 复审 DESIGN v0.3.0（intake 通道 + 边界）",
+      "lastUpdate": "2026-09-05T04:25:29Z"
     },
     "QA": {
       "status": "idle",

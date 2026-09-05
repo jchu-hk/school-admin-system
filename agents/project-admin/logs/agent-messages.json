@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:01:50Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[UAT阻断] leave_requests 表缺失：portal 电子请假实体映射 leave_requests 但测试库无此表，migration 1782530900000 未落库，4/5表已建唯缺此表 — 诊断根因并产出修复",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[UAT阻断] leave_requests 表缺失：portal 电子请假实体映射 leave_requests 但测试库无此表，migration 1782"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:02:11Z",
     "from": "DEV",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "ARCH",
       "status": "idle",
       "task": "[Issue #371] DESIGN 更新完成"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:25:29Z",
+    "from": "PM",
+    "to": "CHECKER",
+    "message": "[Issue #371] 复审 DESIGN v0.3.0（intake 通道 + 边界）",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #371] 复审 DESIGN v0.3.0（intake 通道 + 边界）"
     }
   }
 ]
