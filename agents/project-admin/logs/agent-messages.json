@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:09:44Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[leave_requests] 完成：根因=迁移1782530900000从未落库+dev synchronize漏建leave表。修复=幂等化迁移(leave_requests+3枚举+3FK)+核对实体一致+编译通过+补录4文档。commit b0b6d5f (分支 fix/leave-requests-missing-table)。迁移命令由DEVOPS执行: cd apps/backend && npm run migration:run。根因已写入Issue#262 comment。",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "idle",
-      "task": "[leave_requests] 完成：根因=迁移1782530900000从未落库+dev synchronize漏建leave表。修复=幂等化迁移(leav"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:11:01Z",
     "from": "PM",
     "to": "DEVOPS",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #371] DESIGN 整改 (M1 括号 + m2 intake 空态澄清)"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:29:13Z",
+    "from": "ARCH",
+    "to": "PM",
+    "message": "[Issue #371] DESIGN 整改开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "ARCH",
+      "status": "running",
+      "task": "[Issue #371] DESIGN 整改开始"
     }
   }
 ]
