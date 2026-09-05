@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T07:52:45Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[Issue #261][T25] 完成：新增QR考勤/门户5表迁移(幂等已验证)+infra/deploy部署脚本集(无重建docker cp)+识别3个生产缺失env(QR_SIGNING_MASTER_KEY/FRONTEND_URL/WEBHOOK_SECRET)",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "idle",
-      "task": "[Issue #261][T25] 完成：新增QR考勤/门户5表迁移(幂等已验证)+infra/deploy部署脚本集(无重建docker cp)+识别3个生产"
-    }
-  },
-  {
     "timestamp": "2026-08-18T07:55:54Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #371] 更新 DESIGN：F-SRE-014 用户报障 intake 通道 + 功能正确性边界"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:19:17Z",
+    "from": "ARCH",
+    "to": "PM",
+    "message": "[Issue #371] DESIGN 更新开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "ARCH",
+      "status": "running",
+      "task": "[Issue #371] DESIGN 更新开始"
     }
   }
 ]

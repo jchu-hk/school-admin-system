@@ -26,9 +26,9 @@
       "lastUpdate": "2026-09-05T04:15:24Z"
     },
     "ARCH": {
-      "status": "idle",
-      "task": "[Issue #370] 架构重构完成，DESIGN-AI-SRE v0.2.0 已写入",
-      "lastUpdate": "2026-09-05T03:00:15Z"
+      "status": "running",
+      "task": "[Issue #371] DESIGN 更新开始",
+      "lastUpdate": "2026-09-05T04:19:17Z"
     },
     "REQ": {
       "status": "idle",
