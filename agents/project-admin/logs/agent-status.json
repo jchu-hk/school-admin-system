@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #371] 修复 QA 缺陷 B1(known 未落库)+M1(指纹含 severity)+B2(电话掩码)",
-      "lastUpdate": "2026-09-05T04:44:23Z"
+      "task": "[Issue #371] 重验 DEV 修复 B1/M1/B2（commit cc31afe）",
+      "lastUpdate": "2026-09-05T04:46:24Z"
     },
     "QA": {
       "status": "idle",

@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:21:39Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[portal部署] 开始",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "running",
-      "task": "[portal部署] 开始"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:23:39Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "DEV",
       "status": "idle",
       "task": "[Issue #371] 缺陷修复完成"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:46:24Z",
+    "from": "PM",
+    "to": "QA",
+    "message": "[Issue #371] 重验 DEV 修复 B1/M1/B2（commit cc31afe）",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #371] 重验 DEV 修复 B1/M1/B2（commit cc31afe）"
     }
   }
 ]
