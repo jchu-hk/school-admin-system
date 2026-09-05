@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T07:55:54Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[Issue #262][T26] 完成：环境/账号/访问清单与健康快照就绪，4角色登录已实测；产出 docs/UAT-ACCESS-SHEET.md；发现 director/teacher 强制邮箱OTP + portal请假表缺口，已comment #262",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "idle",
-      "task": "[Issue #262][T26] 完成：环境/账号/访问清单与健康快照就绪，4角色登录已实测；产出 docs/UAT-ACCESS-SHEET.md；发现 d"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:01:50Z",
     "from": "PM",
     "to": "DEV",
@@ -1197,6 +1185,18 @@
       "agent": "ARCH",
       "status": "running",
       "task": "[Issue #371] DESIGN 更新开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:21:56Z",
+    "from": "ARCH",
+    "to": "PM",
+    "message": "[Issue #371] DESIGN 更新完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "ARCH",
+      "status": "idle",
+      "task": "[Issue #371] DESIGN 更新完成"
     }
   }
 ]

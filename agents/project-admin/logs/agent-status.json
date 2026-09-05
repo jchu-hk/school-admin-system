@@ -26,9 +26,9 @@
       "lastUpdate": "2026-09-05T04:15:24Z"
     },
     "ARCH": {
-      "status": "running",
-      "task": "[Issue #371] DESIGN 更新开始",
-      "lastUpdate": "2026-09-05T04:19:17Z"
+      "status": "idle",
+      "task": "[Issue #371] DESIGN 更新完成",
+      "lastUpdate": "2026-09-05T04:21:56Z"
     },
     "REQ": {
       "status": "idle",
