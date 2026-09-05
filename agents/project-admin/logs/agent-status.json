@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] M1 运维侧：GitHub label/Docker 编排/Dashboard 面板注册",
-      "lastUpdate": "2026-09-05T03:19:41Z"
+      "task": "[Issue #371] 新增 F-SRE-014 用户报障接入 + 明确 AI SRE 功能正确性边界",
+      "lastUpdate": "2026-09-05T04:12:30Z"
     },
     "QA": {
       "status": "idle",
