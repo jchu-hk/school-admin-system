@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-06T08:36:52Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[Issue #310] 排查完成：cloudflared 本环境不可修(egress 禁止持久连接, quick+named 均 'connection with edge closed')，判定 blocked。已停 crash-loop 容器。公网经官方 aade13aa-...dev.coze.site 实测全部 200（school-admin/portal/api 可达）。school-admin.coze.site/portal.student.coze.site 需 Coze 平台侧配路由。已 comment #310",
-    "type": "failed",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "idle",
-      "task": "[Issue #310] 排查完成：cloudflared 本环境不可修(egress 禁止持久连接, quick+named 均 'connection wi"
-    }
-  },
-  {
     "timestamp": "2026-08-06T08:51:14Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #371] 新增 F-SRE-014 用户报障接入 + 明确 AI SRE 功能正确性边界"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:13:48Z",
+    "from": "REQ",
+    "to": "PM",
+    "message": "[Issue #371] REQ 修订开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "REQ",
+      "status": "running",
+      "task": "[Issue #371] REQ 修订开始"
     }
   }
 ]
