@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-02T08:01:28Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[Issue #307/#308] 部署完成: #308 getToken 修复 bundle (index-B7Al6Piz) 已上线 :8080，index.html 引用已更新，version.json gitCommit=3b05193，旧 bundle 已清理，验证通过 (getToken=1, auth_token=0)",
-    "type": "passed",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "idle",
-      "task": "[Issue #307/#308] 部署完成: #308 getToken 修复 bundle (index-B7Al6Piz) 已上线 :8080，index"
-    }
-  },
-  {
     "timestamp": "2026-08-06T08:25:31Z",
     "from": "PM",
     "to": "DEVOPS",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #370] M1 运维侧：GitHub label/Docker 编排/Dashboard 面板注册"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T03:20:28Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[Issue #370] M1 运维侧开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "running",
+      "task": "[Issue #370] M1 运维侧开始"
     }
   }
 ]

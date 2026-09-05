@@ -16,9 +16,9 @@
       "lastUpdate": "2026-08-18T15:36:29Z"
     },
     "DEVOPS": {
-      "status": "idle",
-      "task": "[#365] 部署完成：新js=index-kX_xteje-20260707.js。index.html grep Agents=0；/school-admi",
-      "lastUpdate": "2026-08-18T15:38:35Z"
+      "status": "running",
+      "task": "[Issue #370] M1 运维侧开始",
+      "lastUpdate": "2026-09-05T03:20:28Z"
     },
     "CHECKER": {
       "status": "idle",
