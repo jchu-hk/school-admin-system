@@ -16,4 +16,16 @@ alert_channels:      # 告警通道地址
   - type: write_message
     endpoint: "skills/agent-communication/scripts/write_message.py"
 
+intake_channels: [] # 用户报障入口（F-SRE-014）：空/缺失 = 待接入态，不启用 intake
+#  若要启用置为 ≥1 通道，例:
+#  - type: webhook
+#    name: ops_webhook
+#    endpoint: "https://..."        # 通用命名，不写死某套工单系统
+#  - type: webform
+#    name: user_form
+#    endpoint: "/"
+# intake_retention:
+#   rawPayloadKeepDays: 30          # 原始报文最小留存（NFR-S §5.8）
+#   contactKeepDaysAfterClose: 7    # 回执联系关单后清除天数
+
 systems: []          # 被纳管系统接入配置（可为空 = 待接入态）

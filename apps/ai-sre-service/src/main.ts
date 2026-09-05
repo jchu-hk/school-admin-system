@@ -14,19 +14,33 @@
 
 import * as http from 'http';
 import { loadConfig, resolveConfigPath } from './config/loader';
-import { SreConfig, isOnboarding } from './config/types';
+import { SreConfig, isOnboarding, isIntakeEnabled } from './config/types';
 import { createAdapter, registeredAdapterTypes } from './adapters';
+import { buildIntake, IntakeRuntime } from './intake';
 
 /** 构建一个极简 HTTP 处理器（仅 /health + / 概览） */
-function buildHandler(config: SreConfig): http.RequestListener {
+function buildHandler(
+  config: SreConfig,
+  getIntake: () => IntakeRuntime,
+): http.RequestListener {
   return (req, res) => {
     const url = (req.url ?? '/').split('?')[0];
     if (url === '/health') {
+      const intake = getIntake();
       const body = {
         status: 'ok',
         service: 'ai-sre-service',
         instance_id: config.identity.instance_id,
         onboarding: isOnboarding(config),
+        intake: {
+          enabled: isIntakeEnabled(config),
+          disabled: intake.disabled,
+          channels: intake.routes.map((r) => ({
+            channel: r.channel,
+            path: r.path,
+            method: r.method,
+          })),
+        },
         systems: config.systems.map((s) => ({
           system_id: s.system_id,
           adapter: s.adapter,
@@ -36,11 +50,25 @@ function buildHandler(config: SreConfig): http.RequestListener {
       res.end(JSON.stringify(body, null, 2));
       return;
     }
+    if (url === '/api/sre/intake/status') {
+      const intake = getIntake();
+      const body = {
+        enabled: !intake.disabled,
+        disabled: intake.disabled,
+        routes: intake.routes,
+        states: intake.store.all().length,
+      };
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(body, null, 2));
+      return;
+    }
     if (url === '/') {
+      const intake = getIntake();
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end(
         `ai-sre-service (${config.identity.instance_id})\n` +
           `状态: ${isOnboarding(config) ? '待接入(onboarding)' : '已接入'}\n` +
+          `Intake 报障接入: ${intake.disabled ? '未启用(待接入态)' : `启用 (${intake.routes.length} 通道)`}\n` +
           `已注册适配器: ${registeredAdapterTypes().join(', ')}\n`,
       );
       return;
@@ -75,9 +103,25 @@ async function bootstrap(): Promise<void> {
   const [host, portStr] = parseListen(config.identity.listen);
   const port = Number(portStr);
 
-  const server = http.createServer(buildHandler(config));
+  // 单一 request 监听器：intake 收报优先，否则交基础处理器（避免多 listener 竞态写头）
+  const intake: IntakeRuntime = buildIntake(config);
+  const server = http.createServer();
+  const base = buildHandler(config, () => intake);
+  server.on('request', (req, res) => {
+    if (intake.handle(req, res)) return; // intake 已处理
+    base(req, res);
+  });
+
   server.listen(port, host, () => {
     console.log(`[ai-sre-service] 监听 http://${host}:${port} (GET /health)`);
+    if (intake.disabled) {
+      console.log('[ai-sre-service] User Intake (F-SRE-014): 未启用（intake_channels 为空 = 待接入态）');
+    } else {
+      console.log(`[ai-sre-service] User Intake (F-SRE-014): 启用 ${intake.routes.length} 通道`);
+      for (const r of intake.routes) {
+        console.log(`  - ${r.method} ${r.path} (channel=${r.channel})`);
+      }
+    }
   });
 }
 

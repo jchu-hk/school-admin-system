@@ -63,6 +63,55 @@ export interface AlertChannel {
 }
 
 /**
+ * 报障入口通道类型（F-SRE-014 / DESIGN §3.11 / §2.4 intake_channels）。
+ * 支持 Web 表单 / IM / 邮件 / 工单 webhook 等；每通道经统一 intake 接口收纳。
+ * 通用命名，不写死某套工单系统——经配置注入。
+ */
+export type IntakeChannelType =
+  | 'webhook'
+  | 'webform'
+  | 'im'
+  | 'email'
+  | 'ticket'
+  | string;
+
+/**
+ * 单个用户报障入口通道配置（intake_channels）。
+ * intake_channels 为空或缺失 = 「待接入 / 不启用 intake」的空态基线，
+ * 此时不注册任何 intake HTTP 入口、不报错。
+ */
+export interface IntakeChannel {
+  /** 通道类型：webhook/webform/im/email/ticket/... */
+  type: IntakeChannelType;
+  /** 通道端点/绑定（通用命名，不写死某套工单系统） */
+  endpoint: string;
+  /** 可选：该通道内部名称（溯源用途） */
+  name?: string;
+  /** 该通道是否启用（缺省 true） */
+  enabled?: boolean;
+  /** 通道特定扩展（经配置注入，核心零通道硬编码） */
+  [key: string]: unknown;
+}
+
+/**
+ * 报障原始报文/回执联系信息保留策略（NFR-S「报障回执最小权限例外」）。
+ * 违背硬性：reporter_contact_ref 脱敏存储；raw_payload 可空 + 最小留存自动清理。
+ */
+export interface IntakeRetention {
+  /**
+   * 供截 arg 脱敏展示/report 联系字段屏蔽的保存策略。
+   * raw_payload（原始报文，可选）自动清理留存天数（缺省 30）。
+   * 值为 AUTO_CLEAN 且 >0 才启用定时清理。
+   */
+  rawPayloadKeepDays: number;
+  /**
+   * reporter_contact_ref（报障者运营回执联系信息）在 incident 关单后
+   * 清除的天数（随 incident 关单后 N 天内清除，可配置，缺省 7）。
+   */
+  contactKeepDaysAfterClose: number;
+}
+
+/**
  * 单个被纳管系统的接入配置（系统无关）。
  * systems: [] 表示「待接入」态。
  */
@@ -95,6 +144,16 @@ export interface SreConfig {
   identity: SreIdentity;
   secrets?: SecretsConfig;
   alert_channels: AlertChannel[];
+  /**
+   * 用户报障入口通道列表（F-SRE-014）。
+   * 可为空或缺失 = 「待接入 / 不启用 intake」的空态基线（不注册、不报错）。
+   */
+  intake_channels?: IntakeChannel[];
+  /**
+   * 报障保留策略（可选，缺省用 NFR-S 安全缺省）。
+   * 仅 intake 启动时消费；无值则用内置缺省。
+   */
+  intake_retention?: IntakeRetention;
   /** 被纳管系统列表（可为空 = 待接入态） */
   systems: SystemConfig[];
 }
@@ -102,4 +161,28 @@ export interface SreConfig {
 /** 列出一个 system 是否为「空环境/待接入」态 */
 export function isOnboarding(config: SreConfig): boolean {
   return !config.systems || config.systems.length === 0;
+}
+
+/** 判断 intake 是否启用（至少一个已启用通道） */
+export function isIntakeEnabled(config: SreConfig): boolean {
+  const channels = config.intake_channels ?? [];
+  return channels.some((c) => c.enabled !== false);
+}
+
+/**
+ * 返回 intake 保留策略（合并配置缺省）。
+ * rawPayloadKeepDays 缺省 30；contactKeepDaysAfterClose 缺省 7。
+ */
+export function intakeRetention(config: SreConfig): IntakeRetention {
+  const r = config.intake_retention;
+  const keepDays = r && typeof r.rawPayloadKeepDays === 'number'
+    ? r.rawPayloadKeepDays
+    : 30;
+  const contactDays = r && typeof r.contactKeepDaysAfterClose === 'number'
+    ? r.contactKeepDaysAfterClose
+    : 7;
+  return {
+    rawPayloadKeepDays: keepDays,
+    contactKeepDaysAfterClose: contactDays,
+  };
 }
