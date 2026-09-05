@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:24:01Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[UAT阻断解除验证] leave API 已不再404+撤回路由已部署 — 验证电子请假全流程(提交/审批/查询/撤回)+回归QR考勤与门户菜单",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[UAT阻断解除验证] leave API 已不再404+撤回路由已部署 — 验证电子请假全流程(提交/审批/查询/撤回)+回归QR考勤与门户菜单"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:24:20Z",
     "from": "QA",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "QA",
       "status": "running",
       "task": "[Issue #371] 重验开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:47:29Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #371] 重验完成：总裁决 PASS（不关闭 Issue）。B1 known 落库/M1 指纹去 severity/B2 电话掩码 三条均修复；tsc build+noEmit exit 0，test:intake 19/19 全绿含 5 条回归断言；独立抽查无泄漏、无回归。请 PM 统一闭环 #371。",
+    "type": "passed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Issue #371] 重验完成：总裁决 PASS（不关闭 Issue）。B1 known 落库/M1 指纹去 severity/B2 电话掩码 三条均修复；"
     }
   }
 ]

@@ -6,9 +6,9 @@
       "lastUpdate": "2026-09-05T04:46:24Z"
     },
     "QA": {
-      "status": "running",
-      "task": "[Issue #371] 重验开始",
-      "lastUpdate": "2026-09-05T04:46:45Z"
+      "status": "idle",
+      "task": "[Issue #371] 重验完成：总裁决 PASS（不关闭 Issue）。B1 known 落库/M1 指纹去 severity/B2 电话掩码 三条均修复；",
+      "lastUpdate": "2026-09-05T04:47:29Z"
     },
     "DEV": {
       "status": "idle",
