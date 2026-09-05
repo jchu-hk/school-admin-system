@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:19:35Z",
-    "from": "PM",
-    "to": "DEV",
-    "message": "[leave撤回404] 前端 PATCH /api/portal/leave/:id/cancel 无后端路由(后端只有DELETE) — 补 cancel 路由(status=cancelled)对齐撤回语义",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[leave撤回404] 前端 PATCH /api/portal/leave/:id/cancel 无后端路由(后端只有DELETE) — 补 cancel "
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:20:08Z",
     "from": "DEV",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "QA",
       "status": "running",
       "task": "[Issue #371] QA 验证开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:41:41Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #371] QA 验证完成：总裁决 FAIL(退回 DEV)。构建/typecheck/smoke(14)/HTTP E2E 多数通过；发现 2 缺陷：①Blocking known 分支 incident 未 upsert 落库致 acked=false+报障丢失(不可追踪)；②Major 去重指纹把 reported_severity 并入导致同象不同/缺严重度被判定 new(AC-014b 去重失效)。详见回报。",
+    "type": "failed",
+    "agent_status": {
+      "agent": "QA",
+      "status": "idle",
+      "task": "[Issue #371] QA 验证完成：总裁决 FAIL(退回 DEV)。构建/typecheck/smoke(14)/HTTP E2E 多数通过；发现 2 "
     }
   }
 ]
