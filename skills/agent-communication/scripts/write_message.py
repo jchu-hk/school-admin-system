@@ -38,6 +38,8 @@ GITHUB_AGENT_LABELS = {
     "CHECKER": "checker",
     "ARCH": "arch",
     "REQ": "req",
+    "AI-SRE": "ai-sre",
+    "OPS": "ops",
 }
 
 

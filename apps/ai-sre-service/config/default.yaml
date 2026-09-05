@@ -1,0 +1,19 @@
+# AI SRE 缺省配置（minimal config）
+#
+# 凭此即可启动并进入「待接入」状态（F-SRE-010 / AC-010）。
+# ⚠️ 本文件不含任何被纳管系统（SAS）的具体值——systems 为空 = 待接入。
+#    接入具体系统请新增 system 条目并指定 adapter；SAS 参考实例见
+#    config/examples/school-admin-system.yaml。
+
+identity:            # AI SRE 自身身份/监听端口
+  instance_id: ai-sre-01
+  listen: "0.0.0.0:9090"
+
+secrets:             # 密钥管理引用（非明文）
+  signing_key_ref: "vault://ai-sre/signing-key"
+
+alert_channels:      # 告警通道地址
+  - type: write_message
+    endpoint: "skills/agent-communication/scripts/write_message.py"
+
+systems: []          # 被纳管系统接入配置（可为空 = 待接入态）
