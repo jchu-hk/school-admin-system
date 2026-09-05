@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] v0.3.0 复评退回(2 Blocking/6 Major/5 Minor)，修订 v0.3.1",
-      "lastUpdate": "2026-09-05T02:49:12Z"
+      "task": "[Issue #370] 复审 v0.3.1：B1 系统无关化+B2 自学习可测已整改，请复评",
+      "lastUpdate": "2026-09-05T02:53:57Z"
     },
     "QA": {
       "status": "idle",
