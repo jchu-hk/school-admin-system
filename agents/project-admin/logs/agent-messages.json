@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:21:21Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "[portal部署] 路由修复(82681ce)+撤回路由(5f4658e)已合入main — 重新编译后端+部署到测试容器+验证leave API不再404",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[portal部署] 路由修复(82681ce)+撤回路由(5f4658e)已合入main — 重新编译后端+部署到测试容器+验证leave API不再404"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:21:39Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[Issue #371] 缺陷修复开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:45:58Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #371] 缺陷修复完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "idle",
+      "task": "[Issue #371] 缺陷修复完成"
     }
   }
 ]
