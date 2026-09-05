@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-02T07:58:08Z",
-    "from": "PM",
-    "to": "QA",
-    "message": "[Issue #307] 重新验证课程管理修复部署 + About 版本。阻塞项 #308 getToken 修复 (3b05193) 已合并并部署到 :8080 (version.json v1.6.1)。请对线上 :8080 做浏览器/HTTP 验证：1) 课程管理页面不再报'获取课程列表失败' 2) About 页面版本信息正确。通过则标注 issue 待关闭。",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #307] 重新验证课程管理修复部署 + About 版本。阻塞项 #308 getToken 修复 (3b05193) 已合并并部署到 :808"
-    }
-  },
-  {
     "timestamp": "2026-08-02T07:58:26Z",
     "from": "QA",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "CHECKER",
       "status": "idle",
       "task": "[Issue #370] v0.3.1 复评结论：通过"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T02:56:08Z",
+    "from": "PM",
+    "to": "ARCH",
+    "message": "[Issue #370] 需求 v0.3.1 复评通过。架构改为通用可插拔(适配器/自学习/多租户)，DESIGN → v0.2.0",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #370] 需求 v0.3.1 复评通过。架构改为通用可插拔(适配器/自学习/多租户)，DESIGN → v0.2.0"
     }
   }
 ]

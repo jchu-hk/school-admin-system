@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #370] 复审 v0.3.1：B1 系统无关化+B2 自学习可测已整改，请复评",
-      "lastUpdate": "2026-09-05T02:53:57Z"
+      "task": "[Issue #370] 需求 v0.3.1 复评通过。架构改为通用可插拔(适配器/自学习/多租户)，DESIGN → v0.2.0",
+      "lastUpdate": "2026-09-05T02:56:08Z"
     },
     "QA": {
       "status": "idle",
