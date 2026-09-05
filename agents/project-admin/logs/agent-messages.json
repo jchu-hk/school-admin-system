@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T07:40:14Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[Issue #261][T25] 开始工作",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "running",
-      "task": "[Issue #261][T25] 开始工作"
-    }
-  },
-  {
     "timestamp": "2026-08-18T07:45:53Z",
     "from": "PM",
     "to": "DEVOPS",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #371] 复审 REQ 修订 v0.4.0（F-SRE-014 + 功能正确性边界）"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:14:54Z",
+    "from": "CHECKER",
+    "to": "PM",
+    "message": "[Issue #371] 复审开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "CHECKER",
+      "status": "running",
+      "task": "[Issue #371] 复审开始"
     }
   }
 ]
