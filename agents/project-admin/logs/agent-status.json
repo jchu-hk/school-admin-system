@@ -2,8 +2,8 @@
   "agents": {
     "PM": {
       "status": "running",
-      "task": "[Issue #371] 复审 DESIGN v0.3.0（intake 通道 + 边界）",
-      "lastUpdate": "2026-09-05T04:25:29Z"
+      "task": "[Issue #371] DESIGN 整改 (M1 括号 + m2 intake 空态澄清)",
+      "lastUpdate": "2026-09-05T04:28:16Z"
     },
     "QA": {
       "status": "idle",

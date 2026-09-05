@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:08:40Z",
-    "from": "DEV",
-    "to": "PM",
-    "message": "[leave_requests] 收尾开始",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEV",
-      "status": "running",
-      "task": "[leave_requests] 收尾开始"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:09:44Z",
     "from": "DEV",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "CHECKER",
       "status": "idle",
       "task": "[Issue #371] DESIGN 复审完成"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:28:16Z",
+    "from": "PM",
+    "to": "ARCH",
+    "message": "[Issue #371] DESIGN 整改 (M1 括号 + m2 intake 空态澄清)",
+    "type": "assign",
+    "agent_status": {
+      "agent": "PM",
+      "status": "running",
+      "task": "[Issue #371] DESIGN 整改 (M1 括号 + m2 intake 空态澄清)"
     }
   }
 ]
