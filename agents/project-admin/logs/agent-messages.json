@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-06T08:25:35Z",
-    "from": "PM",
-    "to": "DEVOPS",
-    "message": "[Issue #309] 每日备份失败 EACCES /var/backups 权限不足, 需修复备份目录权限",
-    "type": "assign",
-    "agent_status": {
-      "agent": "PM",
-      "status": "running",
-      "task": "[Issue #309] 每日备份失败 EACCES /var/backups 权限不足, 需修复备份目录权限"
-    }
-  },
-  {
     "timestamp": "2026-08-06T08:25:56Z",
     "from": "DEVOPS",
     "to": "PM",
@@ -1197,6 +1185,18 @@
       "agent": "DEV",
       "status": "running",
       "task": "[Issue #370] M1 编码开始"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T03:22:27Z",
+    "from": "DEVOPS",
+    "to": "PM",
+    "message": "[Issue #370] M1 运维侧完成",
+    "type": "passed",
+    "agent_status": {
+      "agent": "DEVOPS",
+      "status": "idle",
+      "task": "[Issue #370] M1 运维侧完成"
     }
   }
 ]
