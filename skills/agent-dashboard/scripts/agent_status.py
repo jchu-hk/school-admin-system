@@ -82,11 +82,11 @@ def build_dashboard(status: dict, messages: list):
     icons = {
         "PM": "🧑💼", "DEVOPS": "🔧", "DEV": "🤖",
         "QA": "🔍", "CHECKER": "✓", "ARCH": "🏗️", "REQ": "📝",
-        "UI_DESIGNER": "🎨"
+        "UI_DESIGNER": "🎨", "AI-SRE": "🛡️", "OPS": "📡"
     }
 
     agents_html = ""
-    for agent in ["PM", "DEVOPS", "DEV", "QA", "CHECKER", "ARCH", "REQ", "UI_DESIGNER"]:
+    for agent in ["PM", "DEVOPS", "DEV", "QA", "CHECKER", "ARCH", "REQ", "UI_DESIGNER", "AI-SRE", "OPS"]:
         agent_data = status.get("agents", {}).get(agent, {"status": "idle", "task": "等待任务"})
         agent_status = agent_data.get("status", "idle")
         task = agent_data.get("task", "等待任务")
@@ -300,7 +300,7 @@ def rebuild_dashboard():
 
 def main():
     parser = argparse.ArgumentParser(description="Agent Status Update")
-    parser.add_argument("--agent", choices=["PM", "DEV", "QA", "DEVOPS", "CHECKER", "ARCH", "REQ"],
+    parser.add_argument("--agent", choices=["PM", "DEV", "QA", "DEVOPS", "CHECKER", "ARCH", "REQ", "AI-SRE", "OPS"],
                        help="Agent name")
     parser.add_argument("--status", choices=["running", "idle", "terminated"],
                        help="New status: running/idle/terminated")
