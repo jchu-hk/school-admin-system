@@ -1,17 +1,5 @@
 [
   {
-    "timestamp": "2026-08-18T08:23:39Z",
-    "from": "DEVOPS",
-    "to": "PM",
-    "message": "[portal部署] 完成：电子请假两处修复已编译并部署到测试环境。GET/POST /api/portal/leave 由 404→401，PATCH /api/portal/leave/:id/cancel 路由已注册(PATCH/OPTIONS 均 401/204)。health 200，容器稳定。详见 Issue #262 comment。浏览器端功能验证留待 QA。",
-    "type": "done",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "idle",
-      "task": "[portal部署] 完成：电子请假两处修复已编译并部署到测试环境。GET/POST /api/portal/leave 由 404→401，PATCH /ap"
-    }
-  },
-  {
     "timestamp": "2026-08-18T08:24:01Z",
     "from": "PM",
     "to": "QA",
@@ -1197,6 +1185,18 @@
       "agent": "PM",
       "status": "running",
       "task": "[Issue #371] 重验 DEV 修复 B1/M1/B2（commit cc31afe）"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T04:46:45Z",
+    "from": "QA",
+    "to": "PM",
+    "message": "[Issue #371] 重验开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "QA",
+      "status": "running",
+      "task": "[Issue #371] 重验开始"
     }
   }
 ]

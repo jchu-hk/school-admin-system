@@ -6,9 +6,9 @@
       "lastUpdate": "2026-09-05T04:46:24Z"
     },
     "QA": {
-      "status": "idle",
-      "task": "[Issue #371] QA 验证完成：总裁决 FAIL(退回 DEV)。构建/typecheck/smoke(14)/HTTP E2E 多数通过；发现 2 ",
-      "lastUpdate": "2026-09-05T04:41:41Z"
+      "status": "running",
+      "task": "[Issue #371] 重验开始",
+      "lastUpdate": "2026-09-05T04:46:45Z"
     },
     "DEV": {
       "status": "idle",
