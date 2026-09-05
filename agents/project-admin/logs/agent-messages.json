@@ -3,18 +3,6 @@
     "timestamp": "2026-08-06T08:25:56Z",
     "from": "DEVOPS",
     "to": "PM",
-    "message": "[Issue #310] 开始工作",
-    "type": "received",
-    "agent_status": {
-      "agent": "DEVOPS",
-      "status": "running",
-      "task": "[Issue #310] 开始工作"
-    }
-  },
-  {
-    "timestamp": "2026-08-06T08:25:56Z",
-    "from": "DEVOPS",
-    "to": "PM",
     "message": "[Issue #309] 开始工作",
     "type": "received",
     "agent_status": {
@@ -1197,6 +1185,18 @@
       "agent": "DEVOPS",
       "status": "idle",
       "task": "[Issue #370] M1 运维侧完成"
+    }
+  },
+  {
+    "timestamp": "2026-09-05T03:29:00Z",
+    "from": "DEV",
+    "to": "PM",
+    "message": "[Issue #370] M1 编码续做开始",
+    "type": "received",
+    "agent_status": {
+      "agent": "DEV",
+      "status": "running",
+      "task": "[Issue #370] M1 编码续做开始"
     }
   }
 ]

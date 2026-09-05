@@ -12,8 +12,8 @@
     },
     "DEV": {
       "status": "running",
-      "task": "[Issue #370] M1 编码开始",
-      "lastUpdate": "2026-09-05T03:21:11Z"
+      "task": "[Issue #370] M1 编码续做开始",
+      "lastUpdate": "2026-09-05T03:29:00Z"
     },
     "DEVOPS": {
       "status": "idle",
@@ -39,6 +39,16 @@
       "status": "idle",
       "task": "等待任务",
       "lastUpdate": "2026-07-17T12:55:00Z"
+    },
+    "AI-SRE": {
+      "status": "idle",
+      "task": "[Issue #370] M1 服务骨架/适配器接口/生态注册完成",
+      "lastUpdate": "2026-09-05T03:22:00Z"
+    },
+    "OPS": {
+      "status": "idle",
+      "task": "等待巡检/值班任务",
+      "lastUpdate": "2026-09-05T03:22:00Z"
     }
   }
 }
