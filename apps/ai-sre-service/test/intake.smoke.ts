@@ -16,6 +16,7 @@ import * as assert from 'assert';
 import { IntakeService } from '../src/intake/ingestion';
 import { normalizeReport } from '../src/intake/normalize';
 import { IncidentStore } from '../src/incidents/incident-store';
+import { toMaskedContactRef } from '../src/incidents/reporter-contact';
 import { RetentionSweeper, RetentionPolicy } from '../src/intake/retention';
 import { LogAckBackend } from '../src/intake/acknowledger';
 import { planIntakeRoutes } from '../src/intake/http-intake';
@@ -121,6 +122,69 @@ async function main() {
     assert.strictEqual(rKnown.triage!.known_issue_id, 555);
     assert.strictEqual(rKnown.incident!.duplicate_of_id, null); // post-known 未并入 id
     assert.ok(rKnown.issueId === 555);
+  });
+
+  // ========================= 回归：QA 缺陷 B1/M1/B2 =========================
+  console.log('== 2.5 回归：B1 known 落库 / M1 指纹去 severity / B2 电话掩码 ==');
+  await ta('B1-回归: known 命中后 acked=true 且 incident 已入 store（可 getById 查回）', async () => {
+    assert.strictEqual(rKnown.acked, true, `known.acked=${rKnown.acked} 应为 true`);
+    const persisted = storeK.getById(rKnown.incident!.incident_id);
+    assert.ok(persisted, 'known 命中 incident 应已 upsert 入 store（getById 应命中）');
+    assert.strictEqual(persisted!.triage, 'known');
+    assert.strictEqual(persisted!.issue_id, 555);
+    // 回执收到后 store 副本 ack_status 亦推进为 received
+    assert.strictEqual(persisted!.ack_status, 'received');
+    assert.strictEqual(persisted!.ack_attempts >= 1, true);
+  });
+  // known 后对该 incident 可正常推进回执（此前因未入 store 无法 setAckStatus）
+  await ta('B1-回归: 已补证 known incident 可继续推进回执状态（处理中）', async () => {
+    const cont = await knownSvc.ack().acknowledge(rKnown.incident!.incident_id, 'processing');
+    assert.strictEqual(cont, true);
+    assert.strictEqual(storeK.getById(rKnown.incident!.incident_id)!.ack_status, 'processing');
+  });
+
+  await ta('M1-回归: 同 system+同现象、severity 表述不同或缺省 → 判 dup 归并到 A，不产生新', async () => {
+    const mStore = new IncidentStore();
+    const mSvc = new IntakeService(mStore, { ackBackend: new LogAckBackend() });
+    const mA = await mSvc.ingest(
+      { system_id: 'pay', symptom_desc: '对账流水缺失，出现款项对不上', reported_severity: '高/影响面大', reported_at: iso, reporter_contact: 'mA@x.com' },
+      { sourceChannel: 'im', receivedAt: new Date() },
+    );
+    assert.strictEqual(mA.triage!.triage, 'new', 'A(首报) 应为 new');
+    const mB = await mSvc.ingest(
+      { system_id: 'pay', symptom_desc: '对账流水缺失，出现款项对不上', reported_severity: '紧急/严重', reported_at: iso, reporter_contact: 'mB@x.com' },
+      { sourceChannel: 'webform', receivedAt: new Date() },
+    );
+    assert.strictEqual(mB.triage!.triage, 'dup', 'B(severity 表述不同) 应判 dup');
+    assert.strictEqual(mB.triage!.duplicate_of_id, mA.incident!.incident_id, 'B 应归并到 A');
+    const mC = await mSvc.ingest(
+      { system_id: 'pay', symptom_desc: '对账流水缺失，出现款项对不上', reported_at: iso, reporter_contact: 'mC@x.com' },
+      { sourceChannel: 'ticket', receivedAt: new Date() },
+    );
+    assert.strictEqual(mC.triage!.triage, 'dup', 'C(缺省 severity) 应判 dup');
+    assert.strictEqual(mC.triage!.duplicate_of_id, mA.incident!.incident_id, 'C 应归并到 A');
+    // 不产生额外新 incident：同一 dedup 指纹只该有一个现役首建
+    const aCount = mStore.all().filter((i) => i.triage === 'new' && i.incident_id !== mA.incident!.incident_id).length;
+    assert.strictEqual(aCount, 0, '不应产生额外 new incident');
+  });
+  t('M1-回归: 指纹不含 severity → 同 system+现象、severity 有无/表述不同，指纹一致', () => {
+    const mkFp = (sev?: string) => normalizeReport(
+      { system_id: 'pay', symptom_desc: '对账流水缺失，出现款项对不上', reported_severity: sev, reported_at: iso, reporter_contact: 'fp@x.com' },
+      { sourceChannel: 'im', receivedAt: new Date() },
+    ).incident!.dedup_fingerprint;
+    const fpHigh = mkFp('高/影响面大');
+    const fpUrgent = mkFp('紧急/严重');
+    const fpNone = mkFp(undefined);
+    assert.strictEqual(fpHigh, fpUrgent, '不同 severity 文案指纹应一致');
+    assert.strictEqual(fpUrgent, fpNone, '缺省 severity 指纹应同前');
+  });
+  t('B2-回归: 电话掩码前缀全星仅留尾 4（+cc 保留为结构提示）', () => {
+    // 明细：本地号码前部全星仅留尾 4
+    const local = toMaskedContactRef('13855551234');
+    assert.strictEqual(local.ref, '***1234', `local.ref=${local.ref}`);
+    // 带国家码：保留 +cc 结构提示 + 星 + 尾 4，不再暴露国家码外其它位
+    const intl = toMaskedContactRef('+86 138 5555 1234');
+    assert.strictEqual(intl.ref, '+86 ***1234', `intl.ref=${intl.ref}`);
   });
 
   console.log('== 3. 回执闭环与重试 ==');

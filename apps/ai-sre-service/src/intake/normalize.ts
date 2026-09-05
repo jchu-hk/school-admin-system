@@ -133,8 +133,10 @@ export function normalizeReport(
     };
   }
 
-  // 去重指纹：含 system_id + 归一化现象 token
-  const fingerprint = dedupFingerprint(systemId, symptom, [reportedSev]);
+  // 去重指纹：仅含 system_id + 归一化现象 token，作为「同根因/同现象」去重身份。
+  // reported_severity 为自由文本/主观初估，并入指纹会导致同 system+同现象仅因严重度
+  // 表述不同或缺省而被误判为多条 new（M1）；严重度差异交由 triage/模型层处理，不入指纹。
+  const fingerprint = dedupFingerprint(systemId, symptom);
 
   const keepRaw = report.keep_raw === true;
   const rawPayload = keepRaw

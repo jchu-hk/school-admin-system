@@ -70,13 +70,23 @@ function maskByKind(kind: string, value: string): MaskedContact {
     }
   }
   if (kind === 'phone') {
-    // 保留尾号末 4 位：mask 前部
+    // 前缀全星，仅保留国家码（+xx）与尾号末 4 位 —— 最小化展示。
     const digits = value.replace(/\D/g, '');
-    if (digits.length >= 4) {
-      const tail = digits.slice(-4);
-      const head = digits.slice(0, Math.max(0, digits.length - 4));
-      const masked = (head ? head.slice(0, 3) + '***' : '') + tail;
-      return { ref: masked, resolved: value };
+    let national: string;
+    let countryCode = '';
+    const ccMatch = /^\+\s*(\d{1,3})\b/.exec(value);
+    if (ccMatch) {
+      countryCode = ccMatch[1];
+      national = digits.startsWith(countryCode)
+        ? digits.slice(countryCode.length)
+        : digits;
+    } else {
+      national = digits;
+    }
+    if (national.length >= 4) {
+      const tail = national.slice(-4);
+      const prefix = countryCode ? `+${countryCode} ` : '';
+      return { ref: `${prefix}***${tail}`, resolved: value };
     }
   }
   // opaque/其它：保留末 4 位，前缀打星

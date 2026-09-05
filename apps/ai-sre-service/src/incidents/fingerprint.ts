@@ -3,9 +3,11 @@
  *
  * 报障去重指纹生成（F-SRE-007 去重/抑制 + F-SRE-014 triage 三分类共用）。
  *
- * 归一化稳定输入（system_id + 归一化现象 token + 分类后严重度归一），
- * 敲定含 system_id 的稳定 hash，供既有去重抑制链路与 intake triage
- * 做「同根因/同现象」判定。
+ * 归一化稳定输入（system_id + 归一化现象 token）→ 敲定含 system_id 的稳定 hash，
+ * 供既有去重抑制链路与 intake triage 做「同根因/同现象」判定。
+ *
+ * ⚠️ severity（报障者自由文本/主观初估）刻意不入指纹：同 system+同现象仅因严重度
+ *    表述不同或缺省不应被误判为多条 new（M1），严重度差异交由 triage/模型层处理。
  *
  * 指纹非用于 PII 识别——输入均为归一化现象文本，无联系人信息。
  */
@@ -28,7 +30,7 @@ export function normalizeSymptomTokens(symptom: string): string[] {
 
 /**
  * 由 system_id + 现象描述敲定稳定去重指纹（SHA-256 前 64 hex）。
- * extraKeys 可纳入组件/根因弱信号（可选）。
+ * extraKeys 可纳入其它弱信号，但**不得包含 severity**（见 M1，severity 不属去重身份）。
  */
 export function dedupFingerprint(
   systemId: string,

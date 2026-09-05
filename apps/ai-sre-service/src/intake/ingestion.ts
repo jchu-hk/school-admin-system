@@ -134,6 +134,9 @@ export class IntakeService {
     // —— new / known ——
     // known 时若关联到既有 Issue 则补充证据（不新建），仍未关联则建 Issue
     let issueId: number | null = inc.issue_id ?? null;
+    // 落库（B1：known 分支此前在 return 前未 upsert，导致已知 issue 再报不入 store →
+    // acked=false、报障丢失不可追踪补证；此处与 new 分支同构，先持久化再走回执）
+    this.store.upsert(inc);
     if (decision.triage === 'known' && decision.known_issue_id != null) {
       issueId = decision.known_issue_id;
       await this.issueGateway.addComment(issueId, `[F-SRE-014] 命中已知根因 incident ${inc.incident_id}`);
