@@ -3,10 +3,10 @@
 | 项目 | 内容 |
 |------|------|
 | 文档编号 | DESIGN-AI-SRE |
-| 版本 | v0.2.0 |
+| 版本 | v0.3.0 |
 | 日期 | 2026-09-05 |
-| 关联 Issue | GitHub Issue #370 |
-| 上游需求 | FUNCTIONAL-SPEC-AI-SRE v0.3.1（已通过复审，0 Blocking / 0 Major / 0 Minor 残余） |
+| 关联 Issue | GitHub Issue #370 / #371 |
+| 上游需求 | FUNCTIONAL-SPEC-AI-SRE v0.4.0（已通过复审，0 Blocking / 0 Major / 0 Minor 残余） |
 | 作者 | ARCH（架构 Agent） |
 | 状态 | Draft（待 DEV/DEVOPS/CHECKER 评审） |
 
@@ -16,6 +16,7 @@
 
 | 版本 | 日期 | 变更说明 |
 |------|------|----------|
+| v0.3.0 | 2026-09-05 | 按 #371 变更同步：(1) 新增**用户报障 intake 通道**——Intake 适配器/通道作为第二条输入源（与监控采集并列）、归一化→三分类 triage→关联/创建 Issue→触发排查/转 DEV→回执闭环，落地组件层 §2.5/§3.11、配置层 §2.4（`intake_channels`）、数据层 §7.2（`sre_incidents` 扩展字段 + `audit_logs` 枚举）、架构图 §8（含 NFR-S 报障回执最小权限例外约束）；(2) 显式澄清**功能正确性边界**：监控采集/检测范围=可用性/可靠性，功能正确性不自动检测、仅当泄露可观测信号时顺带检出，静默 bug 由 QA 功能测试 + F-SRE-014 用户报障兜底（§1/§3.4/§11） |
 | v0.2.0 | 2026-09-05 | 架构重构：由「SAS 定制版」升级为「通用可部署、可学习、可支持新系统的 AI SRE」。核心变化：(1) 交付形态改为自包含容器镜像 + compose/helm 编排清单 + 一键接入脚本，配置与代码分离，镜像/代码零 SAS 硬编码（F-SRE-010）；(2) 新增 **System Adapter Layer** 插件层（接口抽象 + 可插拔 + 签名校验 + 热加载/回滚生命周期，F-SRE-011）；(3) 新增 **Learning Engine** 自学习引擎（冷启动→预热→已学习三态迁移，量化参数对齐 AC-012，F-SRE-012）；(4) 新增 **Multi-System Registry** 多系统命名空间隔离（F-SRE-013）；(5) Collector/Detector/Localizer/Healing/Executors/Escalation/Audit 全部泛化为「被纳管系统」表述，SAS 端口/容器数/路径移入「附录：参考实例配置」。保留 C1-C6 已落位安全设计并泛化 |
 | v0.1.0 | 2026-09-05 | 初稿：基于 FUNCTIONAL-SPEC-AI-SRE v0.2.0，SAS 定制版总体架构、组件分解、数据流、自愈安全边界、Agent 生态集成、持久化草案、架构图与 ADR |
 
@@ -43,7 +44,7 @@ AI SRE 是一个**通用、可部署、可学习、可支持新系统**的常驻
 4. **配置驱动、插件可插拔**：系统差异全部配置/适配器注入，核心代码与镜像无任何系统特定硬编码。
 5. **复用优先**：在 SAS 参考实例中复用现有监控/事件/审计基础设施；通用交付形态不依赖任何单一系统既有栈。
 
-### 1.2 需求覆盖索引（F-SRE-010~013 落位速览）
+### 1.2 需求覆盖索引（F-SRE-010~014 落位速览）
 
 | 需求 | 架构落位 |
 |------|----------|
@@ -51,7 +52,10 @@ AI SRE 是一个**通用、可部署、可学习、可支持新系统**的常驻
 | **F-SRE-011 系统接入适配器** | §3.1 System Adapter Layer（接口抽象/插件生命周期/签名校验/热加载回滚）；§9 ADR-005 适配器插件模型选型 |
 | **F-SRE-012 自学习** | §3.2 Learning Engine（三态迁移量化参数对齐 AC-012、迁移先验、投毒/漂移防护）；§7.4 学习状态/基线存储；§9 ADR-006 自学习引擎选型 |
 | **F-SRE-013 多系统/多租户** | §3.3 Multi-System Registry（per-system namespace 隔离）；§5.6 横向越权/凭证泄露遏制；§7.2 per-system 表草案；§9 ADR-007 多租户隔离方案 |
+| **F-SRE-014 用户报障接入（Intake）** | §2.4 `intake_channels` 最小配置；§2.5/§3.11 Intake 适配器/通道 + 归一化→triage（重复/已知/新建）→关联 Issue→触发排查/转 DEV→回执闭环；§7.2 `sre_incidents` 归一化字段 + `audit_logs` 扩展；§5.8 报障回执最小权限例外；§8 架构图双输入源标注；ADR-008（含 NFR-S 报障回执最小权限例外） |
 
+> 功能正确性边界（F-SRE-014 补位动机，承 §2 检测边界）：AI SRE 的自动化检测范围 = **可用性/可靠性**，不覆盖功能正确性；功能缺陷仅当泄露可观测信号时顺带检出，静默 bug 由 QA 功能测试 + 用户报障（F-SRE-014）兜底。两输入源分工见 §2.5/§8。
+>
 > 既有 C1-C6 安全设计（白名单+签名、AC 可测、防抖、回滚一致性、Redis 数据损坏判据、升级去重/自身运维归属）全部保留并泛化，见 §5。
 
 ---
@@ -84,35 +88,48 @@ AI SRE 以**自包含可部署单元**交付，三者缺一不可：
 ### 2.3 与「被纳管系统」的拓扑关系（泛化）
 
 ```
-                          ┌───────────────────────────────────────────────┐
-                          │            用户 / 外部访问 (Coze proxy)        │
-                          └───────────────┬───────────────────────────────┘
-                                          │ :5001 gateway / cloudflared
-        ┌─────────────────────────────────┼───────────────────────────────┐
-        │      被纳管系统（示例 = SAS，经配置/适配器注入）                   │
-        │  frontends · backend · db · cache · 日志源 · 磁盘卷              │
-        └───────────┬─────────────────────┴──────────────┬────────────────┘
-                    │ 健康端点/资源指标/日志（只读）        │
-   ┌────────────────▼─────────────────────────────────────▼───────────────┐
-   │          System Adapter Layer（适配器插件层，每系统一个 Adapter 实例） │
-   │  ServiceDiscovery · HealthProbe · ResourceCollect · LogSource · ...   │
-   │  [内置参考] Generic HTTP Adapter · SAS Adapter · Docker Adapter      │
-   └───────────────┬─────────────────────────────────────────────────────┐
-                   │ 标准化组件模型 + 指标流（每系统独立 namespace）
-   ┌───────────────▼─────────────────────────────────────────────────────┐
-   │                     AI SRE 独立服务 (ai-sre-service)                  │
-   │   Collector → Detector/Classifier → Localizer → Learning Engine       │
-   │   → Healing Decision Engine → Executors/Escalation → Audit           │
-   │   策略引擎(白名单/签名/熔断) · 多系统 Registry · Dashboard 同步        │
-   └───────┬─────────────────────────────┬───────────────────────────────┘
-           │ 受限自愈(白名单内)           │ 升级(白名单外/高风险)
-           ▼                               ▼
-   ┌───────────────┐              ┌─────────────────────────────────────┐
-   │ 目标系统服务    │              │ 多 Agent 协作层 (write_message.py)  │
-   │ restart/清理等 │              │ PM / DEV / QA / DEVOPS / CHECKER    │
-   └───────────────┘              │ / OPS / ARCH / REQ  →  + AI SRE      │
-                                  └─────────────────────────────────────┘
+                  ┌───────────────────────────────────────┐
+                  │  输入源②：用户报障 Intake (F-SRE-014) │
+                  │  Web 表单 / IM / 邮件 / 工单 webhook…  │
+                  │  （通道可配置，通用命名）              │
+                  └───────────────────┬───────────────────┘
+                                      │ 报障报文（含报障者运营回执联系信息，
+                                      │ NFR-S「报障回执最小权限例外」约束）
+                                      ▼
+                  ┌───────────────────────────────────────┐
+                  │ Intake Collector → Broker            │
+                  │ 归一化为结构化 incident              │
+                  │ → triage：重复/已知/新建 → 关联/创建  │
+                  │   GitHub Issue                       │
+                  └───────────────────┬───────────────────┘
+                                      │ 结构化 incident
+                                      │
+   ┌───────────────────────────────────▼───────────────────────────────────┐
+   │                         AI SRE 独立服务 (ai-sre-service)               │
+   │  输入源①监控采集(可用性/可靠性) → Detector/Classifier → Localizer      │
+   │    → Learning → Healing Decision Engine → Executors/Incident &        │
+   │      Escalation Manager → Audit                                       │
+   │  输入源②Intake → 归一化/triage → 定向排查(可观测信号?) / 转 DEV         │
+   │  策略引擎(白名单/签名/熔断) · 多系统 Registry · Dashboard 同步         │
+   └──────┬────────────────────────────────┬───────────────────────────────┘
+          │ 受限自愈(白名单内)             │ 升级 / 转 DEV / 回执             │
+          ▼                                ▼                                
+   ┌─────────────────┐                  ┌────────────────────────────────┐
+   │ 目标系统服务     │                  │ 被纳管系统拓扑/监控数据源         │
+   │ restart/清理等   │                  │ System Adapter Layer(每系统一    │
+   └─────────────────┘                  │ Adapter) 采集健康/资源/日志(只读)│
+                                        └────────────────────▲───────────┘
+                                        (输入源①：监控采集，可用性/可靠性)  │
+   ┌─────────────────┐                ┌──────────────────────────────────┐
+   │ 用户/外部访问    │                │ 多 Agent 协作层 (write_message.py) │
+   │ (Coze proxy)    │                │ PM / DEV / QA / DEVOPS / CHECKER   │
+   │ :5001 gateway   │                │ / OPS / ARCH / REQ → + AI SRE      │
+   └─────────────────┘                │ 静默/功能正确性报障→经 Issue 转 DEV；│
+                                      │ 回执状态经 Issue/Dashboard 闭环      │
+                                      └──────────────────────────────────┘
 ```
+
+> **两输入源分工**：输入源①「监控采集」探测的是**可用性/可靠性**信号（健康/资源/错误率/日志 ERROR/心跳），是 AI SRE 的主检测通道；输入源②「用户报障 Intake」补位「功能不工作但系统健康运行」的盲区，二者均汇入 Incident/Escalation Manager 统一处置（对应 F-SRE-007 去重/抑制）。功能正确性本身不在监控采集自动检测范围——仅当功能缺陷泄露可观测信号时才被①顺带检出；静默 bug 由 QA 功能测试 + ②用户报障兜底（详见 §1.2 功能正确性边界）。
 
 > 说明：SAS 参考实例中，Adapter 复用其既有 13 容器监控/事件基础设施（Prometheus/Kafka/PostgreSQL/Redis/OPA）作为数据源；但通用交付形态不强制要求目标系统存在这些组件——无适配器时降级为通用 HTTP 探测 + 日志源 + 资源指标最小接入（F-SRE-011 降级路径）。
 
@@ -130,6 +147,9 @@ secrets:             # 密钥管理引用（非明文）
 alert_channels:      # 告警通道地址
   - type: write_message
     endpoint: "skills/agent-communication/scripts/write_message.py"
+intake_channels:     # 用户报障入口通道（F-SRE-014），可为空或缺失 = 不启用 intake
+  # - type: webhook     # 通道类型：webhook / im / email / webform / 工单 webhook 等
+  #   endpoint: "..."   # 通道端点/绑定（通用命名，不写死某套工单系统）
 systems: []          # 被纳管系统接入配置（可为空 = 待接入态）
 ```
 
@@ -140,7 +160,8 @@ systems: []          # 被纳管系统接入配置（可为空 = 待接入态）
 | **System Adapter Layer（系统接入适配器层）** | 组件发现与建模、健康/资源/日志采集接口抽象、插件生命周期管理 | 每系统一个 Adapter 实例，独立进程/沙箱 | 🆕 新增（F-SRE-011） |
 | **Learning Engine（自学习引擎）** | 三态迁移、基线拟合、阈值收敛、异常模式学习、迁移先验、投毒/漂移防护 | ai-sre-service 内常驻 | 🆕 新增（F-SRE-012） |
 | **Multi-System Registry（多系统注册/命名空间隔离）** | per-system 配置/凭证/策略/审计命名空间管理，横向越权遏制 | ai-sre-service 内常驻 | 🆕 新增（F-SRE-013） |
-| **SRE Collector（监控采集）** | 周期采集健康/容器/DB/缓存/磁盘/日志/心跳指标 | 内常驻循环（数据源经 Adapter 抽象） | ♻️ 泛化 |
+| **Intake Adapter / Channel（用户报障接入）** | 收纳用户侧报障（Web 表单/IM/邮件/工单 webhook 等），归一化为结构化 incident（含 NFR-S 报障回执最小权限例外约束），triage 重复/已知/新建，触发排查或转 DEV，回执受理→处理→关单状态 | 每 intake 通道一个收集点；triager 常驻内服务 | 🆕 新增（F-SRE-014） |
+| **SRE Collector（监控采集）** | 周期采集健康/容器/DB/缓存/磁盘/日志/心跳指标（范围=可用性/可靠性） | 内常驻循环（数据源经 Adapter 抽象） | ♻️ 泛化 |
 | **Detector + Classifier（检测/分级）** | 规则+基线检测异常，映射 P0-P3 并给分级理由 | 同上 | ♻️ 泛化 |
 | **Localizer（根因定位）** | 产出受影响组件、最近变更关联、根因假设 | 规则定位（本地）+ 复杂场景云端 LLM | ♻️ 泛化 |
 | **Healing Decision Engine（自愈决策）** | 白名单/签名/kill-switch/熔断/防抖/SVA 门禁裁决 | 策略引擎（可复用 OPA 或独立策略层） | ♻️ 泛化 |
@@ -264,6 +285,8 @@ interface SystemAdapter {
 | 日志 | 聚合日志源 | 订阅 ERROR/FATAL/panic |
 | 心跳 | Agent 心跳 | 心跳文件/agent-status |
 
+> **检测范围边界（功能正确性）**：上表全部采集项均为**可用性/可靠性**信号——服务健康/资源/错误率/日志 ERROR 簇/心跳，不覆盖「功能正确性」（业务逻辑对不对、返回结果正不正确）。仅当功能缺陷**泄露可观测信号**（后端抛异常→日志 ERROR 簇、5xx/错误率升高、DB 报错）时才被本通道**顺带**检出；**静默 bug**（返回 200 但结果错/页面空白不抛错）不产生上述信号，AI SRE 无法仅凭监控自动发现——此类由 **QA 功能测试** + **F-SRE-014 用户报障接入**兜底（见 §1.2/§3.11）。
+
 采集节奏：关键健康检查 ≤ 60s，全量巡检 ≤ 5min（NFR-A）。采集器为无状态、可水平扩展的 worker 池，按 system_id 分片，结果写入事件总线（带 system_id 命名空间标记）。
 
 ### 3.5 Detector + Classifier（检测与分级，泛化）
@@ -336,6 +359,45 @@ interface Executor {
 
 对应 NFR-S/F-SRE-013 审计边界。不可变、**按 system_id 命名空间隔离**、仅追加写，是 CHECKER 质检的输入。写入失败则**阻止后续自愈**（fail-closed，UC-010）。越权写审计（跨 system_id）触发告警。
 
+### 3.11 User Incident Intake（用户报障接入，F-SRE-014）
+
+**新增组件**。为「功能不工作但系统健康运行」的盲区提供**用户侧报障入口**（第二输入源，与 §3.4 监控采集并列），补位功能正确性盲区（配合 QA 功能测试，见 §1.2 边界说明）。内部字段/通道均采用**通用命名**，不写死某套工单系统，经通道配置/适配器接入。
+
+#### 3.11.1 Intake 通道与接口
+
+- **可配置通道**：至少提供一个用户侧报障入口，支持 Web 表单 / IM / 邮件 / 工单 webhook 等（`intake_channels`，见 §2.4），每通道经统一 intake 接口收纳。
+- **统一 intake 接口**：各通道适配为同一收报接口（接收报文 + 元数据：来源通道、接收时间戳），与 System Adapter Layer 类似以插件/配置方式接入，核心零通道硬编码。
+- **旁路不侵入**：intake 只读接收用户反馈，不写回被纳管系统、不访问业务用户 PII。
+
+#### 3.11.2 归一化（Normalize）
+
+收到的报障内容归一化为统一 incident 结构，落 `sre_incidents`（§7.2），结构化字段至少含：受影响的系统标识（`system_id`，被纳管系统）、现象描述（自由文本 `symptom_desc`）、影响范围/严重度初步估计（`reported_severity`）、发生时间（`reported_at`）、报障者运营回执联系信息（`reporter_contact_ref`——用于回执，非业务用户 PII，采集与保留受 **NFR-S「报障回执最小权限例外」** 约束，见 §5.8）。来源通道 `source_channel` 与接收时间戳须保留以便追溯；**原始报文为可选项**——仅当取证/复核需要时保留（`raw_payload` 可空），且按最小留存周期自动清理（不默认全量长期存档）。
+
+#### 3.11.3 关联 Issue（Issue 为唯一真相源）
+
+归一化后的 incident 须关联或新建对应 GitHub Issue（`issue_id`），延续既有原则，保证与 PM 调度、DEV、QA 流程同源可见。（重复/已知归并不新建，见下。）
+
+#### 3.11.4 三分类 triage（重复 / 已知 / 新建）
+
+- **重复（Duplicate / dup）**：与同一根因/同现象既有 incident（或仍在抑制/冷却期）重复 → 合并、去重通知（对齐 F-SRE-007），仅更新既有记录，不新增 issue/incident 与告警（AC-014b）。
+- **已知（Known）**：命中已在处理/已存在的 Issue 或已知根因 → 并入对应 Issue 并补充证据，不新建（AC-014b）。
+- **新建（New）**：非重复亦非已知 → 作为新问题进入排查（AC-014a）。
+
+#### 3.11.5 触发排查（Trigger）
+
+新建/未知 incident → 触发对该系统的**定向排查**（结合最近变更、可用性/可靠性信号识别是否已泄露可观测信号）：
+
+- 能定位到**可观测信号** → 按既有升级路径（回到 §3.9/Detector 通道）处理；
+- 属**静默 / 功能正确性**类（无可观测信号）→ 转 **DEV** 走代码层排查修复（经 Issue）。
+
+#### 3.11.6 反馈回执（Acknowledge & Close-loop，AC-014a）
+
+向报障用户回执 incident 处理状态（**已受理 / 处理中 / 已修复**），并在 Issue/Dashboard 可见闭环；状态变更（受理→定位→修复→关单）可追踪可回查。回执仅使用 `reporter_contact_ref` 脱敏联系（受 §5.8 约束），不参与监控/告警/检测数据与基线建模。
+
+#### 3.11.7 异常流（对 UC-SRE-016）
+
+通道不可用 / 报文缺关键字段 → 标记告警并提示补全后重试；回执失败 → 重试并在 Issue/Dashboard 可见闭环。系统不可达/需取证时按最小留存周期保留原始报文（见 §3.11.2）。
+
 ---
 
 ## 4. 数据流与事件通道
@@ -350,12 +412,16 @@ Kafka Topic 规划（每个消息体带 `system_id` 命名空间标记）：
 |-------|--------|--------|------|
 | `sre.metrics.raw` | Collector（经 Adapter） | Detector | 原始采集快照（含 system_id） |
 | `sre.anomaly.detected` | Detector | Localizer / Decision Engine / Learning Engine | 已分级异常事件（含 system_id） |
+| `sre.intake.received` | Intake Channel / Collector | Intake Broker（归一化→triage） | 用户报障原始报文（F-SRE-014；可选原报文本经脱敏临时载入，含 system_id） |
+| `sre.intake.normalized` | Intake Broker | triage / Escalation Manager / Localizer | 归一化结构化 incident + triage 结果（dup/known/new，含 system_id） |
 | `sre.learning.update` | Learning Engine | Detector / Decision Engine | 基线/阈值/策略更新事件（版本化） |
 | `sre.healing.command` | Decision Engine | Executors | 已裁决的自愈命令（含签名 + system_id） |
 | `sre.healing.result` | Executors | Decision Engine / Audit | 执行结果（含验证） |
 | `sre.escalation.request` | Escalation Manager | 外部协作层 | 升级请求（去重后） |
 
 ### 4.2 完整数据流链路
+
+> 两条输入源在 Escalation/Incident Manager 汇合（输入源①监控采集、输入源②用户报障 Intake），两者均复用 `sre_incidents` 真相源与去重/抑制/升级链路。
 
 ```
   [被纳管系统监控数据] ──► [Adapter 发现/采集] ──► [检测] ──► [分级] ──► [学习] ──► [自愈/升级] ──► [审计]
@@ -456,6 +522,17 @@ AI SRE 的自愈动作属新增 Action Class `SRE_HEAL`：
 - 每系统凭证以独立 Secret namespace 注入，运行时内存按 system_id 隔离；系统 A 的凭证/令牌不得访问系统 B 资源。
 - 任一系统被攻陷仅影响其自身 namespace，不越权影响他系统监控/自愈/审计。
 
+### 5.8 报障回执最小权限例外（NFR-S / F-SRE-014 / UC-SRE-016）
+
+为完成用户报障受理回执（§3.11），AI SRE 可采集报障者**运营回执联系信息**；此项严格受如下约束，且**不属于**访问业务用户 PII：
+
+- **目的绑定**：仅用于向报障者回执本 incident 的处理状态（已受理/处理中/已修复），不用于任何其它目的。
+- **仅回执用**：联系信息不进入通用监控/告警/检测数据，不参与异常检测与基线建模。
+- **最小化存储**：仅存报障通道供给的最小回执字段（`reporter_contact_ref` 引用脱敏存储），不主动采集/挖掘额外个人属性。
+- **保留周期受限**：按最小留存周期自动清理（默认随 incident 关单后 N 天内清除，可配置），不长期留存。
+- **脱敏/掩码展示**：在 Issue/Dashboard/审计界面以脱敏/掩码形式展示（如尾号），不全量明文回写公共渠道。
+- **审计隔离**：涉及该联系信息的读取/回执动作按 system 隔离写 append-only 审计，可追查不可篡改（扩展 §7.2 `audit_logs` 枚举）。
+
 ---
 
 ## 6. 与现有 Agent 生态集成（C6/F-SRE-009）
@@ -526,19 +603,32 @@ AI SRE（及 OPS）需注册进以下位置（现有枚举为 `{PM,DEV,QA,DEVOPS
 | status | sre_system_status_enum | onboarding/active/degraded/offboarded |
 | onboarded_at | TIMESTAMPTZ | 接入时间 |
 
-**表 1：`sre_incidents` — 异常事件（检测/分级/定位真相源）**
+**表 1：`sre_incidents` — 异常/报障事件（检测 + 用户报障 Intake 统一真相源）**
+
+> 统一承载两条输入源的事件：①监控采集 Detector 检测到的可用性/可靠性异常；②用户报障 Intake 归一化后的结构化 incident（F-SRE-014）。两类共用 `system_id` 隔离；intake 来源用 `source='intake'` 区分，报障专属字段（`sample` 下方带 ✚）仅在 intake 时填写。 `severity/dedup_fingerprint/status 复用既有去重抑制与升级链路，保证 triage 与新检测事件同源可比较。
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
 | id | UUID PK | 事件主键 |
 | system_id | UUID FK→sre_systems | **命名空间隔离** |
-| anomaly_type | VARCHAR(64) | service_down/disk_high/db_error/cache_error/... |
-| severity | sre_severity_enum | P0/P1/P2/P3 |
-| status | sre_incident_status_enum | detected/locating/healing/escalated/resolved/suppressed |
+| source | sre_incident_source_enum | **detected（监控采集）/ intake（用户报障）** |
+| anomaly_type | VARCHAR(64) | service_down/disk_high/db_error/cache_error/...(detected) 或 functional/manual(reported) |
+| severity | sre_severity_enum | 检测定级 P0-P3（intake 可先给初步估计再校准） |
+| ✚ reported_severity | VARCHAR(32) | 报障者初步影响/严重度估计（intake） |
+| status | sre_incident_status_enum | detected/locating/healing/escalated/resolved/suppressed（intake 见回执流程） |
 | affected_component | VARCHAR(128) | 受影响组件/容器/服务 |
-| root_cause_hypotheses | JSONB | 根因假设数组（含置信度） |
+| ✚ symptom_desc | TEXT | 报障现象描述（自由文本，intake 归一化） |
+| root_cause_hypotheses | JSONB | 根因假设数组（含置信度，排查后填充） |
 | recent_changes | JSONB | 最近部署 commit/配置变更关联 |
-| dedup_fingerprint | VARCHAR(64) | 去重指纹 hash（含 system_id） |
+| dedup_fingerprint | VARCHAR(64) | 去重指纹 hash（含 system_id；intake 去重复用于三分类） |
+| ✚ triage | sre_incident_triage_enum | **重复 dup / 已知 known / 新建 new（F-SRE-014 三分类）** |
+| ✚ duplicate_of_id | UUID FK→sre_incidents | triage=dup 时并入的既有 incident |
+| ✚ issue_id | INTEGER | 关联/新建的 GitHub Issue（Issue 为唯一真相源） |
+| ✚ reporter_contact_ref | VARCHAR(128) | 报障者运营回执联系信息引用（**脱敏存储，NFR-S §5.8 例外**；NULL=检测来源） |
+| ✚ source_channel | VARCHAR(32) | intake 来源通道 webform/im/email/webhook/... |
+| ✚ raw_payload | JSONB NULL | 原始报文（**可选**，仅取证需保留；按最小留存周期自动清理） |
+| ✚ ack_status | sre_incident_ack_enum | **回执状态：received/processing/fixed/closed**（intake 回执闭环） |
+| ✚ received_at | TIMESTAMPTZ | 报障/接收时间戳 |
 | detected_at / resolved_at | TIMESTAMPTZ | 检测/解决时间 |
 
 **表 2：`sre_healing_actions` — 自愈动作执行记录（C1/C2 审计核心）**
@@ -657,6 +747,8 @@ AI SRE（及 OPS）需注册进以下位置（现有枚举为 `{PM,DEV,QA,DEVOPS
 **复用：`audit_logs` 扩展 `audit_action` 枚举 + `system_id` 列**（追加值）：
 `sre_incident_detected, sre_healing_executed, sre_escalated, sre_killswitch_toggled, sre_policy_changed, sre_rollback_executed, sre_learning_transitioned, sre_adapter_loaded, sre_adapter_rolled_back, sre_cross_tenant_access_denied`
 
+追加 intake/回执审计值：`sre_intake_received, sre_intake_normalized, sre_intake_triaged, sre_intake_issue_associated, sre_intake_acked, sre_intake_raw_cleaned, sre_intake_reporter_contact_accessed`（报障回执最小权限例外 §5.8：凡读取/回执 `reporter_contact_ref` 的动作用 `sre_intake_reporter_contact_accessed` 记录，按 system 隔离 append-only 可追查）。
+
 ---
 
 ## 8. 架构图
@@ -700,22 +792,35 @@ flowchart TB
     subgraph SRE["ai-sre-service（通用核心）"]
         direction TB
         REG["Multi-System Registry<br/>(per-system namespace, F-SRE-013)"]
-        COL["Collector 采集"]
+        COL["Collector 采集<br/>输入源①: 监控采集(可用性/可靠性)"]
+        INTK["Intake Collector→Broker<br/>输入源②: 用户报障(F-SRE-014)<br/>归一化→triage→关联Issue"]
         DET["Detector/Classifier 检测分级"]
         LOC["Localizer 定位"]
         LRN["Learning Engine<br/>(三态, F-SRE-012)"]
         DEC["Healing Decision Engine 决策"]
         EXE["Healing Executors ×5 执行"]
-        ESC["Escalation Manager 升级"]
+        ESC["Incident/Escalation Mgr<br/>升级+去重/抑制/聚合"]
         AUD["Audit Logger 审计"]
         REG --> COL
+        REG --> INTK
         COL --> DET --> LOC --> LRN
+        INTK -->|triage: 重复/已知并入| ESC
+        INTK -->|新建, 定向排查| LOC
         LRN --> DET
         LRN --> DEC
         DEC -->|白名单内| EXE
         DEC -->|白名单外/高风险| ESC
         EXE --> AUD
         ESC --> AUD
+    end
+
+    subgraph Intakers["用户报障入口（F-SRE-014，通道可配置）"]
+        direction LR
+        WEB["Web 表单"]
+        IM["IM"]
+        EM["邮件"]
+        WH["工单 webhook"]
+        WEB & IM & EM & WH --> INTK
     end
 
     subgraph Infra["事件/状态存储"]
@@ -761,7 +866,10 @@ flowchart TB
 
     ESC -->|升级| PM
     ESC -->|升级| DEVOPS
-    ESC -->|Issue| DEV
+    ESC -->|Issue / 排查| DEV
+    INTK -->|静默/功能正确性→转 DEV| DEV
+    INTK -->|回执受理/处理/关单| PM
+    INTK -->|回执状态 Dashboard 同步| AUD
     ESC -->|验证请求| QA
     AUD -->|质检| CHECKER
 ```
@@ -884,7 +992,7 @@ sequenceDiagram
 |-----|----------|
 | A 可用性 | 独立旁路服务 + PM watchdog + OPS 对等对账双兜底 |
 | R 可靠性 | Executor 幂等 + 快照留存 + Kafka 持久化重试 |
-| S 安全性 | §5 白名单+签名+kill-switch+熔断+凭证分离+最小权限+per-system 审计隔离 |
+| S 安全性 | §5 白名单+签名+kill-switch+熔断+凭证分离+最小权限+per-system 审计隔离；§5.8 报障回执最小权限例外（非业务 PII，目的绑定/脱敏/最小留存） |
 | P 性能 | 采集 <1% 负载；检测→告警 ≤2min；单动作 ≤60s 超时转升级 |
 | O 可观测 | sre_* 指标 + 审计 + Grafana 看板 + 学习态/历史趋势 |
 | C 成本 | 复用现有监控/事件/存储栈（SAS 实例）；通用形态仅新增自包含服务 |
@@ -906,6 +1014,9 @@ sequenceDiagram
 | 学习被投毒/概念漂移带偏基线 | 异常样本剔除 + 漂移告警 + 基线变更审计门禁（F-SRE-012） |
 | 多系统横向越权/凭证泄露 | per-system namespace + 跨租户访问拒绝 + 审计隔离（F-SRE-013） |
 | 监控数据无限增长 | 保留周期可配 + 复用 Kafka 72h retention |
+| 报障通道被滥用/原始报文长期留存 → PII 泄露 | 报障回执最小权限例外硬约束（§5.8）+ 原始报文可选且最小留存自动清理 + 目的绑定/脱敏展示/审计隔离（NFR-S / F-SRE-014） |
+| 报障误收/重复告警疲劳 | intake triage 重复/已知合并 + 复用 F-SRE-007 去重抑制（AC-014b） |
+| 静默功能 bug 漏检盲区 | QA 功能测试 + F-SRE-014 用户报障兜底（不承诺监控自动检出功能正确性） |
 
 ---
 
@@ -959,6 +1070,13 @@ sequenceDiagram
 - **决策**：每系统独立 namespace，配置/凭证/策略/审计/学习状态全部按 `system_id` 隔离；凭证以独立 Secret namespace 注入，跨租户访问强制拒绝并告警；审计日志按系统隔离存储、仅追加写；高敏感/高合规系统触发资源级隔离（独立进程/独立存储）。
 - **理由**：逻辑隔离（namespace）为主、资源隔离为触发式升级，兼顾成本与安全；满足 F-SRE-013/NFR-X 与 AC-013a 横向越权负向验收。
 - **影响**：所有业务表加 `system_id` 列（§7.2）；Registry 层强制命名空间校验；Secret 管理按 namespace 隔离。
+
+### ADR-008：用户报障接入采用「可配置 intake 通道 + 归一化 + triage 三分类 + 复用 incident/Issue 闭环」（F-SRE-014）
+
+- **背景**：AI SRE 只检测可用性/可靠性，「功能不工作但系统健康运行」的盲区需用户侧兜底；且接入须系统无关，不写死某套工单系统。
+- **决策**：新增一组可配置 intake 通道（Web 表单/IM/邮件/工单 webhook 等，见 `intake_channels` §2.4），经统一 intake 接口收纳为第二输入源；报障归一化为结构化 incident（复用 `sre_incidents`，落 §3.11/§7.2 字段）；triage 重复/已知/新建三分类（对齐 F-SRE-007 去重抑制，AC-014a/014b）；新建触发定向排查或转 DEV，均经 Issue；向报障者回执受理→处理→关单，回执联系信息受 NFR-S「报障回执最小权限例外」约束（§5.8）。
+- **理由**：补位功能正确性盲区（配合 QA 测试），保持「Issue 为唯一真相源」与既有 Agent/PM/DEV 流程同源；复用现有 incident/升级/审计链路而不引入整套路工单系统，维持通用可插拔；最小权限例外把「回执所需联系信息」明确为受限非-PII。
+- **影响**：需实现各 intake 通道适配与统一收纳接口；扩展 `sre_incidents`/`audit_logs`（§7.2）；triage + 回执闭环逻辑；配置 schema 增 `intake_channels`（可为空/缺失 = 不启用）。
 
 ---
 
