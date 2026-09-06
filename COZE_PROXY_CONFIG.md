@@ -29,6 +29,7 @@ Sandbox Port 5000 (Nginx — host machine)
        |
        +── /api/*          → localhost:3000 (backend API backup)
        +── /assets/*        → localhost:8081 (portal-app)
+       +── /ai-sre/*        → localhost:9090 (AI SRE Service)
        +── /*               → localhost:5001 (OpenClaw Gateway)
 ```
 
@@ -47,6 +48,7 @@ Sandbox Port 5000 (Nginx — host machine)
 | `/grafana/` | `:3001` | Grafana | OPS Dashboard → `admin/admin123` |
 | `/prometheus/` | `:9091` | Prometheus | OPS Metrics |
 | `/alertmanager/` | `:9093` | Alertmanager | OPS Alerts |
+| `/ai-sre/` | `:9090` | AI SRE Service | 运维 Agent — 报障 intake / 异常排查 |
 | `/` | `:5001` | OpenClaw | Gateway + Web UI |
 
 ## CR-20260714-001 新功能路由（目标状态）
@@ -76,6 +78,8 @@ Sandbox Port 5000 (Nginx — host machine)
 | Grafana Dashboards | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/grafana/` | 🔐 `admin` / `admin123` |
 | Prometheus Metrics | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/prometheus/` |
 | Alertmanager Alerts | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/alertmanager/` |
+| AI SRE Service（健康） | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/ai-sre/health` |
+| AI SRE 报障 intake | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/ai-sre/api/sre/intake/ops_webhook`（POST） |
 
 > ✅ QR考勤和门户链接已上线（:8081 portal-app 部署完成，可经 Coze 代理访问）。
 
@@ -191,5 +195,5 @@ nginx -t && cat /etc/nginx/sites-available/school-admin
 
 ---
 
-*Last updated: 2026-08-18 22:45 GMT+8 (门户/QR 已上线，/assets/→:8081 已补，admin vite base 修复中)*
+*Last updated: 2026-09-06 15:55 GMT+8 (新增 /ai-sre/ → :9090 路由，AI SRE 报障 intake 可经 Coze 代理访问)*
 *OpenClaw model: deepseek/deepseek-chat (direct API, not Coze tokens)*

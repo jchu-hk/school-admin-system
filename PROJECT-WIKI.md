@@ -42,7 +42,7 @@
 | **QR 考勤** | [localhost:8081](http://localhost:8081) | [coze.site/attendance/qr](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr) | 扫码考勤页 |
 | **Backend API** | [localhost:3000](http://localhost:3000) | [coze.site/school-admin/api/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/api/) | NestJS REST API |
 | **Gateway** | [localhost:5001](http://localhost:5001) | [coze.site/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/) | OpenClaw Gateway |
-| **AI SRE Service** | [localhost:9090](http://localhost:9090) | — (internal) | 运维 Agent — 报障 intake / 异常排查 |
+| **AI SRE Service** | [localhost:9090](http://localhost:9090) | [coze.site/ai-sre/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/ai-sre/health) | 运维 Agent — 报障 intake / 异常排查 |
 
 ### Monitoring (🔐 OPS)
 
@@ -242,6 +242,7 @@ curl -so /dev/null -w "%{http_code}" http://localhost:5001/   # Gateway → 200/
 
 # AI SRE service
 curl -s http://localhost:9090/health   # → {"status":"ok"}
+curl -s https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/ai-sre/health   # 外网经 Coze 代理
 
 # Database & Cache
 docker compose -f infra/docker-compose.yml exec postgres pg_isready -U school_admin

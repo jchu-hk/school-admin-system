@@ -35,6 +35,15 @@ AI SRE 是一个独立的运维 Agent 服务（`apps/ai-sre-service/`，Node ≥
 | 真实 GitHub Issue 网关 | ⛔ 未接（best-effort/memory sink，见 DEPLOY §10.1） |
 | 真实回执外发（write_message） | ⛔ 未接（见 DEPLOY §10.2） |
 
+### 外部访问（经 Coze 代理）
+
+| 端点 | 外部 URL |
+|------|---------|
+| 健康检查 | `https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/ai-sre/health` |
+| 报障 intake | `POST https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/ai-sre/api/sre/intake/ops_webhook` |
+
+> 路由映射：Coze 代理 `/ai-sre/*` → 宿主 nginx(:5000) `location /ai-sre/` → `127.0.0.1:9090`（前缀已剥离）。
+
 ## 与 SAS 的集成关系
 
 AI SRE 是**独立于 SAS 的运维组件**，当前被部署用于支撑 SAS 的系统运营与故障排查。
