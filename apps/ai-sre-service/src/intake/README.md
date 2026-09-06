@@ -1,8 +1,8 @@
 # User Incident Intake（用户报障接入）— F-SRE-014 / M2 增量
 
-对齐 `docs/school-admin-system/FUNCTIONAL-SPEC-AI-SRE.md` F-SRE-014、AC-014a/014b、
+对齐 `docs/ai-sre/FUNCTIONAL-SPEC-AI-SRE.md` F-SRE-014、AC-014a/014b、
 UC-SRE-016、NFR-S「报障回执最小权限例外」与
-`docs/school-admin-system/DESIGN-AI-SRE.md` §3.11 / §2.4 / §5.8 / §7.2。
+`docs/ai-sre/DESIGN-AI-SRE.md` §3.11 / §2.4 / §5.8 / §7.2。
 
 ## 组成部分
 

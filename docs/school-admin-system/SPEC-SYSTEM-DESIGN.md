@@ -3,7 +3,7 @@
 
 **文档版本：** v1.8.0-draft.1
 **创建日期：** 2026-05-25
-**最后更新：** 2026-08-13
+**最后更新：** 2026-09-06
 **审查标准：** NIST SP 800-53, OWASP, Cloud Native Best Practices, ISO/IEC 27001, PDPO 香港隐私条例
 **审查报告：** `/docs/school-admin-system/archive/ARCH-REVIEW-v1.0.0.md`
 **状态：** 草稿（待二轮审查）
@@ -17,6 +17,7 @@
 > - v1.8.0-draft.3 新增：§23 AI 自动化模块技术设计（F-AI-002 FAQ 智能匹配、F-AUTO-001 周期性任务触发器、F-AUTO-002 智能提醒系统），对应 Issue #362
 > - v1.8.0-draft.4 新增：§24 运维自动化模块技术设计（F-OPS-002/003/006/007/008/009），对应 Issue #363
 > - v1.8.0-draft.5 新增：§25 增强功能模块技术设计（F-AI-003 OCR 识别、F-I18N-003 实时翻译、F-I18N-004 Locale 本地化、F-NEW-002 多渠道通知模板、F-NEW-005 自定义报表+定时推送），对应 Issue #364
+> - v1.8.0-draft.6 新增：§1.3 AI SRE 运维 Agent 组件登记（独立辅助组件，报障 intake + 异常排查，关联 #370/#371）
 > - 本版本状态为"草稿（待二轮审查）"，待架构评审委员会二轮通过后升为正式发布
 
 ---
@@ -137,6 +138,13 @@
 | **I18n Service** | 多语言 | H (无状态) |
 
 > **Scaling:** H = Horizontal (可水平扩展) | M = Moderate
+
+> **⚠️ AI SRE 运维 Agent（辅助组件，独立交付）**
+> AI SRE（`apps/ai-sre-service/`，Node ≥22，默认 `:9090`）是独立于本系统业务服务的**运维 Agent**，
+> 负责系统运营与异常/缺陷自动排查（含「用户报障 intake」三分类 dup/known/new）。
+> 它不随 SAS 业务微服务部署，作为辅助组件独立编排（`infra/docker-compose.ai-sre.yml`，计入同一 `school-network`）。
+> 设计详见：`docs/ai-sre/DESIGN-AI-SRE.md`（v0.3.0）· 需求：`docs/ai-sre/FUNCTIONAL-SPEC-AI-SRE.md`（v0.4.0）· 部署：`docs/ai-sre/DEPLOY-AI-SRE.md`。
+> 关联 Issue: #370 / #371。
 
 ---
 

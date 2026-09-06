@@ -45,7 +45,7 @@
 | `infra/docker-compose.ai-sre.yml` | 改写 | **可运行**的表征：本地构建源码镜像 + 挂启用配置 + 计入 school-network + 健康检查 |
 | `infra/docker-compose.ai-sre.m1.yml` | 新增 | **保留原 M1 编排骨架**（byte-identical 到 HEAD），避免 schema 与交付代码不符的历史件丢失 |
 | `infra/ai-sre/active/school-admin-system.test.yaml` | 新增 | 测试环境启用配置（intake 开 + system 注册 + 保留策略，无明文 secret） |
-| `docs/school-admin-system/DEPLOY-AI-SRE.md` | 新增 | 本 runbook |
+| `docs/ai-sre/DEPLOY-AI-SRE.md` | 新增 | 本 runbook |
 
 **未改** `apps/ai-sre-service/src/**` 及任何 SAS（backend/frontend）源码。
 

@@ -1,7 +1,7 @@
 # Project Wiki — School Admin System
 
-> **Last updated**: 2026-08-18 22:45 GMT+8
-> **Latest commit**: `a332c4ed` — main branch
+> **Last updated**: 2026-09-06 15:45 GMT+8
+> **Latest commit**: `(docs-sync)` — main branch
 
 ---
 
@@ -24,8 +24,8 @@
 | **Version** | v1.6.1 |
 | **Release Date** | 2026-08-01 |
 | **GitHub Releases** | [github.com/jchu-hk/school-admin-system/releases](https://github.com/jchu-hk/school-admin-system/releases) |
-| **Open Issues** | 19 (0 P0 / 0 P1) |
-| **Open PRs** | 0 |
+| **Open Issues** | 54 (0 P0 / 0 P1) |
+| **Open PRs** | 1 (#369 `fix/i18n-lang-switch`) |
 
 ---
 
@@ -42,6 +42,7 @@
 | **QR 考勤** | [localhost:8081](http://localhost:8081) | [coze.site/attendance/qr](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/attendance/qr) | 扫码考勤页 |
 | **Backend API** | [localhost:3000](http://localhost:3000) | [coze.site/school-admin/api/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/school-admin/api/) | NestJS REST API |
 | **Gateway** | [localhost:5001](http://localhost:5001) | [coze.site/](https://aade13aa-91de-4793-9a07-a613f42a5cc4.dev.coze.site/) | OpenClaw Gateway |
+| **AI SRE Service** | [localhost:9090](http://localhost:9090) | — (internal) | 运维 Agent — 报障 intake / 异常排查 |
 
 ### Monitoring (🔐 OPS)
 
@@ -105,6 +106,17 @@ System has **two independent SPAs** sharing one backend API:
 | [DB-SCHEMA.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/school-admin-system/DB-SCHEMA.md) | v1.5.5 | 2026-07-15 | 数据库结构 |
 | [DATA-DICTIONARY.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/school-admin-system/DATA-DICTIONARY.md) | v1.5.4 | 2026-07-02 | 字段定义字典 |
 
+### AI SRE 运维 Agent 文档（独立组件）
+
+> AI SRE 是独立于 SAS 的运维 Agent（`apps/ai-sre-service/`，Node ≥22，默认 `:9090`），当前部署用于支撑 SAS 运营。文档集见 `docs/ai-sre/`。
+
+| Document | Version | Last Updated | Purpose |
+|----------|---------|-------------|---------|
+| [docs/ai-sre/README.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/ai-sre/README.md) | — | 2026-09-06 | AI SRE 文档索引 |
+| [FUNCTIONAL-SPEC-AI-SRE.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/ai-sre/FUNCTIONAL-SPEC-AI-SRE.md) | v0.4.0 | 2026-09-05 | 它做什么（功能需求规格） |
+| [DESIGN-AI-SRE.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/ai-sre/DESIGN-AI-SRE.md) | v0.3.0 | 2026-09-05 | 它怎么工作（技术架构设计） |
+| [DEPLOY-AI-SRE.md](https://github.com/jchu-hk/school-admin-system/blob/main/docs/ai-sre/DEPLOY-AI-SRE.md) | runbook | 2026-09-05 | 它怎么部署（部署 Runbook） |
+
 ### 开发运维规范
 
 | Document | Version | Last Updated | Purpose |
@@ -159,7 +171,7 @@ Browser → Coze Proxy → Gateway (:5001)
                                                 └── Kafka (:9092) + ZK (:2181)
 ```
 
-### Docker Services (14 containers)
+### Docker Services (15 containers)
 
 | Container | Port | Purpose |
 |-----------|------|---------|
@@ -179,10 +191,13 @@ Browser → Coze Proxy → Gateway (:5001)
 | `school-admin-alertmanager` | 9093 | Alert management |
 | `school-admin-node-exporter` | 9100 | Host metrics |
 | `school-admin-postgres-exporter` | 9187 | DB metrics |
+| **AI SRE** | | |
+| `ai-sre-service` | 9090 | 运维 Agent — 报障 intake / 异常排查 |
 | **Network** | | |
 | `school-admin-cloudflared` | — | Public tunnel |
 
 > Compose project: `infra` · Internal network: `school-network`
+> AI SRE 为**独立编排**（`infra/docker-compose.ai-sre.yml`），但计入同一 `school-network`，与 backend 互通。
 
 ---
 
@@ -224,6 +239,9 @@ curl -s http://localhost:3000/api/health      # Backend → 200
 curl -so /dev/null -w "%{http_code}" http://localhost:8080/   # admin-app → 200
 curl -so /dev/null -w "%{http_code}" http://localhost:8081/   # portal-app → 200
 curl -so /dev/null -w "%{http_code}" http://localhost:5001/   # Gateway → 200/401
+
+# AI SRE service
+curl -s http://localhost:9090/health   # → {"status":"ok"}
 
 # Database & Cache
 docker compose -f infra/docker-compose.yml exec postgres pg_isready -U school_admin
@@ -329,6 +347,7 @@ docker image prune -af --filter "until=72h"
 1. **Missing DB tables**: `lunch_changes`, `assets` — not yet migrated (no current functionality depends on them)
 2. **Issue #140**: CHECKER review pending for TypeORM warnings fix
 3. **#296**: Draft status design issue — pending PM/BA decision
+4. **AI-SRE 真实网关未接**: 真实 GitHub Issue 网关 + 真实回执外发(write_message) 未接（当前 best-effort/memory sink，见 `docs/ai-sre/DEPLOY-AI-SRE.md` §10）
 
 ---
 
