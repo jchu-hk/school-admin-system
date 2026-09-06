@@ -3,10 +3,10 @@
 | 项目 | 内容 |
 |------|------|
 | 文档编号 | DESIGN-AI-SRE |
-| 版本 | v0.3.0 |
-| 日期 | 2026-09-05 |
-| 关联 Issue | GitHub Issue #370 / #371 |
-| 上游需求 | FUNCTIONAL-SPEC-AI-SRE v0.4.0（已通过复审，0 Blocking / 0 Major / 0 Minor 残余） |
+| 版本 | v0.4.0 |
+| 日期 | 2026-09-06 |
+| 关联 Issue | GitHub Issue #370 / #371 / #372 / #373 |
+| 上游需求 | FUNCTIONAL-SPEC-AI-SRE v0.5.0（透明性模块 F-SRE-015/016、NFR-T，已通过 REQ 自评升级为一等需求） |
 | 作者 | ARCH（架构 Agent） |
 | 状态 | Draft（待 DEV/DEVOPS/CHECKER 评审） |
 
@@ -16,6 +16,7 @@
 
 | 版本 | 日期 | 变更说明 |
 |------|------|----------|
+| v0.4.0 | 2026-09-06 | 新增「透明性与可观测性」设计章节（对应 FUNCTIONAL-SPEC v0.5.0 的 F-SRE-015/016、NFR-T、AC-015/016、UC-SRE-017/018 与「待 ARCH 细化」清单 T-ARCH-1..7）：落地 (1) T-ARCH-1 审计存储 schema——新增 append-only/WORM 专用取证审计表 `sre_audit_events`（含 mandatory 字段、哈希链防篡改、PII 掩码落地、per-system 隔离与索引），并与既有 `audit_logs` 复用/映射；(2) T-ARCH-2 incident 查询/列表 API 契约（restful 路由、分页/过滤白名单、鉴权隔离）；(3) T-ARCH-3 实时「正在做什么」暴露机制（短轮询 + SSE 事件流、时效上限量化）；(4) T-ARCH-4 运维控制台 UI 架构（组件划分、仅消费数据不承载决策、接入 #372/#373、权限模型）；(5) T-ARCH-5 决策依据/可解释分层（结构化 decision record + 输入快照/策略/基线引用 + 摘要式 rationale，支持重放）；(6) T-ARCH-6 incident 生命周期状态机显式建模（新增 `sre_incident_lifecycle_enum`、合法迁移表、与既有 Issue/status 状态映射、禁『关闭态静默复活』）；(7) T-ARCH-7 日志回收 vs 取证保留边界（分区与审计保留锁，不因回收丢失取证）；另补 §10 NFR 映射 NFR-O/T 行、§12.8 需求覆盖索引、ADR-009..012 与风险行。未改业务代码，未改 FUNCTIONAL-SPEC（REQ 职责）。 |
 | v0.3.0 | 2026-09-05 | 按 #371 变更同步：(1) 新增**用户报障 intake 通道**——Intake 适配器/通道作为第二条输入源（与监控采集并列）、归一化→三分类 triage→关联/创建 Issue→触发排查/转 DEV→回执闭环，落地组件层 §2.5/§3.11、配置层 §2.4（`intake_channels`）、数据层 §7.2（`sre_incidents` 扩展字段 + `audit_logs` 枚举）、架构图 §8（含 NFR-S 报障回执最小权限例外约束）；(2) 显式澄清**功能正确性边界**：监控采集/检测范围=可用性/可靠性，功能正确性不自动检测、仅当泄露可观测信号时顺带检出，静默 bug 由 QA 功能测试 + F-SRE-014 用户报障兜底（§1/§3.4/§11）；并按 CHECKER 复审整改（Mermaid 边标签括号 + intake 激活态通道澄清） |
 | v0.2.0 | 2026-09-05 | 架构重构：由「SAS 定制版」升级为「通用可部署、可学习、可支持新系统的 AI SRE」。核心变化：(1) 交付形态改为自包含容器镜像 + compose/helm 编排清单 + 一键接入脚本，配置与代码分离，镜像/代码零 SAS 硬编码（F-SRE-010）；(2) 新增 **System Adapter Layer** 插件层（接口抽象 + 可插拔 + 签名校验 + 热加载/回滚生命周期，F-SRE-011）；(3) 新增 **Learning Engine** 自学习引擎（冷启动→预热→已学习三态迁移，量化参数对齐 AC-012，F-SRE-012）；(4) 新增 **Multi-System Registry** 多系统命名空间隔离（F-SRE-013）；(5) Collector/Detector/Localizer/Healing/Executors/Escalation/Audit 全部泛化为「被纳管系统」表述，SAS 端口/容器数/路径移入「附录：参考实例配置」。保留 C1-C6 已落位安全设计并泛化 |
 | v0.1.0 | 2026-09-05 | 初稿：基于 FUNCTIONAL-SPEC-AI-SRE v0.2.0，SAS 定制版总体架构、组件分解、数据流、自愈安全边界、Agent 生态集成、持久化草案、架构图与 ADR |
@@ -44,7 +45,7 @@ AI SRE 是一个**通用、可部署、可学习、可支持新系统**的常驻
 4. **配置驱动、插件可插拔**：系统差异全部配置/适配器注入，核心代码与镜像无任何系统特定硬编码。
 5. **复用优先**：在 SAS 参考实例中复用现有监控/事件/审计基础设施；通用交付形态不依赖任何单一系统既有栈。
 
-### 1.2 需求覆盖索引（F-SRE-010~014 落位速览）
+### 1.2 需求覆盖索引（F-SRE-010~016 落位速览）
 
 | 需求 | 架构落位 |
 |------|----------|
@@ -53,6 +54,8 @@ AI SRE 是一个**通用、可部署、可学习、可支持新系统**的常驻
 | **F-SRE-012 自学习** | §3.2 Learning Engine（三态迁移量化参数对齐 AC-012、迁移先验、投毒/漂移防护）；§7.4 学习状态/基线存储；§9 ADR-006 自学习引擎选型 |
 | **F-SRE-013 多系统/多租户** | §3.3 Multi-System Registry（per-system namespace 隔离）；§5.6 横向越权/凭证泄露遏制；§7.2 per-system 表草案；§9 ADR-007 多租户隔离方案 |
 | **F-SRE-014 用户报障接入（Intake）** | §2.4 `intake_channels` 最小配置；§2.5/§3.11 Intake 适配器/通道 + 归一化→triage（重复/已知/新建）→关联 Issue→触发排查/转 DEV→回执闭环；§7.2 `sre_incidents` 归一化字段 + `audit_logs` 扩展；§5.8 报障回执最小权限例外；§8 架构图双输入源标注；ADR-008（含 NFR-S 报障回执最小权限例外） |
+| **F-SRE-015 动作审计与决策透明** | §3.10 Audit Logger + §12.1 审计存储 schema（`sre_audit_events` append-only/WORM + 哈希链 + PII 掩码）；§12.4 决策依据/可解释分层（structured rationale + 快照/策略/基线引用，支持 AC-015a 重放）；ADR-009（审计取证存储）；ADR-011（决策可解释分层） |
+| **F-SRE-016 实时状态与生命周期可见性** | §12.2 incident 查询/列表 API（#372）；§12.3 实时 active 状态暴露机制（#373，轮询+SSE）；§12.6 lifecycle 状态机显式建模（`sre_incident_lifecycle_enum` + 迁移表 + 与 Issue/status 映射）；§12.5 控制台 UI 架构（#373）；ADR-010（实时状态传递）、ADR-012（生命周期状态机建模） |
 
 > 功能正确性边界（F-SRE-014 补位动机，承 §2 检测边界）：AI SRE 的自动化检测范围 = **可用性/可靠性**，不覆盖功能正确性；功能缺陷仅当泄露可观测信号时顺带检出，静默 bug 由 QA 功能测试 + 用户报障（F-SRE-014）兜底。两输入源分工见 §2.5/§8。
 >
@@ -996,7 +999,8 @@ sequenceDiagram
 | R 可靠性 | Executor 幂等 + 快照留存 + Kafka 持久化重试 |
 | S 安全性 | §5 白名单+签名+kill-switch+熔断+凭证分离+最小权限+per-system 审计隔离；§5.8 报障回执最小权限例外（非业务 PII，目的绑定/脱敏/最小留存） |
 | P 性能 | 采集 <1% 负载；检测→告警 ≤2min；单动作 ≤60s 超时转升级 |
-| O 可观测 | sre_* 指标 + 审计 + Grafana 看板 + 学习态/历史趋势 |
+| O 可观测 | sre_* 指标 + 审计 + Grafana 看板 + 学习态/历史趋势；Agent 行为侧（做了什么/正在做什么）见 NFR-T/§12 |
+| T 透明性/可审计/可追溯 | §12：审计取证表 `sre_audit_events` + 哈希链防篡改(PII掩码)+fail-closed；incident 查询 API(#372)；实时状态(#373,轮询+SSE)；lifecycle 状态机显式建模；决策分层 rationale 支持重放；取证保留锁 |
 | C 成本 | 复用现有监控/事件/存储栈（SAS 实例）；通用形态仅新增自包含服务 |
 | X 可移植/可配置/可扩展 | 镜像零硬编码；配置驱动；Adapter 插件模型；多租户隔离（逻辑→资源级） |
 
@@ -1019,7 +1023,169 @@ sequenceDiagram
 | 报障通道被滥用/原始报文长期留存 → PII 泄露 | 报障回执最小权限例外硬约束（§5.8）+ 原始报文可选且最小留存自动清理 + 目的绑定/脱敏展示/审计隔离（NFR-S / F-SRE-014） |
 | 报障误收/重复告警疲劳 | intake triage 重复/已知合并 + 复用 F-SRE-007 去重抑制（AC-014b） |
 | 静默功能 bug 漏检盲区 | QA 功能测试 + F-SRE-014 用户报障兜底（不承诺监控自动检出功能正确性） |
+| 事后无法说清「为何自愈/判定」（黑盒决策） | 审计 + 决策依据分层落位（§12.4）+ 版本化策略/基线快照引用，支持 AC-015a 重放 |
+| 审计被篡改/越权写他系统审计 | append-only/WORM + 哈希链 + per-system 隔离 + 越权写告警（§12.1，AC-015b） |
+| incident 生命周期不可查/黑盒推进 | 显式状态机 + 状态迁移留痕 + 查询端点（§12.2/§12.6，AC-016） |
+| 取证期日志被普通回收误删 | 审计/取证保留锁 + 分区隔离（§12.7，对齐 m4 保护） |
+| 多系统查询越权泄露他系统 incident/audit | incident/实时/审计按 `system_id` 授权隔离 + 越权拒绝告警（§12.2/12.3/12.5，AC-016b） |
 
+---
+
+## 12. 透明性与可观测性（F-SRE-015/016、NFR-T、#372/#373）
+
+> 本章落地 FUNCTIONAL-SPEC v0.5.0 升级为一等需求的 «透明性/可观测性» 模块（F-SRE-015 动作审计与决策透明、F-SRE-016 实时状态与 incident 生命周期可见性、NFR-T），并逐项细化附录「待 ARCH 细化」清单 **T-ARCH-1..7** 的实现形态。设计约束沿用本架构既有原则：
+>
+> - **复用优先**（NFR-C）：终态/高频查询走 PostgreSQL `sre_*`；计数器/限流走 Redis；事件走 Kafka（§4.1 retention 72h）。
+> - **per-system 隔离**（F-SRE-013/ADR-007）：一切可查询/可审计数据按 `system_id` 命名空间隔离授权；审计不得因隔离缺失，也不得被越权旁窥。
+> - **fail-closed**（§3.10/UC-017）：不可审计即不可落地——审计写入失败必须阻止/阻断关联动作，不允许「只做不记」。
+> - **Issue 为唯一真相源**：incident 查询、实时状态下钻、审计反查均以 GitHub Issue 为业务锚点；透明性模块只「记录/查询/可见」，不承载 AI SRE 决策逻辑，也不替代故障处置本身（处置仍归 F-SRE-005~008/014 既有角色）。
+> - **REQ 已定边界（不臆测、不反向改写正文）**：决策可解释到「结构化 + 依据引用」粒度，不承诺逐 token 归档链式推理（因存储成本/隐私平衡，F-SRE-015/016 范围外）。
+
+对本规格新增需求与既有 `sre_incidents.status`（processing 型）、`triage`、`ack_status` 三个字段的关系，本章取 **「增列不覆盖」** 策略：保留既有的检测/升级管线状态与回执状态字段，在其上显式新增**生命周期状态机**（§12.6）并以状态机为准对外暴露，避免破坏 v0.3.0 已落位 scheme 的去重/抑制/升级链路。
+
+### 12.1 T-ARCH-1 审计日志存储 schema（append-only / 防篡改 / PII / 隔离 / 索引）
+
+**目标**：承载 F-SRE-015 的 mandatory 字段（时间戳/actor/动作类型/输入/输出/决策依据），满足「按系统隔离、append-only、防篡改、保留周期可配、PII 脱敏」并可与 AC-015b 的越权写告警衔接。
+
+**表 `sre_audit_events` — 动作级审计取证主表（新，append-only/WORM）**
+
+> 命名遵循 DB-SCHEMA §2（snake_case/TIMESTAMPTZ/ENUM）。此为 AI SRE 动作级审计的 canonical 语料；与既有业务共用 `audit_logs`（SAS/跨系统业务审计）以 `envelope_uuid` 关联（见下「与既有 audit_logs 的关系」）。
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | UUID PK | 事件主键 |
+| system_id | UUID FK→sre_systems | **命名空间隔离（必填，不允许 NULL 越过）** |
+| incident_id | UUID FK→sre_incidents NULL | 关联 incident（可 NULL=系统级/巡检类非 incident 动作） |
+| issue_id | INTEGER NULL | 关联 GitHub Issue（业务锚点） |
+| occurred_at | TIMESTAMPTZ | **动作发生时刻**（clock/normalized，见时序处理） |
+| actor_type | sre_actor_enum | ai_sre / sub_component / intake_channel / human（区分自动与人工触发） |
+| actor_id | VARCHAR(64) | ai_sre-service / detector / healer / intake-broker / triage / 运维操作者 |
+| action_type | sre_audit_action_enum | 追加到既有 `audit_logs.audit_action` 的一致动作目录（检测/分级/自愈/升级/回执/关单/triage/状态迁移等） |
+| input_snapshot_ref | JSONB NULL | **输入**：触发证据/快照引用（引用 id/路径/指针，非全量内联；含快照版本号） |
+| output_ref | JSONB NULL | **输出**：动作结果状态与产出物引用（issue_id、incident_id、回执目标、自愈结果 id 等） |
+| decision_basis_ref | UUID FK→sre_decision_records NULL | **决策依据**（结构化 rationale，T-ARCH-5/§12.4）；NULL=非决策型纯动作 |
+| policy_version | VARCHAR(32) NULL | 命中/据以决策的版本化策略版本 |
+| baseline_version | VARCHAR(32) NULL | 命中/据以决策的版本化学习基线（可空=无基线依赖动作） |
+| trace_id | UUID | 整条因果链请求追踪 id（端到端传播） |
+| prev_hash | CHAR(64) | SHA-256 前序哈希（同 system_id 链内前一条，见防篡改） |
+| record_hash | CHAR(64) | 本条 `sha256(规范化字段 + prev_hash)`；签名见证见下节防篡改 |
+| tamper_status | VARCHAR(16) | ok（默认，越权写/校验失败时置 alert） |
+| created_at | TIMESTAMPTZ | 入库时间（写入审计链时机） |
+
+**存储与保留（分区）**：按 `system_id`（首键）与 `occurred_at` 时间范围做 RANGE 分区（§12.7 统一回收/取证边界兼容）；查询索引 `(system_id, occurred_at)`、`(incident_id)`、`(issue_id)`、`(trace_id)`、`(actor_id, action_type)`。
+
+**append-only / 防篡改（WORM·哈希链·签名选型）**：
+- **方案选型**：对比（a）对象存储 WORM/S3 Object Lock、（b）独立区块链/外部见证、（c）应用层哈希链 + 数据库权限硬约束——结论取 **（c）为主 +（a）作为长留存归档层**：（a）作为唯一防篡改手段需移动审计出主库、查询不便且授权模型不同步；纯（b）成本与复杂度与规模不匹配。故采用 **PostgreSQL 上 append-only + 行级哈希链 + 分组签名**：
+  - **append-only 硬约束**：建表后对 `UPDATE/DELETE/TRUNCATE` 通过触发器/`REVOKE` 拒绝；仅专有写入账户（AI-SRE audit writer）可 INSERT；其它账户（含只读查询）无写权力。
+  - **哈希链**：每行 `record_hash = sha256(规范序列化字段 ∥ prev_hash)`，`prev_hash` 取同 `system_id` 链内前一条哈希，构成 per-system 哈希链，使单行改动必然断链、可被跨系统抽查校验发现（AC-015b）。
+  - **轮流/分组签名**：按固定步长在链上插入「签名见证行」（用 KMS 持有的非落盘签名密钥做 HMAC/签名），配合审计只读校验器定期校验整链；sig 密钥经 Secret namespace 注入不落明文（NFR-S/C1 同源）。
+  - **写入失败→fail-closed**：审计 INSERT 失败或链签名校验失败时阻断关联动作落地、将该动作转升级（对齐 §3.10/UC-017），不允许“动作完成但审计缺失”。
+- **PII 脱敏/掩码落地（schema 层）**：`sre_audit_events` **不存**报障者完整联系信息；`reporter_contact_ref` 只存对 `sre_incidents` 脱敏引用的持有 token/掩码（如 `尾号*XXXX`），连接字段全量值经 §5.8 例外仅存于受理上下文的受限列并在展示/审计处以掩码呈现；读取/回执该 ref 的动作单独记 `sre_intake_reporter_contact_accessed`（§5.8）。本表设计不允许写入业务用户 PII 原文字段（schema 无此类列 + 写入网关白名单字段校验 = 物理层无 PII 落点）。
+- **越权写 / 篡改告警**：跨 `system_id` 写、改已有行、链断裂、用非签名 writer 账户写——统一由审计守卫拦截并触发告警（AC-015b/F-SRE-013，衔接 §5.7 横向越权）。
+
+**与既有 `audit_logs`（跨系统业务审计）的关系**：不新建替代、不重复矛盾——对外可见的「升级/Issue/通信/状态」等高阶外化动作继续镜像落 `audit_logs`（保持既有跨角色业务审计可读性），`sre_audit_events` 为 AI SRE 机器内部动作 + 决策依据的 canonical 取证语料；两者以 `trace_id`（/ `envelope_uuid`）关联，共 `system_id` 命名空间；存量在 §7.2 追加过的 `audit_action` 值保留。
+
+### 12.2 T-ARCH-2 incident 查询 / 列表 API 契约（#372）
+
+**形态**：REST（JSON）读接口，仅消费 PostgreSQL 上持久化的一致状态（非内存快照，对齐 AC-016）。最终路由前缀最终由 DEVOPS/网关统一定（见 §12.5 入口），此处给 API 形状约定。鉴权按 §12.5 读取令牌 → 后端强校验 `system_id ∈ 所辖集`，越权拒绝并告警（AC-016b）。
+
+列表：`GET /incidents`
+- Query（白名单）：`system_id`(可空=所辖全系统，非空时须在授权集内)、`status`/`lifecycle`、`source`(detected/intake)、`severity[]`、time 区间 `created_from / created_to`、`issue_id`、`q`(对现象/标题子串)、`sort/order`(默认 occurred_at desc)。
+- 分页：游标分页 `cursor / limit`（默认 20，上限可配置）返回 `next_cursor/total`；不为 null 语义歧义（AC-016b：空子集→200 空数组而非报错）。
+- 精简字段投影：返回列表行含`{id, system_name, lifecycle, severity, triage, source, affected_component, ack_status, issue_url, created_at, updated_at}`；**不回传**全文描述与任何联系字段。
+- 响应：`{items:[...], next_cursor, count}`；错误用统一 `{code,message,field?}`（401/403/404/422/429）。
+
+详情（单条 + 关联动作轨迹可下钻）：`GET /incidents/{incident_id}`（含 `scope=full|trace|audit`）
+- `scope=full`：完整 incident 字段（**PII 相关联系字段一律掩码/不回**，经 `reporter_contact_ref` 掩码形态）。
+- `scope=trace`：附加 incident 时间线（状态迁移每跳时间/触发者/依据，§12.6）；`scope=audit`：返回关联 `sre_audit_events` 动作轨迹（审计视角，含 decision_basis 概要而非原始全文）。
+
+**审计**：所有查询请求经审计（只读 `action_type` 用 `sre_incident_query/read` 记入 `sre_audit_events` actor=query-console），支持事后「谁查过什么」。
+
+### 12.3 T-ARCH-3 实时状态（正在做什么）暴露机制（#373）
+
+**范围**：AI SRE 当前 **active / 排查中任务**（正在巡检对象、正在对某服务自愈、正在排查某 incident、正在 triage 哪条报障、正在发送升级/回执）可查询——字段至少：current task/action、作用系统与对象、开始时间、当前阶段、进度/最近活动（完成态落在审计轨迹连结果，不常驻实时）。
+
+**数据模型（实时态）**：内存活动注册表（热路径、低读延迟）+ 幂等镜像到 `sre_runtime_activity`（持久，重启可恢复续读）；仅存「进行中」，任务结束即写入 audit 并退出本轮展示。计数器存在 Redis（§4.1 约束）。
+
+**传递机制选型（轮询 vs 事件流/长连接）**：对比轮询/短轮询 vs SSE vs WebSocket 长连接——结论取 **「短轮询为主 + SSE（Server-Sent Events）作为实时面增强」的两段组合**：
+- **短轮询为主**：`GET /active-tasks`/`GET /systems/{system_id}/active-tasks` 返回当前 active+最近刚完成（默认 5s 新鲜度）；实现与鉴权最简单、无状态、利于多系统查询与横向扩展，适配「控制台按需翻页/检索（对账）」多数场景。
+- **SSE 事件流**：`GET /active-tasks/stream`（EventSource）供控制台「实时正在做什么」看板单向监听；SSE 单向低开销、天然 HTTP 集成，避免 WebSocket 双向/长连接状态机复杂度（状态迁移同步在库中，SSE 仅是 UI 显示优化，非数据真实性来源）。
+- **不做 WebSocket 双向推送**（不需客户端上行实时、增加有状态连接/鉴权/横向扩展成本）：ADR-010。
+- Kafka 事件（sre.* topic）与实时状态**分开**：Kafka 负责动作/healing/triage 事件流水与重放，对外可见的「进行中」由注册表/镜像提供——避免把高频流用于低配额 UI 轮询。
+
+**时效上限（量化，对齐 NFR-T「时效可见」）**：以“状态已公开可见的变化到查询能读到”的 **一致可见延迟 P99 ≤ 5s** 为目标（等于默认短轮询新鲜度；状态迁移在事务提交即库内可见，无非共享快照需要）；实时任务结束/重启续读不影响该界。实时 action 的**开始/阶段/最近活动**更新与审计最终落点不强绑定每跳（阶段级 heartbeat 可与审计分频率，避免高噪声刷审计），但**终态必须落在审计**（防“行动已做但审计缺终态”），对齐 fail-closed。
+
+### 12.4 T-ARCH-5 决策依据 / 可解释分层（可复现，AC-015a）
+
+**问题界定**：“决策依据（rationale）为什么这么做”既需机器可结构化/可查询，又需“能再次说清”，同时范围外约束要求不把每次内部逐 token 链式推理完整存档。故采用可解释分三层。
+
+**可解释分层（三层）**：
+1. **结构化决策记录（canonical）**：`sre_decision_records`（新表，`system_id`+`incident/issue` 归属）：decision_type(grading/triage/self-heal/escalate/rollback/close/reopen)、actor、决策结果、命中规则/条款 id、满足/违反的门禁项、置信度、被考虑的替代路线及其被拒理由引用、决策时间戳。
+2. **引用层（快照/策略/基线）**：不内联全量数据，存 `input_snapshot_ref`（同一 incident 的可观测输入快照 id）、`policy_version`、`baseline_version`、相关 issue/incident id——重放时按版本取 policy/baseline 与快照即可**再算一遍得到一致决策**（对齐 F-SRE-015/NFR-T 可复现/AC-015a），不落图片/长文本字节。
+3. **摘要层（仅概要）**：当决策确由云端 LLM 做复杂推理时，仅存**短摘要**（决策要点/依据引用/被排除路线一句话），并在 decision record 上置 `rationale_mode=summary`，不把推理链当规范文本整体归档（对齐范围外“不逐 token、降级保留决策摘要与依据引用”）。
+
+**与版本化策略/基线对齐（Replay 契约）**：decision record + audit 行都要记触发当时的 policy/baseline **版本号**；版本化机制沿用 §7.2 版本化白名单/基线表。重放器 = ①取该行版本策略/基线 → ②取该 incident 输入快照 → ③跑同规则引擎 → ④比较断言分支是否一致/可解释；不一致即质检（CHECKER）/取证走查发现回归点。任何无 policy/baseline 版本可依的决策视为「不可复现」并在此前 fail-closed 拦截写出该决策审计（AC-015a 负侧）。
+
+### 12.5 T-ARCH-4 运维控制台 UI 架构（做了什么/正在做什么，#373）
+
+**定位与只读边界**：控制台 = 透明性运营侧**只读入口**，仅消费本模块暴露的数据端点；**不含任何 AI SRE 决策/写入/处置控制**（处置仍回 issue/既有角色）；也不承载审计写入。
+
+**前端架构**：沿用仓库现有 Dashboard 前端栈（静态 SPA/轻量 VDOM，非重型框架新增组件），与控制台 DASHBOARD UI 同源同鉴权体系；经 BFF/网关层做鉴权聚合、PII 掩码、接口收敛后供 UI 消费（UI 不裸连后端）。后端可选用现有网关/AI-SRE 服务提供读端点（§12.2/12.3）。
+
+**核心组件/页面划分**：
+- Incident 列表页：检索/分页（§12.2 过滤白名单），行内展示 lifecycle/severity/triage/source/ack/issue 链接。
+- Incident 详情页：字段 + `lifecycle` 时间线（每跳状态/时间/触发者/依据，scope=trace）+ 可下钻到动作（scope=audit，audit 反查决策依据概要）。
+- 「正在做什么」实时看板：短轮询/SSE 拉 active task（§12.3），每秒刷新心跳即可；作用系统/对象/开始时间/阶段/最近活动。
+- 「做了什么」Audit explorer：按 system/时间/action_type/incident 过滤审计动作与决策记录；**联系字段一律掩码**。
+- 系统隔离选择器：UI 顶部按 `system_id` 切换（每系统视图独立），所辖权限在网关层限，越权请求进审计告警。
+
+**权限模型（UI 侧落地）**：复用既有角色的读权限 + per-system scope；不做新的超大权限角色；操作员只能看“被授权系统的 incident/审计/实时”；UI 本身无改/删审计入口（只读、掩码、越权由后端协同拒绝）；可增加只读 OPS 看板默认视图。多系统下 UI 不感知底层实现，仅消费网关聚合后的结果。#373 交互/visual 细化归 ARCH/DEV 后续 UI-SPEC 迭代，本题专注结构与鉴权边界。
+
+### 12.6 T-ARCH-6 incident 生命周期状态机显式建模
+
+**新增 `sre_incident_lifecycle_enum`（显式化状态机，F-SRE-016）**（保留既有 `sre_incidents.status` processing 管线字段、`triage` 字段与 `ack_status`，二者描述**同一 incident 的不同视图**，重 def 以 lifecycle 为准对外）；状态机新增表示：`reported(报障/受纳) → triage(dup/known/new 三判并入) → accepted/in_progress(受理/处理中) → investigating(排查) → closed(关单)`；外加并入分支（dup/known→ 并入源 incident，不入 investigating；new→进入 investigating）。既有 detected 路径（监控源）在「进入处置」前并入 reported/或直接以 investigating 起步，由 §7.2 事件类型桥接。
+
+**合法迁移表（可配、不默写跳跃；关单非“静默复活”）**：
+
+| 从状态 | → 到状态 | 触发者/条件 | 依据 |
+|--------|----------|-------------|------|
+| reported | triage | intake/normalize | input+证据引用 |
+| (detected 汇入) | reported / investigating | detector | 可观测信号 |
+| triage | accepted/in_progress | triage=new | 判定 new |
+| triage | closed(并入) | triage=dup/known | duplicate_of_id/known issue id（并入源） |
+| accepted/in_progress | investigating | 定向排查触发 | 依据引用 |
+| investigating | accepted/in_progress | 等待 DEV/人工 | 转出引用 |
+| investigating | closed | 修复+验证 / 转 DEV 关单 | result+证据 |
+| accepted/in_progress | closed | 人工/suppressed | 处置人+依据 |
+| closed | closed | —— | ——（不允许） |
+| **closed | （re）reopen-able（须显式）** | 人工 reopen 携带 reopen_reason | 审计新事件，非静默复苏 |
+| await issue 同步任一态 | 对应 issue state | issue-state 变化回写 | audit 证据 |
+
+- **防静默复活硬约束**：closed 的唯一合法出路是**显式 reopen/bug-bash**（带原因与关联证据、写新 audit 事件 + 打开新的 investigating），不允许 closed 被流程「不知情」拉回任何未完结处理态（AC-016）；任何对 lifecycle 的非迁移表跳转在网关层拒绝并在审计记录错误。
+
+**落库/落接口**：incident 行 + 独立 `sre_incident_state_transitions`（谁/何时/依据/旧新 state）写迁移历史；对外 API（§12.2 scope=trace）即读该历史表 + 当前 lifecycle 字段。状态集合与迁移表用**配置驱动**（系统无关、可调整）而非写死代码枚举分支（对齐 NFR-X 可配置）。
+
+**与现有 Issue 状态映射**（Issue 为唯一真相源；issue 状态变化回写，Issue closed 对应 lifecycle closed，Issue reopen→显式 reopen 带原因；assigned/in-review→investigating/等待人工等按实情），见迁移表末行：Issue open→ lifecycle 相关处理态，Issue closed→closed；Issue title/body 保持带 system tag 前缀的做法（对齐 §6.2）。**给 DEV 的前置提示**：既有 `sre_incidents.status`/`triage`/`ack_status` 与本节 lifecycle 的关系需在实现时给出权威状态联合/投影规则（见 §12.8 为 DEV 说明），非“新增状态字段即内部两套漂移”。
+
+### 12.7 T-ARCH-7 日志回收 vs 取证保留边界（分区与保留策略）
+
+**分层生命周期（谁回收、谁不回收）**：
+- Kafka 事件（§4.1）：retention 72h，仅内部事件流水，不承担审计真相（真落在 PostgreSQL）。
+- 通用监控/指标历史（PostgreSQL 普通业务表/指标视情况）：正常保留周期可配（默认如 30d，按系统）——走普通回收。
+- **审计/取证语料（`sre_audit_events` + `sre_decision_records` + `sre_incident_state_transitions`）**：默认长留存且**不走普通日志回收路径**（NFR-T/C 例外）；按合规/取证需要配置独立保留与归档导出。
+- **「正在调查/审计/取证的 incident」保护（对齐 m4）**：审计保留锁（investigation/hold flag）——某 incident（或某审计对象、某 issue 关联案件）被标记 under-audit / 被取证引用时，其关联的 audit/decision/原始快照/（需保留的 intake raw）**禁止被任何回收删**，直至人工/授权解除保护并在审计记录解除动作；任何回收作业扫描须先跳过带锁分区。
+
+**分区与保留实现**：per-table 时间范围分区（RANGE on occurred_at/closed_at）便于按龄整体 DROP/归档而不触碰在途；审计表按 `system_id`（首）分区提供 per-system 独立留存/归档与越权分离；回收以“分区/建档移动”为先而非行级删除；保留策略表（表类 × system × 期限 × hold-flag）配置驱动。导出归档（合规需要）走对象存储 WORM 层（§12.1），并保留审计可查。
+
+### 12.8 需求覆盖速览（透明性）+ 给 DEV 的前置清单
+
+需求覆盖速览：F-SRE-015→§12.1/12.4；F-SRE-016→§12.2/12.3/12.5/12.6；NFR-T/O→本节 + §10 映射行；AC-015/016 → §12.1(AC-015b)/12.4(AC-015a)/12.2(AC-016b)/12.3(AC-016a)/12.6(AC-016)。
+
+**进入实现（#372/#373）前给 DEV 的前置信息**（非代码，提示既订方案边界）：
+- 明确 `sre_incidents.status`（processing）、`triage`、`ack_status`、新增 `lifecycle` 四者的权威投影/联合规则，避免双源漂移；incident → Issue → audit 引用统一 `trace_id/envelope` 链。
+- 审计 append-only/哈希链/签名密钥经 KMS 注入、只读校验器与越权写告警、fail-closed 衔接（§12.1）。
+- 查询 API 过滤白名单与 per-system 鉴权、PII 掩码投影（§12.2）；实时状态仅表驱动 + SSE 可选（§12.3），不做持久高频长连接。
+- 决策分层引用版本（policy/baseline）+ 摘要式 rationale，禁用逐 token 落库（§12.4）；lifecycle 配置驱动 + reopen 带原因（§12.6）；审计/取证与日志回收分区与 hold lock（§12.7）。
 ---
 
 ## 架构决策记录 (ADR)
@@ -1079,6 +1245,34 @@ sequenceDiagram
 - **决策**：新增一组可配置 intake 通道（Web 表单/IM/邮件/工单 webhook 等，见 `intake_channels` §2.4），经统一 intake 接口收纳为第二输入源；报障归一化为结构化 incident（复用 `sre_incidents`，落 §3.11/§7.2 字段）；triage 重复/已知/新建三分类（对齐 F-SRE-007 去重抑制，AC-014a/014b）；新建触发定向排查或转 DEV，均经 Issue；向报障者回执受理→处理→关单，回执联系信息受 NFR-S「报障回执最小权限例外」约束（§5.8）。
 - **理由**：补位功能正确性盲区（配合 QA 测试），保持「Issue 为唯一真相源」与既有 Agent/PM/DEV 流程同源；复用现有 incident/升级/审计链路而不引入整套路工单系统，维持通用可插拔；最小权限例外把「回执所需联系信息」明确为受限非-PII。
 - **影响**：需实现各 intake 通道适配与统一收纳接口；扩展 `sre_incidents`/`audit_logs`（§7.2）；triage + 回执闭环逻辑；配置 schema 增 `intake_channels`（可为空/缺失 = 不启用）。
+
+### ADR-009：审计取证存储采用「PostgreSQL append-only + 行级哈希链 + KMS 分组签名（WORM 归档层备用）」
+
+- **背景**：F-SRE-015/NFR-T/T-ARCH-1 要求每一动作留 audit（时间戳/actor/输入/输出/依据），append-only、防篡改、per-system 隔离。若仅靠 DB 权限无法抗越权/篡改侦测，防篡改方案需在成本、查询便利与可审计间取舍，并要与既有跨角色 `audit_logs` 互不矛盾。
+- **决策**：新增 canonical 取证表 `sre_audit_events`（mandatory 字段 + decision_basis/policy/baseline/trace_id + prev_hash），本表 UPDATE/DELETE/TRUNCATE 拒绝、仅专有 writer 可 INSERT；行级 SHA-256 哈希链（per system_id 链）+ 用 KMS 持有的签名密钥做步长见证签名；审计只读校验器定期验链；PII 不落 schema（联系字段仅在受理语境掩码），跨 system_id 写/断链/非授权 writer 触发越权写告警；`audit_logs` 承接高阶外化/业务审计并镜像同源 events；审计作为长留存取证语料，合规归档层可选对象存储 WORM（§12.1/§12.7）。
+- **理由**：应用层哈希链 + 数据库硬权限约束在 NFR-C 成本下达成可证伪防篡改，保留 PostgreSQL 上可查询可审计能力；KMS/Secret 签名密钥不落明文满足 NFR-S/C1；独立取证表避免与业务 audit_logs 混合导致的保留/越写粒度漂移，同时用 trace_id/envelope 与既有审计桥接；fail-closed 写失败阻断动作（AC-015b）。
+- **影响**：需实现审计写入网关（白名单字段校验/掩码）、哈希链与签名见证、只读校验器与越权写告警、表分区与保留锁（§12.7）。
+
+### ADR-010：实时「正在做什么」暴露采用「短轮询为主 + SSE 单向事件流为辅」，不引入 WebSocket 双向长连接
+
+- **背景**：F-SRE-016/T-ARCH-3 需运维侧能查询 AI SRE 正在做什么（active/排查中任务），时效上限需量化（NFR-T「时效可见」），并要服务 #373 看板。
+- **决策**：在内存活动注册表 + `sre_runtime_activity` 幂等镜像上，提供 `GET /active-tasks`（短轮询，按需/对账）与 `GET /active-tasks/stream`（SSE 单向供实时看板）两种读接口；状态完成即迁出实时并落 audit；目标一致可见延迟 P99≤5s；不采用 WebSocket 双向长连接，Kafka 事件（sre.*）与实时 UI 查询分开（Kafka 管事件流水/重放，实时 UI 管增量展示）。
+- **理由**：多数「查询/对账」场景需无状态、易扩展、鉴权简单——短轮询最直接；SSE 单向低开销天然 HTTP，够 UI 实时增强用而无状态机复杂度；WebSocket 双向对无上行操作需求属于过度设计并引入有状态连接/横向扩展/鉴权成本；区分事件流与实时 UI 避免以低频 UI 轮询消费高频 Kafka。
+- **影响**：需实现 active-task 注册表与镜像、短轮询 + SSE 接口、终态落 audit 的衔接，以及 5s 新鲜度语义/监控；SSE 仅为展示优化，非数据真实性源（真相在库）。
+
+### ADR-011：决策依据采用「结构化 decision record + 快照/策略/基线版本引用 + 摘要式 rationale」三层可解释分层
+
+- **背景**：NFR-T/F-SRE-015/AC-015a 要求决策（分级/triage/自愈/升级）可在版本化策略与输入快照下重放自明，又因范围外约束不逐 token 归档链式推理。
+- **决策**：决策分三层——①结构化 `sre_decision_records`（类型/actor/结果/命中规则/门禁/替代路线拒绝/置信度）；②引用层（`input_snapshot_ref`、`policy_version`、`baseline_version`、issue/incident id）供重放器按版本+快照重跑；③`rationale_mode=full|summary`（复杂 LLM 推理仅存短摘要，不存全文链）。
+- **理由**：“能再次说清为何如此判定”可考究为「引用版本化规则/基线+同输入可重算一致」这一机器可验证契约，而非保存可读全文；满足 AC-015a 可复现又不无限放大存储/隐私开销并遵守范围外边界；无版本可依的决策视为不可复现并被 fail-closed 前置拦截。
+- **影响**：需实现 decision record 存储/写入网关/掩码、重放器（取版本策略+快照）、rationale 摘要在 LLM 路径接入时生成并落引用，版本引用与 §7.2 版本化策略/基线对齐。
+
+### ADR-012：incident 生命周期采用「显式状态机 + 合法迁移表（配置驱动）+ 保留既有 status/triage/ack 三字段投影」建模
+
+- **背景**：F-SRE-016/T-ARCH-6 需把 incident 流转显式化为可查询状态机（报障→triage→受理→排查→关单），防关闭态静默复活。而既有 `sre_incidents.status`（processing 型）等是本架构 v0.3.0 已落位的去重/抑制/升级链路所用。
+- **决策**：以「增列不覆盖」策略新增 `sre_incident_lifecycle_enum` 作为对外规范状态 + `sre_incident_state_transitions` 迁移历史；合法迁移表 + reopened（带原因）显式；closed 唯一出路是显式 reopen；`status/triage/ack_status` 保留作为操作面/源流字段并与 lifecycle 给出权威投影（实现期由 DEV 定义联合/投影规则，见 §12.8）。迁移表与状态集合配置驱动，与 Issue 状态映射（open/assigned/in-progress↔investigating 等、Issue closed↔lifecycle closed、Issue reopen→显式 reopen）。
+- **理由**：满足 F-SRE-016 的可查询、留痕、防重生（AC-016）同时不破坏既有监控/自愈/escalation 链路；配置驱动对齐 NFR-X 可配置、不硬编码分支；Issue 为唯一真相源便于与 PM/DEV 流程同步。
+- **影响**：需实现 lifecycle 枚举/迁移守卫/reopen 原因、迁移历史表与 API scope=trace 读接口，及与既有三字段的投影规则与 issue 状态同步。
 
 ---
 
