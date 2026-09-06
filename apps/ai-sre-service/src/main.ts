@@ -17,6 +17,8 @@ import { loadConfig, resolveConfigPath } from './config/loader';
 import { SreConfig, isOnboarding, isIntakeEnabled } from './config/types';
 import { createAdapter, registeredAdapterTypes } from './adapters';
 import { buildIntake, IntakeRuntime } from './intake';
+import { LifecycleLedger } from './lifecycle/ledger';
+import { buildQueryHandle } from './query/http';
 
 /** 构建一个极简 HTTP 处理器（仅 /health + / 概览） */
 function buildHandler(
@@ -103,12 +105,22 @@ async function bootstrap(): Promise<void> {
   const [host, portStr] = parseListen(config.identity.listen);
   const port = Number(portStr);
 
-  // 单一 request 监听器：intake 收报优先，否则交基础处理器（避免多 listener 竞态写头）
+  // 单一 request 监听器：intake 收报优先，query 读次之，最后基础处理器（避免多 listener 竞态写头）
   const intake: IntakeRuntime = buildIntake(config);
-  const server = http.createServer();
+  const ledger = new LifecycleLedger(); // 进程内参照：lifecycle ledger + query audit
   const base = buildHandler(config, () => intake);
+  const query = buildQueryHandle({
+    store: intake.store,
+    ledger,
+    // per-system ACL（AC-016b）：以受管系统为所辖集；空=待接入→空集（fail-closed 空结果）
+    aclSystems: config.systems.map((s) => s.system_id),
+    issueBaseUrl: null, // GitHub host/profile 注入 URL 由网关/issue-gateway 提供；此处回 issue_id
+    defaultActor: 'query-console',
+  });
+  const server = http.createServer();
   server.on('request', (req, res) => {
     if (intake.handle(req, res)) return; // intake 已处理
+    if (query(req, res)) return; // query 已处理（含 4xx）
     base(req, res);
   });
 
