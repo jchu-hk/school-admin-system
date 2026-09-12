@@ -1,3 +1,27 @@
+# 17:04 — Heartbeat poll (Sat 09-12) 🟢 零实质变化; 容器稳定运行 30h (vs 15:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080 200, portal :8081 200, ai-sre :9090/health 200. Docker 14 容器全 Up **30 hours** (postgres/redis/opa/kafka healthy) — ✅ 持续稳定无反复重启.
+- git origin/main: **ahead 5** (5 条未推送心跳提交, 0 behind; HEAD `9c07a83`). load average **0.49/0.44/0.39** 平稳; 内存 144M free / available 975M; 磁盘 92% (3.4G free). 宿主 uptime 1 day 5h55.
+- 工作区 dirty 仅预期 churn: HEARTBEAT.md.
+- **Open Issue**: 无新增/更新 (最新仍 #370/#372 @ 09-09T10:41Z; #373 P2 backlog 未变; #347-#354 M2/M3/M4 P0/P1 长期项未变). 无新 P0/P1.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 → spawn 不可用 (blocker). 未 spawn. #372/#370 仍 unassigned 待派工.
+- **Needs your input**: 无新增 (延续 4 项).
+
+---
+
+# 15:04 — Heartbeat poll (Sat 09-12) 🟢 零实质变化; 容器稳定运行 28h (vs 14:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080 200, portal :8081 200, ai-sre :9090/health 200. Docker 14 容器全 Up **28 hours** (postgres/redis/opa/kafka healthy) — ✅ 持续稳定无反复重启.
+- git origin/main: **ahead 5** (5 条未推送心跳提交, 0 behind). load average **2.30/1.35/0.79** (首值偏高, 仍平稳); 内存 208M free / available 1018M; 磁盘 92% (3.4G free). 宿主 uptime 1 day 3h55.
+- 工作区 dirty 仅预期 churn: HEARTBEAT.md + memory/2026-09-12.md.
+- **Open Issue**: 无新增/更新 (最新仍 #370/#372 @ 09-09T10:41Z; #373 P2 backlog 未变; #347-#354 M2/M3/M4 P0/P1 长期项未变). 无新 P0/P1.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 → spawn 不可用 (blocker). 未 spawn. #372/#370 仍 unassigned 待派工.
+- **Needs your input**: 无新增 (延续 4 项).
+
+---
+
 # 14:04 — Heartbeat poll (Sat 09-12) 🟢 零实质变化; 容器稳定运行 27h (vs 14:00)
 
 ### System Status 🟢 服务全绿 / ✅ 宿主平稳
