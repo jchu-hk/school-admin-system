@@ -3,9 +3,9 @@
 | 项目 | 内容 |
 |------|------|
 | 文档编号 | DESIGN-AI-SRE |
-| 版本 | v0.4.0 |
-| 日期 | 2026-09-06 |
-| 关联 Issue | GitHub Issue #370 / #371 / #372 / #373 |
+| 版本 | v0.5.0 |
+| 日期 | 2026-09-09 |
+| 关联 Issue | GitHub Issue #370 / #371 / #372 / #373（#372 记录层选型已定案 D：PG→嵌入式 SQLite） |
 | 上游需求 | FUNCTIONAL-SPEC-AI-SRE v0.5.0（透明性模块 F-SRE-015/016、NFR-T，已通过 REQ 自评升级为一等需求） |
 | 作者 | ARCH（架构 Agent） |
 | 状态 | Draft（待 DEV/DEVOPS/CHECKER 评审） |
@@ -16,6 +16,7 @@
 
 | 版本 | 日期 | 变更说明 |
 |------|------|----------|
+| v0.5.0 | 2026-09-09 | 按 #372 定案 D 与用户 2026-09-09 确认的新设计方向增补：🆕 新增 §2.6 **分层架构总览**——将既有执行引擎明确为 **Layer1**（ai-sre-service + 记录层 SQLite + 记忆层 agent memory + 真相源 Issue 系统可选集成），并新增 **Layer2 沟通层**（agent，多通道多租户，接客户 微信/Slack/Teams/飞书，接 Layer1 升级/回执，接客户侧真相源回填）；🔁 §7.1/7.2 **记录层选型 PostgreSQL→嵌入式 SQLite（#372 定案 D）**，终端用 DB-SCHEMA(SQLite) 契约，保留查询端点（列表/详情 §12.2b）、lifecycle 权威投影不变；🆕 新增 §2.7 **配置双层架构**——第 1 层产品默认 `md playbook`（7 模块：PLAYBOOK/patrol/detection/triage/healing/reporting/analysis/communication），第 2 层部署者初设 `yaml`（systems/channels/routing/policy）；🆕 新增 §2.8 **动态能力配置机制**——md playbook 热加载（agent 工作前读最新 + watch reload + git 版本化回滚），安全红线（白名单外不自愈 / 冷启动不自愈 / 旁路不侵入 / 最小权限）**锁代码层不可配置绕过**；增补 §7.1b/§12.2b/§12.4b/§12.6b/§12.7b 记录层 SQLite 批注与 DB-SCHEMA/DATA-DICTIONARY 引用、ADR-013/014，更新 §10 NFR 与 §11 风险行。未改业务代码（DEV 职责）；未改 FUNCTIONAL-SPEC（REQ 职责）。 |
 | v0.4.0 | 2026-09-06 | 新增「透明性与可观测性」设计章节（对应 FUNCTIONAL-SPEC v0.5.0 的 F-SRE-015/016、NFR-T、AC-015/016、UC-SRE-017/018 与「待 ARCH 细化」清单 T-ARCH-1..7）：落地 (1) T-ARCH-1 审计存储 schema——新增 append-only/WORM 专用取证审计表 `sre_audit_events`（含 mandatory 字段、哈希链防篡改、PII 掩码落地、per-system 隔离与索引），并与既有 `audit_logs` 复用/映射；(2) T-ARCH-2 incident 查询/列表 API 契约（restful 路由、分页/过滤白名单、鉴权隔离）；(3) T-ARCH-3 实时「正在做什么」暴露机制（短轮询 + SSE 事件流、时效上限量化）；(4) T-ARCH-4 运维控制台 UI 架构（组件划分、仅消费数据不承载决策、接入 #372/#373、权限模型）；(5) T-ARCH-5 决策依据/可解释分层（结构化 decision record + 输入快照/策略/基线引用 + 摘要式 rationale，支持重放）；(6) T-ARCH-6 incident 生命周期状态机显式建模（新增 `sre_incident_lifecycle_enum`、合法迁移表、与既有 Issue/status 状态映射、禁『关闭态静默复活』）；(7) T-ARCH-7 日志回收 vs 取证保留边界（分区与审计保留锁，不因回收丢失取证）；另补 §10 NFR 映射 NFR-O/T 行、§12.8 需求覆盖索引、ADR-009..012 与风险行。未改业务代码，未改 FUNCTIONAL-SPEC（REQ 职责）。 |
 | v0.3.0 | 2026-09-05 | 按 #371 变更同步：(1) 新增**用户报障 intake 通道**——Intake 适配器/通道作为第二条输入源（与监控采集并列）、归一化→三分类 triage→关联/创建 Issue→触发排查/转 DEV→回执闭环，落地组件层 §2.5/§3.11、配置层 §2.4（`intake_channels`）、数据层 §7.2（`sre_incidents` 扩展字段 + `audit_logs` 枚举）、架构图 §8（含 NFR-S 报障回执最小权限例外约束）；(2) 显式澄清**功能正确性边界**：监控采集/检测范围=可用性/可靠性，功能正确性不自动检测、仅当泄露可观测信号时顺带检出，静默 bug 由 QA 功能测试 + F-SRE-014 用户报障兜底（§1/§3.4/§11）；并按 CHECKER 复审整改（Mermaid 边标签括号 + intake 激活态通道澄清） |
 | v0.2.0 | 2026-09-05 | 架构重构：由「SAS 定制版」升级为「通用可部署、可学习、可支持新系统的 AI SRE」。核心变化：(1) 交付形态改为自包含容器镜像 + compose/helm 编排清单 + 一键接入脚本，配置与代码分离，镜像/代码零 SAS 硬编码（F-SRE-010）；(2) 新增 **System Adapter Layer** 插件层（接口抽象 + 可插拔 + 签名校验 + 热加载/回滚生命周期，F-SRE-011）；(3) 新增 **Learning Engine** 自学习引擎（冷启动→预热→已学习三态迁移，量化参数对齐 AC-012，F-SRE-012）；(4) 新增 **Multi-System Registry** 多系统命名空间隔离（F-SRE-013）；(5) Collector/Detector/Localizer/Healing/Executors/Escalation/Audit 全部泛化为「被纳管系统」表述，SAS 端口/容器数/路径移入「附录：参考实例配置」。保留 C1-C6 已落位安全设计并泛化 |
@@ -175,6 +176,99 @@ systems: []          # 被纳管系统接入配置（可为空 = 待接入态）
 | **Audit Logger（审计日志）** | 不可变、按系统隔离的审计记录，CHECKER 质检数据源 | 写 PostgreSQL（per-system 分区） | ♻️ 泛化+隔离 |
 | **SRE Dashboard 集成** | agent-status 同步 + 运行状态看板 | 复用 Multi-Agent Dashboard + Grafana | 保留 |
 | **LLM Adapter（深度推理）** | 复杂根因定位/告警文案按需云端 | gateway 云端模型调用 | 保留 |
+| **记录层 SQLite（🆕 v0.5.0）** | incident/lifecycle/查询审计记录层持久化，自包含单文件 | ai-sre-service 数据卷内 `sre.db`（嵌入式） | 🆕 变更：PG→SQLite（#372 定案 D，见 §7.1b/DB-SCHEMA） |
+| **Layer2 沟通层 Agent（🆕 v0.5.0）** | 面向客户终端的对外沟通编排层：多通道多租户发布/回执/升级话术、接客户真相源回填 | 独立 Agent 角色，多通道适配器（微信/Slack/Teams/飞书） | 🆕 新增（§2.6） |
+
+---
+
+### 2.6 分层架构总览：Layer1 执行引擎 + Layer2 沟通层（🆕 v0.5.0）
+
+> 为承接「客户侧多通道运营沟通」与「执行层 + 状态层」职责分离，本节把总体架构显式拆为**两个 Layer**（既有 §2.1~§2.5 属 Layer1，内容保留；新增 Layer2）。这是**分层视角的增补**，不推翻既有的组件/数据流/安全设计。
+
+```
+┌──────────────────────── Layer2 沟通层（new） ────────────────────────┐
+│  沟通编排 Agent（多通道多租户）                                        │
+│   - 通道适配器：Client 微信 / Slack / Teams / 飞书（Lark）…            │
+│   - 职责：向客户终端发布升级/告警/回执；接收客户侧确认/补充；多租户隔离 │
+│   - 对外话术（playbook communication 模块驱动）；不承载自愈决策          │
+└───────────────┬───────────────────────────────┬──────────────────────┘
+                │ 升级/回执/状态（Layer1 输出）      │ 客户侧 issue 状态回填（真相源）
+                ▼                                ▼
+┌──────────────────────── Layer1 执行引擎（既有 ai-sre-service）─┐
+│   §2.5 组件（System Adapter / Collector / Detector / Learning /  │
+│   Healing / Escalation / Audit / lifetime…）                     │
+│   ├─ 记录层：嵌入式 SQLite（sre.db，§7.1b，DB-SCHEMA SQLite）     │
+│   ├─ 记忆层：agent memory（§6 记忆注释；已学习基线/先验/偏好）     │
+│   └─ 真相源：GitHub Issue（客户 issue 系统，可选集成，issue_id）   │
+└─────────────────────────────────────────────────────┬───────────────┘
+                                                      │ 采集/自愈（白名单，旁路）
+                                                      ▼
+                                      ┌────────────────────────────────┐
+                                      │ 被纳管系统（SAS 等）💻 ……      │
+                                      └────────────────────────────────┘
+```
+
+- **Layer1 = 执行引擎（已有 `ai-sre-service`）**：承载采集/检测/分级/自愈决策/升级/审计/生命周期。自包含可重复部署单元（镜像 + 编排 + bootstrap，§2.1）。
+- **记录层 = 嵌入式 SQLite**（#372 定案 D，§7.1b）：incident/lifecycle 迁移/查询审计单文件持久化，零外部 DB 运维。
+- **记忆层 = agent memory**（§6 既有 Agent 生态集成项）：已学习基线、迁移先验、跨轮次偏好经 agent 记忆复用辅助 Layer1 决策与 Layer2 措辞。
+- **真相源 = 客户 issue 系统（GitHub Issue，可选集成）**：Issue 为业务唯一真相源；未接真实网关时 best-effort/memory sink（见 README / DEPLOY §10.1）。
+- **Layer2 = 沟通层（🆕）**：位于 Layer1 之外的 **agent**，负责把 Layer1 的升级/回执/状态以客户终端形态发布（微信/Slack/Teams/飞书），并接收客户侧补充/确认回填真相源。**Layer2 是无状态沟通编排，不含自愈/决策**（决策仍全归 Layer1 策略引擎与门禁）。
+
+**Layer1→Layer2 边界与安全**：Layer2 仅消费 Layer1 已裁决的**输出**（升级/告警/回执）& 返回客户侧补充——永远不注入可触发自愈的命令；多租户 = 每客户终端通道隔离，越权发送/旁路 Layer1 直接下指令被拒（对齐 §5/ADR-003 分层授权 + AC-016b 隔离）。
+
+### 2.7 配置双层架构（🆕 v0.5.0）
+
+> 配置分两层承载「What 能力怎么动」（第 1 层 playbook，产品默认）与「Where/Who 部署差异」（第 2 层 yaml，部署者初设），与 §2.2「配置与代码分离」配套细化，均 versioned（git/快照）。
+
+**第 1 层：产品默认 `md playbook`（markdown 能力剧本，随发行附带、零系统硬编码）** —— 说明 agent「有哪些能力模块、每个模块怎么做」。包含**顶层 `PLAYBOOK/` 入口 + 7 个能力模块**（patrol/detection/triage/healing/reporting/analysis/communication）：
+
+| 目录 | 模块 | 内容管什么 |
+|------|------|-----------|
+| `PLAYBOOK/`（顶层入口） | — | 读取入口 + 红线声明 + 模块心智模型（决定启用哪几模块、默认门槛） |
+| `PLAYBOOK/patrol` | 能力① 巡检 patrol | 巡检驱动：采集范围/周期/目标系统如何纳入 Layer1 巡检 |
+| `PLAYBOOK/detection` | 能力② 检测 detection | 检测/分级：异常判定规则、P0-P3 定级门槛与学习态门禁（冷启动只提示/不自愈） |
+| `PLAYBOOK/triage` | 能力③ 三分类 triage | 报障三类：dup/known/new 判定流程与准入（并入/新建→Issue） |
+| `PLAYBOOK/healing` | 能力④ 自愈 healing | 自愈决策：白名单、可回滚姿态、门禁与升级分叉 |
+| `PLAYBOOK/reporting` | 能力⑤ 报告 reporting | 报告/回执：结构化 incident、状态更新、关单/回执到客户 |
+| `PLAYBOOK/analysis` | 能力⑥ 分析 analysis | 事后/根因分析模板：决策依据、重放、复盘（对齐 §12.4 决策分层） |
+| `PLAYBOOK/communication` | 能力⑦ 沟通 communication | **沟通层话术**：Layer2 面向客户的多通道措辞/通道/语气/红线声明 |
+
+> 即「顶层 `PLAYBOOK/` + 7 个能力模块（patrol / detection / triage / healing / reporting / analysis / communication）合集为发行随附的 md playbook 能力包」，各模块均可被部署者 yaml 选配/收紧但不可追加红线外动作。
+
+**第 2 层：部署者初设 `yaml`（可部署 profile，越大系统/客户部署集差异越小）** —— 声明部署侧差异，覆盖：
+
+```yaml
+# deploy profile（sas.yaml 等，随发行示例，可替换）
+systems:    # 被纳管系统索引（名/凭据 ns/profile_ref）
+channels:   # Layer2 激活通道与路由（微信/Slack/Teams/飞书）
+routing:    # 谁能收什么升级（按角色/客户/issue）
+policy:     # 引用 playbook 版本 + 白名单/门禁/上限覆盖（只缩不扩红线）
+```
+
+> **两层合成规则**：产品 playbook 定义默认能力（可配置动作的上限/默认值），部署者 yaml 只做「选区 + 覆盖收紧」，不得**绕过** playbook 的安全红线（§2.8）。两者分离使同发行二进制可支撑不同客户运营形态，且不改核心代码。
+
+### 2.8 动态能力配置机制：md playbook 热加载（🆕 v0.5.0）
+
+> 配置与代码分离（§2.2）+ 双层配置（§2.7）落地为**动态能力开关**：agent 能力随 `md playbook` 变更实时可调而不改代码/镜像。
+
+**Playbook 供给与热加载**
+- **读取时点**：commit（能力入口）每次**执行前读取最新 playbook**，与运行中各自能力模块路由——先读后动，能力变更随下个动作即时生效。
+- **watch reload**：可选文件监听（md 变更 → 触发 reload 事件 + 日志 + 版本快照），降低「改了没生效」滞后；非关键路径，失败不阻断读最新。
+- **git 版本化回滚**：playbook 目录纳入 git；每次动作记录 `playbook_version`（对齐 §12.4 policy_version 引用）；变更可 `git revert` 回滚且留审计链。
+- **准入校验**：md 结构/schema 校验 + 引用模块存在性校验，加载失败保持上一稳定版本并告警（fail-closed 到「上一可用」而非空跑）。
+
+> 记 `playbook_version` 的落库点与 §12.4 决策/§7 lifecycle 的 `policy_version` 一致，保证「哪个剧本驱动了这次判定/自愈/话术」可重放（AC-015a）。
+
+**安全红线 —— 锁代码层不可配置绕过（冷启动红线不因 playbook 变宽）**：
+
+| 红线（不可用 playbook/yaml 关掉或放宽） | 出处 |
+|------------------------------------------|------|
+| **白名单外不自愈**：自愈动作仅限动作白名单（§5.1 C1），能力剧本只能描述怎么做、不能新增白名单外动作类型到可自语线 | §5.1 / ADR-003 |
+| **冷启动不自愈**：冷启动态仅提示/告警不自动自愈（§3.2.3），不因 playbook 覆盖而放开 | §3.2.3 / AC-012 |
+| **旁路不侵入**：监控零侵入、自愈经门禁可观测（§§1/5），playbook 不能把采集/自愈切到侵入/无人门禁模式 | §1 |
+| **最小权限**：最小权限 + 白名单 + 签名 + kill-switch（§5），playbook/yaml 只缩不扩权限面 | §5 / ADR-003/007 |
+
+> 这些红线**在代码层强制**（module 边界 + 校验 + 拒绝加载越权语义），`md playbook` 仅是能力描述，无法把它们配置成绕过——与「配置不降权限面」的部署者 yaml 上限相叠加，保证动态能力灵活性不反噬安全边界。
 
 ---
 
@@ -587,13 +681,23 @@ AI SRE（及 OPS）需注册进以下位置（现有枚举为 `{PM,DEV,QA,DEVOPS
 
 ### 7.1 存储选型
 
-- **状态/历史/审计/学习 → PostgreSQL**（新增 `sre_*` 表，全部带 `system_id` 命名空间）。
+- 🔁 **incident 记录层（incident / lifecycle 迁移 / 查询审计）→ 嵌入式 SQLite**（v0.5.0 #372 定案 D，见 §7.1b）：自包含单文件 `sre.db`，零外部 DB 运维。取代 v0.4.0 此条所指的“incident→PostgreSQL”。
+- **事件/决策审计取证（sre_audit_events/决策记录，§§12.1/12.4）+ 其余引擎表 → PostgreSQL**（新增 `sre_*` 表，全部带 `system_id` 隔离；若同样改走 SQLite 记录层由后续 #Issue 各落 DDL，见 DB-SCHEMA §4 注）。
 - **限流/熔断/防抖计数器 → Redis**（高频、短生命周期，无需持久化，宕机可重置）。
 - **事件流 → Kafka**（§4 主题，retention 72h）。
 
+### 7.1b 记录层选型：PostgreSQL → 嵌入式 SQLite（🆕 v0.5.0，#372 定案 D）
+
+- **决策**：incident 记录层（`sre_incidents` / `sre_incident_state_transitions` / `sre_incident_query_audit`）持久化由独立 PostgreSQL 服务改为**嵌入式 SQLite 单文件**（`ai-sre-service` 数据卷内 `sre.db`，WAL 模式，单进程写）。
+- **理由**：产品可重复部署须**自包含、零外部依赖、零运维**（免 DBA/连接管理/独立服务求存兜底）；**单客户/单部署 incident 量小**，SQLite 单机容量/并发足够。与 §2.1 自包含镜像交付形态一致；与现有进程内 repository 参照实现架构天然契合（成熟即真库，不引入外部 DB）。
+- **DDL/契约**：见 `docs/ai-sre/DB-SCHEMA.md`（已改版 SQLite：TEXT UUID / TEXT ISO-8601 时间 / ENUM→CHECK / JSONB→TEXT+json_valid / RANGE 分区→复合索引 / 无 PG 角色→app 写门 + `BEFORE UPDATE/DELETE` 触发器护栏）。
+- **不因存储换而变更**：查询端点（列表+详情）、lifecycle 权威投影（§12.2b/§12.6b）、PII 掩码投影、Issue 唯一真相源全部保留（DESIGN §12；DB-SCHEMA §7）。
+
 ### 7.2 多系统命名空间表草案
 
-> 命名遵循 DB-SCHEMA §2 命名规范（snake_case，TIMESTAMPTZ，ENUM）。所有业务表带 `system_id` 外键实现 per-system 隔离；审计事件复用既有 `audit_logs`（扩展 `audit_action` 枚举 + `system_id` 列）。
+> 命名遵循 DB-SCHEMA 既有命名（snake_case；记录层为 SQLite TEXT+CHECK 表达，见 DB-SCHEMA §4）。所有业务表带 `system_id` 实现 per-system 隔离；审计事件复用既有 `audit_logs`（扩展 `audit_action` 枚举 + `system_id` 列）。
+>
+> **ⓘ 表类型表达说明（v0.5.0）**：下表为各 `sre_*` 表的**设计纲要**（UUID/TIMESTAMPTZ/JSONB/ENUM 等为便于阅读的通配类型）。凡已落入记录层 SQLite 契约的表（`sre_incidents` / `sre_incident_state_transitions` / `sre_incident_query_audit`，即下列表 1 及相关生命周期/查询审计表），其**权威类型/约束以 `docs/ai-sre/DB-SCHEMA.md`(v0.5.0 SQLite) 为准并覆盖此“纲要”列**；其余未落 DDL 表待各自 #Issue 伴随产出 SQLite/PG 契约。
 
 **表 0：`sre_systems` — 系统注册表（F-SRE-013 多系统纳管）**
 
@@ -999,10 +1103,10 @@ sequenceDiagram
 | R 可靠性 | Executor 幂等 + 快照留存 + Kafka 持久化重试 |
 | S 安全性 | §5 白名单+签名+kill-switch+熔断+凭证分离+最小权限+per-system 审计隔离；§5.8 报障回执最小权限例外（非业务 PII，目的绑定/脱敏/最小留存） |
 | P 性能 | 采集 <1% 负载；检测→告警 ≤2min；单动作 ≤60s 超时转升级 |
-| O 可观测 | sre_* 指标 + 审计 + Grafana 看板 + 学习态/历史趋势；Agent 行为侧（做了什么/正在做什么）见 NFR-T/§12 |
-| T 透明性/可审计/可追溯 | §12：审计取证表 `sre_audit_events` + 哈希链防篡改(PII掩码)+fail-closed；incident 查询 API(#372)；实时状态(#373,轮询+SSE)；lifecycle 状态机显式建模；决策分层 rationale 支持重放；取证保留锁 |
-| C 成本 | 复用现有监控/事件/存储栈（SAS 实例）；通用形态仅新增自包含服务 |
-| X 可移植/可配置/可扩展 | 镜像零硬编码；配置驱动；Adapter 插件模型；多租户隔离（逻辑→资源级） |
+| O 可观测 | sre_* 指标 + 审计 + Grafana 看板 + 学习态/历史趋势；Agent 行为侧（做了什么/正在做什么）见 NFR-T/§12；🔁 记录层自包含 SQLite（sre.db）随镜像即含全部 incident/查询审计状态，免外部 DB 观测（§7.1b）；Layer2 对外沟通话术可观测（§2.6/playbook communication） |
+| T 透明性/可审计/可追溯 | §12：审计取证表 `sre_audit_events` + 哈希链防篡改(PII掩码)+fail-closed；incident 查询 API(#372，读 SQLite 记录层，§12.2b)；实时状态(#373,轮询+SSE)；lifecycle 状态机显式建模；决策分层 rationale 支持重放（含 `playbook_version`，§2.8）；取证保留锁 |
+| C 成本 | 复用现有监控/事件/存储栈（SAS 实例）；通用形态仅新增自包含服务；🔁 记录层改嵌入式 SQLite 免独立 DB/DEVOPS 成本（#372 定案 D） |
+| X 可移植/可配置/可扩展 | 镜像零硬编码；配置驱动；Adapter 插件模型；多租户隔离（逻辑→资源级）；🆕 双层配置（md playbook 产品默认 + yaml 部署差异）与动态能力热加载（§2.7/§2.8，红线锁代码层）；🆕 Layer2 沟通层多通道多租户（微信/Slack/Teams/飞书，§2.6） |
 
 ---
 
@@ -1028,6 +1132,10 @@ sequenceDiagram
 | incident 生命周期不可查/黑盒推进 | 显式状态机 + 状态迁移留痕 + 查询端点（§12.2/§12.6，AC-016） |
 | 取证期日志被普通回收误删 | 审计/取证保留锁 + 分区隔离（§12.7，对齐 m4 保护） |
 | 多系统查询越权泄露他系统 incident/audit | incident/实时/审计按 `system_id` 授权隔离 + 越权拒绝告警（§12.2/12.3/12.5，AC-016b） |
+| 记录层 SQLite 文件损坏/单点 | WAL + 单进程写 + app 只读开关；必要时文件快照/备份；零对外服务故障面收窄为单文件（§7.1b，DB-SCHEMA §1a） |
+| md playbook 能力被误配/越权放宽自愈 | 红线（白名单外不自愈/冷启动不自愈/旁路不侵入/最小权限）**锁代码层不可 playbook/yaml 绕过** + 准入校验 fail-closed 到上一可用版 + git 版本化回滚（§2.8/§5） |
+| 沟通层（Layer2）被利用越权发信/注入自愈 | Layer2 仅消费 Layer1 已裁决输出集、回填客户侧补充；不暴露自愈入口；多租户通道隔离 + 越权发送拒绝（§2.6，ADR-014） |
+| 动态能力变更后判定不可复现 | 每次动作记录 `playbook_version`/`policy_version` 入审计与决策引用，支持重放（§2.8/§12.4/ADR-014） |
 
 ---
 
@@ -1035,7 +1143,7 @@ sequenceDiagram
 
 > 本章落地 FUNCTIONAL-SPEC v0.5.0 升级为一等需求的 «透明性/可观测性» 模块（F-SRE-015 动作审计与决策透明、F-SRE-016 实时状态与 incident 生命周期可见性、NFR-T），并逐项细化附录「待 ARCH 细化」清单 **T-ARCH-1..7** 的实现形态。设计约束沿用本架构既有原则：
 >
-> - **复用优先**（NFR-C）：终态/高频查询走 PostgreSQL `sre_*`；计数器/限流走 Redis；事件走 Kafka（§4.1 retention 72h）。
+> - **复用优先 / 🔁记录层自包含（NFR-C，v0.5.0）**：incident 记录层（真实/终态） = 嵌入式 SQLite `sre.db`（§7.1b，非外部共享 PostgreSQL 经自解析）；计数器/限流走 Redis；事件走 Kafka（§4.1 retention 72h）。审计/决策（§§12.1/12.4）如走 PostgreSQL 由各自 #Issue 定；记录层 PII/只读/取证护栏见 DB-SCHEMA §5/§6。
 > - **per-system 隔离**（F-SRE-013/ADR-007）：一切可查询/可审计数据按 `system_id` 命名空间隔离授权；审计不得因隔离缺失，也不得被越权旁窥。
 > - **fail-closed**（§3.10/UC-017）：不可审计即不可落地——审计写入失败必须阻止/阻断关联动作，不允许「只做不记」。
 > - **Issue 为唯一真相源**：incident 查询、实时状态下钻、审计反查均以 GitHub Issue 为业务锚点；透明性模块只「记录/查询/可见」，不承载 AI SRE 决策逻辑，也不替代故障处置本身（处置仍归 F-SRE-005~008/014 既有角色）。
@@ -1087,7 +1195,7 @@ sequenceDiagram
 
 ### 12.2 T-ARCH-2 incident 查询 / 列表 API 契约（#372）
 
-**形态**：REST（JSON）读接口，仅消费 PostgreSQL 上持久化的一致状态（非内存快照，对齐 AC-016）。最终路由前缀最终由 DEVOPS/网关统一定（见 §12.5 入口），此处给 API 形状约定。鉴权按 §12.5 读取令牌 → 后端强校验 `system_id ∈ 所辖集`，越权拒绝并告警（AC-016b）。
+**形态**：REST（JSON）读接口，仅消费**持久化的一致状态（非内存快照**，对齐 AC-016）。🔁 v0.5.0：incident 记录层由 PostgreSQL 改为嵌入式 SQLite（#372 定案 D），故本契约的读目标实为 **SQLite `sre_incidents` 及关联表**（见 §12.2b / DB-SCHEMA §7）；最终路由前缀最终由 DEVOPS/网关统一定（见 §12.5 入口），此处给 API 形状约定。鉴权按 §12.5 读取令牌 → 后端强校验 `system_id ∈ 所辖集`，越权拒绝并告警（AC-016b）。
 
 列表：`GET /incidents`
 - Query（白名单）：`system_id`(可空=所辖全系统，非空时须在授权集内)、`status`/`lifecycle`、`source`(detected/intake)、`severity[]`、time 区间 `created_from / created_to`、`issue_id`、`q`(对现象/标题子串)、`sort/order`(默认 occurred_at desc)。
@@ -1099,7 +1207,9 @@ sequenceDiagram
 - `scope=full`：完整 incident 字段（**PII 相关联系字段一律掩码/不回**，经 `reporter_contact_ref` 掩码形态）。
 - `scope=trace`：附加 incident 时间线（状态迁移每跳时间/触发者/依据，§12.6）；`scope=audit`：返回关联 `sre_audit_events` 动作轨迹（审计视角，含 decision_basis 概要而非原始全文）。
 
-**审计**：所有查询请求经审计（只读 `action_type` 用 `sre_incident_query/read` 记入 `sre_audit_events` actor=query-console），支持事后「谁查过什么」。
+**审计**：所有查询请求经审计（只读 `action_type` 用 `sre_incident_query/read` 记入查询审计 `sre_incident_query_audit`，actor=query-console），支持事后「谁查过什么」。
+
+**12.2b（🆕 v0.5.0 注释）**：查询只读源 = SQLite 记录层（`sre.db` `sre_incidents`，列表谓词与 `occured/created` 等索引见 DB-SCHEMA §7/SQLite 复合索引）；`scope=trace` 由 `sre_incident_state_transitions WHERE incident_id=? ORDER BY occurred_at` 组时间线，`scope=audit/决策` 经 refer DB-SCHEMA §5；过滤白名单 / PII 掩码 / 空子集 200 等同 v0.4 契约。
 
 ### 12.3 T-ARCH-3 实时状态（正在做什么）暴露机制（#373）
 
@@ -1124,7 +1234,9 @@ sequenceDiagram
 2. **引用层（快照/策略/基线）**：不内联全量数据，存 `input_snapshot_ref`（同一 incident 的可观测输入快照 id）、`policy_version`、`baseline_version`、相关 issue/incident id——重放时按版本取 policy/baseline 与快照即可**再算一遍得到一致决策**（对齐 F-SRE-015/NFR-T 可复现/AC-015a），不落图片/长文本字节。
 3. **摘要层（仅概要）**：当决策确由云端 LLM 做复杂推理时，仅存**短摘要**（决策要点/依据引用/被排除路线一句话），并在 decision record 上置 `rationale_mode=summary`，不把推理链当规范文本整体归档（对齐范围外“不逐 token、降级保留决策摘要与依据引用”）。
 
-**与版本化策略/基线对齐（Replay 契约）**：decision record + audit 行都要记触发当时的 policy/baseline **版本号**；版本化机制沿用 §7.2 版本化白名单/基线表。重放器 = ①取该行版本策略/基线 → ②取该 incident 输入快照 → ③跑同规则引擎 → ④比较断言分支是否一致/可解释；不一致即质检（CHECKER）/取证走查发现回归点。任何无 policy/baseline 版本可依的决策视为「不可复现」并在此前 fail-closed 拦截写出该决策审计（AC-015a 负侧）。
+**与版本化策略/基线对齐（Replay 契约）**：decision record + audit 行都要记触发当时的 policy/baseline **版本号**；版本化机制沿用 §7.2 版本化白名单/基线表，并新增 **md playbook 能力文档版次**（§2.8，记 `playbook_version`）。重放器 = ①取该行版本策略/基线 → ②取该 incident 输入快照 → ③跑同规则引擎 → ④比较断言分支是否一致/可解释；不一致即质检（CHECKER）/取证走查发现回归点。任何无 policy/baseline 版本可依的决策视为「不可复现」并在此前 fail-closed 拦截写出该决策审计（AC-015a 负侧）。
+
+**12.4b（🆕 v0.5.0 注释）**：决策记录/决策依据相关表如果并入记录层，则同 SQLite 落地（DB-SCHEMA §4/§6），哈希链/只读校验由 app 见证层实现；§2.8 playbook/agent 能力文档版本纳入 policy_version 引用链，保证“哪个剧本驱动了这次判定/话术”可重放。
 
 ### 12.5 T-ARCH-4 运维控制台 UI 架构（做了什么/正在做什么，#373）
 
@@ -1165,9 +1277,13 @@ sequenceDiagram
 
 **落库/落接口**：incident 行 + 独立 `sre_incident_state_transitions`（谁/何时/依据/旧新 state）写迁移历史；对外 API（§12.2 scope=trace）即读该历史表 + 当前 lifecycle 字段。状态集合与迁移表用**配置驱动**（系统无关、可调整）而非写死代码枚举分支（对齐 NFR-X 可配置）。
 
+**12.6b（🆕 v0.5.0 注释）**：lifecycle 相关表（`sre_incidents` 增列 + `sre_incident_state_transitions` + `sre_incident_query_audit`）为**嵌入式 SQLite 记录层**真值（#372 定案 D），权威类型/CHECK 取值表见 DB-SCHEMA §3/§5 与 DATA-DICTIONARY；枚举取值集、权威投影、Reopen 唯一出路在本节不变，存储形态由 PG 换 SQLite。
+
 **与现有 Issue 状态映射**（Issue 为唯一真相源；issue 状态变化回写，Issue closed 对应 lifecycle closed，Issue reopen→显式 reopen 带原因；assigned/in-review→investigating/等待人工等按实情），见迁移表末行：Issue open→ lifecycle 相关处理态，Issue closed→closed；Issue title/body 保持带 system tag 前缀的做法（对齐 §6.2）。**给 DEV 的前置提示**：既有 `sre_incidents.status`/`triage`/`ack_status` 与本节 lifecycle 的关系需在实现时给出权威状态联合/投影规则（见 §12.8 为 DEV 说明），非“新增状态字段即内部两套漂移”。
 
 ### 12.7 T-ARCH-7 日志回收 vs 取证保留边界（分区与保留策略）
+
+**12.7b（🆕 v0.5.0 注释）**：SQLite 记录层无原生 RANGE 分区 → 原“分区 per-table by occurred_at”在记录层改由**复合索引 + “筛选/归档迁移”**承接（DB-SCHEMA §5.2）；取证保留长留存、`BEFORE UPDATE/DELETE` 触发器护栏 + app append-only writer + 文件权限（无 PG 角色/RLS），按龄归档走“整段抽离 + 起始标记”而非行删除（DB-SCHEMA §6）。Kafka/监控指标/审计如仍走 PostgreSQL 的保留分区描述对本节其余部分适用。
 
 **分层生命周期（谁回收、谁不回收）**：
 - Kafka 事件（§4.1）：retention 72h，仅内部事件流水，不承担审计真相（真落在 PostgreSQL）。
@@ -1186,6 +1302,7 @@ sequenceDiagram
 - 审计 append-only/哈希链/签名密钥经 KMS 注入、只读校验器与越权写告警、fail-closed 衔接（§12.1）。
 - 查询 API 过滤白名单与 per-system 鉴权、PII 掩码投影（§12.2）；实时状态仅表驱动 + SSE 可选（§12.3），不做持久高频长连接。
 - 决策分层引用版本（policy/baseline）+ 摘要式 rationale，禁用逐 token 落库（§12.4）；lifecycle 配置驱动 + reopen 带原因（§12.6）；审计/取证与日志回收分区与 hold lock（§12.7）。
+- （v0.5.0）记录层 = 嵌入式 SQLite（sre.db）：SQLite DDL/`schema_version` 幂等迁移 per DB-SCHEMA(SQLite)，读路径（IncidentReader/repository）改走 SQLite 而不再含 PG DSN；Layer2 沟通层仅消费 Layer1 裁决输出/回填、不注入自愈命令（§2.6）；md playbook（Playbook 层）热加载 + `playbook_version` 入决策/审计（§2.8），安全红线不因 playbook 可配（§5/§2.8）。
 ---
 
 ## 架构决策记录 (ADR)
@@ -1273,6 +1390,20 @@ sequenceDiagram
 - **决策**：以「增列不覆盖」策略新增 `sre_incident_lifecycle_enum` 作为对外规范状态 + `sre_incident_state_transitions` 迁移历史；合法迁移表 + reopened（带原因）显式；closed 唯一出路是显式 reopen；`status/triage/ack_status` 保留作为操作面/源流字段并与 lifecycle 给出权威投影（实现期由 DEV 定义联合/投影规则，见 §12.8）。迁移表与状态集合配置驱动，与 Issue 状态映射（open/assigned/in-progress↔investigating 等、Issue closed↔lifecycle closed、Issue reopen→显式 reopen）。
 - **理由**：满足 F-SRE-016 的可查询、留痕、防重生（AC-016）同时不破坏既有监控/自愈/escalation 链路；配置驱动对齐 NFR-X 可配置、不硬编码分支；Issue 为唯一真相源便于与 PM/DEV 流程同步。
 - **影响**：需实现 lifecycle 枚举/迁移守卫/reopen 原因、迁移历史表与 API scope=trace 读接口，及与既有三字段的投影规则与 issue 状态同步。
+
+### ADR-013：incident 记录层采用「嵌入式 SQLite」（#372 定案 D，替代独立 PostgreSQL）
+
+- **背景**：AI SRE 需可重复部署到任意空环境（§2.1），而 v0.4.0 将 incident/状态/审计落 PostgreSQL 独立服务，带来连接管理、角色/RLS、分区归档等外部 DB 运维（需 DEVOPS/DBA），与“单客户 incident 量小、须零运维自包含”矛盾。
+- **决策**：记录层（`sre_incidents` / `sre_incident_state_transitions` / `sre_incident_query_audit`）持久化改为**嵌入式 SQLite 单文件** `sre.db`（WAL、单进程写、`TEXT` 时戳/`TEXT` UUID/`CHECK` 替 ENUM/`json_valid` 替 JSONB/复合索引替 RANGE 分区/`schema_version` 幂等迁移）；审计隔离以 app 写门 + `BEFORE UPDATE/DELETE` 触发器 + 文件权限承接。记录层 SQL 与 DDL 见 `docs/ai-sre/DB-SCHEMA.md`(v0.5.0)。
+- **理由**：自包含、零外部 DB 运维、随镜像即含全部状态；单部署=单客户、incident 量小命中 SQLite 适用域；查询端点、PII 掩码、lifecycle 权威投影、Issue 唯一真相源均不因存储换而变。
+- **影响**：需实现 SQLite init/迁移与 repository 读路径（替换进程内参照/避免含 PG DSN）；若后续其余表（audit/systems…）也走 SQLite 由各自 #Issue 落 DDL。
+
+### ADR-014：加入 Layer2 沟通层 + 双层配置（md playbook / yaml）+ 动态能力热加载，安全红线锁代码层
+
+- **背景**：需支撑“客户侧多通道运营沟通”且职责与既有执行引擎分离（不改自愈决策归属）；需要“产品默认能力 vs 部署差异”解耦、以及能力随时可调而不改代码/镜像。
+- **决策**：分层视角明确 **Layer1 = 既有 `ai-sre-service`（执行 + 记录层 SQLite + 记忆层 agent memory + 真相源 Issue）**，新增 **Layer2 沟通层 agent**（多通道：客户 微信/Slack/Teams/飞书；多租户隔离；只发布 Layer1 已裁决输出/回填客户侧补充，不注入自愈命令）。配置双层：第 1 层产品默认 **md playbook**（`PLAYBOOK/` + patrol/detection/triage/healing/reporting/analysis/communication 七能力模块）、第 2 层部署者初设 **yaml**（systems/channels/routing/policy，只缩不扩红线）。动态能力机制：md 热加载（agent 工作前读最新 + 可选 watch reload + git 版本化回滚 + `playbook_version` 记录对齐 §12.4 重放）；安全红线（白名单外不自愈 / 冷启动不自愈 / 旁路不侵入 / 最小权限）**锁代码层、不可用 playbook/yaml 配置绕过**。
+- **理由**：Layer2/Layer1 分离避免沟通 Agent 取得自愈能力放大攻击面（对齐 ADR-003 分层授权）；md+yaml 分层使同发行二进制支撑不同客户运营形态、能力变更不发布镜像；红线锁代码层保障“动态灵活的灵活性不反噬安全边界”。
+- **影响**：需实现 SQLite 记录层、Layer2 沟通通道适配器与多租户路由（§2.6）、playbook 目录/schema 校验/热加载/watch/git、playbook_version 加入决策与审计引用；Layer2 不含决策，越权发送/旁路 Layer1 下指令被拒。
 
 ---
 
