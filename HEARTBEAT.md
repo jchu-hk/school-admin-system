@@ -1,3 +1,15 @@
+# 21:08 — Heartbeat poll (Sat 09-12) 🟢 零实质变化; 容器稳定运行 34h (vs 21:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200. Docker 14 容器全 Up **34 hours** (postgres/redis/opa/kafka healthy) — ✅ 持续稳定无反复重启.
+- git origin/main: **ahead 9** (心跳提交累积, 0 behind; HEAD `b03a5be`). load average **0.77/1.01/0.92** 平稳; 内存 194M free / available 905M; 磁盘 92% (3.4G free). 宿主 uptime 1 day 9h55.
+- 工作区 dirty 仅预期 churn: HEARTBEAT.md + memory/2026-09-12.md.
+- **Open Issue**: 无新增/更新 (最新仍 #372 @ 09-09T10:41Z; #373 P2 @ 09-06; #365-#368 i18n P1/P2 @ 08-18; #347-#354 M2-M4 P0/P1 长期项未变). 56 open issues 无新 P0/P1.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 → spawn 不可用 (blocker). 未 spawn. #372/#370 仍 unassigned 待派工.
+- **Needs your input**: 无新增 (延续 4 项).
+
+---
+
 # 21:04 — Heartbeat poll (Sat 09-12) 🟢 零实质变化; 容器稳定运行 34h (vs 20:04)
 
 ### System Status 🟢 服务全绿 / ✅ 宿主平稳
