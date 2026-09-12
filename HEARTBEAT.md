@@ -1,3 +1,39 @@
+# 14:04 — Heartbeat poll (Sat 09-12) 🟢 零实质变化; 容器稳定运行 27h (vs 14:00)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080 200, portal :8081 200, ai-sre :9090/health 200. Docker 14 容器全 Up **27 hours** (postgres/redis/opa/kafka healthy) — ✅ 持续稳定无反复重启.
+- git origin/main: **ahead 4** (4 条未推送心跳提交, 0 behind). load average **1.98/1.62/1.07** (与前略升, 仍平稳); 内存 109M free / available 999M; 磁盘 92% (3.4G free). 宿主 uptime 1 day 2h55.
+- 工作区 dirty 仅预期 churn: HEARTBEAT.md + memory/2026-09-12.md.
+- **Open Issue**: 无新增/更新 (最新仍 #370/#372 @ 09-09T10:41Z; #373 P2 backlog 未变; #347-#354 M2/M3/M4 P0/P1 长期项未变). 无新 P0/P1.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 → spawn 不可用 (blocker). 未 spawn. #372/#370 仍 unassigned 待派工.
+- **Needs your input**: 无新增 (延续 4 项).
+
+---
+
+# 14:00 — Heartbeat poll (Sat 09-12) 🟢 零实质变化; 容器稳定运行 27h (vs 13:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080 200, portal :8081 200, ai-sre :9090/health 200. Docker 14 容器全 Up **27 hours** (postgres/redis/opa/kafka healthy) — ✅ 持续稳定无反复重启.
+- git origin/main: **ahead 4** (4 条未推送心跳提交, 0 behind). load average **1.83/1.39/0.86** (较前略升); 内存 173M free / available 1060M; 磁盘 92% (3.4G free).
+- 工作区 dirty 仅预期 churn: HEARTBEAT.md.
+- **Open Issue**: 无新增/更新 (无 updated>09-09 变更; #373 P2 backlog 未变; #347-#354 M2/M3/M4 P0/P1 长期项未变). 无新 P0/P1.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 → spawn 不可用 (blocker). 未 spawn. #372/#370 仍 unassigned 待派工.
+- **Needs your input**: 无新增 (延续 4 项).
+
+---
+
+# 13:04 — Heartbeat poll (Sat 09-12) 🟢 零实质变化; 容器稳定运行 26h (vs 12:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080 200, portal :8081 200, ai-sre :9090/health 200 (注: 初探用 /api/health 得 404, 正确路径 /health 为 200). Docker 14 容器全 Up **26 hours** (postgres/redis/opa/kafka healthy) — ✅ 持续稳定无反复重启.
+- git origin/main: **ahead 4** (4 条未推送心跳提交, 0 behind) — 心跳提交累积. load average **0.44/0.40/0.38** 平稳; 内存 199M free / available 1098M; 磁盘 92% (3.4G free). 宿主 uptime 1 day 1h55.
+- 工作区 dirty 仅预期 churn: HEARTBEAT.md + docs/ai-sre/ + memory.
+- **Open Issue**: 无新增/更新 (最新仍 #370/#372 @ 09-09T10:41Z; #373 P2 backlog 未变; #347-#354 M2/M3/M4 P0/P1 长期项未变). 无新 P0/P1.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 → spawn 不可用 (blocker). 未 spawn. #372/#370 仍 unassigned 待派工.
+- **Needs your input**: 无新增 (延续 4 项).
+
+---
+
 # 12:04 — Heartbeat poll (Sat 09-12) 🟢 零实质变化; 容器稳定运行 25h (vs 11:04)
 
 ### System Status 🟢 服务全绿 / ✅ 宿主平稳
