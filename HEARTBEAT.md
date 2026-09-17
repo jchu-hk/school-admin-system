@@ -1,3 +1,153 @@
+# 18:04 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~150h (vs 17:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 6 days (~150h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01 (与 17:04 同). 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **0.27/0.40/0.39** 平稳; 内存 418M avail (123M free); 磁盘 92% (3.2G free). 宿主 uptime 6 days 6h55.
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
+# 17:04 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~149h (vs 16:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 6 days (~149h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01 (与 16:04 同). 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **0.48/0.44/0.50** 平稳; 内存 403M avail (122M free); 磁盘 92% (3.2G free). 宿主 uptime 6 days 5h55.
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
+# 16:04 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~149h (vs 15:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 6 days (~149h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01 (与 15:04 同). 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **0.58/0.37/0.35** 平稳; 内存 431M avail (114M free); 磁盘 92% (3.2G free). 宿主 uptime 6 days 4h56.
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
+# 15:04 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~148h (vs 14:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 6 days (~148h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01 (与 14:04 同). 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **0.53/0.51/0.41** 平稳; 内存 572M avail (123M free); 磁盘 92% (3.2G free). 宿主 uptime 6 days 3h55.
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
+# 14:04 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~147h (vs 14:00)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 6 days (~147h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01 (与 14:00 同). 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **0.46/0.33/0.40** 平稳; 内存 571M avail (104M free); 磁盘 92% (3.2G free). 宿主 uptime 6 days 2h55.
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
+# 13:04 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~145h (vs 12:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 6 days (~145h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01 (与 12:04 同). 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **0.73/0.43/0.38** 平稳; 内存 582M avail (125M free); 磁盘 92% (3.2G free). 宿主 uptime 6 days 1h55.
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
+# 12:04 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~144h (vs 11:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 6 days (~144h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01 (与 11:04 同). 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **1.74/1.49/0.90** (1min 略高, 宿主 uptime 6 days 0h55); 内存 510M avail (109M free); 磁盘 92% (3.2G free).
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
+# 11:04 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~144h (vs 10:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 6 days (~144h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01 (与 10:04 同). 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **0.27/0.39/0.39** 平稳; 内存 650M avail (114M free); 磁盘 92% (3.2G free). 宿主 uptime 5 days 23h55.
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
+# 10:04 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~144h (vs 10:01)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 5 days (~144h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01 (与 10:01 同). 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **0.25/0.33/0.44** 平稳; 内存 664M avail (132M free); 磁盘 92% (3.2G free). 宿主 uptime 5 days 22h55.
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
+# 09:04 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~144h (vs 10:01)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 5 days (~144h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01. 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **1.06/0.60/0.43** (1min 瞬时抖动, 已回落); 内存 442M avail (124M free); 磁盘 92% (3.2G free). 宿主 uptime 5 days 21h55.
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
 # 21:04 — PM Patrol (Wed 09-16) 🟢 零实质变化; 容器稳定运行 ~130h (vs 21:00)
 
 ### System Status 🟢 服务全绿 / ✅ 宿主平稳
@@ -415,5 +565,20 @@
 - **Open Issue**: 56 open, 无新增/无更新 (最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1 (P0 22 项 / P1 16 项均为旧 backlog, 全未指派), 无可启动任务.
 - **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false (环境仅 main) → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
 - **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-23).
+- **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
+- 结论: 零实质变化 → 保持安静, 不打扰用户.
+
+---
+
+# 14:00 — PM Patrol (Thu 09-17) 🟢 零实质变化; 容器稳定运行 ~146h (vs 13:04)
+
+### System Status 🟢 服务全绿 / ✅ 宿主平稳
+- backend :3000/api/health 200, admin :8080/health 200, portal :8081/health 200, ai-sre :9090/health 200.
+- Docker 14 容器全 **Up 6 days (~146h)** (5 healthy) — ✅ 持续稳定无反复重启.
+- git main: HEAD `3b159b2` chore: heartbeat 10:01 (与 13:04 同). 工作区仅预期 churn (HEARTBEAT.md + memory/2026-09-16.md + memory/2026-09-17.md).
+- load average **0.29/0.33/0.43** 平稳; 内存 711M avail (116M free); 磁盘 92% (3.2G free). 宿主 uptime 6 days 2h51.
+- **Open Issue**: 56 open, 无新增/无更新 (updated:>=09-10 → 空; 最新仍 #372/#370 @ 09-09, #373 @ 09-06). 无新 P0/P1, 无可启动任务.
+- **Agent spawn**: OPENCLAW_NO_RESPAWN=1 + allowAny=false → 无法 spawn DEV/QA/DEVOPS, 记为 blocker.
+- **PR**: #369 (i18n fix for #366/#367/#368) 仍 OPEN 待处置 (最后更新 08-20).
 - **Needs your input**: 无新增 (延续 4 项: ① 解除 spawn 限制 ② #370/#372 派工 ③ 磁盘清理授权 ④ PR#369 处置).
 - 结论: 零实质变化 → 保持安静, 不打扰用户.
