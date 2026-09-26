@@ -1,3 +1,25 @@
+# 20:04 — PM Patrol (Sat 09-26) 🟢 服务全绿; SQL 群近 3h **0 条** (20:04 非触发时刻); 零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**, ai-sre :9090 **200**.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **4d1h01m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)** 持平; mem 578M avail (140M free) — 偏紧.
+- git main HEAD `80f1272` (chore: heartbeat 19:04 patrol); Open Issue **56**, updated>=09-26 → **0**; 无新 P0/P1. PR #369 仍 OPEN (末更 08-23).
+- load **0.49/0.43/0.65** 低位. 20:00 BackupService 清理正常 (删 0).
+
+### 🔴 后端 SQL 错误群 — 近 3h **0 条** (20:04 非触发时刻); 24h **6 条** (同批历史, 非新增)
+- 20:04 非触发时刻 (18:00 日报已过, 明日 09:00 UserLifecycle 为下一复验点), 计数 0 属预期.
+- 末次仍 14:00 auto-reject (`missing FROM-clause entry for table "change"`) + 13:00 提醒 (`LunchChange.created_by`) + 09:00 UserLifecycle (`notifications.school_id`). 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 19:04 轮相比零实质变化 → 仅记录, 不重复打扰用户.
+
+---
+
 # 19:04 — PM Patrol (Sat 09-26) 🟢 服务全绿; 18:00 日报窗口**无错误行** (24h 计数降至 6, 日志窗口极小); 零其他变化
 
 ### System Status 🟢
