@@ -1,3 +1,47 @@
+# 19:04 — PM Patrol (Sat 09-26) 🟢 服务全绿; 18:00 日报窗口**无错误行** (24h 计数降至 6, 日志窗口极小); 零其他变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**, ai-sre :9090 **200**.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **4d0h01m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)** 持平; mem 605M avail (114M free) — 偏紧.
+- git main HEAD `dee56e3` (chore: heartbeat 18:04 patrol); Open Issue **56**, updated>=09-26 → **0**; 无新 P0/P1. PR #369 仍 OPEN.
+- load **0.46/0.48/0.42** 低位. 18:00/19:00 BackupService 清理正常 (删 1 / 删 0).
+
+### 🔴 后端 SQL 错误群 — 近 3h **0 条**; 24h **6 条** (同批历史, 非新增)
+- 18:00 日报触发点本轮**未落错误行**入保留窗口 (24h 计数由 12→6, 说明旧行滚出; 保留窗口极小, 无法据此判定自愈).
+- 末次仍 14:00 auto-reject (`missing FROM-clause entry for table "change"`) + 13:00 提醒 (`LunchChange.created_by`) + 09:00 UserLifecycle (`notifications.school_id`). 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 19:00 轮相比零实质变化 → 仅记录, 不重复打扰用户.
+
+---
+
+# 19:00 — PM Patrol (Sat 09-26) 🟢 服务全绿; SQL 群近 6h **2 条** (仅 14:00 历史批); 零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **3d23h57m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)**; mem 650M avail (108M free) — 偏紧.
+- git main HEAD `dee56e3` (chore: heartbeat 18:04 patrol); Open Issue **56**, updated>=09-26 → **0**; 无新 P0/P1. PR #369 仍 OPEN (末更 08-23).
+- load **0.30/0.36/0.36** 低位.
+
+### 🔴 后端 SQL 错误群 — 近 6h **2 条** (仅 14:00 LunchReminder 历史批, 非新增)
+- 近 6h 仅 14:00:00 `午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (+ driverError 同文, 计 2).
+- 无 18:00 日报新错误行 (24h 日志保留窗口极小, 无法复现). 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 18:04 轮相比零实质变化 → 仅记录, 不重复打扰用户.
+
+---
+
 # 17:04 — PM Patrol (Sat 09-26) 🟢 服务全绿; SQL 群近 3h **0 条** (17:04 非触发时刻); 零实质变化
 
 ### System Status 🟢

@@ -122,6 +122,10 @@
 
 When the user sends messages related to the **School Admin System** project, they will prefix with `[SAS]` to differentiate from general conversation. When I respond about SAS topics, I should also use this prefix or contextually acknowledge it's SAS-related.
 
+## [SRE] Prefix Convention (2026-09-20)
+
+When the user sends messages related to the **AI-SRE** project (`project-aisre`), they will prefix with `[SRE]` to differentiate from general conversation. When I respond about AI-SRE topics, I should also use this prefix or contextually acknowledge it's AI-SRE-related.
+
 ## Coze Proxy Configuration (Important!)
 
 **Document Location**: `/workspace/projects/workspace/COZE_PROXY_CONFIG.md`
