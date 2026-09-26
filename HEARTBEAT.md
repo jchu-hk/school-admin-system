@@ -1,3 +1,95 @@
+# 16:04 — PM Patrol (Sat 09-26) 🟢 服务全绿; SQL 群近 3h **2 条** (均为 14:00 LunchReminder, 非新增); 零其他变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200** (`status:ok`, onboarding=false).
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **3d21h01m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)** 持平; mem 592M avail (105M free) — 偏紧.
+- git main HEAD `5631342` (chore: heartbeat 12:04 patrol); Open Issue **56**, updated>=09-26 → **0**; 无新 P0/P1. PR #369 仍 OPEN (末更 08-23).
+- load **0.39/0.34/0.34** 低位. 16:00 BackupService 清理正常 (删 0).
+
+### 🔴 后端 SQL 错误群 — 近 3h **2 条** (14:00 两则, 均为同批历史, 非新增)
+- 近 3h 仅 14:00:00 `午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (+ driverError 同文, 计 2).
+- 15:00/16:00 无新错误; 24h 计数 **12 条** (同批历史). 下一复验点 **18:00 日报**.
+- 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈, 判定不变.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 15:04 轮相比零实质变化 → 仅记录, 不重复打扰用户.
+
+---
+
+# 15:04 — PM Patrol (Sat 09-26) 🟢 服务全绿; SQL 群近 3h **0 条** (15:04 非触发时刻); 零其他变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **3d20h01m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)** 微升 1pp; mem 601M avail (122M free) — 偏紧.
+- git main HEAD `5631342` (chore: heartbeat 12:04 patrol); Open Issue **56**, updated>=09-26 → **0**; 无新 P0/P1. PR #369 仍 OPEN (末更 08-23).
+- load **0.51/0.37/0.36** 低位. 15:00 BackupService 清理正常 (删 0).
+
+### 🔴 后端 SQL 错误群 — 近 3h **0 条** (15:04 非触发时刻)
+- 15:04 非触发时刻 (下一复验点 18:00 日报), 计数 0 属预期.
+- ⚠️ 观测局限: `docker logs` 保留窗口极小 (24h 仅 62 行), 14:00 LunchReminder 仅有「开始执行」行、其后 **无错误行落在保留窗口内** → 与 14:04 轮记录的「14:00 auto-reject 实施失败」存在口径差, 无法在本轮以现有日志复现/证伪. 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈, 判定不变.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 14:04 轮相比零实质变化 (15:04 非触发时刻) → 仅记录, 不重复打扰用户.
+
+---
+
+# 14:04 — PM Patrol (Sat 09-26) 🟢 服务全绿; 🔴 **14:00 午膳 auto-reject 触发点实证失败** (今日 13:00/14:00 两复验点均已失败, 与预测一致); 零其他变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200** (`status":"ok"`, onboarding=false).
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **3d19h01m** (09-22 19:02 后无重启). 磁盘 **91% (3.4G free)** 持平; mem 637M avail (121M free) — 偏紧.
+- git main HEAD `5631342` (chore: heartbeat 12:04 patrol); Open Issue **56**, updated>=09-26 → **0**; 无新 P0/P1. PR #369 仍 OPEN (末更 08-23).
+- load **0.45/0.84/0.89** 低位. 13:00 BackupService 清理正常.
+
+### 🔴 后端 SQL 错误群 — 14:00 LunchReminder auto-reject 触发点**再次实证失败** (本轮关键新数据点)
+- 09/26 14:00:00 `[LunchReminderScheduler] 【Cron】午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (+ driverError 同文) — 与 09-25 14:00 同形态, **非新增**.
+- 09/26 13:00:00 `午膳变更提醒任务失败: column LunchChange.created_by does not exist` (上轮已记).
+- 近 3h 计数 **4 条** (13:00×2 + 14:00×2); 24h **10 条** (同批历史).
+- **意义**: 12:04/13:04 轮预设的「13:00/14:00 午膳复验点」均已到并实证失败 → 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈. 今日末复验点 **18:00 日报**.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 13:04 轮相比仅新增预测内 14:00 auto-reject 触发点失败 → 仅记录, 不重复打扰用户.
+
+---
+
+# 13:04 — PM Patrol (Sat 09-26) 🟢 服务全绿; 🔴 **13:00 午膳触发点实证失败** (与预测一致, schema 漂移延续); 零其他变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **3d18h01m** (09-22 19:02 后无重启). 磁盘 **91% (3.5G free)** 持平; mem 613M avail (120M free) — 偏紧.
+- git main HEAD `5631342` (chore: heartbeat 12:04 patrol); Open Issue **56**, updated>=09-26 → **0**; 无新 P0/P1. PR #369 仍 OPEN (末更 08-23).
+- load **1.28/0.66/0.71** 低位. 12:00/13:00 BackupService 清理正常 (删除 0).
+
+### 🔴 后端 SQL 错误群 — 13:00 LunchReminder 触发点**再次实证失败** (本轮关键新数据点)
+- 09/26 13:00:00 `[LunchReminderScheduler] 【Cron】午膳变更提醒任务失败: column LunchChange.created_by does not exist` (+ driverError 同文) — 与 09-23/09-25 13:00 同形态, **非新增**.
+- 近 3h 计数 **2 条** (= 该单次事件 + driverError 同文); 24h **10 条** (同批历史).
+- **意义**: 12:04 轮预设的「今日 13:00/14:00 午膳复验点」13:00 已到并实证失败 → 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈. 下一复验点 **14:00 auto-reject** + 18:00 日报.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 12:04 轮相比仅新增预测内 13:00 触发点失败 → 仅记录, 不重复打扰用户.
+
+---
+
 # 12:04 — PM Patrol (Sat 09-26) 🟢 服务全绿; SQL 群近 3h **0 条** (12:04 非触发时刻); 零实质变化
 
 ### System Status 🟢
@@ -2756,3 +2848,14 @@
 ①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
 
 结论: 服务 🟢 稳态; 与 10:04 轮**零实质变化** (SQL 群同批, 非新形态) → 仅记录, 不重复打扰用户.
+
+---
+
+## 2026-09-26 14:00 CST — PM Patrol 🟢
+- Health: backend :3000 **200**, admin :8080 **200**, portal :8081 **200**, ai-sre :9090 **200**. 14 containers Up. Disk 91% (3.4G free), mem 771M avail.
+- Open Issue 56; updated>=09-26 → 0; no new P0/P1. PR #369 OPEN.
+- 🔴 **SQL drift 新形态**: 13:00 `[UserLifecycleScheduler] column "school_id" of relation "notifications" does not exist` → 漂移已从 attendance_daily_reports 扩散到 notifications 表 (同为 school_id 列缺失).
+- 13:00 午膳提醒 `LunchChange.created_by does not exist`; 14:00 午膳自动拒绝 `missing FROM-clause entry for table "change"`. 未自愈.
+- 派工: 无新可启动项; spawn 限制未解除 (OPENCLAW_NO_RESPAWN=1, 仅 main, allowAny=false) → blocker 延续.
+- **Needs your input (延续6)**: ①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥schema 列漂移建 Issue.
+- 与 10:04 轮唯一实质变化 = 漂移扩散新形态 → 记录，不打扰用户.
