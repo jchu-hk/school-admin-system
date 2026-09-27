@@ -1,3 +1,25 @@
+# 18:04 — PM Patrol (Sun 09-27) 🟢 服务全绿; SQL 群 3h **0 条** (18:00 日报本轮无新错误行落入窗口); 零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy: ai-sre/kafka/opa/postgres/redis); 宿主 uptime **4d23h01m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)** 持平; mem **505M avail (124M free)** — 偏紧仍.
+- ⚠️ **load 异常抬升**: 1min **4.33** / 5min **6.63** / 15min 3.55 (较 17:04 的 0.6x 明显飙高, 5/892 进程比正常). 需下一轮复核是否回落; 服务响应仍全 200.
+- git main HEAD `ba8ebae` (chore: heartbeat 17:04 patrol); Open Issue **56**, updated>=09-27 → **0**; 无新 P0/P1. PR #369 仍 OPEN.
+
+### 🔴 后端 SQL 错误群 — 3h **0 条**; 24h **6 条** (同批历史)
+- 18:00 日报触发点本轮**无错误行落入日志** (近 35m 仅 BackupService「删 0」正常行); 末次仍 09-27 14:00 auto-reject (`missing FROM-clause entry for table "change"`) + 13:00 提醒 (`LunchChange.created_by`) + 09:00 UserLifecycle (`notifications.school_id`). 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈.
+- 今日全部复验点 (09:00 / 13:00 / 14:00 / 18:00) 已过; 下一复验点 明日 09:00 UserLifecycle.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 17:04 轮**零实质变化** (SQL 群无新增) → 仅记录, 不打扰用户. 唯 load 抬升需下轮跟踪.
+
+---
+
 # 17:04 — PM Patrol (Sun 09-27) 🟢 服务全绿; SQL 群 3h **0 条** (17:04 非触发时刻); 零实质变化
 
 ### System Status 🟢
@@ -3144,6 +3166,26 @@
 - 派工: 无新可启动项; spawn 限制未解除 (OPENCLAW_NO_RESPAWN=1, 仅 main, allowAny=false) → blocker 延续.
 - **Needs your input (延续6)**: ①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥schema 列漂移建 Issue.
 - 与 10:04 轮唯一实质变化 = 漂移扩散新形态 → 记录，不打扰用户.
+
+# 19:00 — PM Patrol (Sun 09-27) 🟢 服务全绿; SQL 群 3h **0 条**; 零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **4d23h57m** (无重启). 磁盘 **92% (3.4G free)** 持平; mem 512M avail (120M free) — 偏紧. load **0.21/0.25/0.35** 低位.
+- Open Issue **56**, updated>=09-27 → **0**; 无新 P0/P1. PR #369 仍 OPEN.
+
+### 🔴 后端 SQL 错误群 — 3h **0 条** (18:00 日报未触发新错误); 24h **6 条** (同批历史)
+- 最近仍为 14:00 `auto-reject missing FROM-clause entry for table "change"`. 根因 (实体/迁移 vs schema 漂移) 重启未自愈; 无扩散新形态. 下一复验点 **明早 07:00**.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 16:04 轮**零实质变化** → 仅记录, 不打扰用户.
+
+---
 
 # 16:04 — PM Patrol (Sun 09-27) 🟢 服务全绿; SQL 群 3h **2 条** (14:00 auto-reject, 触发时刻预期); 零实质变化
 
