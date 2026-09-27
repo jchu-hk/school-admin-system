@@ -1,3 +1,45 @@
+# 14:04 — PM Patrol (Sun 09-27) 🟢 服务全绿; SQL 群 3h **4 条** (13:00 提醒 + 14:00 auto-reject, 触发时刻预期); 零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy: ai-sre/kafka/opa/postgres/redis); 宿主 uptime **4d19h01m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)** 持平; mem 495M avail (114M free) — 偏紧.
+- git main HEAD `b39c0c2` (chore: heartbeat 12:04 patrol); Open Issue **56**, updated>=09-27 → **0**; 无新 P0/P1. PR #369 仍 OPEN.
+- load **0.53/0.37/0.36** 低位.
+
+### 🔴 后端 SQL 错误群 — 3h **4 条** (13:00/14:00 触发点如期失败, 已知); 24h **6 条** (同批历史)
+- 13:00 `LunchChange.created_by does not exist` + 14:00 `missing FROM-clause entry for table "change"` (各含 driverError 同文). 均为已多轮记录形态, **非新增**. 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈.
+- 下一复验点 **18:00 日报**.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 14:00 轮**零实质变化** → 仅记录, 不打扰用户.
+
+---
+
+# 14:00 — PM Patrol (Sun 09-27) 🟢 服务全绿; SQL 群 14:00 auto-reject 如期 (已知); 零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **4d18h57m**. 磁盘 **92% (3.4G free)** 持平; mem 587M avail — 偏紧.
+- git main HEAD `b39c0c2`; Open Issue **56**, updated>=09-27 → **0**; 无新 P0/P1. PR #369 仍 OPEN. load **0.43/0.39/0.37**.
+
+### 🔴 后端 SQL 错误群 — 3h **4 条** (13:00 提醒 + 14:00 auto-reject, 触发时刻预期); 24h 同批历史
+- 14:00 `missing FROM-clause entry for table "change"` + 13:00 `LunchChange.created_by does not exist`. 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈. 下一复验点 18:00 日报.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn, 延续 blocker.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 12:04 轮零实质变化 → 仅记录, 不打扰用户.
+
+---
+
 # 12:04 — PM Patrol (Sun 09-27) 🟢 服务全绿; SQL 群 3h **0 条** (12:04 非触发时刻); 零实质变化
 
 ### System Status 🟢
