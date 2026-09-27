@@ -3206,3 +3206,45 @@
 ①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
 
 结论: 服务 🟢 稳态; 与 14:04 轮**零实质变化** → 仅记录, 不打扰用户.
+
+# 20:04 — PM Patrol (Sun 09-27) 🟢 服务全绿; SQL 群 3h **0 条** (20:04 非触发时刻); load 回落; 零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy: ai-sre/kafka/opa/postgres/redis); 宿主 uptime **5d01h01m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)** 持平; mem **496M avail (116M free)** — 偏紧仍.
+- git main HEAD `104f8d6` (chore: heartbeat 19:04 patrol); ahead origin 8 (本地未推, 惯例). Open Issue **56**, updated>=09-27 → **0**; 无新 P0/P1. PR #369 仍 OPEN.
+- load **0.66/0.36/0.35** — 18:04 的异常抬升 (5min 6.63) 已**完全回落**至低位 ✓.
+
+### 🔴 后端 SQL 错误群 — 3h **0 条**; 24h 同批历史
+- 20:04 非触发时刻 (18:00 日报已过, 明日 09:00 UserLifecycle 为下一复验点), 计数 0 属预期.
+- 末次仍 14:00 auto-reject (`missing FROM-clause entry for table "change"`) + 13:00 提醒 (`LunchChange.created_by`) + 09:00 UserLifecycle (`notifications.school_id`). 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 18:04 轮相比零实质变化 (唯 load 抬升已回落) → 仅记录, 不打扰用户.
+
+# 21:00 — Heartbeat (Sun 09-27) 🟢 服务全绿; SQL 群 3h **0 条**; 零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**, ai-sre :9090/health **200** (注: :9090/api/health 404 属正常路由, 用 /health).
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **5d01h57m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)** 持平; mem **487M avail (115M free)** — 偏紧仍.
+- load **0.85/0.51/0.42** — 平稳, 无 18:04 式抬升.
+- git main HEAD `104f8d6`; Open Issue **56**, updated>=09-27 → **0**; P0/P1 **0**; PR #369 仍 OPEN.
+
+### 🔴 后端 SQL 错误群 — 3h **0 条**
+- 21:00 非触发时刻, 计数 0 属预期。末次仍 14:00 auto-reject (`missing FROM-clause entry for table "change"`); 期间仅 BackupService 每小时清理日志, 无新错误.
+
+### ⚠️ 巡检 Job 运行态 (仅记录, 非系统故障)
+- PM Patrol cron `1291e6b5` 20:00 run 报错: 其 `docker logs | grep` 步骤失败 (tool step failed) — 但巡检实质结论已由本轮独立复验确认一致 (服务全绿/0 新错误/零变化). 属 Job 内既有命令脆弱性, 非服务异常.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 20:04 轮**零实质变化** → 仅记录, 不打扰用户.
