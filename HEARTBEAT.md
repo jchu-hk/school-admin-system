@@ -1,3 +1,25 @@
+# 09:04 — PM Patrol (Mon 09-28) 🟢 服务全绿; 🔴 SQL 群 3h **2 条** (09:00 UserLifecycle 单事件, 非新增); ⚠️ **load 异常抬升 16.88** 需下轮复核
+
+### System Status 🟢 (⚠️ load)
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090 需用 **/health** (用 /api/health 得 404).
+- Docker **14** 容器 Up (5 healthy: ai-sre/kafka/opa/postgres/redis); 宿主 uptime **5d14h01m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)** 持平; mem **389M avail (127M free)** — 偏紧仍.
+- ⚠️ **load 异常**: 1min **16.88** / 5min **7.17** / 15min 2.90 (较 09:01 的 1.42/0.72/0.47 大幅飙高); 服务响应仍全 200 → 记录待下轮复核是否回落 (疑短时抖动/构建).
+- git main HEAD `5717ebd` (chore: heartbeat 09:01 patrol); Open Issue **56**, updated>=2h → **0**; 无新 P0/P1. PR #369 仍 OPEN (末更 08-23).
+
+### 🔴 后端 SQL 错误群 — 3h **2 条** (= 09:00 UserLifecycle 单事件 + driverError 同文, 非新增)
+- 09/28 09:00:00 CST `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (+ driverError 同文, position 54, parse_target.c checkInsertTargets) — 与 09-22~09-27 **同形态**, 非新增.
+- 根因 (实体/迁移 vs DB schema 漂移) 重启未自愈. 下一复验点 13:00/14:00 午膳提醒 + 18:00 日报.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 09:00 触发点如期复现 (已知问题); 唯 load 16.88 抬升需下轮跟踪 → 仅记录, 不打扰用户.
+
+---
+
 # 09:01 — PM Patrol (Mon 09-28) 🟢 服务全绿; 🔴 **09:00 UserLifecycle 触发点如期复现** (schema 漂移延续, 非新增形态); 零其他变化
 
 ### System Status 🟢
