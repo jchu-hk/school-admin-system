@@ -1,3 +1,24 @@
+# 07:00 — PM Patrol (Tue 09-29) 🟢 服务全绿; SQL 群 3h **0 条** (非触发时刻); ★确认 09:00 UserLifecycle 已连续 10 天失败 (schema 漂移系统性坐实)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 200, portal :8081 200, ai-sre :9090/health 200.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **6d11h57m**. 磁盘 92% (3.3G free) 持平; mem **466M avail (104M free)** 偏紧仍. load **0.42/0.39/0.37** (低位; 昨 21:00 的 1min 3.76 已回落 → 前判昼夜波动成立).
+- git main HEAD **ea8c4da** (`chore: dashboard rebuild` 06:00 自动提交); 工作区无未提交改动. Open Issue **56**, 末更 09-09 (#370/#372) → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN.
+
+### 🔴 SQL 群 3h **0 条** (backlog 静默) — 但 ★确认 09:00 UserLifecycle 长期失败 (09-19→09-28 每日复发)
+- 07:00 非触发时刻; backend 近 3h 仅 BackupService 正常行 (整点「删 0」+ **02:00 每日备份成功 BK-20260928-TWPI 103.45KB**); 近 3h SQL 错误计数 **0**.
+- 昨日标记的「下一复验点 09:00」已确认: `UserLifecycleScheduler` **连续 10 天每天 09:00:00** 报同一错 `column "school_id" of relation "notifications" does not exist` (累计 **35** 条) → schema 漂移 **非偶发、系统性持续**. 与 18:00 DailyReport (`attendance_daily_reports.school_id`) 同源. 业务影响: 到期账户通知每日静默失败; 日报自昨 18:00 起失效.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制未解除 (`openclaw.json` agents.list 仅 `main`, 无 DEV/QA/DEVOPS; allowAny=false) → 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 新增 09:00 UserLifecycle 长期失败为实证)**.
+
+结论: 服务 🟢 稳态; 与昨 21:00 轮**零服务面实质变化** (SQL 静默, load 回落). 新增 PM 情报: 09:00 UserLifecycle 连续 10 天失败 (坐实漂移系统性) → 仅记录入清单, 不打扰用户.
+
+---
+
 # 21:00 — PM Patrol (Mon 09-28) 🟢 服务全绿; SQL 群 3h **0 条** (18:04 后无新增, 非触发时刻); 与 19:04 轮零实质变化
 
 ### System Status 🟢
