@@ -1,3 +1,133 @@
+# 21:00 — PM Patrol (Mon 09-28) 🟢 服务全绿; SQL 群 3h **0 条** (18:04 后无新增, 非触发时刻); 与 19:04 轮零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 200, portal :8081 200, ai-sre :9090/health 200.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **6d1h57m** (09-22 19:02 后无重启). 磁盘 92% (3.3G free) 持平; mem **417M avail (122M free)** 偏紧仍. ⚠️ load 1min **3.76** / 5min 1.14 / 15min 0.68 (较 19:04 的 0.39 抬升, 属晚间例行波动, 服务响应全 200) → 下轮复核.
+- git main HEAD `ea4a024`; 工作区 `M HEARTBEAT.md` `M memory/2026-09-28.md`. Open Issue **56**, 末更 09-09 (#370/#372) → 无新 P0/P1. PR #369 仍 OPEN (末更 08-23).
+
+### 🟢 SQL 群 3h **0 条** (21:00 非触发时刻; 18:04 后无新增)
+- 21:00 非触发时刻 (18:00 日报已过, 明日 09:00 UserLifecycle 为下一复验点); 近 30m 仅 BackupService「删 0」正常行 (21:00). 与 19:04 轮同批判定 (18:00 DailyReportService 失败 = `attendance_daily_reports.school_id` 缺失), 无新增.
+- 根因延续: 实体/迁移 vs DB schema 漂移 (notifications/LunchChange/attendance_daily_reports 缺列 + JOIN 别名不匹配), 重启未自愈. 下一复验点 明日 09:00.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue (日报已实质失效, 最高优先)**.
+
+结论: 服务 🟢 稳态; 与 19:04 轮**零实质变化** (SQL 群非触发时刻静默); 唯 load 1min 3.76 抬升待下轮复核 → 仅记录, 不打扰用户.
+
+---
+
+# 19:04 — PM Patrol (Mon 09-28) 🟢 服务全绿; SQL 群 3h **4 条** (= 18:00 日报失败同批, 非新增); 与 18:04 轮零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 200, portal :8081 200, ai-sre :9090/health 200.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **6d0h01m** (09-22 19:02 后无重启). 磁盘 92% (3.3G free) 持平; mem **475M avail (120M free)** 偏紧仍. load **0.39/0.39/0.44** 低位稳.
+- git main HEAD `ea4a024`; 工作区 `M HEARTBEAT.md` `M memory/2026-09-28.md`. Open Issue **56**, 近24h updated **0** → 无新 P0/P1. PR #369 仍 OPEN.
+
+### 🔴 SQL 群 3h **4 条** (= 18:00 日报失败同批, 非新增)
+- 18:00:00 `[DailyReportService] 生成班级日报失败: ... column AttendanceDailyReport.school_id does not exist` + `签到日报生成失败: column "school_id" of relation "attendance_daily_reports" does not exist` (+ QueryFailedError 同文, 计 4). 19:04 非触发时刻, 无新增; 近 90m 仅 19:00 BackupService「删 0」正常行.
+- 根因延续: 实体/迁移 vs DB schema 漂移 (notifications/LunchChange/attendance_daily_reports 缺列 + JOIN 别名不匹配), 重启未自愈. 今日末复验点 18:00 已过; 下一复验点 明日 09:00 UserLifecycle.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue (日报已实质失效, 最高优先)**.
+
+结论: 服务 🟢 稳态; 与 18:04 轮**零实质变化** (SQL 群仅 18:00 日报同批, 非新增) → 仅记录, 不打扰用户.
+
+---
+
+# 19:00 — PM Patrol (Mon 09-28) 🟢 服务全绿; SQL 近50m **0 条** (18:04 后无新增); 与 18:04 轮零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 200, portal :8081 200, ai-sre :9090/health 200.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **5d23h57m** (09-22 19:02 后无重启). 磁盘 92% (3.3G free) 持平; mem **523M avail (144M free)** 偏紧仍. load **0.51/0.43/0.47** 低位稳.
+- git main HEAD `ea4a024`; 工作区 `M HEARTBEAT.md` `M memory/2026-09-28.md`. Open Issue **56**, 近12h updated 0 (#373/#372/#370 末更 09-06~09-09) → 无新 P0/P1. PR #369 仍 OPEN.
+
+### 🔴 SQL 群 近50m **0 条**
+- 18:04 后无新 QueryFailedError / does not exist. 本日最新信号仍为 **18:00 DailyReportService 实质失败** (`attendance_daily_reports.school_id` 缺失, 中一A班日报未产出) — 已于 18:00 汇报用户 (msgId ...21746038), 未重复触发, 非新增.
+- 根因延续: 实体/迁移 vs DB schema 漂移 (notifications/LunchChange/attendance_daily_reports 缺列 + JOIN 别名不匹配), 重启未自愈.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue (日报已实质失效, 最高优先)**.
+
+结论: 服务 🟢 稳态; 与 18:04 轮**零实质变化** (日报失败已汇报, SQL 静默) → 仅记录, 不打扰用户.
+
+---
+
+# 18:04 — PM Patrol (Mon 09-28) 🟢 服务全绿; 🔴 **18:00 日报实质失败** — schema 漂移扩散至 attendance_daily_reports.school_id (业务功能受损, 已 18:00 汇报用户)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 200, portal :8081 200, ai-sre :9090/health 200.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime ~5d23h (09-22 19:02 后无重启). 磁盘 92% (3.4G free) 持平; mem 偏紧仍.
+- git main HEAD `ea4a024`; 工作区 `M HEARTBEAT.md` `M memory/2026-09-28.md`. Open Issue **56**, 末更 09-09 (#372/#370) → 无新 P0/P1. PR #369 仍 OPEN.
+
+### 🔴 SQL 群 3h **4 条** — ★**新增形态: 18:00 DailyReportService 实质失败**
+- **18:00:00** `[DailyReportService] 生成班级日报失败: class=中一A班(...): column AttendanceDailyReport.school_id does not exist` (+ QueryFailedError 同文)
+- **18:00:00** `[DailyReportService] 签到日报生成失败: column "school_id" of relation "attendance_daily_reports" does not exist` (+ QueryFailedError 同文)
+- ⚠️ **业务影响升级**: 与 09:00/13:00/14:00 的「任务失败/后台告警」不同, 本轮为**用户可见功能失效** (日报未产出). 根因仍为实体/迁移 vs DB schema 漂移 (attendance_daily_reports 缺 school_id 列), 重启未自愈.
+- 已随 18:00 每日汇报上报用户 (messageId openclaw-weixin:1790589774988-21746038), 列为最高优先 Needs input ⑥.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, ⑥ 已升级最高优先)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue (日报已实质失效)**.
+
+结论: 服务进程 🟢 稳态, 但**日报功能 18:00 实质失败 (首次业务可见受损)** → 已随日报汇报用户, 不重复打扰.
+
+---
+
+# 17:04 — PM Patrol (Mon 09-28) 🟢 服务全绿; SQL 群 3h **0 条** (17:04 非触发时刻, 14:00 午膳已过/18:00 日报未到); 零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy: ai-sre/kafka/opa/postgres/redis); 宿主 uptime **5d22h01m** (09-22 19:02 后无重启). 磁盘 **92% (3.4G free)** 持平; mem **467M avail (146M free)** 偏紧仍.
+- ✅ load 稳: **0.65/0.43/0.38** 低位.
+- git main HEAD `ea4a024` (chore: heartbeat 15:04 patrol); 工作区仅 `M HEARTBEAT.md`. Open Issue **56**, 末更 09-09 (#372/#370) → 无新 P0/P1. PR #369 仍 OPEN (末更 08-23).
+
+### 🔴 后端 SQL 错误群 — 3h **0 条** (17:04 非触发时刻)
+- 17:04 非触发时刻 (13:00/14:00 午膳已过, 18:00 日报未到), 计数 0 属预期. 近 30m 仅 BackupService「删 0」正常行 (17:00).
+- 末次仍 14:00 午膳 auto-reject (`missing FROM-clause entry for table "change"`); 根因仍为实体/迁移 vs DB schema 漂移 (LunchChange 缺列 + JOIN 别名不匹配), 重启未自愈. 今日末复验点 **18:00 日报**.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; 与 16:04 轮**零实质变化** (SQL 群非触发时刻静默) → 仅记录, 不打扰用户.
+
+---
+
+# 16:04 — PM Patrol (Mon 09-28) 🟢 服务全绿; SQL 群 3h **2 行** (14:00 午膳 Cron, 同批非新增); 16:04 非触发时刻, 零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy: ai-sre/kafka/opa/postgres/redis); 宿主 uptime **5d21h01m** (09-22 19:02 后无重启). 磁盘 **92% (3.3G free)** 持平; mem **482M avail (195M free)** 偏紧仍.
+- ✅ load 稳: **0.44/0.43/0.37** 低位.
+- git main HEAD `ea4a024` (chore: heartbeat 15:04 patrol); Open Issue **56**, 末更 09-09 (#372/#370) → 无新 P0/P1. PR #369 仍 OPEN (末更 08-23).
+
+### 🔴 后端 SQL 错误群 — 3h **2 行** (14:00 午膳 Cron auto-reject, 同批非新增)
+- **14:00:00** `[LunchReminderScheduler] 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (+ QueryFailedError 同文, 计 2).
+- 16:04 非触发时刻 (13:00/14:00 午膳已过, 18:00 日报未到); 近 30m 仅 BackupService「删 0」正常行. 根因仍为实体/迁移 vs DB schema 漂移 (LunchChange 缺列 + JOIN 别名不匹配), 重启未自愈.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; spawn 限制未解除 (仅 main, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
+
+结论: 服务 🟢 稳态; SQL 群与 15:04 轮**同批** (午膳 Cron 非触发时刻静默); 无新事件 → 仅记录, 不打扰用户.
+
+---
+
 # 15:04 — PM Patrol (Mon 09-28) 🟢 服务全绿; 🔴 SQL 群 3h **2 事件 (13:00/14:00 午膳 Cron)** — 与 14:04 同批, 非新增; 15:04 非触发时刻
 
 ### System Status 🟢
