@@ -1,3 +1,45 @@
+# 21:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; 与 21:00 轮零实质新增; ✅ **IO 已完全回落** (pressure some avg10 5.92/full 5.12; iostat %util 0.94%→2.90%, r/s 7→242 无写); load **0.75/0.96/0.65** 低位稳
+
+### System Status 🟢 (IO 已回落)
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**. Docker **14** Up (5 healthy: ai-sre/kafka/opa/postgres/redis). 宿主 uptime **7d02h01m**.
+- 磁盘 92% (3.3G free) 持平; mem **497M avail (125M free)** 仍偏紧. load **0.75/0.96/0.65** 低位稳 (服务响应全 200).
+- ✅ **IO 压力已回落**: `pressure io some avg10 **5.92**` (avg60 15.54, avg300 19.63) / full **5.12**; `iostat` vda 两次采样 **%util 0.94% → 2.90%**、无写 (w/s 88-0, 纯小读) → 20:04 的高 %util(92.6%) 已消退, 确认为**间歇突发读**, 非持续占满. CPU iowait 低. 结论: IO 恢复正常, 观察结束.
+- git main HEAD **c6462b8** (`chore: heartbeat 20:04 patrol (09-29)`); 工作区 `M HEARTBEAT.md` (本轮). Open Issue **56** (gh 实时 count), 末更 09-09 (#372/#370) → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 触发点
+- 21:04 **非触发时刻** (DailyReport 18:00 已过 / UserLifecycle 09:00 / LunchReminder 13:00&14:00) → 近 3h `does not exist/QueryFailedError` 计数 **0**; 仅 BackupService 20:00/21:00「删 0」正常行. 下复验: 明日 09:00 (UserLifecycle, 连续第 12 天预期).
+
+### 派工 / Blocker
+- 无可启动且可派工新任务. spawn 限制**未解除** (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue (已实证) ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 日报 18:00 持续失效)**.
+
+结论: 服务 🟢 稳态; 与 21:00 轮**零实质新增**; ✅ IO 压力完全回落 (some avg10 83.5→5.92) → 记录观察结束, 不打扰用户.
+
+---
+
+# 21:00 — PM Patrol (Tue 09-29) 🟢 服务全绿; 与 20:04 轮零实质新增; ⚠️ IO 持续高 (some avg10 83.5/full 65.7, 但本轮 iostat %util 0.94%→8.65% 回落, 突发读非持续); load 2.13/0.74/0.48; 21:00 非触发时刻 SQL 静默
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**. Docker **14** Up (5 healthy: ai-sre/kafka/opa/postgres/redis). 宿主 uptime **7d01h57m**.
+- 磁盘 92% (3.3G free) 持平; mem **634M avail (110M free)** 仍偏紧. load **2.13/0.74/0.48** (1min 低位微抬, 服务响应全 200).
+- ⚠️ **IO 持续压力 (复核)**: pressure io some avg10 **83.48** (avg60 31.29, avg300 8.65) / full **65.74**; 但本轮 `iostat` vda 两次采样 **%util 0.94% → 8.65%** (r/s 仅 7-14, 非 20:04 的 ~2300)、aqu-sz 0.04→0.45、零写 → **本轮为间歇突发读, 未持续占满**; CPU iowait 低 (top: containerd 2.1% / dockerd 2.0% / java 1.6%, 无单进程占满). 结论: pressure 指标仍高但实际设备利用率回落 → 继续观察, 服务响应全 200.
+- git main HEAD **c6462b8** (`chore: heartbeat 20:04 patrol (09-29)`); 工作区 clean. Open Issue **56** (gh 实时 count), 末更 09-09 (#372/#370), #368/#367 末更 08-18 → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN (末更 08-20).
+
+### 触发点
+- 21:00 **非触发时刻** (DailyReport 18:00 已过 / UserLifecycle 09:00 / LunchReminder 13:00&14:00) → 近 3h SQL 计数 **0**; 18:00 DailyReport `attendance_daily_reports.school_id` 漂移 (计 4) 为上一轮已录同批, 非新增. 近 90m 仅 BackupService 19:00/20:00/21:00「删 0」正常行. 下复验: 明日 09:00 (UserLifecycle, 连续第 12 天预期).
+
+### 派工 / Blocker
+- 无可启动且可派工新任务. spawn 限制**未解除** (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue (已实证) ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 日报 18:00 持续失效)**.
+
+结论: 服务 🟢 稳态; 与 20:04 轮**零实质新增**; ⚠️ IO pressure 指标高但 iostat %util 回落至 <9% → 记录观察, 不打扰用户.
+
+---
+
 # 20:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; 与 19:04 轮零实质新增; ⚠️ **IO 由「突发读」升级为「持续高 %util (51.2%→92.6%)」** 待复核; load **2.91/1.28/0.77** 微抬
 
 ### System Status 🟢
