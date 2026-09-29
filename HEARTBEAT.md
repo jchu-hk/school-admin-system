@@ -1,3 +1,25 @@
+# 13:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; SQL 静默 (非触发时刻, 下点 18:00); load **1.68/0.94/0.60** 低位
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (9 Up 6d + 5 healthy); 宿主 uptime **6d18h01m**. 磁盘 92% (3.3G free) 持平; mem **449M avail (111M free)** 仍偏紧.
+- load **1.68/0.94/0.60** 低位 (1min 微抬但 <2, 无异常); 服务响应全 200.
+- git main HEAD **c2b00ac** (`chore: heartbeat 12:04 patrol (09-29) — 服务全绿; SQL 非触发时刻静默; load 低位`); 工作区 `M HEARTBEAT.md` (本轮). Open Issue **56**, 末更 09-09 (#372/#370) → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN (末更 08-20).
+
+### SQL 群 (非触发时刻 → 静默)
+- 10:04-13:04 窗口内**无新增** QueryFailedError/UserLifecycle 记录 (仅 07-07 旧 backend.log 噪声, 非近期).
+- 与 09:00 轮同批 2 条 (已录); 下一复验点 **今日 18:00** (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制未解除 (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 已连续 11 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 12:04 轮**零实质变化**; 非触发时刻 SQL 静默 → 仅记录, 不打扰用户.
+
+---
+
 # 11:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; SQL 群 3h **2 条** (= 09:00 UserLifecycle 同批, 非新增); load **0.71/0.45/0.40** 低位稳
 
 ### System Status 🟢
