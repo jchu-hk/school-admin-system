@@ -1,3 +1,24 @@
+# 14:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; LunchReminder 14:00 `missing FROM-clause entry for table "change"` 复现 (同 14:00 轮, 非新增); load **0.68/0.40/0.33** 低位
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**, ai-sre :9090/health **200**. Docker **14** Up (5 healthy). 宿主 uptime **6d19h01m**.
+- 磁盘 92% (3.3G free) 持平; mem **487M avail (126M free)** 略缓仍偏紧; load **0.68/0.40/0.33** 低位.
+- git main HEAD **4c2cb8b** (`chore: heartbeat 14:00 patrol`); 工作区 clean. Open Issue **56**, 末更 09-09 → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN.
+
+### ⚠️ LunchReminderScheduler (与 14:00 轮同批, 非新增)
+- **13:00:00** `column LunchChange.created_by does not exist` (handleReminder:56); **14:00:00** `missing FROM-clause entry for table "change"` (handleAutoReject:32) — 与 14:00 轮**同事件**, 本轮仅确认复现.
+- UserLifecycle / DailyReport 非触发时刻 → 窗口内**静默** (下一复验点 今日 18:00).
+
+### 派工 / Blocker
+- 无可启动且可派工新任务. spawn 限制未解除 (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 延续 **blocker**.
+
+### Needs your input (6 项)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤**午膳 Cron 失败建 Issue (已实证)** ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 11 天)**.
+
+结论: 服务 🟢 稳态; 与 14:00 轮**零实质新增** → 仅记录, 不打扰用户.
+
+---
+
 # 14:00 — PM Patrol (Tue 09-29) 🟢 服务全绿; ⚠️ **新: LunchReminder cron 13:00+14:00 连续失败 (今日首见)**; load **0.25/0.30/0.30** 低位
 
 ### System Status 🟢
