@@ -3683,3 +3683,25 @@
 ①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥日报/账号生命周期 schema 列缺失建 Issue.
 
 结论: 服务 🟢 稳态; 与 20:04 轮**零实质变化** → 仅记录, 不打扰用户.
+
+---
+
+# 12:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; SQL 群 3h **0 条** (12:04 非触发时刻, 09:00 事件已滚出); 与 11:04 轮零实质变化
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 200, portal :8081 200, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **6d17h01m**. 磁盘 92% (3.3G free) 持平; mem **511M avail (114M free)** 偏紧仍.
+- ✅ load **0.85/0.54/0.49** 低位稳 (连续三轮无异常).
+- git main HEAD **d8fdd73** (`chore: heartbeat 11:04 patrol`); 工作区 `M HEARTBEAT.md` (本轮). Open Issue **56**, 末更 09-09 (#370/#372) → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 🟢 SQL 群 3h **0 条** (12:04 非触发时刻)
+- 12:04 非触发时刻 (09:00 UserLifecycle 已过, 下一复验点 13:00/14:00 午膳 + 18:00 日报); 近 3h 仅 BackupService「删 0」正常行 (10:00/11:00/12:00).
+- 09:00 UserLifecycle 同错行仍存于 6h 窗口 (计 2, `notifications.school_id` 缺失) — 与 09:00 轮**同批**, 09-19→09-29 连续 **11 天**每日 09:00 同一错 → schema 漂移系统性持续. 下一复验点 今日 18:00.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制未解除 (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 已连续 11 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 11:04 轮**零服务面实质变化**, SQL 群非触发时刻静默 → 仅记录, 不打扰用户.
