@@ -1,3 +1,25 @@
+# 18:09 — PM Patrol (Tue 09-29) 🟢 服务全绿; 🔴 **18:00 DailyReport 触发点如期失败** (schema 漂移 `attendance_daily_reports.school_id`, 业务可见, 非新增形态); ⚠️ **load 12.8/17.8/10.3 + IO 压力高 (wa 70%)** 待复核
+
+### System Status 🟢 (⚠️ load/IO)
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**. Docker **14** Up (9 Up 6d + 5 healthy). 宿主 uptime **6d23h06m**.
+- 磁盘 92% (3.3G free) 持平; mem **492M avail (131M free)** 偏紧仍. ⚠️ **load 12.82/17.75/10.26** (1min 高, 但 19.2% us / 1.3% id / **70.5% wa**); IO 压力 some avg10 **45.13** / full avg10 **37.97** (avg300 70+) → 疑周期性重算/构建 (top: java 13.4%, npm exec 8.8%, 无单进程占满) → 服务响应全 200, 待下轮复核是否回落.
+- git main HEAD **167e510** (`chore: heartbeat 17:04 patrol (09-29)`); 工作区 clean. Open Issue **56**, 末更 09-09 (#373/#372/#370) → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 🔴 18:00 DailyReport 触发点如期失败 (schema 漂移, 非新增形态)
+- **18:00:00** `[DailyReportService] 生成班级日报失败: class=中一A班: column AttendanceDailyReport.school_id does not exist` + `签到日报生成失败: column "school_id" of relation "attendance_daily_reports" does not exist` (+ QueryFailedError 同文, 计 4). 近 4h 唯此 6 行 SQL 日志.
+- 与 09-28 18:00 同源、用户可见功能失效 (日报未产出); LReminder 14:00 同批事件已滚出窗口. 根因: 实体/迁移 vs DB schema 漂移, 重启未自愈.
+- UserLifecycle 09:00 触发点已过 (下复验明日 09:00). 业务影响: 日报自 09-28 18:00 起持续失效.
+
+### 派工 / Blocker
+- 无可启动且可派工新任务. spawn 限制未解除 (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 延续 **blocker**.
+
+### Needs your input (6 项)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤**午膳 Cron 失败建 Issue (已实证)** ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 日报 18:00 持续失效)**.
+
+结论: 服务 🟢 稳态; 18:00 日报失败为已知 schema 漂移定时复现 (非新增形态); 唯 load/IO 抬升待下轮复核 → 仅记录, 不打扰用户.
+
+---
+
 # 17:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; LunchReminder 14:00 `missing FROM-clause entry for table "change"` 仍为 4h 内唯一 SQL 错误 (= 同 14:00 轮, 非新增); load **2.03/1.55/0.97** 微抬仍低; 17:00 非触发时刻 → 零实质变化
 
 ### System Status 🟢
