@@ -1,3 +1,44 @@
+# 19:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; 与 19:00 轮零实质新增; load 低位稳 (0.73/0.64/0.85); IO 突发读仍 (some 49.6/full 43.8, %util 28.5% 非持续)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**. Docker **14** Up (5 healthy). 宿主 uptime **7d0h01m** (跨 7 天).
+- 磁盘 92% (3.3G free) 持平; mem **481M avail (136M free)** 偏紧仍. load **0.73/0.64/0.85** 低位稳 (18:00 尖峰已完全消退, 连续两轮确认).
+- ⚠️ IO 压力 some avg10 **49.55** / full **43.82** (avg300 ~10) 仍抬升; 但 `iostat vda %util 28.5%`、无写、纯突发读 (r/s 1465, 36MB/s) → **突发性读非持续**, 服务响应全 200. 下轮复核.
+- git main HEAD **c0d5ae1**; 工作区 `M HEARTBEAT.md` `M memory/2026-09-29.md`. Open Issue **56**, 末更 09-09 (#373/#372/#370) → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN.
+
+### 触发点
+- **18:00 DailyReport** 如期失败 (`column AttendanceDailyReport.school_id does not exist` + `column "school_id" of relation "attendance_daily_reports" does not exist`, 计 4) — 与 09-28 18:00 **同源, 非新增形态**. 近 70m 除该漂移外**零其他 ERROR**; 19:00 BackupService「删 0」正常. 19:04 非 LunchReminder(14:00)/UserLifecycle(09:00) 触发时刻 → 静默. 下复验: 明日 09:00 UserLifecycle (连续第 11 天已成立).
+
+### 派工 / Blocker
+- 无可启动且可派工新任务. spawn 限制**未解除** (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue (已实证) ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 日报 18:00 持续失效)**.
+
+结论: 服务 🟢 稳态; 与 19:00 轮**零实质新增**; IO 突发读待下轮复核 → 仅记录, 不打扰用户.
+
+---
+
+# 19:00 — PM Patrol (Tue 09-29) 🟢 服务全绿; ✅ **load 已从 18:00 尖峰 (12.8) 完全回落至 0.59/0.51/0.87**; 🔴 18:00 DailyReport 如期失败 (schema 漂移 `attendance_daily_reports.school_id`, 非新增形态); ⚠️ IO 突发读 (some 60.3/full 50.5) 但因 %util 3.5% 非持续 → 待下轮
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**. Docker **14** Up (9 Up 7d + 5 healthy). 宿主 uptime **6d23h57m**.
+- 磁盘 92% (3.3G free) 持平; mem **551M avail (121M free)** 偏紧仍. ✅ **load 0.59/0.51/0.87** — 18:00 尖峰已完全回落; IO 压力 some avg10 **60.30** / full **50.46** (avg300 10.1) 仍抬升, 但 `iostat %util 仅 3.5%`, CPU idle 93.9%, 无单进程占满 → 突发性读 29MB/s 峰, 非持续.
+- git main HEAD **c0d5ae1** (`chore: heartbeat 18:09 patrol (09-29)`); 工作区 clean. Open Issue **56**, 末更 09-09 (#373/#372/#370) → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 🔴 18:00 DailyReport 触发点如期失败 (schema 漂移, 非新增形态)
+- **18:00:00** `column AttendanceDailyReport.school_id does not exist` + `column "school_id" of relation "attendance_daily_reports" does not exist`, 与 09-28 18:00 **同源**. 17:00-19:00 窗口除该漂移外 **零其他 ERROR**. 19:00 非 LunchReminder(14:00)/UserLifecycle(09:00) 触发时刻 → 静默. 下复验: 明日 09:00 UserLifecycle (连续第 11 天已成立).
+
+### 派工 / Blocker
+- 无可启动且可派工新任务. spawn 限制**未解除** (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue (已实证) ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 日报 18:00 持续失效)**.
+
+结论: 服务 🟢 稳态, load 已回落; 18:00 日报失败为已知 schema 漂移定时复现 (非新增); IO 突发读待下轮复核 → 仅记录, 不打扰用户.
+
+---
+
 # 18:09 — PM Patrol (Tue 09-29) 🟢 服务全绿; 🔴 **18:00 DailyReport 触发点如期失败** (schema 漂移 `attendance_daily_reports.school_id`, 业务可见, 非新增形态); ⚠️ **load 12.8/17.8/10.3 + IO 压力高 (wa 70%)** 待复核
 
 ### System Status 🟢 (⚠️ load/IO)
