@@ -1,3 +1,47 @@
+# 10:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; SQL 群 3h **2 条** (= 09:00 UserLifecycle 同批, 非新增); ✅ **load 已回落 1.29/1.14/1.15** (09:14 的 12-18 抬升消退)
+
+### System Status 🟢 (load 已回落)
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **6d15h01m**. 磁盘 92% (3.3G free) 持平; mem **532M avail (117M free)** 偏紧仍.
+- ✅ **load 已回落**: **1.29/1.14/1.15** (09:14 的 12.10/18.69 完全消退 → 确认为短时抖动/重算, 非持续异常; 服务响应全 200).
+- git main HEAD **1a55939** (`chore: heartbeat 09:00 patrol`); 工作区 `M HEARTBEAT.md` (本轮). Open Issue **56**, 末更 09-09 (#372/#370) → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN.
+
+### 🔴 SQL 群 3h **2 条** (= 09:00 UserLifecycle 同批, 非新增)
+- **09:00:00** `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (+ driverError 同文, 计 2).
+- 与 09:00 轮**同批** (非新增); 09-19→09-29 连续 **11 天**每日 09:00 同一错 → schema 漂移系统性持续. 与 09-28 18:00 DailyReport 同源. 下一复验点 今日 18:00.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制未解除 (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 已连续 11 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 09:14 轮**零服务面实质变化**, SQL 群同批; 09:14 记录的 load 12-18 抬升**已确认回落** → 仅记录入清单, 不打扰用户.
+
+---
+
+# 09:14 — PM Patrol (Tue 09-29) 🟢 服务全绿; SQL 群 3h **2 条** (= 09:00 UserLifecycle 同批, 非新增); ⚠️ **load 抬升 ~12-18 (75% us)** 待下轮复核
+
+### System Status 🟢 (⚠️ load)
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**.
+- Docker **14** 容器 Up (5 healthy); 宿主 uptime **6d14h11m**. 磁盘 92% (3.3G free) 持平; mem **516M avail (121M free)** 偏紧仍.
+- ⚠️ **load 抬升**: 1min **12.10** / 5min **18.69** / 15min 12.25 (75% us, 5.6 idle, 5.6 wa); 无单一进程占高 (top: npm exec 7.2%), 疑周期性重算/dashboard 构建 → 服务响应仍全 200, 待下轮复核是否回落.
+- git main HEAD **1a55939** (`chore: heartbeat 09:00 patrol`); 工作区 `M HEARTBEAT.md` (本轮). Open Issue **30**, 末更 09-09 (#373/#372/#370) → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN.
+
+### 🔴 SQL 群 3h **2 条** (= 09:00 UserLifecycle 同批, 非新增)
+- **09:00:00** `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (+ driverError 同文, 计 2; position 54, checkInsertTargets).
+- 与 09:00 轮同批 (非新增); 09-19→09-29 连续 **11 天**每日 09:00 同一错 → schema 漂移系统性持续. 与 09-28 18:00 DailyReport 同源. 下一复验点 今日 18:00.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制未解除 (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 延续记为 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 已连续 11 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 09:00 轮**零服务面实质变化**, SQL 群同批. 唯 **load 12-18 抬升**需下轮复核 (服务响应全 200) → 仅记录入清单, 不打扰用户.
+
+---
+
 # 09:00 — PM Patrol (Tue 09-29) 🟢 服务全绿; SQL 群 3h **2 条** — ★**09:00 UserLifecycle 触发点复验成立: 连续第 11 天复发**
 
 ### System Status 🟢
