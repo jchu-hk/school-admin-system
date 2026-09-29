@@ -1,3 +1,24 @@
+# 14:00 — PM Patrol (Tue 09-29) 🟢 服务全绿; ⚠️ **新: LunchReminder cron 13:00+14:00 连续失败 (今日首见)**; load **0.25/0.30/0.30** 低位
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 200, portal :8081 200. Docker **14** Up (5 healthy). 宿主 uptime **6d18h57m**.
+- 磁盘 92% (3.3G free) 持平; mem **567M avail (113M free)** 略缓仍偏紧; load **0.25/0.30/0.30** 低位.
+- git main HEAD **141d7ff** (`chore: heartbeat 13:04 patrol`); 工作区 clean. Open Issue **56**, 末更 09-09 (#373/#372/#370) → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN.
+
+### ⚠️ 新发现 — LunchReminderScheduler 13:00 / 14:00 连续失败 (今日首见)
+- 13:00:00 `column LunchChange.created_by does not exist` (handleReminder:56); 14:00:00 `missing FROM-clause entry for table "change"` (handleAutoReject:32).
+- 与 schema 漂移同源; 午膳提醒/自动拒绝功能实际失效. Needs-input ⑤ 由建议 **升级为已实证待处置**.
+
+### 派工 / Blocker
+- 无可启动且可派工新任务. spawn 限制未解除 (agents.list 仅 `main`, allowAny=false) → 延续 **blocker**.
+
+### Needs your input (6 项)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤**午膳 Cron 失败建 Issue (已实证)** ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 11 天)**.
+
+结论: 服务 🟢 稳态; 服务面零实质变化, 唯新增午膳 cron 失败实证 → 仅记录, 不打扰用户.
+
+---
+
 # 13:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; SQL 静默 (非触发时刻, 下点 18:00); load **1.68/0.94/0.60** 低位
 
 ### System Status 🟢
