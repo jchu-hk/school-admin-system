@@ -1,3 +1,24 @@
+# 20:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; 与 19:04 轮零实质新增; ⚠️ **IO 由「突发读」升级为「持续高 %util (51.2%→92.6%)」** 待复核; load **2.91/1.28/0.77** 微抬
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **7d01h02m**.
+- 磁盘 92% (3.3G free) 持平; mem **456M avail (116M free)** 偏紧仍. load **2.91/1.28/0.77** (1min 微抬, 服务响应全 200).
+- ⚠️ **IO 持续压力 (升级观察)**: pressure io some avg10 **65.52** (avg60 23.08, avg300 6.48) / full **59.17**; `iostat` 两次采样 vda **%util 51.2% → 92.6%** (r/s 2374→2283, ~110MB/s 纯读、零写、aqu-sz 88.76); CPU iowait **31.8%** (idle 13%); top: java 26.7% / runc-init 9.0% / postgres 1.6%. 无明确写负载 → 待下轮复核 (服务响应全 200).
+- git main HEAD **c9b4b9a** (`chore: heartbeat 19:04 patrol (09-29)`); 工作区 `M memory/2026-09-29.md`. Open Issue **30** (gh 实时 count), 末更 09-09 (#370/#372), #368/#367 末更 08-18 → **无新 P0/P1**; 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 触发点
+- **18:00 DailyReport** `column AttendanceDailyReport.school_id does not exist` + `column "school_id" of relation "attendance_daily_reports" does not exist` (计 4) — 与 18:04/19:04 轮**同批, 非新增**. 近 75m 除该漂移外仅 BackupService 19:00/20:00「删 0」正常行. 20:04 非 LunchReminder(14:00)/UserLifecycle(09:00) 触发时刻 → 静默. 下复验: 明日 09:00 (连续第 12 天预期).
+
+### 派工 / Blocker
+- 无可启动且可派工新任务. spawn 限制**未解除** (`openclaw.json` agents.list 仅 `main`, allowAny=false) → 无法 spawn DEV/QA/DEVOPS, 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue (已实证) ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 日报 18:00 持续失效)**.
+
+结论: 服务 🟢 稳态; 与 19:04 轮**零实质新增**; ⚠️ IO 压力由「突发读」升级为「持续高 %util (92.6%)」 → 仅记录, 不打扰用户.
+
+---
+
 # 19:04 — PM Patrol (Tue 09-29) 🟢 服务全绿; 与 19:00 轮零实质新增; load 低位稳 (0.73/0.64/0.85); IO 突发读仍 (some 49.6/full 43.8, %util 28.5% 非持续)
 
 ### System Status 🟢
