@@ -1,3 +1,27 @@
+# 14:04 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 14:00 轮零实质新增; ✅ IO 低位 (some avg10 4.12/full 2.80); SQL 6h 窗口 **4 条** (= 09:00 UserLifecycle 2 条 连续第 12 天 + 13:00 LunchReminder 2 条; 14:00 autoReject `missing FROM-clause entry for table "change"` 如期复现, 同漂移家族); load 0.83/1.05/0.98; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090 /health **200**). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **7d19h01m**.
+- 磁盘 92% (3.3G free) 持平; mem **558M avail (122M free)** 偏紧仍. load **0.83/1.05/0.98** 低位稳 (服务响应全 200).
+- ✅ **IO 低位续稳**: `pressure io some avg10 **4.12**` (avg60 3.98, avg300 1.47) / full **2.80** → 延续自愈后稳态, 无异常.
+- git main HEAD **9f1d3eb** (`chore: heartbeat 14:00 patrol (09-30)`); 工作区 clean (本轮写 HEARTBEAT.md + memory). Open Issue **56**, **无新 P0/P1** (最新 #373 dated 2026-09-06), 全部未指派. PR #369 仍 OPEN.
+
+### SQL 群 — 6h 窗口 **4 条** (均为已知漂移家族定时复现, 非新增形态) ⚠️
+- **09:00:00 (CST)** `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (计 **2**). 连续第 **12 天**复发.
+- **13:00:00 (CST)** `[LunchReminderScheduler] 【Cron】午膳变更提醒任务失败: column LunchChange.created_by does not exist` (计 **2**; lunch-reminder.service.js:56). 与 13:04 轮**同批复现**.
+- **14:00:00 (CST)** `[LunchReminderScheduler] 【Cron】午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` — 今日 14:00 触发点如期复现 (同 LunchReminder 漂移家族).
+- 6h 窗口内除上述漂移家族外**零其他 ERROR**. 下复验点: 今日 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 12 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 14:00 轮**零服务面实质变化**; SQL 4 条均为已知漂移家族定时复现 (含 14:00 autoReject 新触触发点) → 仅记录入清单, 不打扰用户.
+
+---
+
 # 13:04 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 12:04 轮零实质新增; ✅ IO 低位续稳 (some avg10 4.73/full 3.88); SQL 6h 窗口 **4 条** (= 09:00 UserLifecycle 2 条 连续第 12 天 + 13:00 LunchReminder 2 条 `LunchChange.created_by`, 均为已知 schema 漂移定时复现, 非新增形态); load 0.64/0.39/0.33 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
 
 ### System Status 🟢
