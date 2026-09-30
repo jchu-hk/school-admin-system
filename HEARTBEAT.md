@@ -1,3 +1,25 @@
+# 21:00 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 20:04 轮零实质新增; ✅ IO 低位稳 (some avg10 8.68/full 6.28); SQL 6h 窗口 **4 条** (18:00 DailyReport schema 漂移 `attendance_daily_reports.school_id` ×4, 已知家族定时复现, 与 20:04 轮同批); load 0.97/1.13/0.99 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090/health **200**). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **8d1h57m**.
+- 磁盘 92% (3.3G free) 持平; mem **541M avail (122M free)** 偏紧仍. load **0.97/1.13/0.99** 低位稳 (服务响应全 200).
+- ✅ **IO 低位稳**: `pressure io some avg10 **8.68**` (avg60 2.28, avg300 0.55) / full **6.28** → 延续自愈后稳态, 无异常.
+- git main HEAD **1532b92** (`chore: heartbeat 20:04 patrol (09-30)`); 工作区 clean (本轮写 HEARTBEAT.md). Open Issue **56**, **无新 P0/P1** (created>09-10 计数 0), 全部未指派. PR #369 仍 OPEN.
+
+### SQL 群 — 6h 窗口 **4 条** (均为已知漂移家族定时复现, 非新增形态) ⚠️
+- **18:00:00 (CST)** `[DailyReportService] 生成班级日报失败: class=中一A班: column AttendanceDailyReport.school_id does not exist` + `签到日报生成失败: column "school_id" of relation "attendance_daily_reports" does not exist` (+ QueryFailedError, 计 **4**) — 与 20:04 轮**同批**, 18:00 触发点仍留 6h 窗口内; 与 09-28/09-29 18:00 **同源**. 业务影响: 日报自 09-28 起持续失效.
+- 6h 窗口内除上述漂移家族外**零其他 ERROR**. 下复验点: 明日 09:00 (UserLifecycle).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 12 天失败实证 + 日报 18:00 持续失效)**.
+
+结论: 服务 🟢 稳态; 与 20:04 轮**零服务面实质变化**; ✅ IO 低位稳; SQL 4 条均为已知漂移家族定时复现 (18:00 同批) → 仅记录入清单, 不打扰用户.
+
+---
+
 # 20:04 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 19:04 轮零实质新增; ✅ IO 回落低位 (some avg10 3.21/full 1.14); 18:00 DailyReport 触发点仍留窗内 (schema 漂移 `attendance_daily_reports.school_id` ×4, 已知家族, 非新增); load 0.82/0.49/0.40 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
 
 ### System Status 🟢
