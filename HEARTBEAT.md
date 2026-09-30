@@ -4292,3 +4292,25 @@
 ①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥schema 漂移建 Issue → 派 DEV 修.
 
 结论: 服务 🟢 稳态; 零实质变化 → 仅记录, 不打扰用户.
+
+---
+
+# 19:00 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 18:04 轮**零实质变化**
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 200, portal :8081 200, ai-sre :9090/health **200**.
+- Docker 14 Up (5 healthy); 磁盘 92% (3.3G free) 持平; mem 659M avail (126M free) 偏紧; load 0.82/0.54/0.48 低位.
+
+### Open Issue
+- 56 open, **无新 P0/P1**, 末更 09-09 (#370/#372), 全部未指派; PR #369 仍 OPEN.
+
+### 触发点 (近 3h)
+- DailyReportService **18:00** 如期复现 `column AttendanceDailyReport.school_id does not exist` ×2 — 18:00 日复验点如期触发, 已知 schema 漂移, 非新增. 近 3h ERROR **4 条**全属该家族.
+
+### 派工 / Blocker
+- 无可启动且可派工新任务; spawn 限制未解除 (agents.list 仅 `main`) → **blocker 延续**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥schema 漂移建 Issue → 派 DEV 修.
+
+结论: 服务 🟢 稳态; 零实质变化; SQL 4 条为已知漂移定时复现 → 仅记录, 不打扰用户.
