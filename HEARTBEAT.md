@@ -1,3 +1,24 @@
+# 12:04 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 11:04 轮零实质新增; ✅ IO 低位续稳 (some avg10 4.77/full 3.88); SQL 6h 窗口 2 条 (= 09:00 UserLifecycle 同批 01:00Z, 连续第 12 天, 非新增); load 0.87/0.57/0.50 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090 /api/health 404, /health **200**). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **7d17h01m**.
+- 磁盘 92% (3.3G free) 持平; mem **572M avail (167M free)** 偏紧仍. load **0.87/0.57/0.50** 低位稳 (服务响应全 200).
+- ✅ **IO 续稳低位**: `pressure io some avg10 **4.77**` (avg60 1.97, avg300 0.61) / full **3.88**; iostat vda %util **5.20%** (r/s 357 小读, w/s 2 近零) → 延续自愈后稳态, 无异常.
+- git main HEAD **860cecb** (`chore: heartbeat 11:04 patrol (09-30)`); 工作区 clean (本轮写 HEARTBEAT.md + memory). Open Issue **56**, **无新 P0/P1** (最新 #373 dated 2026-09-06), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### SQL 群 — 6h 窗口 **2 条** (= 09:00 UserLifecycle 同批, 非新增) ✅
+- **09:00:00 (CST) / 01:00:00Z** `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (+ driverError 同文, 计 2). 连续第 **12 天**复发, schema 漂移系统性持续. 6h 窗口内除该漂移外**零其他 ERROR**. 下复验点: 今日 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 12 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 11:04 轮**零服务面实质变化**; ✅ IO 低位续稳, SQL 同为 09:00 同批 → 仅记录入清单, 不打扰用户.
+
+---
+
 # 11:04 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 10:04 轮零实质新增; ✅ IO 续稳低位 (some avg10 3.22/full 2.50, iostat %util 0.87% 近零读写); SQL 6h 窗口 2 条 (= 09:00 UserLifecycle 同批, 连续第 12 天, 非新增); load 0.90/0.51/0.35 低位稳
 
 ### System Status 🟢
