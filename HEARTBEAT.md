@@ -1,3 +1,26 @@
+# 13:04 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 12:04 轮零实质新增; ✅ IO 低位续稳 (some avg10 4.73/full 3.88); SQL 6h 窗口 **4 条** (= 09:00 UserLifecycle 2 条 连续第 12 天 + 13:00 LunchReminder 2 条 `LunchChange.created_by`, 均为已知 schema 漂移定时复现, 非新增形态); load 0.64/0.39/0.33 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090 /health **200**). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **7d18h01m**.
+- 磁盘 92% (3.3G free) 持平; mem **577M avail (115M free)** 偏紧仍. load **0.64/0.39/0.33** 低位稳 (服务响应全 200).
+- ✅ **IO 低位续稳**: `pressure io some avg10 **4.73**` (avg60 3.80, avg300 1.21) / full **3.88**; iostat vda %util 低位 → 延续自愈后稳态, 无异常.
+- git main HEAD **d09b7dc** (`chore: heartbeat 12:04 patrol (09-30)`); 工作区 clean (本轮写 HEARTBEAT.md + memory). Open Issue **56**, **无新 P0/P1** (最新 #373 dated 2026-09-06), 全部未指派. PR #369 仍 OPEN.
+
+### SQL 群 — 6h 窗口 **4 条** (均为已知漂移定时复现, 非新增形态) ⚠️
+- **09:00:00 (CST)** `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (+ driverError 同文, 计 **2**). 连续第 **12 天**复发, schema 漂移系统性持续.
+- **13:00:00 (CST)** `[LunchReminderScheduler] 【Cron】午膳变更提醒任务失败: column LunchChange.created_by does not exist` (+ driverError 同文, 计 **2**; lunch-reminder.service.js:56 handleReminder). 同为已知 schema 漂移 (09-29 已实证 13:00/14:00 同源), 今日 13:00 触发点如期复现.
+- 6h 窗口内除上述两处 schema 漂移外**零其他 ERROR** (仅 BackupService 12:00/13:00「删 0」正常行). 下复验点: 今日 14:00 (LunchReminder autoReject) / 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue (今日 13:00 再次实证) ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 12 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 12:04 轮**零服务面实质变化**; ✅ IO 低位续稳; SQL 4 条均为已知漂移定时复现 (09:00 + 13:00) → 仅记录入清单, 不打扰用户.
+
+---
+
 # 12:04 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 11:04 轮零实质新增; ✅ IO 低位续稳 (some avg10 4.77/full 3.88); SQL 6h 窗口 2 条 (= 09:00 UserLifecycle 同批 01:00Z, 连续第 12 天, 非新增); load 0.87/0.57/0.50 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
 
 ### System Status 🟢
