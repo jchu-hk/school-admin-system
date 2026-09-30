@@ -1,3 +1,26 @@
+# 07:00 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与昨 21:00 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 1.74/full 1.20); SQL 6h 窗口 **0 条** (18:00 DailyReport 漂移家族已滚出窗口); load 0.28/0.35/0.36 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090/health **200**). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **8d11h57m**.
+- 磁盘 92% (3.3G free) 持平; mem **546M avail (130M free)** 偏紧仍. load **0.28/0.35/0.36** 低位稳 (服务响应全 200).
+- ✅ **IO 低位稳**: `pressure io some avg10 **1.74**` (avg60 0.58, avg300 0.28) / full **1.20** → 延续自愈后稳态, 无异常.
+- git main HEAD **bce049c** (`chore: dashboard rebuild`); Open Issue **56**, **无新 P0/P1** (created>09-10 计数 0), 全部未指派. PR #369 仍 OPEN.
+
+### SQL 群 — 6h 窗口 **0 条** ✅
+- 6h 窗口内 **零 ERROR**. DailyReport 18:00 漂移家族 (`attendance_daily_reports.school_id` ×4) 已滚出窗口 (现 13h 前); 07:00 BackupService 正常执行 (删除 0 个旧备份).
+- 24h 窗口内已知家族 (13:00 LunchReminder `created_by` / 14:00 `missing FROM-clause table "change"` / 18:00 DailyReport schema 漂移 / UserLifecycle `notifications.school_id` 漂移) 均为已知 schema 漂移家族定时复现, 非新增形态. ⚠️ Grafana update-check 反复 timeout (github raw 出网, 每 10min) — 环境性.
+- 下复验点: 今日 09:00 (UserLifecycle) / 13:00 / 14:00 / 18:00.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续多日定点复现实证)**.
+
+结论: 服务 🟢 稳态; 与昨 21:00 轮**零服务面实质变化**; 6h 窗口 **0 ERROR**; 已知漂移家族定时复现 → 仅记录, 不打扰用户.
+
+---
+
 # 21:00 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 20:04 轮零实质新增; ✅ IO 低位稳 (some avg10 8.68/full 6.28); SQL 6h 窗口 **4 条** (18:00 DailyReport schema 漂移 `attendance_daily_reports.school_id` ×4, 已知家族定时复现, 与 20:04 轮同批); load 0.97/1.13/0.99 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
 
 ### System Status 🟢
