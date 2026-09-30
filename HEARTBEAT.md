@@ -1,3 +1,25 @@
+# 09:04 — PM Patrol (Wed 09-30) 🟢 服务全绿; ★**09:00 UserLifecycle 触发点复验成立 — 连续第 12 天复发** (schema 漂移 `notifications.school_id`, 非新增形态); IO 压力续稳低位 (some avg10 3.76/full 2.91); load 0.55/0.39/0.39 低位
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090/health **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **7d13h58m**.
+- 磁盘 92% (3.3G free) 持平; mem **519M avail (123M free)** 偏紧仍. load **0.55/0.39/0.39** 低位稳 (服务响应全 200).
+- ✅ **IO 压力续稳低位**: `pressure io some avg10 **3.76**` (avg60 1.24, avg300 0.37) / full **2.91**; 延续 08:04 轮回落态势, 无异常.
+- git main HEAD **f9d6878** (`chore: heartbeat 08:04 patrol (09-30)`); 工作区 clean (本轮写 HEARTBEAT.md + memory). Open Issue **56**, **无新 P0/P1** (created>09-10 计数 0), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 🔴 SQL 群 3h **2 条** — ★**09:00 UserLifecycle 触发点复验成立 (连续第 12 天)**
+- **09:00:00 (CST)** `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (+ driverError 同文, 计 2; at UserLifecycleService.handleExpiringAccounts user-lifecycle.service.js:45 / user-lifecycle.scheduler.js:22).
+- 09-19→09-30 连续 **12 天**每日 09:00:00 同一错 → schema 漂移 **系统性持续、非偶发**. 与 09-28 18:00 DailyReport (`attendance_daily_reports.school_id`) 同源. 业务影响: 到期账户通知每日静默失败; 日报自 09-28 18:00 起失效. 今日 00:00-09:04 全窗口仅此 2 条错误 (无其他新增). 下复验点: 今日 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 无法 spawn DEV/QA/DEVOPS, 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue (已实证) ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 已连续 12 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 08:04 轮**零服务面实质变化**, 唯 09:00 触发点如期复现 (已知系统性缺陷); IO 续稳低位 → 仅记录入清单, 不打扰用户.
+
+---
+
 # 08:04 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 07:00 轮零实质新增; ✅ **IO 压力已完全回落** (some avg10 49.68→4.39, iostat %util 95.7%→0.3% 近零读写, 同 09-29 自愈模式); load 1.64/1.25/0.76; 非触发时刻 SQL 静默 (近 5h 0 条)
 
 ### System Status 🟢 (IO 已回落)
