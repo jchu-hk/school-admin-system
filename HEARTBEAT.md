@@ -1,3 +1,25 @@
+# 10:04 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 09:20 轮零实质新增; ✅ IO 压力完全回落 (some avg10 3.30/full 2.62 低位); ★09:00 UserLifecycle 触发点已过 — 本轮 6h 窗口 SQL 错误 **0 条** (待 18:00 复核确认); load 0.30/0.37/0.35 低位稳
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**, ai-sre :9090**/health** **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **7d15h01m**.
+- 磁盘 92% (3.3G free) 持平; mem **626M avail (122M free)** 偏紧仍. load **0.30/0.37/0.35** 低位稳 (服务响应全 200).
+- ✅ **IO 压力完全回落**: `pressure io some avg10 **3.30**` (avg60 0.77, avg300 0.16) / full **2.62** → 09:20 轮的 12.59/9.80 已消退, 同自愈模式. 观察结束.
+- git main HEAD **8a99771** (`chore: heartbeat 09:20 patrol (09-30)`); 工作区 clean (本轮写 HEARTBEAT.md + memory). Open Issue **56**, **无新 P0/P1** (created>09-10 计数 0), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### SQL 群 — 6h 窗口 **0 条** ✅
+- **09:00 UserLifecycle 触发点已过**, 但本轮 backend 近 6h `QueryFailedError/does not exist/FROM-clause` 计数 **0** (注: 日志可能已轮转, 需 18:00 DailyReport 触发点复核确认). 无新增形态.
+- 下复验点: 今日 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 12 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 09:20 轮**零服务面实质变化**; ✅ IO 压力完全回落; 仅记录入清单, 不打扰用户.
+
+---
+
 # 09:20 — PM Patrol (Wed 09-30) 🟢 服务全绿; 与 09:11 轮零实质新增; 09:00 UserLifecycle 触发点已复验 (= 同批 2 条, 非新增); ⚠️ IO 间歇突发读续现 (some avg10 12.59/full 9.80, 同自愈模式); load 1.32/0.94/0.61
 
 ### System Status 🟢
