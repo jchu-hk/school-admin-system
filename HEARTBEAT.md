@@ -1,3 +1,27 @@
+# 15:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 14:00 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 5.93/full 3.27); ★6h 窗口 SQL 3 条 (09:00 school_id / 13:00 created_by ×2 / 14:00 FROM-clause), 均已知漂移家族定时复现非新增; load 0.57/0.46/0.39 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090 容器健康, 探活路径差异 → 404 非故障). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **8d19h01m**.
+- 磁盘 92% (3.3G free) 持平; mem **496M avail (114M free)** 偏紧仍. load **0.57/0.46/0.39** 低位稳 (服务响应全 200).
+- ✅ **IO 低位稳**: `pressure io some avg10 **5.93**` (avg60 5.07, avg300 2.37) / full **3.27** → 延续自愈后稳态, 无异常.
+- git main HEAD **c3a2bfd** (`chore: heartbeat 14:00 patrol (10-01)`); 工作区 clean (本轮写 HEARTBEAT.md). Open Issue **56**, **无新 P0/P1** (最新 #373 dated 2026-09-06, created>09-10 计数 0). P1 计数 29 (无新增). PR #369 仍 OPEN.
+
+### SQL 群 — 6h 窗口 **3 条** (均已知漂移家族定时复现, 非新增) ⚠️
+- **09:00 (CST)** `[UserLifecycleScheduler] column "school_id" of relation "notifications" does not exist`.
+- **13:00 (CST)** `[LunchReminderScheduler] column LunchChange.created_by does not exist` (计 **2**).
+- **14:00 (CST)** `[LunchReminderScheduler] 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (计 **2**).
+- 除漂移家族外 6h 窗口**零其他 ERROR**. 下复验点: 今日 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续多日失败实证)**.
+
+结论: 服务 🟢 稳态; 与 14:00 轮**零服务面实质变化**; IO 低位稳态; SQL 3 条为已知漂移家族定时复现 → 仅记录, 不打扰用户.
+
+---
+
 # 14:00 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 13:04 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 1.35/full 0.68, 自愈后稳态); ★14:00 LunchReminder autoReject 如期到来 (签名 `missing FROM-clause entry for table "change"`, 属已知漂移家族历史成员); SQL 6h 窗口 **3 条** (09:00 school_id / 13:00 created_by ×2 / 14:00 FROM-clause), 均已知家族定时复现非新增; load 0.87/0.43/0.37 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
 
 ### System Status 🟢
