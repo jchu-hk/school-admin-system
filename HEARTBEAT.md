@@ -1,3 +1,47 @@
+# 21:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 21:00 轮零服务面实质变化 (4min 间隔); IO 略升 some avg10 6.97/full 5.89; SQL 6h 窗口 **2 条** (18:00 DailyReport schema 漂移 ×2, 已知家族定时复现, 与 21:00 轮同批); load 0.92/0.46/0.40; mem 519M avail; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**. Docker **14** Up (5 healthy). 宿主 uptime **9d02h01m**.
+- 磁盘 92% (3.2G free) 持平; mem **519M avail (166M free)** 偏紧仍. load **0.92/0.46/0.40** 低位稳 (服务响应全 200).
+- IO `pressure io some avg10 **6.97**` (avg60 7.51, avg300 3.34) / full **5.89** → 低位稳态, 无异常.
+- git main HEAD **1bbfa7f** (`chore: heartbeat 19:04 patrol (10-01)`); 工作区 HEARTBEAT.md 本轮修改. Open Issue **56**, **无新 P0/P1** (最新 #373 dated 2026-09-06, P0/P1 计数 0), 全部未指派. PR #369 仍 OPEN.
+
+### SQL 群 — 6h 窗口 **2 条** (已知漂移家族定时复现, 非新增) ⚠️
+- **18:00 (CST)** `[DailyReportService] 生成班级日报/签到日报失败: column AttendanceDailyReport.school_id / column "school_id" of relation "attendance_daily_reports" does not exist` (×2). 与 21:00 轮**同批** (18:00 触发点), 已知 schema 漂移家族.
+- 6h 窗口内除该漂移家族外**零其他 ERROR**. 下复验点: 明日 09:00 (UserLifecycle).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`agents.list` 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先)**.
+
+结论: 服务 🟢 稳态; 与 21:00 轮**零服务面实质变化**; IO 略升仍低位; SQL 2 条为已知漂移家族定时复现 (18:00 同批) → 仅记录, 不打扰用户.
+
+---
+
+# 21:00 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 19:04 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 5.49/full 3.50); SQL 6h 窗口 **2 条** (18:00 DailyReport schema 漂移 ×2, 已知家族定时复现, 与 19:04 轮同批); load 0.26/0.32/0.35 低位稳; mem 506M avail; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**. Docker **14** Up (5 healthy). 宿主 uptime **9d01h57m**.
+- 磁盘 92% (3.2G free) 持平; mem **506M avail (128M free)** 偏紧仍. load **0.26/0.32/0.35** 低位稳 (服务响应全 200).
+- ✅ **IO 低位稳**: `pressure io some avg10 **5.49**` (avg60 1.48, avg300 0.48) / full **3.50** → 延续自愈后稳态, 无异常.
+- git main HEAD **1bbfa7f** (`chore: heartbeat 19:04 patrol (10-01)`); 工作区 clean (本轮写 HEARTBEAT.md). Open Issue **56**, **无新 P0/P1** (最新 #373 dated 2026-09-06, P0/P1 计数 0), 全部未指派. PR #369 仍 OPEN.
+
+### SQL 群 — 6h 窗口 **2 条** (已知漂移家族定时复现, 非新增) ⚠️
+- **18:00 (CST)** `[DailyReportService] 生成班级日报/签到日报失败: column AttendanceDailyReport.school_id / column "school_id" of relation "attendance_daily_reports" does not exist` (×2). 与 19:04 轮**同批** (18:00 触发点), 已知 schema 漂移家族.
+- 6h 窗口内除该漂移家族外**零其他 ERROR** (14:00 FROM-clause 已滚出窗口). 下复验点: 明日 09:00 (UserLifecycle).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`agents.list` 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先)**.
+
+结论: 服务 🟢 稳态; 与 19:04 轮**零服务面实质变化**; IO 低位稳态; SQL 2 条为已知漂移家族定时复现 (18:00 同批) → 仅记录, 不打扰用户.
+
+---
+
 # 19:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 19:00 轮零变化 (4min 间隔); IO 略升 some avg10 5.01/2.70; SQL 6h 窗口 3 条 (14:00 FROM-clause / 18:00 DailyReport ×2), 均已知 schema 漂移家族; load 0.94/0.87/0.91; mem 566M avail; 无新 P0/P1 (最新 Issue #373)
 
 ### System Status 🟢
