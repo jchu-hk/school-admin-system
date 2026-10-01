@@ -1,3 +1,27 @@
+# 18:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; ★18:00 DailyReport 如期失败 (AttendanceDailyReport.school_id 漂移家族新增时点); 6h 窗口 SQL 4 条 (13:00 created_by / 14:00 FROM-clause / 18:00 DailyReport ×2); load 0.92/1.08/0.96; IO some avg10 4.82/full 4.31; 无新 P0/P1 (最新 Issue #373)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**. Docker **14** Up (5 healthy: ai-sre-service/postgres/redis/opa/kafka). 宿主 uptime **8d23h01m**.
+- 磁盘 92% (3.2G free) 持平; mem **552M avail (113M free)** 偏紧仍. load **0.92/1.08/0.96** (较 17:04 略升, 仍低位; 服务响应全 200).
+- ✅ **IO 低位稳**: `pressure io some avg10 **4.82**` (avg60 7.14, avg300 7.85) / full **4.31** → 延续自愈后稳态, 无异常.
+- git main HEAD **a4c9755** (`chore: heartbeat 17:04 patrol (10-01)`); 工作区 clean (本轮写 HEARTBEAT.md). Open Issue **56**, **无新 P0/P1** (最新 #373 dated 2026-09-06). PR #369 仍 OPEN (updated 2026-08-23).
+
+### SQL 群 — 6h 窗口 **4 条** (漂移家族定时复现 + 18:00 新时点) ⚠️
+- **13:00 (CST)** `[LunchReminderScheduler] 午膳变更提醒任务失败: column LunchChange.created_by does not exist`.
+- **14:00 (CST)** `[LunchReminderScheduler] 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"`.
+- **18:00 (CST)** ⭐ **新时点 (17:04 预告复验点如期命中)**: `[DailyReportService] 生成班级日报失败: column AttendanceDailyReport.school_id does not exist` + `column "school_id" of relation "attendance_daily_reports" does not exist` (×2). 同属 schema 漂移家族 (entity 有 school_id 但底层表无列).
+- 除漂移家族外 6h 窗口**零其他 ERROR**; backend 侧 ERROR 计数 8. 下复验点: 明日 09:00 (UserLifecycle).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 现已含 DailyReport 18:00 时点, 失败面持续扩大)**.
+
+结论: 服务 🟢 稳态; IO 低位稳态; SQL 4 条均属已知 schema 漂移家族 (18:00 DailyReport 为新增时点, 印证漂移影响面在扩大) → 仅记录, 不打扰用户.
+
+---
+
 # 17:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 16:04 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 4.58/full 3.33); ★6h 窗口 SQL 2 条 (13:00 created_by / 14:00 FROM-clause), 均已知漂移家族定时复现非新增; load 0.70/0.47/0.38 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
 
 ### System Status 🟢
