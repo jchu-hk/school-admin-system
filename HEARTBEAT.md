@@ -1,3 +1,26 @@
+# 19:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 19:00 轮零变化 (4min 间隔); IO 略升 some avg10 5.01/2.70; SQL 6h 窗口 3 条 (14:00 FROM-clause / 18:00 DailyReport ×2), 均已知 schema 漂移家族; load 0.94/0.87/0.91; mem 566M avail; 无新 P0/P1 (最新 Issue #373)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**. Docker **14** Up (5 healthy). 宿主 uptime **9d00h01m** (跨入第 9 天).
+- 磁盘 92% (3.2G free) 持平; mem **566M avail (118M free)** 偏紧仍. load **0.94/0.87/0.91** 低位稳.
+- IO `pressure io some avg10 **5.01**` (avg60 4.45, avg300 1.83) / full **2.70** → 低位稳态, 无异常.
+- git main HEAD **82304fc** (`chore: heartbeat 19:00 patrol (10-01)`); 工作区 clean. Open Issue **56**, **无新 P0/P1**. PR #369 仍 OPEN.
+
+### SQL 群 — 6h 窗口 **3 条** (已知漂移家族定时复现) ⚠️
+- **14:00 (CST)** `[LunchReminderScheduler] 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"`.
+- **18:00 (CST)** `[DailyReportService] 生成班级日报/签到日报失败: column AttendanceDailyReport.school_id does not exist` (×2).
+- 除漂移家族外 6h 窗口**零其他 ERROR**. 下复验点: 明日 09:00 (UserLifecycle).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`agents.list` 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先)**.
+
+结论: 服务 🟢 稳态; 零变化; SQL 3 条均属已知 schema 漂移家族定时复现 → 仅记录, 不打扰用户.
+
+---
+
 # 19:00 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 18:04 轮零服务面实质变化; ✅ IO 回落低位 (some avg10 1.86/full 1.17); 6h 窗口 SQL 3 条 (14:00 FROM-clause / 18:00 DailyReport ×2), 均已知 schema 漂移家族定时复现; load 0.49/1.02/0.96; mem 582M avail; 无新 P0/P1 (最新 Issue #373)
 
 ### System Status 🟢
