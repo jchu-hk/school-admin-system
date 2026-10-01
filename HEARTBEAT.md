@@ -1,3 +1,26 @@
+# 17:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 16:04 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 4.58/full 3.33); ★6h 窗口 SQL 2 条 (13:00 created_by / 14:00 FROM-clause), 均已知漂移家族定时复现非新增; load 0.70/0.47/0.38 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **8d22h01m**.
+- 磁盘 92% (3.3G free) 持平; mem **534M avail (120M free)** 偏紧仍. load **0.70/0.47/0.38** 低位稳 (服务响应全 200).
+- ✅ **IO 低位稳**: `pressure io some avg10 **4.58**` (avg60 3.30, avg300 1.07) / full **3.33** → 延续自愈后稳态, 无异常.
+- git main HEAD **026c47e** (`chore: heartbeat 16:04 patrol (10-01)`); 工作区 clean (本轮写 HEARTBEAT.md). Open Issue **56**, **无新 P0/P1** (最新 #373 dated 2026-09-06, created>09-10 计数 0; P1 计数 0). PR #369 仍 OPEN.
+
+### SQL 群 — 6h 窗口 **2 条** (均已知漂移家族定时复现, 非新增) ⚠️
+- **13:00 (CST)** `[LunchReminderScheduler] 午膳变更提醒任务失败: column LunchChange.created_by does not exist` (计 2).
+- **14:00 (CST)** `[LunchReminderScheduler] 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (计 2).
+- 除漂移家族外 6h 窗口**零其他 ERROR**. 下复验点: 今日 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①②③④⑤⑥ 见 16:04 条目 (spawn 限制 / #370#372 派工 / 磁盘清理 / PR#369 / 午膳 Cron 失败建 Issue / **schema 漂移建 Issue → 派 DEV 修, 最高优先**).
+
+结论: 服务 🟢 稳态; 与 16:04 轮**零服务面实质变化**; IO 低位稳态; SQL 2 条为已知漂移家族定时复现 → 仅记录, 不打扰用户.
+
+---
+
 # 16:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 15:04 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 4.13/full 3.37); ★6h 窗口 SQL **2 条** (13:00 created_by / 14:00 FROM-clause), 均已知漂移家族定时复现非新增; load 0.35/0.36/0.37 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
 
 ### System Status 🟢
