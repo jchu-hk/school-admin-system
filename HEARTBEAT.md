@@ -1,3 +1,92 @@
+# 09:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 09:01 轮零服务面实质变化; ✅ IO 回落低位区间 (some avg10 6.68/full 5.78, 较 09:01 轮 13.89 回落, 同自愈模式); ★09:00 UserLifecycle 触发点复验 (= 同批 01:00Z 2 条 schema 漂移 `notifications.school_id`, 已知家族, 连续第 14 天); load 0.72/0.66/0.52 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090/health **200**, /api/health 404 预期). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **8d14h01m**.
+- 磁盘 92% (3.3G free) 持平; mem **503M avail (118M free)** 偏紧仍. load **0.72/0.66/0.52** 低位稳 (服务响应全 200).
+- ✅ **IO 回落低位区间**: `pressure io some avg10 **6.68**` (avg60 9.00, avg300 6.31) / full **5.78** → 较 09:01 轮 (13.89/11.83) 回落, 延续自愈模式, 无异常.
+- git main HEAD **ee35e37** (`chore: dashboard rebuild`); 工作区仅 HEARTBEAT.md 改动 (本轮写入). Open Issue **56**, **无新 P0/P1** (created>09-10 计数 0), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### SQL 群 — backend 6h 窗口 **2 条** (已知漂移家族定时复现, 非新增形态) ⚠️
+- **09:00:00 (CST) / 01:00Z** `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (+ driverError 同文, 计 **2**; user-lifecycle.service.js:45 / user-lifecycle.scheduler.js:22). ★09:00 触发点复验, 连续第 **14 天**同源. 业务影响: 到期账户通知每日静默失败.
+- 6h 窗口内除该漂移家族外**零其他 ERROR**. 下复验点: 今日 13:00 (LunchReminder) / 14:00 (autoReject) / 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 14 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 09:01 轮**零服务面实质变化**; IO 回落自愈; SQL 2 条为已知漂移家族定时复现 (09:00 同批) → 仅记录, 不打扰用户.
+
+---
+
+# 09:01 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 09:00 轮零服务面实质变化; ⚠️ IO 间歇突发读复现 (some avg10 13.89/full 11.83); ★09:00 UserLifecycle 触发点如期复现 (schema 漂移 `notifications.school_id` ×2, 已知家族, 连续第 14 天); load 0.42/0.35/0.39 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090/health **200**). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **8d13h58m**.
+- 磁盘 92% (3.3G free) 持平; mem **425M avail (116M free)** 偏紧仍. load **0.42/0.35/0.39** 低位稳 (服务响应全 200).
+- ⚠️ **IO 间歇突发读复现**: `pressure io some avg10 **13.89**` (avg60 5.18, avg300 1.74) / full **11.83** → 同自愈模式 (突发小读, 非持续), 待下轮复验自愈.
+- git main HEAD **ee35e37** (`chore: dashboard rebuild`); 工作区仅 HEARTBEAT.md 改动 (本轮写入). Open Issue **56**, **无新 P0/P1** (created>09-10 计数 0), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### SQL 群 — backend 6h 窗口 **2 条** (已知漂移家族定时复现, 非新增形态) ⚠️
+- **09:00:00 (CST)** `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (+ driverError 同文, 计 **2**; user-lifecycle.service.js:45 / user-lifecycle.scheduler.js:22). ★09:00 触发点如期复现, 连续第 **14 天**同源. 业务影响: 到期账户通知每日静默失败.
+- 6h 窗口内除该漂移家族外**零其他 ERROR**. 下复验点: 今日 13:00 (LunchReminder) / 14:00 (autoReject) / 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 14 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 09:00 轮**零服务面实质变化**; SQL 2 条为已知漂移家族定时复现 (09:00 同批) → 仅记录, 不打扰用户.
+
+---
+
+# 09:00 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 08:04 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 5.15/full 4.25); ★09:00 UserLifecycle 触发点如期复现 (schema 漂移 `notifications.school_id` ×2, 已知家族, 连续第 13 天); load 0.21/0.31/0.38 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090/health **200**). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **8d13h57m**.
+- 磁盘 92% (3.3G free) 持平; mem **558M avail (116M free)** 偏紧仍. load **0.21/0.31/0.38** 低位稳 (服务响应全 200).
+- ✅ **IO 低位稳**: `pressure io some avg10 **5.15**` (avg60 2.04, avg300 0.93) / full **4.25** → 延续自愈后稳态, 无异常.
+- git main HEAD **ee35e37** (`chore: dashboard rebuild`); 工作区仅 HEARTBEAT.md 改动 (本轮写入). Open Issue **56**, **无新 P0/P1** (created>09-10 计数 0), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### SQL 群 — 6h 窗口 **2 条** (已知漂移家族定时复现, 非新增形态) ⚠️
+- **09:00:00 (CST)** `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (+ driverError 同文, 计 **2**; user-lifecycle.service.js:45 / user-lifecycle.scheduler.js:22). ★09:00 触发点如期复现, 连续第 **13 天**同源. 业务影响: 到期账户通知每日静默失败.
+- 6h 窗口内除该漂移家族外**零其他 ERROR** (18:00 DailyReport 漂移家族已滚出窗口). 下复验点: 今日 13:00 (LunchReminder) / 14:00 (autoReject) / 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 13 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 08:04 轮**零服务面实质变化**; SQL 2 条为已知漂移家族定时复现 (09:00 同批); 已知漂移家族定时复现 → 仅记录, 不打扰用户.
+
+---
+
+# 08:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 07:00 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 4.37/full 2.41); SQL 6h 窗口 **0 条** (18:00 DailyReport 漂移家族已滚出窗口); load 0.49/0.42/0.37 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090/health **200**). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **8d13h01m**.
+- 磁盘 92% (3.2G free) 持平; mem **579M avail (108M free)** 偏紧仍. load **0.49/0.42/0.37** 低位稳 (服务响应全 200).
+- ✅ **IO 低位稳**: `pressure io some avg10 **4.37**` (avg60 4.19, avg300 1.50) / full **2.41** → 延续自愈后稳态, 无异常.
+- git main HEAD **ee35e37** (`chore: dashboard rebuild`); 工作区 clean (本轮写 HEARTBEAT.md). Open Issue **56**, **无新 P0/P1** (created>09-10 计数 0), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### SQL 群 — 6h 窗口 **0 条** ✅
+- 6h 窗口内 **零 ERROR**. DailyReport 18:00 漂移家族 (`attendance_daily_reports.school_id` ×4) 已滚出窗口; 07:00 BackupService 正常执行.
+- 24h 窗口内已知家族 (13:00 LunchReminder `created_by` / 14:00 `missing FROM-clause table "change"` / 18:00 DailyReport schema 漂移 / 09-30 09:00 UserLifecycle `notifications.school_id` 漂移) 均为已知 schema 漂移家族定时复现, 非新增形态.
+- 下复验点: 今日 09:00 (UserLifecycle) / 13:00 / 14:00 / 18:00.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续多日定点复现实证)**.
+
+结论: 服务 🟢 稳态; 与 07:00 轮**零服务面实质变化**; 6h 窗口 **0 ERROR**; 已知漂移家族定时复现 → 仅记录, 不打扰用户.
+
+---
+
 # 07:00 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与昨 21:00 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 1.74/full 1.20); SQL 6h 窗口 **0 条** (18:00 DailyReport 漂移家族已滚出窗口); load 0.28/0.35/0.36 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
 
 ### System Status 🟢
