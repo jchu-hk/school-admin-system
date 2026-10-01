@@ -1,3 +1,25 @@
+# 11:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 10:04 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 4.82/full 4.45, 自愈后稳态); SQL 6h 窗口 **2 条** (= 09:00 UserLifecycle 同批 schema 漂移 `notifications.school_id`, 已知家族, 连续第 14 天, 非新增); load 0.48/0.52/0.71 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080/api/health **200**, portal :8081/api/health **200** (ai-sre :9090/health **200**). Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **8d16h01m**.
+- 磁盘 92% (3.2G free) 持平; mem **505M avail (112M free)** 偏紧仍. load **0.48/0.52/0.71** 低位稳 (服务响应全 200).
+- ✅ **IO 低位稳**: `pressure io some avg10 **4.82**` (avg60 3.24, avg300 1.04) / full **4.45** → 延续自愈后稳态, 无异常.
+- git main HEAD **bbf67c8** (`chore: heartbeat 10:04 patrol (10-01)`); 工作区 clean (本轮写 HEARTBEAT.md). Open Issue **56**, **无新 P0/P1** (最新 #373 dated 2026-09-06), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### SQL 群 — 6h 窗口 **2 条** (= 09:00 同批, 非新增) ⚠️
+- **09:00:00 (CST) / 01:00Z** `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (计 **2**; notification.service.js:162 / user-lifecycle.service.js:45 / scheduler.js:22). 连续第 **14 天**同源. 业务影响: 到期账户通知每日静默失败.
+- 6h 窗口内除该漂移家族外**零其他 ERROR**. 下复验点: 今日 13:00 (LunchReminder) / 14:00 (autoReject) / 18:00 (DailyReport).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更; 无可启动且可派工新任务. spawn 限制**未解除** (`~/.openclaw/openclaw.json` agents.list 仅 `main`) → 延续 **blocker**.
+
+### Needs your input (延续 6 项, 未变)
+①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 连续 14 天失败实证)**.
+
+结论: 服务 🟢 稳态; 与 10:04 轮**零服务面实质变化**; IO 低位稳态; SQL 2 条为已知漂移家族定时复现 (09:00 同批) → 仅记录, 不打扰用户.
+
+---
+
 # 10:04 — PM Patrol (Thu 10-01) 🟢 服务全绿; 与 09:04 轮零服务面实质变化; ✅ IO 低位稳 (some avg10 3.31/full 1.67, 自愈后稳态); SQL 6h 窗口 **2 条** (= 09:00 UserLifecycle 同批 schema 漂移 `notifications.school_id`, 已知家族, 连续第 14 天, 非新增); load 0.38/0.33/0.34 低位稳; 无新 P0/P1 (最新 Issue #373, 2026-09-06)
 
 ### System Status 🟢
