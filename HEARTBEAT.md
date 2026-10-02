@@ -1,4 +1,28 @@
-# 09:04 — PM Patrol (Fri 10-02) 🟢 服务全绿; 与 08:04 轮零服务面实质变化; ★6h 窗口 5 条 (09:00 UserLifecycle schema 漂移 `notifications.school_id`, 已知家族定时复现); IO 低位稳态 (some avg10 6.19/full 4.74); load 1.25/0.87/0.86; mem 521M avail (偏紧); main HEAD c0b107a (heartbeat 08:04); Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
+# 09:04 — PM Patrol (Fri 10-02) 🟢 服务全绿; ★IO 明显异常抬升 (some avg10 **27–41** vs 历来 ~6, full 23–34; 采样两轮均高, 非瞬时突发) ⚠️; ★spawn 限制 **已解除** (`agents.list` 现含 arch/checker/dev/devops/ops/qa/req) ✅; 6h 窗口 5 条 ERROR (09:00 UserLifecycle schema 漂移 `notifications.school_id`, 已知家族); load 1.62/1.42/1.09; mem 400M avail (117M free, 偏紧); main HEAD a3aa9d0 (heartbeat 09:04); Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
+
+> ⚠️ **本轮两项变化 (与 08:04 轮相比)**:
+> 1. **IO 压力异常抬升** — `some avg10` 27.95→41.56, `full` 23.42→34.21, avg60/avg300 亦同步升至 24/14 (前轮 some avg10 6.19 / full 4.74). 两轮独立采样均高 → 非瞬时突发读, 疑与宿主并发活动 (gh/npm exec 进程) 相关。需下轮复验是否自愈; 若持续 → 建议 DEV 排查 backend/宿主 IO 热点。
+> 2. **spawn 限制已解除** ✅ — `agents_list` 现返回 8 个 agent (main/arch/checker/dev/devops/ops/qa/req), 前轮仅 main。**Blocker 解除**, 但本轮无新 P0/P1 且既有 Issues 全未指派 → 仍需用户指示派工对象 (见 Needs input ①②⑥)。
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **9d14h01m**.
+- 磁盘 92% (3.2G free) 持平; mem **400M avail (117M free)** 偏紧仍 (较前轮 521M 略降). load **1.62/1.42/1.09** (较前轮 1.25/0.87/0.86 略升, 仍低位).
+- ⚠️ IO `pressure io some avg10 **27.95–41.56**` (avg60 24.31–24.78, avg300 13.92–14.48) / full **23.42–34.21** → **明显高于历来基线 (~6)**, 两轮采样均高 → 记录并复验.
+- backend 日志 6h 窗口 **5 条 ERROR**, 全部为 **09:00 (CST) `[UserLifecycleScheduler] QueryFailedError: column "school_id" of relation "notifications" does not exist`** (INSERT into notifications) — 已知 schema 漂移家族 09:00 定时复现。除该漂移家族外零其他 ERROR。
+- git main HEAD **a3aa9d0** (`chore: heartbeat 09:04 patrol (10-02)`); 工作区 clean (本轮写 HEARTBEAT.md). Open Issue **56**, **无新 P0/P1** (created>09-10 计数 0; 最新 #373 dated 2026-09-06), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 派工 / Blocker
+- ✅ **spawn 限制已解除** (agents.list 8 项) — 前轮 blocker 消除.
+- 但本轮**无新 P0/P1、无 updated 变更**, 既有 Issues 全未指派 → 无可自主启动任务, 仍需用户指定派工对象.
+
+### Needs your input (更新: ①已解决; 其余延续)
+①~~解除 spawn 限制~~ **✅ 已解除** ②#370/#372 派工对象 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 09:00 UserLifecycle 持续失效)** ⑦**IO 抬升复验 (本轮新增, 若下轮持续 → 派 DEV 排查)**.
+
+结论: 服务 🟢 稳态; 两项变化 = IO 异常抬升 (⚠️ 复验) + spawn 限制解除 (✅); 5 条 ERROR 均为已知 drift 家族 09:00 定时复现 → 仅记录, 不打扰用户.
+
+---
+
+# 09:04 — PM Patrol (Fri 10-02, 前轮) 🟢 服务全绿; 与 08:04 轮零服务面实质变化; ★6h 窗口 5 条 (09:00 UserLifecycle schema 漂移 `notifications.school_id`, 已知家族定时复现); IO 低位稳态 (some avg10 6.19/full 4.74); load 1.25/0.87/0.86; mem 521M avail (偏紧); main HEAD c0b107a (heartbeat 08:04); Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
 
 ### System Status 🟢
 - backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **9d13h58m**.
