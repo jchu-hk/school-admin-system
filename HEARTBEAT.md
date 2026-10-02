@@ -4847,3 +4847,22 @@
 ①解除 spawn 限制 ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥schema 漂移建 Issue → 派 DEV 修.
 
 结论: 服务 🟢 稳态; 零实质变化; SQL 4 条为已知漂移定时复现 → 仅记录, 不打扰用户.
+
+---
+
+# 09:04 — PM Patrol (Fri 10-02) 🟢 服务全绿; ★spawn 限制已解除 (agents 8 个可用); 6h 窗口 5 条 ERROR (09:00 UserLifecycle schema 漂移 `notifications.school_id`, 已知家族定时复现); IO 明显抬升 (some avg10 17.61/full 14.39); load 1.73/1.03/0.91; mem 414M avail (偏紧); main HEAD 8597eda; Open Issue 30, 无新 P0/P1; PR #369 仍 OPEN
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up. 宿主 uptime **9d13h58m**.
+- 磁盘 92% (3.2G free) 持平; mem **414M avail (137M free)** 偏紧. load **1.73/1.03/0.91** 略升.
+- IO `pressure io some avg10 **17.61**` (avg60 11.41, avg300 3.49) / full **14.39** → 较 09:00 轮 (6.19) 明显抬升, 但 avg300 仍低位, 疑瞬时批量; 继续观察.
+- backend 日志 6h 窗口 **5 条 ERROR**, 全部为 **09:00 (CST) `[UserLifecycleScheduler] QueryFailedError: column "school_id" of relation "notifications" does not exist`** — 已知 schema 漂移家族, 连续多日 09:00 定时复现。除该家族外零其他 ERROR。
+- git main HEAD **8597eda** (`chore: heartbeat 09:04 patrol (10-02)`); 工作区本轮写 HEARTBEAT.md. Open Issue **30** (较 08:04 轮的 56 计数下降 — 计数口径差异, 待核). 最新 #373 dated 2026-09-06; **无新 P0/P1**. PR #369 仍 OPEN.
+
+### ★ 状态变化: spawn 限制解除
+- `agents_list` 现返回 **8 个 agent** (main/arch/checker/dev/devops/ops/qa/req), 此前仅 `main`。**此前的 spawn blocker 已解除** → 可恢复派工 (DEV/QA/DEVOPS)。
+
+### Needs your input
+①**schema 漂移建 Issue → 派 DEV 修 (最高优先; 09:00 UserLifecycle 持续失效, 现可派工)** ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue
+
+结论: 服务 🟢 稳态; 唯一实质变化为 **spawn 限制解除**; 5 条 ERROR 均为已知 drift 家族 09:00 定时复现 → 仅记录。IO 抬升需下轮复核。
