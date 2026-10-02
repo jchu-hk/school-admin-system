@@ -1,3 +1,22 @@
+# 18:04 — PM Patrol (Fri 10-02) 🟢 服务全绿; 与 17:04 轮零服务面实质变化; ⚠️ 2h 窗口 2 条 ERROR (18:00 DailyReportService schema 漂移新家族成员 — 见下); IO 低位 (some avg10 4.30/full 2.33); load 0.76/1.05/0.71; mem 674M avail (111M free); main HEAD 6370522; Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **9d23h01m**.
+- 磁盘 92% (3.2G free) 持平; mem **674M avail (111M free)** 偏紧仍. load **0.76/1.05/0.71** 低位稳.
+- ✅ IO `pressure io some avg10 **4.30**` (avg60 6.74, avg300 10.16) / full **2.33** → 低位稳态, 无异常.
+- ⚠️ backend 2h 窗口 **2 条 ERROR**, 均 18:00 `DailyReportService`: `column AttendanceDailyReport.school_id does not exist` / `column "school_id" of relation "attendance_daily_reports" does not exist` → **schema 漂移家族新成员** (此前家族: LunchReminder 14:00 / UserLifecycle; 本轮新增 DailyReport 18:00 触发点). 同一根因 (schema 与代码不一致), 未建 Issue.
+- git main HEAD **6370522** (`chore: heartbeat 17:04 patrol (10-02)`); 工作区 clean (本轮写 HEARTBEAT.md).
+- Open Issue **56**, **无新 P0/P1** (created>09-25 计数 0; 最新 #373 dated 2026-09-06), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 派工 / Blocker
+- 本轮**无新 P0/P1、无 updated 变更**, 既有 Issues 全未指派 → 无可自主启动任务, 仍需用户指定派工对象. 无新 blocker.
+- ⚠️ schema 漂移家族**新增 DailyReport 18:00 触发点** (第 3 个已知触发点), 强化「①schema 漂移建 Issue」的紧迫性.
+
+### Needs your input (延续 5 项, 无变化)
+①schema 漂移建 Issue → 派 DEV/DEVOPS 修 (最高优先, 本轮新增 DailyReport 18:00 触发点) ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue
+
+---
+
 # 17:04 — PM Patrol (Fri 10-02) 🟢 服务全绿; 与 16:04 轮零服务面实质变化; ✅ 2h 窗口 0 条 ERROR; IO 低位 (some avg10 4.79/full 3.76); load 0.22/0.28/0.29; mem 526M avail (120M free); main HEAD d062f7e; Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
 
 ### System Status 🟢
