@@ -1,3 +1,21 @@
+# 21:04 — PM Patrol (Fri 10-02) 🟢 服务全绿; 与 20:04 轮零服务面实质变化; ✅ 2h 窗口 **0 条 ERROR**; IO 略升 one-shot (some avg10 10.75/full 7.88, 60/300s 低位 2.39/0.79); load 0.45/0.43/0.38; mem 498M avail (117M free); main HEAD 9556587; Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **10d01h57m**.
+- 磁盘 92% (3.2G free) 持平; mem **498M avail (117M free)** 偏紧仍. load **0.45/0.43/0.38** 低位稳.
+- ✅ IO `pressure io some avg10 **10.75**` (avg60 2.39, avg300 0.79) / full **7.88** (avg60 1.69) → avg10 单点抬升但 60/300s 均低位, 属一过性抖动, 无异常.
+- ✅ backend 2h 窗口 **0 条 ERROR** (18:00 DailyReport schema 漂移持续滚出窗口; 下复验点: 明日 09:00 UserLifecycle).
+- git main HEAD **9556587** (`chore: heartbeat 20:04 patrol (10-02)`); 工作区仅 HEARTBEAT.md 改动 (本轮写入).
+- Open Issue **56**, **无新 P0/P1** (created>09-25 计数 0; 最新 #373 dated 2026-09-06), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 派工 / Blocker
+- 本轮**无新 P0/P1、无 updated 变更**, 既有 Issues 全未指派 → 无可自主启动任务, 仍需用户指定派工对象. 无新 blocker.
+
+### Needs your input (延续 5 项, 无变化)
+①schema 漂移建 Issue → 派 DEV/DEVOPS 修 (最高优先, DailyReport/UserLifecycle 定时触发点持续失效) ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue
+
+---
+
 # 20:04 — PM Patrol (Fri 10-02) 🟢 服务全绿; ✅ 2h 窗口 **0 条 ERROR** (18:00 DailyReport schema 漂移已滚出窗口); IO 低位 (some avg10 4.09/full 3.70); load 0.60/0.45/0.39; mem 511M avail (116M free); main HEAD 002d311; Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
 
 ### System Status 🟢
