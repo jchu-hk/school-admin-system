@@ -1,3 +1,27 @@
+# 10:04 — PM Patrol (Fri 10-02) 🟢 服务全绿; ✅ IO 异常**已自愈** (some avg10 5.09/full 3.42, 较 09:04 轮 27–41 回落至基线, 同历史自愈模式); 6h 窗口 4 条 ERROR (09:00 UserLifecycle schema 漂移 `notifications.school_id`, 已知家族); load 1.08/0.48/0.39; mem 509M avail (138M free, 偏紧); main HEAD 7a45312; Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
+
+> **本轮两项前轮变化均已消解**:
+> 1. ✅ **IO 异常已自愈** — some avg10 27.95→**5.09**, full 23.42→**3.42**, avg60/avg300 亦回落 (3.70/1.19)。前轮记录的宿主并发 IO 抬升为一过性, 本轮两轮采样均回归基线 (~6 以下), **无需派 DEV 排查**。
+> 2. ✅ **spawn 限制已解除** (延续上轮; `agents.list` 8 项) — 但本轮仍无新 P0/P1 且既有 Issues 全未指派 → 仍需用户指示派工对象。
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime **9d15h01m**.
+- 磁盘 92% (3.2G free) 持平; mem **509M avail (138M free)** 偏紧仍. load **1.08/0.48/0.39** 低位稳.
+- ✅ **IO 回归基线**: `pressure io some avg10 **5.09**` (avg60 3.70, avg300 1.19) / full **3.42** → 前轮异常抬升已自愈, 无异常.
+- backend 日志 6h 窗口 **4 条 ERROR**, 全部为 **09:00 (CST) `[UserLifecycleScheduler] QueryFailedError: column "school_id" of relation "notifications" does not exist`** (INSERT into notifications) — 已知 schema 漂移家族 09:00 定时复现。除该漂移家族外零其他 ERROR。
+- git main HEAD **7a45312** (`chore: heartbeat 09:04 patrol (10-02)`); 工作区 clean (本轮写 HEARTBEAT.md). Open Issue **56**, **无新 P0/P1** (created>09-25 计数 0; 最新 #373 dated 2026-09-06), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 派工 / Blocker
+- ✅ **spawn 限制已解除** (agents.list 8 项); ✅ **IO 异常已自愈** (前轮新增项消解).
+- 本轮**无新 P0/P1、无 updated 变更**, 既有 Issues 全未指派 → 无可自主启动任务, 仍需用户指定派工对象.
+
+### Needs your input (①③④已消解/稳定; 其余延续)
+①~~解除 spawn 限制~~ **✅ 已解除** ②#370/#372 派工对象 ③~~IO 异常复验~~ **✅ 已自愈, 关闭** ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥**schema 漂移建 Issue → 派 DEV 修 (最高优先; 09:00 UserLifecycle 持续失效)** ⑦磁盘清理授权.
+
+结论: 服务 🟢 稳态; 前轮 IO 异常已自愈 (✅); 4 条 ERROR 均为已知 drift 家族 09:00 定时复现 → 仅记录, 不打扰用户.
+
+---
+
 # 09:04 — PM Patrol (Fri 10-02) 🟢 服务全绿; ★IO 明显异常抬升 (some avg10 **27–41** vs 历来 ~6, full 23–34; 采样两轮均高, 非瞬时突发) ⚠️; ★spawn 限制 **已解除** (`agents.list` 现含 arch/checker/dev/devops/ops/qa/req) ✅; 6h 窗口 5 条 ERROR (09:00 UserLifecycle schema 漂移 `notifications.school_id`, 已知家族); load 1.62/1.42/1.09; mem 400M avail (117M free, 偏紧); main HEAD a3aa9d0 (heartbeat 09:04); Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
 
 > ⚠️ **本轮两项变化 (与 08:04 轮相比)**:
