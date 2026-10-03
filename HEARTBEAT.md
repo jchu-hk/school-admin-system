@@ -1,3 +1,20 @@
+# 09:01 — PM Patrol (Sat 10-03, 09:01 轮次) 🟢 服务全绿; 与上轮 (08:04) 零服务面实质变化; ⚠️ backend 2h 窗口 **4 条 ERROR** (09:00 UserLifecycle schema 漂移 如期复现, 已知家族); IO 低位 (some avg10 6.29/full 4.12); load 0.71/0.46/0.38; mem 437M avail (121M free, 偏紧); main HEAD 9248215 (heartbeat 09:01); Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka). 宿主 uptime 10d13h58m.
+- 磁盘 92% (3.2G free) 持平; mem **437M avail (121M free)** 偏紧 (较上轮 568M 略降); load **0.71/0.46/0.38** 低位.
+- ✅ IO `pressure io some avg10 **6.29**` (avg60 2.25, avg300 0.64) / full **4.12** → 低位稳态, 无异常.
+- ⚠️ backend 2h 窗口 **4 条 ERROR** (含 4 行 detail), 全部为 **09:00 (CST) / 01:00 UTC `[UserLifecycleScheduler] QueryFailedError: column "school_id" of relation "notifications" does not exist`** (INSERT into notifications) — 已知 schema 漂移家族 09:00 定时复现, 非新 P0/P1, 未建 Issue。除该漂移家族外 2h 窗口零其他 ERROR。
+- git main HEAD **9248215** (`chore: heartbeat 09:01 patrol (10-03)`); 工作区 clean (本轮写 HEARTBEAT.md)。Open Issue **56**, **无新 P0/P1** (P0/P1 计数 0; 最新 #373 dated 2026-09-06), 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更, 既有 Issues 全未指派 → 无可自主启动任务, 需用户指定派工对象. 无新 blocker.
+
+### Needs your input (延续 5 项, 无变化)
+①schema 漂移建 Issue→派 DEV/DEVOPS ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue
+
+---
+
 # 08:04 — PM Patrol (Sat 10-03, 08:04 轮次) 🟢 服务全绿; 与上轮 (07:00) 零服务面实质变化; ✅ backend 2h 窗口 **0 条 ERROR**; IO 低位 (some avg10 4.86/full 4.15); load 0.39/0.35/0.33; mem 568M avail (120M free); main HEAD b1c18ba (dashboard rebuild); Open Issue 56, 无新 P0/P1; PR #369 仍 OPEN
 
 ### System Status 🟢
