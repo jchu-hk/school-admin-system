@@ -5192,3 +5192,20 @@
 
 ### Needs your input (延续 5 项, 无变化)
 ①schema 漂移建 Issue→派 DEV/DEVOPS ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue
+
+---
+
+# 09:04 — PM Patrol (Sat 10-03, 09:04 轮次, 短间隔复检) 🟢 服务全绿; 与 09:01 轮次零服务面实质变化; ⚠️ 观察到 **09:00 定时作业瞬态 IO 尖峰** (some avg10 71.47→27.65, full 63.84→24.33, 快速回落, 无 D-state 进程); backend 2h **4 ERROR** 全为已知 UserLifecycle schema 漂移; load 峰值 2.28→1.78 回落; mem 429M avail (136M free)
+
+### System Status 🟢
+- backend :3000 **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up.
+- 📌 **IO 瞬态尖峰** (新观察): 09:04 采样 io.pressure some avg10 **71.47** / full **63.84** (vs 上轮 6.29/4.12), 8s 后 avg10 即回落 **27.65/24.33**; `ps D-state` **空**, load 峰值 2.28→1.78→回落. 判定为 **09:00 定时作业写突发** (UserLifecycle/notification 写入) 引发的瞬态, 非持续性压力源, 非新 P0/P1. avg300 仅 12.90 佐证短时.
+- ⚠️ backend 2h **4 条 ERROR**: 全为 **09:00 CST `[UserLifecycleScheduler] QueryFailedError: column "school_id" of relation "notifications" does not exist`** — 已知 schema 漂移家族, 与 09:01 轮次预测一致复现, 未建 Issue.
+- mem **429M avail (136M free)** 偏紧持平; 磁盘 92% (3.2G free) 持平; load 已回落.
+- git main HEAD **fd6bdce** (`chore: heartbeat 09:01 patrol (10-03)`); 工作区本轮写 HEARTBEAT.md.
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更, 既有 Issue 全未指派 → 无可自主启动任务, 需用户指定派工对象. 无新 blocker.
+
+### Needs your input (延续 5 项, 无变化)
+①schema 漂移建 Issue→派 DEV/DEVOPS ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue
