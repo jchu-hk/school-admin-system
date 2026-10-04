@@ -1,3 +1,27 @@
+# 17:04 — PM Patrol (Sun 10-04, 17:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 1d1:03, 自 10-03 16:01 重启后无二次重启); ✅ **GitHub token 正常**; PR **#375 仍 OPEN 未合并** (main origin 仍 7c07daf), backend 2h **0 ERROR**, 但 24h 窗口 6 条 — 今日 13:00 `LunchChange.created_by` + 14:00 `FROM-clause` 午膳漂移按旧码复现; 磁盘 **74% (11G free)**; IO 低位; load 0.57/0.37/0.38; mem 902M avail
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka).
+- 宿主 uptime **1d1:03** (boot 2026-10-03 16:01:09), 稳态无二次重启.
+- 磁盘 **74% (11G free)** — 较昨夜 93% 明显回收, 保持.
+- mem **902M avail (103M free)**; load **0.57/0.37/0.38** 低位.  
+- ✅ IO `some avg10 0.12 / full 0.00` (total some 136.8M) → 低位, 无异常.
+- ✅ **backend 2h 窗口 0 ERROR**. ⚠️ 24h 窗口 6 条, 全为午膳/UserLifecycle schema 漂移家族: 13:00 `LunchChange.created_by does not exist` + 14:00 `missing FROM-clause entry for table "change"` (今日, 旧码复现) + 09:00 `notifications.school_id` 不存在.
+- **backend 容器启动时间 2026-10-03T08:01:18Z** → PR #375 修复**未部署**; 今日 13/14:00 Cron 仍按旧码失败.
+- git 当前检出 `fix/schema-drift-lunch-notification` (HEAD a41ca80); **origin/main 仍 7c07daf**, 本地分支领先 12 commits. 工作区 clean.
+- ✅ **GitHub token 正常**: `gh auth status` ✓ (account jchu-hk). Open Issues: **#374** (p1 schema漂移), #373 (p2), #368/#367 (p1 i18n), #366 (p2), #365, #354, #353, #352, #351. Open PRs: **#375** (MERGEABLE, mergeStateStatus UNSTABLE), #369.
+
+### 派工 / Blocker
+- 🔜 **待办: PR #375 review + merge + 部署** → 部署后复验每日 13/14:00 午膳 + 09:00 UserLifecycle Cron.
+- PR #375 mergeStateStatus **UNSTABLE** (存在 pending/failing 检查, 需确认再合并); mergeable=MERGEABLE.
+- PR #369 (i18n, 自 08-23) 仍 OPEN; Issue #374 未指派.
+- 环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS 代理 (延续既有 blocker).
+
+### Needs your input
+①**PR #375 (schema 漂移修复) review/merge/部署授权** ②Issue #374 指派 (p1) ③PR #369 (i18n) 处置 ④宿主 10-03 16:01 重启原因确认
+
+---
+
 # 16:04 — PM Patrol (Sun 10-04, 16:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 1d0:03, 自 10-03 16:01 重启后无二次重启); ✅ **GitHub token 恢复** (401 blocker 解除); 🆕 **schema 漂移已派工落地**: Issue **#374** (p1, 07:57Z) + PR **#375** (08:02Z, 分支 `fix/schema-drift-lunch-notification`, commit `ecffe53`) — **尚未合并**, main 仍 6419fca; backend 2h 0 ERROR; 磁盘 **74% (11G free, 较 93% 明显回收)**; IO 低位; load 1.06/1.25/0.83; mem 938M avail
 
 ### System Status 🟢
