@@ -1,3 +1,24 @@
+# 10:04 — PM Patrol (Sun 10-04, 10:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 18:03, 自 10-03 16:01 重启后无二次重启); ✅ backend 2h 窗口 堆栈计数 4 (仅 09:00 UserLifecycle schema 漂移单一事件, 无新复现); IO 全零; load 0.48/0.42/0.41; mem 1031M avail (282M free); main HEAD 2aa1523 (11:04 heartbeat); ⚠️ **GitHub token 失效 (gh 401 Bad credentials)** → Issue/PR 状态本轮无法核验
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka).
+- 宿主 uptime **18:03** (boot 2026-10-03 16:01:09), 稳态延续, 无二次重启.
+- 磁盘 93% (2.9G free) 持平; mem **1031M avail (282M free)**; load **0.48/0.42/0.41** 低位.
+- ✅ IO `some avg10 0.00 / full 0.00` (total some 58.69M / full 39.91M) → 全零低位, 无异常.
+- ✅ **backend 2h 窗口 4 条 ERROR** (含堆栈行计数), 全为 09:00 (CST) `[UserLifecycleScheduler] column "school_id" of relation "notifications" does not exist` (`user-lifecycle.service.js:45`) — 与上两轮同一事件, 无新复现. 除该条外 2h 窗口零其他 ERROR. 下复验点: 明日 09:00.
+- git main HEAD **2aa1523** (`chore: heartbeat 11:04 patrol (10-04)`); 工作区 clean (本轮写 HEARTBEAT.md).
+- ⚠️ **GitHub API 认证失效**: `gh issue list` / REST API 均返回 `HTTP 401 Bad credentials` (token len 93, `~/.config/gh/hosts.yml`, user jchu-hk). **本轮 Issue/PR 状态无法核验** → 需用户重新授权 (`gh auth login`) 或更换 token.
+
+### 派工 / Blocker
+- ⚠️ **新增 blocker: GitHub token 失效** → 无法读取 Issue/PR, 无法核验派工状态.
+- 无新 P0/P1 (已知基线: Open Issue 56, 全未指派; PR #369 OPEN — 均为上轮快照, 本轮未能复核). 需用户指定派工对象.
+- 环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS 代理 (延续既有 blocker, 无变化).
+
+### Needs your input (延续 7 项 + 新增 1 项)
+①schema 漂移建 Issue→派 DEV/DEVOPS ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥宿主 16:01 重启原因确认 ⑦UserLifecycle `notifications.school_id` 漂移建 Issue→派 DEV/DEVOPS ⑧**新增: GitHub token 失效, 需重新授权 (`gh auth login`)**
+
+---
+
 # 11:04 — PM Patrol (Sun 10-04, 11:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 17:03, 自 10-03 16:01 重启后无二次重启); ✅ backend 2h 窗口 0 新 ERROR (UserLifecycle schema 漂移无新复现, 2 条堆栈行计数为 09:00 同一事件); IO 低位 (some/full avg10 0.14); load 0.45/0.37/0.32; mem 812M avail (176M free); main HEAD 5af8f2b (10:01 heartbeat); Open Issue 56 (全未指派), 无新增/无更新; PR #369 仍 OPEN
 
 ### System Status 🟢
