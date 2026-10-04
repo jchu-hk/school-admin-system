@@ -1,3 +1,24 @@
+# 13:04 — PM Patrol (Sun 10-04, 13:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 21:03); ⚠️ backend 2h 窗口 **1 ERROR** — 13:00 LunchReminderScheduler `created_by does not exist` 复现 (午膳漂移家族, 上轮 0 ERROR 系窗口未覆盖 13:00); IO 全零; load 0.37/0.37/0.35; mem 981M avail; disk 93% (3.0G); main HEAD e1c69a0; ⚠️ **GitHub token 仍失效 (gh 401)** → Issue/PR 本轮仍无法核验
+
+### System Status 🟢 (1 ERROR 需关注)
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up.
+- 宿主 uptime **21:03**, 稳态延续, 无二次重启.
+- 磁盘 93% (3.0G free); mem **981M avail**; load **0.37 0.37 0.35** 低位.
+- ✅ IO `some avg10=0.19` → 全零低位, 无异常.
+- ⚠️ **backend 2h 窗口 1 ERROR**: `[LunchReminderScheduler] 【Cron】午膳变更提醒任务失败: column LunchChange.created_by does not exist` @ 13:00:00. 属既有午膳 schema 漂移家族 (24h 内 `school_id` x3). 上轮 12:04 报 0 ERROR 系窗口未及 13:00. 下复验点: 明日 13:00.
+- git main HEAD **e1c69a0**; 工作区 clean.
+- ⚠️ **GitHub API 认证仍失效**: `gh issue list` → `HTTP 401 Bad credentials`. **本轮 Issue/PR 状态仍无法核验** → 需用户重新授权 (`gh auth login -h github.com`).
+
+### 派工 / Blocker
+- ⚠️ **GitHub token 失效** (延续 blocker) → 无法读取 Issue/PR, 无法核验派工.
+- 无新 P0/P1. 环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS (延续既有 blocker).
+- 🆕 **午膳 schema 漂移恶化**: 13:00 `LunchChange.created_by` 不存在 → 荐建单一 Issue 覆盖 LunchChange/LunchReminder schema 漂移, 派 DEV 对齐 migrations.
+
+### Needs your input (延续 8 项)
+①schema 漂移建 Issue→派 DEV ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥宿主 16:01 重启原因确认 ⑦UserLifecycle `notifications.school_id` 漂移建 Issue→派 DEV ⑧**GitHub token 失效, 需重新授权**
+
+---
+
 # 12:04 — PM Patrol (Sun 10-04, 12:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 20:03, 自 10-03 16:01 重启后无二次重启); ✅ backend 2h 窗口 0 ERROR (UserLifecycle schema 漂移无新复现, 24h 内仅昨日午膳 13/14:00 + 今晨 09:00 单条); IO 全零; load 0.31 0.37 0.36; mem 965M avail; main HEAD cc60b07; ⚠️ **GitHub token 仍失效 (gh 401)** → Issue/PR 状态本轮仍无法核验
 
 ### System Status 🟢
