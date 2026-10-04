@@ -1,3 +1,24 @@
+# 12:04 — PM Patrol (Sun 10-04, 12:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 19:03, 自 10-03 16:01 重启后无二次重启); ✅ backend 2h 窗口 **0 ERROR** (09:00 UserLifecycle schema 漂移无新复现, 24h 内仅昨日午膳 13/14:00 家族 + 今晨 09:00 单条); IO 低位 (some avg10 5.38/full 5.14); load 0.41/0.33/0.33; mem 969M avail (132M free); main HEAD 920b662 (10:04 heartbeat); ⚠️ **GitHub token 仍失效 (gh 401 Bad credentials)** → Issue/PR 状态本轮仍无法核验
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka).
+- 宿主 uptime **19:03** (boot 2026-10-03 16:01:09), 稳态延续, 无二次重启.
+- 磁盘 93% (2.9G free) 持平; mem **969M avail (132M free)**; load **0.41/0.33/0.33** 低位.
+- ✅ IO `some avg10 5.38 / full 5.14` (total some 60.84M / full 41.79M) → 低位, 无异常.
+- ✅ **backend 2h 窗口 0 ERROR**; 24h 窗口仅昨日 13/14:00 午膳漂移家族 + 今晨 09:00 `[UserLifecycleScheduler] column "school_id" of relation "notifications" does not exist` (`user-lifecycle.service.js:45`) 单条, 无新复现. 下复验点: 明日 09:00.
+- git main HEAD **920b662** (`chore: heartbeat 10:04 patrol (10-04) — 服务全绿; GitHub token 失效 (401) 新 blocker`); 工作区 clean (本轮写 HEARTBEAT.md).
+- ⚠️ **GitHub API 认证仍失效**: `gh auth status` 显示 token in `/root/.config/gh/hosts.yml` invalid; `gh issue list` 返回 `HTTP 401 Bad credentials`. **本轮 Issue/PR 状态仍无法核验** → 需用户重新授权 (`gh auth login -h github.com`).
+
+### 派工 / Blocker
+- ⚠️ **GitHub token 失效** (延续上轮 blocker) → 无法读取 Issue/PR, 无法核验派工状态.
+- 无新 P0/P1 (已知基线: Open Issue 56, 全未指派; PR #369 OPEN — 上轮快照, 本轮未能复核). 需用户指定派工对象.
+- 环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS 代理 (延续既有 blocker, 无变化).
+
+### Needs your input (延续 7 项 + 新增 1 项)
+①schema 漂移建 Issue→派 DEV/DEVOPS ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥宿主 16:01 重启原因确认 ⑦UserLifecycle `notifications.school_id` 漂移建 Issue→派 DEV/DEVOPS ⑧**GitHub token 失效, 需重新授权 (`gh auth login`)**
+
+---
+
 # 10:04 — PM Patrol (Sun 10-04, 10:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 18:03, 自 10-03 16:01 重启后无二次重启); ✅ backend 2h 窗口 堆栈计数 4 (仅 09:00 UserLifecycle schema 漂移单一事件, 无新复现); IO 全零; load 0.48/0.42/0.41; mem 1031M avail (282M free); main HEAD 2aa1523 (11:04 heartbeat); ⚠️ **GitHub token 失效 (gh 401 Bad credentials)** → Issue/PR 状态本轮无法核验
 
 ### System Status 🟢
