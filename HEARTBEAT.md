@@ -1,3 +1,26 @@
+# 16:04 — PM Patrol (Sun 10-04, 16:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 1d0:03, 自 10-03 16:01 重启后无二次重启); ✅ **GitHub token 恢复** (401 blocker 解除); 🆕 **schema 漂移已派工落地**: Issue **#374** (p1, 07:57Z) + PR **#375** (08:02Z, 分支 `fix/schema-drift-lunch-notification`, commit `ecffe53`) — **尚未合并**, main 仍 6419fca; backend 2h 0 ERROR; 磁盘 **74% (11G free, 较 93% 明显回收)**; IO 低位; load 1.06/1.25/0.83; mem 938M avail
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka).
+- 宿主 uptime **1d0:03** (boot 2026-10-03 16:01:09), 稳态无二次重启.
+- 磁盘 **74% (11G free)** — 较前几轮 93% 明显回收 (存在清理动作); mem **938M avail (116M free)**; load **1.06/1.25/0.83** 低位.
+- ✅ IO `some avg10 0.30 / full avg10 0.30` (avg60 3.38/2.47) → 低位, 无异常.
+- ✅ **backend 2h 窗口 0 ERROR** (6h 窗口 4 条: 13:00 提醒 `LunchChange.created_by` 不存在 + 14:00 自动拒绝 `missing FROM-clause entry for table "change"`) — 修复已进 PR 但**未部署**, 今日 Cron 仍按旧码报错; 待 PR #375 merge+部署后复验.
+- 🆕 **GitHub API 恢复**: `gh issue list` 正常. Open Issues: **#374** (p1 schema漂移, 07:57Z), #373 (p2), #368 (p1 i18n). Open PRs: **#375**, #369.
+- 🆕 **schema 漂移修复已由 DEV 提交**: Issue **#374** + PR **#375** (`fix: schema drift — LunchChange/notifications entity-migration alignment (fixes #374)`, 分支 `fix/schema-drift-lunch-notification`, HEAD `ecffe53`). **尚未合并** (main 仍 `6419fca`). 覆盖午膳 created_by / `change` FROM-clause / `notifications.school_id` 三处漂移.
+- git 当前检出 `fix/schema-drift-lunch-notification` (HEAD ecffe53); 工作区 clean.
+
+### 派工 / Blocker
+- ✅ **GitHub token blocker 解除** (上轮 401 已恢复).
+- 🔜 **待办: PR #375 review + merge + 部署** (用户/DEV) → 部署后复验每日 13/14:00 午膳 + 09:00 UserLifecycle Cron.
+- PR #369 (i18n, 自 08-20) 仍 OPEN; Issue #374 未指派.
+- 环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS 代理 (延续既有 blocker).
+
+### Needs your input
+①**PR #375 (schema 漂移修复) review/merge/部署授权** ②Issue #374 指派 (p1) ③PR #369 (i18n) 处置 ④宿主 10-03 16:01 重启原因确认
+
+---
+
 # 15:04 — PM Patrol (Sun 10-04, 15:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 23:03, 自 10-03 16:01 重启后无二次重启); ✅ backend 2h 窗口 **0 ERROR** (14:00 FROM-clause 变体随窗口滚动移出, 未在 15:00 复现); IO 低位; load 0.43/0.58/0.72; mem 898M avail; disk 93% (2.9G); main HEAD 01628c5; ⚠️ **GitHub token 仍失效 (gh 401)** → Issue/PR 本轮仍无法核验
 
 ### System Status 🟢
