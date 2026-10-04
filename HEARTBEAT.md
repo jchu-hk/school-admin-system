@@ -1,3 +1,23 @@
+# 12:04 — PM Patrol (Sun 10-04, 12:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 20:03, 自 10-03 16:01 重启后无二次重启); ✅ backend 2h 窗口 0 ERROR (UserLifecycle schema 漂移无新复现, 24h 内仅昨日午膳 13/14:00 + 今晨 09:00 单条); IO 全零; load 0.31 0.37 0.36; mem 965M avail; main HEAD cc60b07; ⚠️ **GitHub token 仍失效 (gh 401)** → Issue/PR 状态本轮仍无法核验
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up (5 healthy: ai-sre/postgres/redis/opa/kafka).
+- 宿主 uptime **20:03**, 稳态延续, 无二次重启.
+- 磁盘 93% (2.9G free); mem **965M avail**; load **0.31 0.37 0.36** 低位.
+- ✅ IO `avg10=0.08` → 全零低位, 无异常.
+- ✅ **backend 2h 窗口 0 ERROR**; 24h 窗口仅昨日 13/14:00 午膳漂移家族 + 今晨 09:00 (CST) UserLifecycle `notifications.school_id` 不存在单条, 无新复现. 下复验点: 明日 09:00.
+- git main HEAD **cc60b07**; 工作区 clean (本轮写 HEARTBEAT.md).
+- ⚠️ **GitHub API 认证仍失效**: `gh issue list` → `HTTP 401 Bad credentials`. **本轮 Issue/PR 状态仍无法核验** → 需用户重新授权 (`gh auth login -h github.com`).
+
+### 派工 / Blocker
+- ⚠️ **GitHub token 失效** (延续 blocker) → 无法读取 Issue/PR, 无法核验派工.
+- 无新 P0/P1. 环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS (延续既有 blocker).
+
+### Needs your input (延续 8 项)
+①schema 漂移建 Issue→派 DEV ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥宿主 16:01 重启原因确认 ⑦UserLifecycle `notifications.school_id` 漂移建 Issue→派 DEV ⑧**GitHub token 失效, 需重新授权**
+
+---
+
 # 12:04 — PM Patrol (Sun 10-04, 12:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 19:03, 自 10-03 16:01 重启后无二次重启); ✅ backend 2h 窗口 **0 ERROR** (09:00 UserLifecycle schema 漂移无新复现, 24h 内仅昨日午膳 13/14:00 家族 + 今晨 09:00 单条); IO 低位 (some avg10 5.38/full 5.14); load 0.41/0.33/0.33; mem 969M avail (132M free); main HEAD 920b662 (10:04 heartbeat); ⚠️ **GitHub token 仍失效 (gh 401 Bad credentials)** → Issue/PR 状态本轮仍无法核验
 
 ### System Status 🟢
