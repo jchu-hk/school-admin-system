@@ -1,3 +1,22 @@
+# 09:00 — PM Patrol (Sun 10-04, 09:00 轮次) 🟢 服务全绿; 稳态延续 (uptime 16:59, 自 10-03 16:01 重启后无二次重启); ⚠️ 09:00 复验点命中 backend 1 条 ERROR (UserLifecycleScheduler `notifications.school_id` schema 漂移, 全新家族, 非午膳漂移); IO 低位 (some/full avg10 0.75/0.64); load 0.32/0.24/0.28; mem 959M avail (115M free); main HEAD ef26121 (08:04 heartbeat); Open Issue 56 (全未指派), 无新增/无更新; PR #369 仍 OPEN
+
+### System Status 🟢
+- backend :3000/api/health **200**, admin :8080 **200**, portal :8081 **200**. Docker **14** Up; nginx master+2 workers 存活.
+- 宿主 uptime **16:59** (boot 2026-10-03 16:01:09), 稳态延续, 无二次重启.
+- 磁盘 93% (3.0G free) 持平; mem **959M avail (115M free)**; load **0.32/0.24/0.28** 低位.
+- ✅ IO `some avg10 0.75 / full 0.64` (total some 55.6M / full 37.6M) → 低位, 无异常.
+- ⚠️ **backend 2h 窗口 1 条 ERROR**: 09:00 (CST, UTC 01:00) `[UserLifecycleScheduler] Error processing expiring accounts: QueryFailedError: column "school_id" of relation "notifications" does not exist` (`user-lifecycle.service.js:45`)。**全新 schema 漂移家族** (非午膳 LunchChange 家族), 于 08:04 预期的 09:00 UserLifecycle 复验点准时命中。除该条外 2h 窗口零其他 ERROR。下复验点: 明日 09:00。
+- git main HEAD **ef26121** (`chore: heartbeat 08:04 patrol (10-04)`); 工作区 clean (本轮写 HEARTBEAT.md). Open Issue **56**, **无新增/无更新**, 全部未指派. PR #369 仍 OPEN (末更 08-23).
+
+### 派工 / Blocker
+- 无新 P0/P1、无 updated 变更, 既有 Issues 全未指派 → 无可自主启动任务, 需用户指定派工对象. 无新 blocker.
+- 环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS 代理 (延续既有 blocker, 无变化).
+
+### Needs your input (延续 6 项, 新增第 7 项)
+①schema 漂移建 Issue→派 DEV/DEVOPS ②#370/#372 派工 ③磁盘清理授权 ④PR#369 处置 ⑤午膳 Cron 失败建 Issue ⑥宿主 16:01 重启原因确认 ⑦**新增: UserLifecycle `notifications.school_id` 漂移建 Issue→派 DEV/DEVOPS**
+
+---
+
 # 08:04 — PM Patrol (Sun 10-04, 08:04 轮次) 🟢 服务全绿; 稳态延续 (uptime 16:03, 自 10-03 16:01 重启后无二次重启); backend 2h **0 ERROR**; IO 低位 (some/full avg10 1.34/1.01); load 0.25/0.54/0.71; mem 1030M avail (108M free); main HEAD 7c07daf (dashboard rebuild); Open Issue 56 (全未指派), 无新增/无更新; PR #369 仍 OPEN
 
 ### System Status 🟢
