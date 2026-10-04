@@ -34,7 +34,7 @@ export class Notification {
   notificationNo: string;
 
   @ApiProperty({ description: '学校ID' })
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', nullable: true })
   schoolId: string;
 
   @ApiProperty({ description: '关联模板ID' })

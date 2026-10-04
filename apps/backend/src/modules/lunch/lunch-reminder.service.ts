@@ -39,10 +39,13 @@ export class LunchReminderScheduler {
           reviewedAt: new Date(),
           updatedAt: new Date(),
         })
-        .where('change.status = :status', {
+        // 注意：UPDATE 语句由 TypeORM 直接生成，不会声明 QueryBuilder 别名 "change"，
+        // 因此在 WHERE 中必须使用实体属性名（status / createdAt），不能带别名前缀，
+        // 否则 PostgreSQL 会报 missing FROM-clause entry for table "change"。
+        .where('status = :status', {
           status: LunchChangeStatus.PENDING,
         })
-        .andWhere('change.createdAt < :cutoff', { cutoff: cutoffDateTime })
+        .andWhere('createdAt < :cutoff', { cutoff: cutoffDateTime })
         .execute();
 
       const count = result.affected || 0;
