@@ -1,3 +1,116 @@
+# 20:04 — PM Patrol (Sun 10-11, 20:04 轮次)
+
+🟢 **服务全绿** (宿主重启后稳定 2h): uptime 2:03 (自 18:00:54); 14 容器 Up 2h (5 healthy); 探针全 200 (backend :3000, frontend :8080 /+/admin+/portal, frontend-v2 :8081)。
+✅ **backend 2h 0 ERROR** (重启后持续干净); 20:00 整点调度器无 #374 同族复现。
+✅ 资源健康: load 0.28/0.44/0.58; mem **avail 1340M** (重启后持续高位); 磁盘 74%; **无 D-state**; IO PSI 0.00。
+🔴 修复仍未部署 — StartedAt 10:01:02Z (重启拉起, 非部署), 镜像 v1.5.9 (08-14) → #374 未上线。
+**无 GH 变化**: 55 open; PR 仅 #369 CONFLICTING; #374 OPEN (p1)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 18:00 宿主重启原因。
+
+---
+
+# 19:04 — PM Patrol (Sun 10-11, 19:04 轮次) [refresh]
+
+🟢 **服务全绿** (重启后稳定 1h): uptime 1:03 (自 18:00:54); 14 容器 Up 1h (5 healthy); 探针全 200。
+✅ **19:00 整点调度器干净命中** — BackupService 完成清理, **0 ERROR** → 重启后首个整点未复现 #374 同族报错。backend 2h 607 行 **0 ERROR**。
+✅ 资源健康: load 1.08/0.57/0.52; mem **avail 1339M** (重启后显著回升); 磁盘 74%; 无 D-state。
+🔴 修复仍未部署 — StartedAt 10:01:02Z (重启拉起, 非部署), 镜像 v1.5.9 (08-14) → #374 未上线。
+**无 GH 变化**: 55 open; origin/main 587e487 领先 2 commit; 7 patrol 未跟踪; PR #369 CONFLICTING; #374 OPEN (p1)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 18:00 宿主重启原因。
+
+---
+
+# 19:04 — PM Patrol (Sun 10-11, 19:04 轮次)
+
+🟢 **服务全绿** (重启后稳定 1h): backend :3000 `/api/health` **200**; frontend :8080 `/` **200**, `/admin` **200**, `/portal` **200**; frontend-v2 :8081 `/` **200**
+
+🟢 **宿主重启后稳态确认** — `uptime -s` = 2026-10-11 18:00:54, up **59 min**; 14 容器全部 Up 59m (5 healthy). 重启原因仍未知 (非计划内).
+
+✅ **19:00 整点调度器干净命中** — `BackupService` 19:00:00「清理 30 天前备份」完成, **0 ERROR** → 重启后首个整点复验点**未复现 #374 同族报错** (lunch/notification schema 漂移)。
+
+✅ backend 自 18:01 启动以来 607 行日志 **0 ERROR**; Nest 正常 started。
+
+✅ 重启后资源健康: load 0.62/0.41/0.50; mem **avail 1250M** (显著高于重启前); 磁盘 74% (10G free); 无 D-state。
+
+🔴 **修复仍未部署 (延续)** — backend StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14 构建) → #374 修复未上线。
+
+**无 GH 变化**: 55 open issues; origin/main HEAD 587e487, 本地领先 2 commit; 6 未跟踪 patrol 文件, HEARTBEAT.md M; Open PR 仅 #369 (CONFLICTING); Open Issue #374 仍 OPEN 未指派 (p1, 末更 10-04); 无新 P0/P1、无可启动任务。⚠️ main-only allowAny=false → 无法 spawn (blocker)。
+
+**Needs your input**: 部署 PR #375 / 处理 #369 (冲突) / 复验 #374 / 确认 18:00 宿主重启原因 (非计划内)
+
+# 18:04 — PM Patrol (Sun 10-11, 18:04 轮次)
+
+🔴 **宿主整机重启 (本轮重大变化)** — `uptime -s` = **2026-10-11 18:00:54** (up 3 min)，此前自 10-03 16:01 连续 8d 的 uptime 结束。全部 14 容器 ~18:01 由 restart policy 拉起。**非部署行为**：镜像仍 `school-admin-backend:v1.5.9` (2026-08-14 构建)，git 工作树未变 (HEAD 587e487, 本地领先 origin 2 commit) → **#374 修复仍未部署**, Cron 仍按旧码。重启原因未知 (无 who 记录), 需关注宿主稳定性。
+
+🟢 **服务重启后全绿**: backend :3000 `/api/health` **200**; frontend :8080 `/` **200**, `/admin` **200**, `/portal` **200**; frontend-v2 :8081 `/` **200**
+
+✅ backend 自重启后 (18:01 起) **0 ERROR** — 应用正常启动 (:3000 监听); 无 #374 同族报错 (18:00/19:00 整点复验点未到, scheduler 已复位)
+
+✅ 重启后 IO/load 低位: load 0.50/0.58/0.27; IO `some avg10 2.30/avg60 1.94`、`full 1.27/1.02`; 无 D-state; mem **avail 1481M** (重启后显著回升, 此前常态 350-500M)
+
+**无 GH 变化**: origin/main HEAD 587e487; 本地领先 2 commit; Open PR 仅 #369 (末更 08-20); Open Issue #374 仍 OPEN 未指派 (p1, 末更 10-04); 工作区 5 未跟踪 patrol 文件, HEARTBEAT.md M; ✅ GitHub token 正常 (jchu-hk); ⚠️ main-only allowAny=false → 无法 spawn (blocker)
+
+**Needs your input**: 部署 PR #375 / 处理 #369 (冲突) / 复验 #374 / **确认 18:00 宿主重启原因 (非计划内)**
+
+# 17:04 — PM Patrol (Sun 10-11, 17:04 轮次)
+
+🟢 服务全绿; uptime 8d01:03 (自 10-03 16:01 无二次重启)
+
+✅ **IO/load 已回归常态** — 探针 load 1.05/1.21/1.02, IO `some avg10 8.54/avg60 8.66/avg300 7.51`、`full avg10 6.41/avg60 7.06/avg300 6.17`; 16:08 尖峰 (load 峰 21.10) 完全消退, 无 D-state → 确认 14:06 + 16:08 尖峰为整点轮次读盘残影, 非持续异常
+
+✅ backend 2h 窗口 **0 ERROR 事件** (4 行日志, 17:00 整点无 #374 同族复现点命中)
+
+✅ 健康探针 backend :3000 `/api/health` **200**; frontend :8080 `/` **200**, `/admin` **200**, `/portal` **200**; frontend-v2 :8081 `/` **200**
+
+**无实质变化** (延续 10-11 16:04): 🔴 **修复仍未部署** — `school-admin-backend` StartedAt 仍 2026-10-03T08:01:18Z (Up 8d) → Cron 仍按旧码; origin/main HEAD 587e487 (chore: PM patrol 14:04), 本地领先 2 commit; 工作区 4 未跟踪 patrol 文件, HEARTBEAT.md M; Open PR 仅 #369 (fix/i18n-lang-switch, CONFLICTING, 末更 08-23); Open Issue #374 仍 OPEN 未指派 (p1, bug/backend/notification/p1/lunch, 末更 10-04), 无新 P0/P1/可启动任务
+
+- 磁盘 74% (9.8G free)
+- load 1.05/1.21/1.02; mem 379M avail (121M free)
+- docker 14 Up (5 healthy)
+- ✅ GitHub token 正常 (jchu-hk)
+- ⚠️ 环境 main-only allowAny=false → 无法 spawn 代理 (blocker)
+
+**Needs your input**: 部署 PR #375 / 处理 #369 (冲突) / 复验 #374 / 关注宿主 mem 低位
+
+# 16:04 — PM Patrol (Sun 10-11, 16:04 轮次)
+
+🟢 服务全绿; uptime 8d00:07 (自 10-03 16:01 无二次重启)
+
+⚠️ **IO/load 尖峰 (本轮新观察, 回落中)**: 16:08:38 初测 load 1m 峰 **21.10** (5m 13.82/15m 6.14), IO `some avg10 93.90/avg60 97.01/avg300 61.78`、`full avg10 77.91/avg60 85.34/avg300 55.33`; 捕获 D-state (find/gh/awk); mem avail 谷 363M (free 113M)。复测 16:08:53: load 17.51/13.39/6.13, avail 回 466M; 16:09:16: load 13.65/12.79/6.09, IO `some 46.27/83.14/62.46`、`full 38.96/72.38`, avail 455M → **回落趋势明确**, 主驱动为 `java` 进程 (单进程 %CPU 峰值 12-28%), 判为整点轮次/构建读盘残影 (同 14:06 尖峰模式), 观测中
+
+✅ backend 2h 窗口 **0 ERROR 事件** (4 行日志, 本轮未命中整点复验点); 上一整点参考 15:04 patrol
+
+✅ 健康探针 backend :3000 `/api/health` **200**; frontend :8080 `/` **200**, `/admin` **200**, `/portal` **200**; frontend-v2 :8081 `/` **200**
+
+**无实质变化** (延续 10-11 15:04): 🔴 **修复仍未部署** — `school-admin-backend` StartedAt 仍 2026-10-03T08:01:18Z (Up 8d) → Cron 仍按旧码; origin/main HEAD 587e487 (chore: PM patrol 14:04), 本地领先 2 commit (606d452/587e487 patrol); 工作区 4 未跟踪 patrol 文件 (10-11-1304/1400/1504), HEARTBEAT.md M; Open PR 仅 #369 (fix/i18n-lang-switch, CONFLICTING, 末更 08-20); Open Issue #374 仍 OPEN 未指派 (p1, bug/backend/notification/p1/lunch, 末更 10-04), 无新 P0/P1/可启动任务
+
+- 磁盘 74% (9.8G free)
+- load 13.65/12.79/6.09 (尖峰回落中); mem 455M avail (113M free)
+- docker 14 Up (5 healthy)
+- ✅ GitHub token 正常 (jchu-hk) — 首次 TLS handshake timeout, 重试成功 (网络瞬时抖动)
+- ⚠️ 环境 main-only allowAny=false → 无法 spawn 代理 (blocker)
+
+**Needs your input**: 部署 PR #375 / 处理 #369 (冲突) / 复验 #374 / 关注宿主 IO-mem 整点尖峰 (14:06 + 16:08 两次复现)
+
+# 15:04 — PM Patrol (Sun 10-11, 15:04 轮次)
+
+🟢 服务全绿; uptime 7d23:03 (自 10-03 16:01 无二次重启)
+
+⚠️ backend 2h 窗口 **1 ERROR 事件 / 2 行** — 14:00 `[LunchReminderScheduler] 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (#374 同族旧码, 预期整点复验点命中, 无新变体, 因未部署按旧码复现); 2h 仅 12 行日志
+
+✅ IO 低位稳态 (io some avg10 7.20/avg60 7.61/avg300 7.35, full 5.75/6.15/6.02; cpu some 7.34/5.83/5.30; **无 D-state**) — 14:06 尖峰已完全消退
+
+✅ 健康探针 backend :3000 `/api/health` **200**; frontend :8080 `/` **200**, `/admin` **200**, `/portal` **200**; frontend-v2 :8081 `/` **200**
+
+**无实质变化** (延续 10-11 14:04): 🔴 **修复仍未部署** — `school-admin-backend` StartedAt 仍 2026-10-03T08:01:18Z (Up 7d) → Cron 仍按旧码; origin/main HEAD 6ec33bf (chore: dashboard rebuild), 本地领先 2 commit (606d452/587e487 patrol); 工作区 2 未跟踪 patrol 文件 (10-11-1304/1400); Open PR 仅 #369 (fix/i18n-lang-switch, CONFLICTING, 末更 08-23); Open Issue #374 仍 OPEN 未指派 (p1, bug/backend/notification/p1/lunch, 末更 10-04), 无新 P0/P1/可启动任务
+
+- 磁盘 74% (9.8G free)
+- load 0.27/0.39/0.44; mem 401M avail (103M free)
+- docker 14 Up (5 healthy)
+- ✅ GitHub token 正常 (jchu-hk)
+- ⚠️ 环境 main-only allowAny=false → 无法 spawn 代理 (blocker)
+
+**Needs your input**: 部署 PR #375 / 处理 #369 (冲突) / 复验 #374 / 关注宿主 mem 低位
 # 14:04 — PM Patrol (Sun 10-11, 14:04 轮次)
 
 🟢 服务全绿; uptime 7d22:04 (自 10-03 16:01 无二次重启)
