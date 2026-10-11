@@ -1,3 +1,20 @@
+# 21:04 — PM Patrol (Sun 10-11, 21:04 轮次) [refresh, 无 delta]
+
+🟢 重验全绿: uptime 3:03 (自 18:00:54); 14 容器 Up (5 healthy); 探针全 200; backend 2h **0 ERROR** (21:00 仅 BackupService 正常清理). load 0.48/0.33/0.29; mem avail **1238M**; 磁盘 74%; **无 D-state**; IO PSI 0.00, cpu some avg10 13.35. StartedAt 10:01:02Z / 镜像 v1.5.9 → #374 仍未部署。GH 无变化 (55 open, PR 仅 #369 CONFLICTING)。已提交 13:04–19:04 patrol 笔记, 工作树清理。**Needs**: 部署 #375 / #369 / 复验 #374 / 确认 18:00 宿主重启原因。
+
+---
+
+# 21:00 — PM Patrol (Sun 10-11, 21:00 轮次)
+
+🟢 **服务全绿** (宿主重启后稳定 3h): uptime 2:59 (自 18:00:54); 14 容器 Up 3h (5 healthy); 探针全 200 (backend :3000 `/api/health`, frontend :8080 `/` `/admin` `/portal`, frontend-v2 :8081 `/`)。
+✅ **backend 2h 0 ERROR** (重启后持续干净, 2h 仅 4 行日志); 21:00 整点调度器无 #374 同族复现。
+✅ 资源健康: load 0.56/0.30/0.28; mem **avail 1283M** (重启后持续高位); 磁盘 74% (10G free); **无 D-state**; IO PSI some avg10 0.18, cpu some avg10 10.51。
+🔴 修复仍未部署 — StartedAt 10:01:02Z (重启拉起, 非部署), 镜像 v1.5.9 (08-14) → #374 未上线。
+**GH 无变化**: 55 open; 本地领先 origin 3 commit; 7 patrol 未跟踪文件; PR 仅 #369 CONFLICTING; #374 OPEN (p1)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 18:00 宿主重启原因。
+
+---
+
 # 20:04 — PM Patrol (Sun 10-11, 20:04 轮次)
 
 🟢 **服务全绿** (宿主重启后稳定 2h): uptime 2:03 (自 18:00:54); 14 容器 Up 2h (5 healthy); 探针全 200 (backend :3000, frontend :8080 /+/admin+/portal, frontend-v2 :8081)。
