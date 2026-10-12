@@ -1,3 +1,14 @@
+# 15:04 — PM Patrol (Mon 10-12, 15:04 轮次) [refresh, 无 delta]
+
+🟢 全绿 (宿主重启后稳定 21h): uptime 21:03 (自 10-11 18:00:54); 14 容器 Up 21h (5 healthy); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
+⚠️ backend 2h **1 ERROR / 12 行** — 14:00 `[LunchReminderScheduler] 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (#374 同族旧码, 无新变体, 因未部署按整点复现; 15:00 整点未复现)。资源: load 0.25/0.31/0.28; mem avail **1051M**; 磁盘 74% (9.9G free); **无 D-state**; IO PSI some 0.00, cpu some avg10 5.89。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD 01d2176 (patrol 14:04), 本地领先 origin 10 commit; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
+
+
+---
+
 # 14:04 — PM Patrol (Mon 10-12, 14:04 轮次) [refresh, 无 delta]
 
 🟢 全绿 (宿主重启后稳定 20h): uptime 20:03 (自 10-11 18:00:54); 14 容器 Up 20h (5 healthy); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
