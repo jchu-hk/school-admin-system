@@ -1,3 +1,12 @@
+# 07:00 — PM Patrol (Mon 10-12, 07:00 轮次) [refresh, 无 delta]
+
+🟢 全绿 (宿主重启后稳定 13h): uptime 12:59 (自 10-11 18:00:54); 14 容器 Up 13h (5 healthy); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+✅ backend 2h **0 ERROR**; 06:00/07:00 整点 BackupService 正常清理, 无 #374 同族复现。资源: load 0.63/0.49/0.41; mem avail **1323M**; 磁盘 74%; **无 D-state**; IO PSI some 0.00, cpu some avg10 12.69。
+**GH 无变化**: 55 open; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。🔴 StartedAt 10-11 10:01:02Z / 镜像 v1.5.9 → #374 仍未部署。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 21:04 — PM Patrol (Sun 10-11, 21:04 轮次) [refresh, 无 delta]
 
 🟢 重验全绿: uptime 3:03 (自 18:00:54); 14 容器 Up (5 healthy); 探针全 200; backend 2h **0 ERROR** (21:00 仅 BackupService 正常清理). load 0.48/0.33/0.29; mem avail **1238M**; 磁盘 74%; **无 D-state**; IO PSI 0.00, cpu some avg10 13.35. StartedAt 10:01:02Z / 镜像 v1.5.9 → #374 仍未部署。GH 无变化 (55 open, PR 仅 #369 CONFLICTING)。已提交 13:04–19:04 patrol 笔记, 工作树清理。**Needs**: 部署 #375 / #369 / 复验 #374 / 确认 18:00 宿主重启原因。
@@ -894,3 +903,12 @@
 # 07:00 — PM Patrol (Sun 10-11, 07:00 轮次) 🟢 服务全绿; uptime 7d14:58 (自 10-03 16:01 无二次重启); ✅ backend 2h 窗口 **0 ERROR** (整点无 #374 同族复现); ✅ 健康探针 backend :3000 `/api/health` **200**; admin :8080 **200**; portal :8081 **200**; **无实质变化** (延续 10-10 19:00): 🔴 **修复仍未部署** — `school-admin-backend` StartedAt 仍 2026-10-03T08:01:18Z (Up 7d) → Cron 仍按旧码; origin/main HEAD a6eee24; Open PR 仅 #369 (fix/i18n-lang-switch, 末更 08-20); Open Issue #374 仍 OPEN 未指派 (p1, bug/backend/notification/p1/lunch, 末更 10-04), 无新 P0/P1/可启动任务; 磁盘 74% (9.9G free); load 0.55/0.72/0.79; mem 468M avail (111M free); docker 14 Up (5 healthy); 环境 main-only allowAny=false → 无法 spawn 代理 (blocker); Needs your input: 部署 PR #375 / 处理 #369 / 复验 #374 / 关注宿主 mem 低位
 
 # 10:04 — PM Patrol (Sun 10-11, 10:04 轮次) 🟢 服务全绿; uptime 7d18:03 (自 10-03 16:01 无二次重启); ⚠️ 宿主 IO 尖峰 (已消退, 本轮新观察): 10:04 初测 some avg10 82.88/avg60 50.96/avg300 16.83、full avg10 75.03/avg60 46.00, load 1m 峰 4.16 (mem avail 谷 374M), 捕获 1× D-state (prometheus); 复测 10:05:42 some avg10 10.77/avg60 40.65, full 9.18/36.41, D-state 已清 → 尖峰消退, 观测中 (与 09:0x/10:0x 历史尖峰时间吻合, 判为探针+监控读书扫描); ⚠️ backend 2h 窗口 **1 ERROR 事件 / 4 行** — 10:00 `[UserLifecycleScheduler]` `column "school_id" of relation "notifications" does not exist` (code 42703, #374 同族预期 09:00 复验点命中, 无新变体, 因未部署按旧码复现); ✅ 健康探针 backend :3000 `/api/health` **200**; frontend :8080 `/` **200**, `/admin` **200**, `/portal` **200**; frontend-v2 :8081 `/` **200**; **无实质变化** (延续 10-11 09:00): 🔴 **修复仍未部署** — `school-admin-backend` StartedAt 仍 2026-10-03T08:01:18Z (Up 7d) → Cron 仍按旧码; origin/main HEAD 6ec33bf (chore: dashboard rebuild); 工作区 HEARTBEAT.md M + 4 未跟踪 patrol/memory 文件 (2026-10-11.md, 0700/0804/0900-patrol); Open PR 仅 #369 (fix/i18n-lang-switch, CONFLICTING, 末更 08-23); Open Issue #374 仍 OPEN 未指派 (p1, bug/backend/notification/p1/lunch, 末更 10-04), 无新 P0/P1/可启动任务; 磁盘 74% (9.9G free); docker 14 Up (5 healthy); ✅ GitHub token 正常 (jchu-hk); 环境 main-only allowAny=false → 无法 spawn 代理 (blocker); Needs your input: 部署 PR #375 / 处理 #369 / 复验 #374 / 关注宿主 IO-mem 尖峰
+
+---
+
+# 08:04 — PM Patrol (Mon 10-12, 08:04 轮次) [refresh, 无 delta]
+
+🟢 全绿 (宿主重启后稳定 14h): uptime 14:03 (自 10-11 18:00:54); 14 容器 Up 14h (5 healthy); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8080 `/portal`, frontend-v2 :8081 `/`)。
+✅ backend 2h **0 ERROR** (仅 4 行日志); 07:00/08:00 整点 BackupService 正常清理, 无 #374 同族复现。资源: load 0.62/0.47/0.38; mem avail **1184M**; 磁盘 74%; **无 D-state**; IO PSI some 0.00, cpu some avg10 7.36。
+**GH 无变化**: 55 open; 近 24h 0 新建; PR 仅 #369 (mergeable UNKNOWN); #374 OPEN (p1, 无 assignee, 末更 10-04)。🔴 StartedAt 10-11 10:01:02Z / 镜像 v1.5.9 → #374 仍未部署。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
