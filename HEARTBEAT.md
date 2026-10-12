@@ -1,3 +1,13 @@
+# 14:00 — PM Patrol (Mon 10-12, 14:00 轮次) [refresh, 无 delta]
+
+🟢 全绿 (宿主重启后稳定 20h): uptime 19:59 (自 10-11 18:00:54); 14 容器 Up 20h (5 healthy); 探针全 200 (backend :3000 `/api/health`, admin :8080, portal :8081)。
+⚠️ backend 2h **2 ERROR / 23 行** — 13:00 `[LunchReminderScheduler] column LunchChange.created_by does not exist`; 14:00 `missing FROM-clause entry for table "change"` (#374 同族旧码, 无新变体, 因未部署按整点复现)。资源: load 0.35/0.35/0.30; mem avail **1179M**; 磁盘 74%; **无 D-state**; IO PSI some 0.00, cpu some avg10 8.60。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (近 24h 0 新建); HEAD f901bf0 (chore: PM patrol 12:04), 本地领先 origin 8 commit; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 11:04 — PM Patrol (Mon 10-12, 11:04 轮次) [refresh, 无 delta]
 
 🟢 全绿 (宿主重启后稳定 17h): uptime 17:03 (自 10-11 18:00:54); 14 容器 Up 17h (5 healthy); 探针全 200 (backend :3000 `/api/health`, frontend :8080 `/` `/admin` `/portal`, frontend-v2 :8081 `/`)。
