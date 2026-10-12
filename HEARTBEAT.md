@@ -936,3 +936,13 @@
 ✅ backend 2h **0 ERROR** (仅 4 行日志); 07:00/08:00 整点 BackupService 正常清理, 无 #374 同族复现。资源: load 0.62/0.47/0.38; mem avail **1184M**; 磁盘 74%; **无 D-state**; IO PSI some 0.00, cpu some avg10 7.36。
 **GH 无变化**: 55 open; 近 24h 0 新建; PR 仅 #369 (mergeable UNKNOWN); #374 OPEN (p1, 无 assignee, 末更 10-04)。🔴 StartedAt 10-11 10:01:02Z / 镜像 v1.5.9 → #374 仍未部署。⚠️ main-only allowAny=false → 无法 spawn。
 **Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
+# 10:04 — PM Patrol (Mon 10-12, 10:04 轮次) [refresh, 无 delta]
+
+🟢 全绿 (宿主重启后稳定 15h): uptime 15:03 (自 10-11 18:00:54); 14 容器 Up 15h (5 healthy); 探针全 200 (backend :3000 `/api/health`, frontend :8080 `/` `/admin` `/portal`, frontend-v2 :8081 `/`)。
+⚠️ backend 2h **1 ERROR 事件 / 4 行** — 10:00 `[UserLifecycleScheduler] column "school_id" of relation "notifications" does not exist` (code 42703, #374 同族旧码, 09:00 复验点, 无新变体, 因未部署按旧码复现); 2h 76 行日志。资源: load 0.48/0.46/0.44; mem avail **915M**; 磁盘 74% (9.9G free); **无 D-state**; IO PSI some avg10 0.99, cpu some avg10 9.25。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; origin/main HEAD 5d7b6d9 (chore: dashboard rebuild), 本地领先 4 commit; 工作树干净; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因 (非计划内, 系统 boot 10-11 18:00, 上次 reboot 10-03 16:01)。
