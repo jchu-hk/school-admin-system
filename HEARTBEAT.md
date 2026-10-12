@@ -1035,3 +1035,14 @@
 🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
 **GH 无变化**: 55 open (近 24h 0 新建); HEAD 6a28797 (patrol 19:04), 本地领先 origin 15 commit; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04)。⚠️ main-only allowAny=false → 无法 spawn。
 **Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
+# 21:04 — PM Patrol (Mon 10-12, 21:04 轮次) [refresh, 无 delta]
+
+🟢 全绿 (宿主重启后稳定 27h): uptime 1d02:59 (自 10-11 18:00:54); 14 容器 Up 27h (5 healthy); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
+✅ backend 2h **0 ERROR** (2h 仅 4 行日志; 21:00 整点调度器干净命中, 无 #374 同族复现)。
+✅ 资源健康: load 0.32/0.39/0.36; mem avail **1091M**; 磁盘 74% (9.9G free); **无 D-state**; IO PSI some avg10 0.36, cpu some avg10 10.86。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (近 24h 0 新建); HEAD be6fc6b (patrol 20:04), 本地领先 origin 16 commit; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
