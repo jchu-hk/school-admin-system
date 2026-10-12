@@ -1,3 +1,13 @@
+# 09:04 — PM Patrol (Mon 10-12, 09:04 轮次) [refresh, 无 delta]
+
+🟢 全绿 (宿主重启后稳定 15h): uptime 14:59 (自 10-11 18:00:54); 14 容器 Up 15h (5 healthy); 探针全 200 (backend :3000 `/api/health`, frontend :8080 `/` `/admin` `/portal`, frontend-v2 :8081 `/`)。
+⚠️ backend 2h **1 ERROR 事件 / 4 行** — 09:00 `[UserLifecycleScheduler] column "school_id" of relation "notifications" does not exist` (code 42703, #374 同族旧码, 预期 09:00 整点复验点命中, 无新变体, 因未部署按旧码复现)。08:00/09:00 整点 BackupService 正常清理, 无午膳 #374 同族变体。资源: load 1.15/0.51/0.45; mem avail **1074M**; 磁盘 74%; **无 D-state**; IO PSI some avg10 0.18, cpu some avg10 9.89。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD f342a8f (chore: PM patrol 09:00), 工作树干净; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 07:00 — PM Patrol (Mon 10-12, 07:00 轮次) [refresh, 无 delta]
 
 🟢 全绿 (宿主重启后稳定 13h): uptime 12:59 (自 10-11 18:00:54); 14 容器 Up 13h (5 healthy); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
