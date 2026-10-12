@@ -1,3 +1,13 @@
+# 11:04 — PM Patrol (Mon 10-12, 11:04 轮次) [refresh, 无 delta]
+
+🟢 全绿 (宿主重启后稳定 17h): uptime 17:03 (自 10-11 18:00:54); 14 容器 Up 17h (5 healthy); 探针全 200 (backend :3000 `/api/health`, frontend :8080 `/` `/admin` `/portal`, frontend-v2 :8081 `/`)。
+✅ backend 2h **0 ERROR** (10:00/11:00 整点无 #374 同族复现; 09:00 UserLifecycle 复验点随窗口滚动移出)。资源: load 0.26/0.40/0.35; mem avail **1170M** (重启后持续高位); 磁盘 74% (9.9G free); **无 D-state**; IO PSI some avg10 0.00, cpu some avg10 10.61。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (近 24h 0 新建); HEAD 9883f78 (chore: PM patrol 10:04), 本地领先 origin 6 commit; 工作树含 patrol 笔记; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 09:00 — PM Patrol (Mon 10-12, 09:00 轮次) [verify, no delta]
 
 🟢 全绿 (宿主重启后稳定 15h): uptime 15:00 (自 10-11 18:00:54); 14 容器 Up 15h (5 healthy); 探针全 200 (backend :3000 `/api/health`, frontend :8080 `/` `/admin` `/portal`, frontend-v2 :8081 `/`).
