@@ -1,3 +1,13 @@
+# 18:04 — PM Patrol (Mon 10-12, 18:04 轮次) [refresh, 无 delta]
+
+🟢 全绿 (宿主重启后稳定 24h): uptime 1d00:03 (自 10-11 18:00:54); 14 容器 Up 24h (5 healthy); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
+⚠️ backend 2h **1 ERROR 事件 / 2 行** — 18:00 `[DailyReportService] 生成班级日报失败: column AttendanceDailyReport.school_id does not exist` (code 42703, #374 同族 schema 漂移, **新表变体** attendance_daily_reports, 因未部署按旧码整点复现; 无其他新变体)。资源: load 0.26/0.37/0.34; mem avail **1161M**; 磁盘 74% (9.9G free); **无 D-state**; IO PSI some avg10 0.00, cpu some avg10 6.83。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (近 24h 0 新建); HEAD a3d37d5 (patrol 16:04), 本地领先 origin 13 commit; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 15:04 — PM Patrol (Mon 10-12, 15:04 轮次) [refresh, 无 delta]
 
 🟢 全绿 (宿主重启后稳定 21h): uptime 21:03 (自 10-11 18:00:54); 14 容器 Up 21h (5 healthy); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
