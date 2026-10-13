@@ -1,3 +1,14 @@
+# 07:00 — PM Patrol (Tue 10-13, 07:00 轮次) [delta: #374 报错窗口已止]
+
+🟢 全绿, 有正向 delta — 14 容器 Up 37h (5 healthy, 0 unhealthy); uptime 1d12:59 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health` ok, admin :8080, portal :8081)。
+✅ **#374 报错窗口已止**: 最后一条 schema-drift ERROR 为 10-12 18:00 (`DailyReportService` AttendanceDailyReport.school_id / attendance_daily_reports), 19:00 起整点任务未再复现; 24h ERROR 计数 12 (全为 18:00 前)。
+资源: load 0.49/0.40/0.46; mem avail **1026M**; 磁盘 74% (9.9G free); 无 D-state; io some avg10 0.36, cpu some avg10 9.01。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线 (注: 报错已止但根因 schema 未修, 需部署才真正关闭)。
+**GH 无变化**: 55 open (近 24h 0 新建); HEAD 76db036 (dashboard rebuild); 本地领先 origin 0 (已同步? 见 git); PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因 / #374 assignee 指派。
+
+---
+
 # 19:04 — PM Patrol (Mon 10-12, 19:04 轮次) [refresh, 无 delta]
 
 🟢 全绿 (宿主重启后稳定 25h): uptime 1d01:03 (自 10-11 18:00:54); 14 容器 Up 25h (5 healthy); 探针全 200 (backend :3000 `/api/health`, admin :8080, portal :8081)。
@@ -1046,3 +1057,15 @@
 🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
 **GH 无变化**: 55 open (近 24h 0 新建); HEAD be6fc6b (patrol 20:04), 本地领先 origin 16 commit; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
 **Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
+# 09:00 — PM Patrol (Tue 10-13, 09:00 轮次) [verify, 有 delta]
+
+🟢 全绿, 宿主重启后稳定 **1d15h**: uptime 1d15:00 (自 10-11 18:00:54); 14 容器 Up 39h (5 healthy); 探针全 **200** (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
+⚠️ **backend 2h 1 ERROR 事件** — 09:00 `[UserLifecycleScheduler] column "school_id" of relation "notifications" does not exist` (42703, #374 同族旧码, 预期 09:00 整点复验点命中, 无新变体, 因未部署按旧码复现); 2h 76 行日志。
+✅ 10-12 18:00 后 DailyReport attendance_daily_reports 变体未在 19:00–08:00 复现 (报错已止)。
+资源: load 0.33/0.35/0.31; mem avail **889M**; 磁盘 74% (9.9G free); **无 D-state**; IO PSI some avg10 1.84 / full 1.45, cpu some avg10 9.17。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 **v1.5.9** (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (近 24h 0 新建); HEAD d2a0067, 本地领先 origin 0 (已同步); PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验 #374 / 确认 10-11 18:00 宿主重启原因 / #374 assignee 指派。
