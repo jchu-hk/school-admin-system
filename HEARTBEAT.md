@@ -1,3 +1,25 @@
+# 10:04 — PM Patrol (Tue 10-13, 10:04 轮次) [refresh, #374 报错持续复现]
+
+🟢 全绿 — 14 容器 Up 40h (5 healthy, 0 unhealthy); uptime 1d16:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080, portal :8081)。
+⚠️ **#374 报错持续**: 近 2h **5 ERROR 行 / 1 事件** — `[UserLifecycleScheduler] column "school_id" of relation "notifications" does not exist` (42703)。仍是 notifications 表变体, 与 09:00 一致 → 整点调度触发, 未部署旧码复现。
+资源: load 0.42/0.48/0.53; mem avail **940M** (07:00 1026M → 09:00 839M → 现 940M); 磁盘 74% (9.9G free); 无 D-state; IO PSI some avg10 0.00, cpu some avg10 13.81。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD f5b1447 (patrol 09:00), 本地领先 origin 1 commit; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 报错持续) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
+# 09:04 — PM Patrol (Tue 10-13, 09:04 轮次) [refresh, 无正向 delta — #374 新变体复现]
+
+🟢 全绿 — 14 容器 Up 39h (5 healthy, 0 unhealthy); uptime 1d15:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080, portal :8081)。
+⚠️ **#374 报错复现 (新变体)**: 近 2h **1 QueryFailedError** — `[UserLifecycleScheduler] Error processing expiring accounts: column "school_id" of relation "notifications" does not exist` (42703)。此为新表变体 (notifications 表), 07:00 轮次"窗口已止"结论被推翻 → 属整点调度触发, 因未部署按旧码复现。30min 内 3 行 ERROR (同一事件)。
+资源: load 0.31/0.32/0.30; mem avail **839M** (较 07:00 的 1026M 下降); 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD f5b1447 (patrol 09:00), **本地领先 origin 1 commit**; PR 仅 #369 CONFLICTING (fix/i18n-lang-switch, updated 08-23); #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 报错持续) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 07:00 — PM Patrol (Tue 10-13, 07:00 轮次) [delta: #374 报错窗口已止]
 
 🟢 全绿, 有正向 delta — 14 容器 Up 37h (5 healthy, 0 unhealthy); uptime 1d12:59 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health` ok, admin :8080, portal :8081)。
