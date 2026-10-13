@@ -1178,3 +1178,14 @@
 🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 **v1.5.9** (08-14) → #374 修复未上线。
 **GH 无变化**: 55 open (近 24h 0 新建, 全部无 assignee); HEAD 28d9d8a (patrol 18:04), 本地领先 origin 8; PR 仅 #369 (OPEN, CONFLICTING); #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn (blocker)。
 **Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因 / #374 assignee / 是否开放 DEV·QA·DEVOPS spawn。
+
+---
+
+# 21:00 — PM Patrol (Tue 10-13, 21:00 轮次) [refresh, 窗口干净]
+
+🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d02:59 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
+✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 4 行日志, 无 ERROR/exception/schema-drift; 18:00 的 DailyReportService (attendance_daily_reports) 变体随窗口滚动移出 (19:00/20:00/21:00 整点未复现)。
+资源: load 0.30/0.36/0.43; mem avail **780M** (19:04 787M → 现 780M); 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD 5054bf1 (patrol 19:04), **本地领先 origin 10 commit**; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04, labels: bug/backend/notification/p1/lunch)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 (CONFLICTING) / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
