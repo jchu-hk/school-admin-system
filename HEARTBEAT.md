@@ -1,3 +1,14 @@
+# 16:04 — PM Patrol (Tue 10-13, 16:04 轮次) [refresh, #374 报错窗口本轮已止]
+
+🟢 全绿 — 14 容器 Up 46h (5 healthy, 0 unhealthy); uptime 1d22:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
+✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 4 行日志, 无 ERROR/exception; 14:00 轮次的 `[LunchReminderScheduler]` 变体随窗口滚动移出 (15:00/16:00 整点未复现)。
+资源: load 0.43/0.39/0.37; mem avail **776M** (14:04 892M → 现 776M); 磁盘 74% (9.9G free); 无 D-state; io some avg10 0.69, cpu some avg10 12.20。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD 9300fe3 (patrol 15:04), **本地领先 origin 5 commit** (origin/main d2a0067); PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 14:00 — PM Patrol (Tue 10-13, 14:00 轮次) [refresh, #374 整点复现 — 新变体]
 
 🟢 全绿 — 14 容器 Up 44h (5 healthy, 0 unhealthy); uptime 1d19:59 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/` `/admin` `/portal`)。
