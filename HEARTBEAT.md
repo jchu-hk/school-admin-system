@@ -1,3 +1,14 @@
+# 21:04 — PM Patrol (Tue 10-13, 21:04 轮次) [refresh, #374 报错窗口本轮已止]
+
+🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d03:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
+✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 4 行日志, 无 ERROR/exception; 18:00 整点的 `[DailyReportService] attendance_daily_reports` 变体随窗口滚动移出 (19:00/20:00/21:00 整点未复现)。
+资源: load 1.07/0.50/0.46; mem avail **696M** (19:04 787M → 现 696M); 磁盘 74% (9.9G free); 无 D-state; io some avg10 0.90, cpu some avg10 6.21。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD 4e6bb7f (patrol 21:00), **本地领先 origin 11 commit**; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04, labels: bug/backend/notification/p1/lunch)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 19:04 — PM Patrol (Tue 10-13, 19:04 轮次) [refresh, 无 delta]
 
 🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d01:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
