@@ -1266,3 +1266,12 @@
 🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
 **GH 无变化**: 55 open; HEAD 5054bf1 (patrol 19:04), **本地领先 origin 10 commit**; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04, labels: bug/backend/notification/p1/lunch)。⚠️ main-only allowAny=false → 无法 spawn。
 **Needs your input**: 部署 #375 / 处理 #369 (CONFLICTING) / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
+
+# 11:04 — PM Patrol (Wed 10-14, 11:04 轮次) [refresh, 无 delta]
+
+🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d17:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin`, portal :8081 `/`)。
+✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 4 行日志 (10:00/11:00 BackupService 正常清理), 无 ERROR/QueryFailedError; 09:00 notifications 变体随窗口滚动移出。
+资源: load 0.21/0.29/0.36; mem avail **683M**; 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD e2a01a9 (patrol 10:04), 本地领先 origin 4; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
