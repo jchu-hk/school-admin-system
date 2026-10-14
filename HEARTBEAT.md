@@ -1,3 +1,14 @@
+# 09:04 — PM Patrol (Wed 10-14, 09:04 轮次) [refresh, 无 delta]
+
+🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d15:01 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin`, portal :8081 `/`)。
+⚠️ **#374 同族 09:00 整点复现**: backend 近 2h **4 ERROR 行 / 1 事件** — 09:00 `[UserLifecycleScheduler] Error processing expiring accounts: column "school_id" of relation "notifications" does not exist` (42703, QueryFailedError)。与 08:04 前轮同变体 (notifications 表), 未部署按整点触发; 无新变体。2h 共 76 行日志。
+资源: load 1.99/1.54/1.02; mem avail **727M**; 磁盘 74% (9.9G free); 无 D-state; io some avg10 2.41, cpu some avg10 9.03。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD 3545033 (patrol 08:04), 本地与 origin/main 同步 (0/1 → 本地领先 1); PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 08:04 — PM Patrol (Wed 10-14, 08:04 轮次) [refresh, 无 delta]
 
 🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d14:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin`, portal :8081 `/`)。
