@@ -1,3 +1,25 @@
+# 15:04 — PM Patrol (Wed 10-14, 15:00 轮次) [refresh, #374 同族整点复现, 无 delta]
+
+🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d21:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+⚠️ **#374 同族整点复现 (无新变体)**: backend 近 2h **1 ERROR 事件 / 2 行** — 14:00 `[LunchReminderScheduler] 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (QueryFailedError, 旧码 lunch 变体, 未部署按整点触发; 无新变体)。2h 共 12 行日志。
+资源: load 0.36/0.34/0.31; mem avail **707M**; 磁盘 74% (9.9G free); 1 短暂 D-state python3 (探针残留, 已退); io some avg10 1.72, cpu some avg10 9.76。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; 本地领先 origin 7; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
+# 14:04 — PM Patrol (Wed 10-14, 14:00 轮次) [refresh, #374 同族整点复现, 无 delta]
+
+🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d20:01 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+⚠️ **#374 同族整点复现 (无新变体)**: backend 近 2h **2 ERROR 事件 / 4 行** — 13:00 `[LunchReminderScheduler] 午膳变更提醒任务失败: column LunchChange.created_by does not exist` + 14:00 `[LunchReminderScheduler] 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"`。均为旧码 lunch 变体 (与 10-04/10-06 历史同族一致), 未部署按整点触发; 无 schema 迁移; 2h 共 23 行日志。
+资源: load 0.24/0.37/0.43; mem avail **858M**; 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; 本地领先 origin 7; PR 仅 #369 OPEN; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 13:04 — PM Patrol (Wed 10-14, 13:04 轮次) [refresh, #374 同族 13:00 复现]
 
 🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d19:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin` `/portal`, portal :8081 `/`)。
