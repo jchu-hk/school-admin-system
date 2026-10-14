@@ -1,3 +1,14 @@
+# 08:04 — PM Patrol (Wed 10-14, 08:04 轮次) [refresh, 无 delta]
+
+🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d14:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin`, portal :8081 `/`)。
+✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 4 行日志 (07:00/08:00 BackupService 正常清理), 无 ERROR/exception/QueryFailedError; 整点调度器未复现变体。
+资源: load 0.50/0.37/0.37; mem avail **710M**; 磁盘 74% (9.9G free); 无 D-state; io some avg10 2.59, cpu some avg10 6.88。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD 55a5ef8 (dashboard rebuild), 本地与 origin/main 同步 (0/0); PR 仅 #369 mergeable UNKNOWN; #374 OPEN (p1, 无 assignee, 末更 10-04)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 07:00 — PM Patrol (Wed 10-14, 07:00 轮次) [refresh, 无 delta]
 
 🟢 全绿 — 14 容器 Up 2d (5 healthy, 0 unhealthy); uptime 2d12:59 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/` `/admin`, portal :8081 `/`)。
