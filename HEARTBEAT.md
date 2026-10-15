@@ -1,3 +1,14 @@
+# 10:04 — PM Patrol (Thu 10-15, 10:04 轮次) [refresh, #374 同族整点复现: notifications 变体]
+
+🟢 全绿 — 14 容器 Up 3d16h (5 healthy, 0 unhealthy); uptime 3d16:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+⚠️ **#374 同族 10:00 整点复现 (notifications 变体, 无新变体)**: backend 近 2h **4 ERROR 行 / 1 事件** — 10:00 `[UserLifecycleScheduler] Error processing expiring accounts: column "school_id" of relation "notifications" does not exist` (42703, QueryFailedError, user-lifecycle.service.js:45 / scheduler.js:22)。与 10-13 09:04 轮次同变体 (notifications 表), 未部署按整点触发; 无 schema 迁移。2h 共 76 行日志。
+资源: load 0.25/0.37/0.43; mem avail **747M** (133M free); 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD f2bc870 (patrol 09:04), 本地领先 origin 2; PR 仅 #369 CONFLICTING (末更 08-23); #374 OPEN (p1, 无 assignee, 末更 10-04, labels bug/backend/notification/p1/lunch)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突, 末更 08-23) / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因 / #374 assignee 指派。
+
+---
+
 # 08:04 — PM Patrol (Thu 10-15, 08:04 轮次) [refresh, #374 报错窗口本轮 0 ERROR]
 
 🟢 全绿 — 14 容器 Up 3d14h (5 healthy, 0 unhealthy); uptime 3d14:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
