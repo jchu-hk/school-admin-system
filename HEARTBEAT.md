@@ -1,3 +1,25 @@
+# 14:04 — PM Patrol (Thu 10-15, 14:00/14:04 轮次) [refresh, #374 同族整点复现: lunch 双变体]
+
+🟢 全绿 — 14 容器 Up 3d (5 healthy, 0 unhealthy); uptime 3d20:03 (自 10-11 18:00:54); 探针全 200。
+⚠️ **#374 双变体复现 (与 14:00 轮次一致)**: backend 近 2h 23 行, 2 ERROR 事件 — 13:00 `LunchChange.created_by does not exist`; 14:00 `missing FROM-clause entry for table "change"`。未部署按整点触发。
+资源: load 1.11/1.01/0.92; mem avail 676M (170M free); 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起), 镜像 v1.5.9 → #374 未上线。
+**GH 无变化**: 55 open; HEAD 3110877, 本地领先 origin 6; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 / 确认 10-11 18:00 宿主重启原因 / #374 assignee 指派。
+
+---
+
+# 14:04 — PM Patrol (Thu 10-15, 14:00 轮次) [refresh, #374 同族整点复现: lunch 双变体]
+
+🟢 全绿 — 14 容器 Up 3d (5 healthy, 0 unhealthy); uptime 3d19:59 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+⚠️ **#374 报错本轮复现 (lunch 双变体)**: backend 近 2h 共 23 行日志, 含 2 个 ERROR 事件 — 13:00 `[LunchReminderScheduler] 午膳变更提醒任务失败: column LunchChange.created_by does not exist`; 14:00 `午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (均 QueryFailedError)。根因 schema 漂移未修, 未部署, 按整点触发。
+资源: load 1.10/1.25/0.97; mem avail **796M** (154M free); 磁盘 74% (9.9G free); 无 D-state; IO PSI some avg10 0.66 / cpu some avg10 10.19。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee); HEAD 3110877 (patrol 13:04), 本地领先 origin 6; PR 仅 #369 CONFLICTING (末更 08-20); #374 OPEN (p1, 无 assignee, 末更 10-04)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突, 末更 08-20) / 复验 #374 (根因未修, 未部署, 本轮复现) / 确认 10-11 18:00 宿主重启原因 / #374 assignee 指派。
+
+---
+
 # 12:04 — PM Patrol (Thu 10-15, 12:04 轮次) [refresh, #374 报错窗口本轮 0 ERROR]
 
 🟢 全绿 — 14 容器 Up 3d18h (5 healthy, 0 unhealthy); uptime 3d18:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
