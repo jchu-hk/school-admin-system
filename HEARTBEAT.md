@@ -1438,3 +1438,12 @@
 🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
 **GH 无变化**: 55 open; HEAD 0ae6f1e (`chore: dashboard rebuild`), 本地领先 origin 0 (已同步); PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
 **Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因 / #374 assignee。
+
+# 13:04 — PM Patrol (Thu 10-15, 13:04 轮次) [refresh, #374 同族 13:00 整点复现: lunch 变体]
+
+🟢 全绿 — 14 容器 Up 3d19h (5 healthy, 0 unhealthy); uptime 3d19:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+⚠️ **#374 同族 13:00 整点复现 (lunch 变体, 无新变体)**: backend 近 2h **2 ERROR 行 / 1 事件** — 13:00 `[LunchReminderScheduler]【Cron】午膳变更提醒任务失败: column LunchChange.created_by does not exist` (QueryFailedError, lunch-reminder.service.js:56, 与 10-13/10-14 历史同族一致); 未部署按整点触发; 12:00 窗口止后 13:00 再触发; 无 schema 迁移。2h 仅 15 行日志。
+资源: load 1.39/0.83/0.79; mem avail **711M** (108M free); 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD b29214a (patrol 12:04), 本地领先 origin 5; PR 仅 #369 CONFLICTING (末更 08-23); #374 OPEN (p1, 无 assignee, 末更 10-04, labels bug/backend/notification/p1/lunch)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突, 末更 08-23) / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因 / #374 assignee 指派。
