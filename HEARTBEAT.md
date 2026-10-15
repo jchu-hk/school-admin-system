@@ -1,3 +1,14 @@
+# 08:04 — PM Patrol (Thu 10-15, 08:04 轮次) [refresh, #374 报错窗口本轮 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 3d14h (5 healthy, 0 unhealthy); uptime 3d14:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 4 行日志 (07:00/08:00 BackupService 正常清理), 无 ERROR/exception/QueryFailedError; 07:00/08:00 整点调度器未复现任何变体。
+资源: load 0.25/0.31/0.32; mem avail **732M**; 磁盘 74% (9.9G free); 无 D-state; io some avg10 2.44。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD efa6d0b (dashboard rebuild), 本地与 origin/main 同步 (0/0); PR 仅 #369 UNKNOWN; #374 OPEN (p1, 无 assignee, 末更 10-04, labels bug/backend/notification/p1/lunch)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 21:04 — PM Patrol (Wed 10-14, 21:04 轮次) [refresh, #374 报错窗口本轮 0 ERROR]
 
 🟢 全绿 — 14 容器 Up 3d (5 healthy, 0 unhealthy); uptime 3d03:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
@@ -1385,3 +1396,12 @@
 🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
 **GH 无变化**: 55 open; HEAD e2a01a9 (patrol 10:04), 本地领先 origin 4; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
 **Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因。
+
+# 07:00 — PM Patrol (Thu 10-15, 07:00 轮次) [refresh, 0 ERROR this window, no delta]
+
+🟢 全绿 — 14 容器 Up 3d (5 healthy, 0 unhealthy); uptime 3d12:59 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 4 行日志 (BackupService 正常清理), 无 ERROR/QueryFailedError; 06:00/07:00 整点 lunch 变体未复现。
+资源: load 1.20/1.34/0.98; mem avail **767M**; 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open; HEAD 0ae6f1e (`chore: dashboard rebuild`), 本地领先 origin 0 (已同步); PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 / 复验 #374 (根因未修, 未部署) / 确认 10-11 18:00 宿主重启原因 / #374 assignee。
