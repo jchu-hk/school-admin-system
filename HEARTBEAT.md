@@ -1,6 +1,17 @@
 
 # 20:04 — PM Patrol (Thu 10-15, 20:04 轮次) [refresh, #374 报错窗口本轮 0 ERROR]
 
+🟢 全绿 — 14 容器 Up 4d (5 healthy, 0 unhealthy); uptime 4d02:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 5 行日志 (19:00/20:00 BackupService 正常清理), 无 ERROR/exception/QueryFailedError; 19:00/20:00 整点未复现任何变体 (18:00 attendance 变体随窗口滚动移出)。
+资源: load 0.51/0.47/0.60; mem avail **635M** (202M free); 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee); HEAD c03e07e (patrol 19:04), 本地领先 origin 12; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验 #374 (根因未修, attendance 变体已滚出) / 确认 10-11 18:00 宿主重启原因 / #374 assignee 指派。
+
+---
+
+
+
 🟢 全绿 — 14 容器 Up 4d (5 healthy, 0 unhealthy); uptime 4d01:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
 ✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 30 行日志, 唯一 ERROR 来自 18:00 `DailyReportService` attendance 变体 (已计入上轮窗口); 19:00 整点未复现任何变体 (随窗口滚动移出)。
 资源: load 0.52/0.49/0.39; mem avail **686M** (113M free); 磁盘 74% (9.9G free); 无 D-state。
