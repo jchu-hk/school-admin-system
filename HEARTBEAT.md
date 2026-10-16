@@ -1,3 +1,14 @@
+# 17:04 — PM Patrol (Fri 10-16, 17:04 轮次) [refresh, #374 报错窗口本轮 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 4 days (5 healthy, 0 unhealthy); uptime 4d23:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 `/` → 200, portal :8081 `/` → 200)。
+✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 4 行日志 (16:00/17:00 BackupService 正常清理), 无 ERROR/exception/QueryFailedError; 16:00/17:00 整点未复现任何变体 (14:00 lunch 变体已随窗口滚动移出)。
+资源: load 0.69/0.48/0.58; mem avail 543M (131M free); 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee, 近 24h 0 新建); HEAD 38c4d3b (chore: patrol 16:04), main 领先 origin 8; PR 仅 #369 CONFLICTING (DIRTY); #374 OPEN (p1, 无 assignee, 末更 10-04)。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验 #374 (根因未修, 整点变体仍会复现) / 确认 10-11 18:00 宿主重启原因 / #374 assignee 指派。
+
+---
+
 # 16:04 — PM Patrol (Fri 10-16, 16:04 轮次) [refresh, #374 报错窗口本轮 0 ERROR]
 
 🟢 全绿 — 14 容器 Up 4 days (5 healthy, 0 unhealthy); uptime 4d22:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 `/` → 200, portal :8081 `/` → 200)。
