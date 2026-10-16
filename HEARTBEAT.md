@@ -1,3 +1,14 @@
+# 11:04 — PM Patrol (Fri 10-16, 11:04 轮次) [refresh, #374 报错窗口本轮 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 4d (5 healthy, 0 unhealthy); uptime 4d17:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 `/` → 200, portal :8081 `/` → 200)。
+✅ **#374 报错本轮 0 ERROR**: backend 近 2h 仅 4 行日志 (10:00/11:00 BackupService 正常清理), 无 ERROR/exception/QueryFailedError; 整点未复现 (09:00 notifications 变体已随窗口滚动移出)。
+资源: load 0.94/0.61/0.72; mem avail 604M (111M free); 磁盘 74% (9.8G free); 无 D-state。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee, 近 24h 0 新建); HEAD 473c1b9 (chore: patrol 09:00), main 领先 origin 2; PR 仅 #369 CONFLICTING (DIRTY); #374 OPEN (p1, 无 assignee, 末更 10-04)。⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验 #374 (根因未修, 整点变体仍会复现) / 确认 10-11 18:00 宿主重启原因 / #374 assignee 指派。
+
+---
+
 
 # 09:04 — PM Patrol (Fri 10-16, 09:04 轮次) [refresh, no delta vs 09:00]
 
