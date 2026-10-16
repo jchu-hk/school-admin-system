@@ -1,3 +1,14 @@
+# 18:04 — PM Patrol (Fri 10-16, 18:04 轮次) [⚠️ #374 同族 18:00 整点复现: 新变体 AttendanceDailyReport.school_id]
+
+🟢 全绿 — 14 容器 Up 5 days (5 healthy, 0 unhealthy); uptime 5d00:03 (宿主已越过 5 天, 但 StartedAt 仍 10-11T10:01:02Z → 重启拉起非部署); 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 `/` → 200, portal :8081 `/` → 200)。
+⚠️ **#374 同族 18:00 整点复现 (⚠️ 新变体)**: backend 近 2h **4 ERROR 事件** — 18:00 `[DailyReportService] 生成班级日报失败: class=中一A班: column AttendanceDailyReport.school_id does not exist` + `签到日报生成失败: column "school_id" of relation "attendance_daily_reports" does not exist` (QueryFailedError, daily-report.service.js:159/57)。← **本轮新变体** (此前后端窗口整点 0 ERROR), 与前日 schema-drift 同族。其余日志 (17:00/18:00 BackupService 正常清理, DailyReport 生成 12 班级/2 空班跳过) 无异常。
+资源: load 0.61/0.74/0.72; mem avail 756M (128M free); 磁盘 74% (9.8G free); 1 D-state (node, 常态短暂)。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee, 近 24h 0 新建); HEAD b4eadf1 (chore: patrol 17:04), main 领先 origin 9; PR 仅 #369 CONFLICTING (DIRTY, 末更 08-23); #374 OPEN (p1, 无 assignee, 末更 10-04)。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验/指派 #374 (根因未修, 本轮 18:00 新增 DailyReport school_id 变体) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 17:04 — PM Patrol (Fri 10-16, 17:04 轮次) [refresh, #374 报错窗口本轮 0 ERROR]
 
 🟢 全绿 — 14 容器 Up 4 days (5 healthy, 0 unhealthy); uptime 4d23:03 (自 10-11 18:00:54); 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 `/` → 200, portal :8081 `/` → 200)。
