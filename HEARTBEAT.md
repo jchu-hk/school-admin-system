@@ -1,3 +1,14 @@
+# 19:04 — PM Patrol (Fri 10-16, 19:04 轮次) [refresh, 无实质变化, 19:00 窗口 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 5 days (5 healthy, 0 unhealthy); 宿主 uptime 5d00:59; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 `/` → 200, portal :8081 `/` → 200)。
+✅ **#374 报错窗口本轮 0 ERROR**: backend 近 19m 0 ERROR; 近 2h 30 行仅 4 行 ERROR = 18:00 DailyReportService `AttendanceDailyReport.school_id does not exist` (与 18:04 记录同一事件, 非新变体)。
+资源: load 0.38/0.24/0.25; mem avail 705M (242M free); 磁盘 74% (9.9G free); 无 D-state。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee, 近 24h 0 新建); HEAD b0167d4 (chore: patrol 18:04), main 领先 origin 10; PR 仅 #369 CONFLICTING (DIRTY); #374 OPEN (p1, 无 assignee, 末更 10-04)。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验/指派 #374 (根因未修) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 18:04 — PM Patrol (Fri 10-16, 18:04 轮次) [⚠️ #374 同族 18:00 整点复现: 新变体 AttendanceDailyReport.school_id]
 
 🟢 全绿 — 14 容器 Up 5 days (5 healthy, 0 unhealthy); uptime 5d00:03 (宿主已越过 5 天, 但 StartedAt 仍 10-11T10:01:02Z → 重启拉起非部署); 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 `/` → 200, portal :8081 `/` → 200)。
