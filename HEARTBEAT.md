@@ -1,3 +1,25 @@
+# 15:04 — PM Patrol (Sat 10-17, 15:04 轮次) [refresh, 无新变体, 15:00 窗口 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 5 days (healthy 5, unhealthy 0); 宿主 uptime 5d21:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.38/0.43/0.57; mem avail 541M (112M free); 磁盘 74% (9.8G free)。
+✅ **15:00 窗口 0 新 ERROR**: backend 近 2h 12 行日志, 仅 14:00 遗留 `午膳变更自动拒绝` `missing FROM-clause entry for table "change"` (QueryFailedError, lunch-reminder.service.js) — 无 15:00 报错, 无新变体。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee); HEAD ae754c0 (chore: patrol 14:00), main 领先 origin 3; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。
+**代理**: 环境仅 main, 无可 spawn 的 DEV/QA/DEVOPS → blocker 持续。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验+指派 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
+# 14:04 — PM Patrol (Sat 10-17, 14:04 轮次) [refresh, #374 同族 13:00/14:00 双变体复现 (窗口内)]
+
+🟢 全绿 — 14 容器 Up 5 days (5 healthy, 0 unhealthy); 宿主 uptime 5d20:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.77/0.49/0.49; mem avail 504M (114M free); 磁盘 74% (9.8G free); 无 D-state。
+⚠️ **#374 同族双变体复现 (无新变体)**: backend 近 2h **2 ERROR 事件 / 4 行** — 13:00 `午膳变更提醒任务失败: column LunchChange.created_by does not exist` (lunch-reminder.service.js:56); 14:00 `午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` (lunch-reminder.service.js:32)。均 QueryFailedError, 与 10-14/10-15/10-16 历史同变体; 13:00/14:00 BackupService 正常清理。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee); HEAD ae754c0 (chore: patrol 14:00), main 领先 origin 3; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04)。
+**代理**: 环境仅 main 可 spawn 候选未确认 (allowAny=false 历史 blocker), 本轮无 spawn 动作。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验+指派 #374 (根因未修, 本轮 13:00+14:00 双变体复现) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 13:04 — PM Patrol (Sat 10-17, 13:04 轮次) [⚠️ #374 同族 13:00 整点复现: LunchChange.created_by 变体]
 
 🟢 全绿 — 14 容器 Up 5 days (5 healthy, 0 unhealthy); 宿主 uptime 5d19:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.90/0.43/0.34; mem avail 518M (111M free); 磁盘 74% (9.8G free)。
