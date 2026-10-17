@@ -1,3 +1,25 @@
+# 13:04 — PM Patrol (Sat 10-17, 13:04 轮次) [⚠️ #374 同族 13:00 整点复现: LunchChange.created_by 变体]
+
+🟢 全绿 — 14 容器 Up 5 days (5 healthy, 0 unhealthy); 宿主 uptime 5d19:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.90/0.43/0.34; mem avail 518M (111M free); 磁盘 74% (9.8G free)。
+⚠️ **#374 同族 13:00 整点复现 (无新变体)**: backend 近 2h **1 ERROR 事件 / 2 行** — 13:00 `[LunchReminderScheduler] 【Cron】午膳变更提醒任务失败: column LunchChange.created_by does not exist` (QueryFailedError, lunch-reminder.service.js:56), 与 10-14/10-16 历史同变体; 12:00/13:00 BackupService 正常清理; 13:00 LunchReminder 任务启动 LOG 正常但查询失败。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (2 months old) → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee); HEAD 083a21c (chore: patrol 10:04), main 领先 origin 2; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04)。
+**代理**: 环境仅 main (allowAny=false) → 无可 spawn 的 DEV/QA/DEVOPS, blocker 持续。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验+指派 #374 (根因未修, 本轮 13:00 复现) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
+# 11:04 — PM Patrol (Sat 10-17, 11:04 轮次) [refresh, 无实质变化, 11:00 窗口 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 5 days (5 healthy, 0 unhealthy); 宿主 uptime 5d17:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.57/0.43/0.38; mem avail 532M (121M free); 磁盘 74% (9.8G free)。
+✅ **#374 报错窗口本轮 0 ERROR**: backend 近 2h 仅 4 行日志 (10:00/11:00 BackupService 正常清理), 无 ERROR/QueryFailedError/exception。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee); HEAD 083a21c (chore: patrol 10:04), main 领先 origin 2; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04)。
+**代理**: 无可 spawn 的 DEV/QA/DEVOPS (环境仅 main, allowAny=false) → blocker 持续。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验+指派 #374 (根因未修) / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 10:04 — PM Patrol (Sat 10-17, 10:04 轮次) [refresh, 无实质变化, #374 报错窗口本轮 0 ERROR]
 
 🟢 全绿 — 14 容器 Up 5 days (5 healthy, 0 unhealthy); 宿主 uptime 5d16:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.76/0.42/0.38; mem avail 536M (196M free); 磁盘 74% (9.8G free)。
@@ -1762,3 +1784,12 @@
 🔴 StartedAt 2026-10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
 **GH 无变化**: 55 open (全部无 assignee); HEAD a0fe0b6 (patrol 17:04), 本地领先 origin 9; PR 仅 #369 CONFLICTING (末更 08-23); #374 OPEN (p1, 无 assignee, 末更 10-04, labels bug/backend/notification/p1/lunch)。
 **Needs your input**: 部署 #375 / 处理 #369 (冲突, 末更 08-23) / 复验 #374 (根因未修, **新变体: attendance_daily_reports.school_id**) / 确认 10-11 18:00 宿主重启原因 / #374 assignee 指派。
+
+# 14:00 — PM Patrol (Sat 10-17, 14:00 轮次) [refresh, #374 持续: 14:00 新错误信息]
+
+🟢 全绿 — 14 容器 Up 5d (5 healthy, 0 unhealthy); uptime 5d19:59; 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+⚠️ **#374 同族持续, 13:00+14:00 各 1 事件**: 13:00 `LunchChange.created_by does not exist`; 14:00 自动拒绝任务 **`missing FROM-clause entry for table "change"`** (新错误信息, 同 lunch 表)。2h 共 23 行日志 / 4 ERROR。镜像仍 v1.5.9 → 未部署。
+资源: load 0.84/0.48/0.51; mem avail **582M** (152M free); 磁盘 74% (9.8G free); 无 D-state。
+**GH 无变化**: 55 open (45 个无 assignee 且 p0/p1); HEAD 083a21c (patrol 10:04), 本地领先 origin 2; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。
+⚠️ main-only allowAny=false → 无法 spawn。
+**Needs your input**: 部署 #375 / 处理 #369 (对应 #366-#368) / 指派+修复 #374 / 确认 10-11 18:00 宿主重启原因。
