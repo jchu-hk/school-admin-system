@@ -1868,3 +1868,8 @@
 **GH 无变化**: 55 open (全部无 assignee); HEAD 08fa498 (patrol 17:04), 本地领先 origin 6; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。
 ⚠️ main-only allowAny=false → 无法 spawn DEV/QA/DEVOPS, blocker 持续。
 **Needs your input**: 部署 #375 / 处理 #369 (i18n, 对应 #366-#368) / 指派+修复 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
+# 21:04 — PM Patrol (Sat 10-17, 21:04 轮次) — 已由上一条记录覆盖 (重复触发)
+
