@@ -1,3 +1,14 @@
+# 17:04 — PM Patrol (Sat 10-17, 17:04 轮次) [refresh, 无新变体, 17:00 窗口 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 5 days (healthy 5, unhealthy 0); 宿主 uptime 5d23:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.39/0.42/0.38; mem avail 528M (127M free); 磁盘 74% (9.8G free)。
+✅ **17:00 窗口 0 ERROR**: backend 近 2h 仅 4 行日志, 无 ERROR/QueryFailedError/exception; 16:00/17:00 整点未复现变体 (13:00/14:00 午膳变体已滚出窗口)。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee); HEAD 2bcf11b (chore: patrol 16:04); PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04)。
+**代理**: 环境仅 main, 无可 spawn 的 DEV/QA/DEVOPS → blocker 持续。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验+指派 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 16:04 — PM Patrol (Sat 10-17, 16:04 轮次) [refresh, 无新变体, 16:00 窗口 0 ERROR]
 
 🟢 全绿 — 14 容器 Up 5 days (healthy 5, unhealthy 0); 宿主 uptime 5d22:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.95/0.55/0.43; mem avail 499M (111M free); 磁盘 74% (9.8G free)。
