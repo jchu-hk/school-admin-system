@@ -1,3 +1,14 @@
+# 20:04 — PM Patrol (Sat 10-17, 20:04 轮次) [refresh, 无新变体, 20:00 窗口 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d02:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.29/0.33/0.35; mem avail 566M (130M free); 磁盘 74% (9.8G free)。
+✅ **20:00 窗口 0 ERROR**: backend 近 2h 仅 5 行日志 (19:00/20:00 BackupService 正常清理), 无 ERROR/QueryFailedError/exception; 19:00/20:00 整点未复现任何变体 (午后 lunch 变体已滚出窗口)。
+🔴 StartedAt 10-11T10:01:02Z (重启拉起, 非部署), 镜像仍 v1.5.9 → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee); HEAD 08fa498 (chore: patrol 17:04), main 领先 origin 6; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee, 末更 10-04)。
+**代理**: 环境仅 main, 无可 spawn 的 DEV/QA/DEVOPS → blocker 持续。
+**Needs your input**: 部署 #375 / 处理 #369 (冲突) / 复验+指派 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 17:04 — PM Patrol (Sat 10-17, 17:04 轮次) [refresh, 无新变体, 17:00 窗口 0 ERROR]
 
 🟢 全绿 — 14 容器 Up 5 days (healthy 5, unhealthy 0); 宿主 uptime 5d23:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.39/0.42/0.38; mem avail 528M (127M free); 磁盘 74% (9.8G free)。
@@ -1837,3 +1848,12 @@
 **GH 无变化**: 55 open (45 个无 assignee 且 p0/p1); HEAD 083a21c (patrol 10:04), 本地领先 origin 2; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。
 ⚠️ main-only allowAny=false → 无法 spawn。
 **Needs your input**: 部署 #375 / 处理 #369 (对应 #366-#368) / 指派+修复 #374 / 确认 10-11 18:00 宿主重启原因。
+
+# 19:00 — PM Patrol (Sat 10-17, 19:00 轮次) [refresh, 无实质变化, #374 本窗口 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 6d (5 healthy, 0 unhealthy); uptime 6d00:59; 探针全 200 (backend :3000 `/api/health`, admin :8080 `/`, portal :8081 `/`)。
+✅ **#374 本窗口 0 ERROR**: backend 近 2h 仅 5 行日志 (18:00/19:00 BackupService 清理, 删 1 个旧备份), 无 QueryFailedError。镜像仍 v1.5.9 → 修复未上线, 仅调度窗口未触发。
+资源: load 0.32/0.45/0.61; mem avail **633M** (143M free); 磁盘 74% (9.8G free); 无 D-state。
+**GH 无变化**: 55 open (全部无 assignee); HEAD 08fa498 (patrol 17:04), 本地领先 origin 6; PR 仅 #369 CONFLICTING; #374 OPEN (p1, 无 assignee)。
+⚠️ main-only allowAny=false → 无法 spawn DEV/QA/DEVOPS, blocker 持续。
+**Needs your input**: 部署 #375 / 处理 #369 (i18n, 对应 #366-#368) / 指派+修复 #374 / 确认 10-11 18:00 宿主重启原因。
