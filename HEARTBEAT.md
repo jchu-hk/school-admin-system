@@ -1,3 +1,14 @@
+# 15:04 — PM Patrol (Sun 10-18, 15:04 轮次) [refresh, 服务全绿, 15:00 窗口 0 新增 ERROR]
+
+🟢 **服务全绿** — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d21:03; 探针全 200 (backend `/api/health`, admin :8080, portal :8081); load **0.33/0.47/0.49** 平稳; mem avail 496M (free 178M); 磁盘 74% (9.8G free)。
+✅ **15:00 窗口 0 新增 ERROR**: 近 90m backend 仅 12 行日志，仅 14:00 一条 `handleAutoReject` → `missing FROM-clause entry for table "change"`（与本轮前的 14:04 记录同一条，非新增）。15:00 整点无调度执行。
+🔴 镜像仍 **v1.5.9** (StartedAt 10-11T10:01:02Z, restarts=0) → #374 修复仍未上线。
+**GH 无变化**: 55 open (0 assigned); PR 仅 #369 OPEN (i18n, 末更 08-20); HEAD e6a9856, main ahead origin 6。
+**代理**: 仅 main (allowAny=false), 无 DEV/QA/DEVOPS 可 spawn → blocker 持续。
+**Needs your input**: ① 部署含 #374 修复的镜像 ② 处理 #369 i18n 冲突 ③ 指派 owner 给 p0 积压 ④ 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 14:04 — PM Patrol (Sun 10-18, 14:04 轮次) [refresh, 服务全绿, 14:00 窗口 2 ERROR 同 #374]
 
 🟢 **服务全绿** — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d20:03; 探针全 200 (backend `/api/health`, admin :8080, portal :8081); load **0.51/0.41/0.37** 平稳; mem avail 506M (free 126M); 磁盘 75% (9.8G free)。
