@@ -1,3 +1,14 @@
+# 08:04 — PM Patrol (Sun 10-18, 08:04 轮次) [refresh, 无新变体, 08:00 窗口 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d14:03; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.79/0.76/0.58; mem avail 576M (181M free); 磁盘 74% (9.8G free)。
+✅ **08:00 窗口 0 ERROR**: backend 近 2h 仅 4 行日志 (07:00/08:00 BackupService 正常清理, 各删 0 个), 无 ERROR/QueryFailedError/exception; 无 cron/lunch 变体。
+🔴 StartedAt 10-11T10:01:02Z (restarts=0, 非部署), 镜像仍 v1.5.9 → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee), ready-for-review 5 个 (365/274/262/261/140, 无 p1 可执行); HEAD b153dda (dashboard rebuild), ahead 0; PR 仅 #369 (mergeable=UNKNOWN); #374 OPEN (p1, 无 assignee, 末更 10-04)。
+**代理**: 环境仅 main (allowAny=false), 无可 spawn 的 DEV/QA/DEVOPS → blocker 持续。
+**Needs your input**: 部署 #375 / 处理 #369 (i18n 冲突) / 复验+指派 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 07:00 — PM Patrol (Sun 10-18, 07:00 轮次) [refresh, 无新变体, 07:00 窗口 0 ERROR]
 
 🟢 全绿 — 14 容器 Up (healthy 5, unhealthy 0); 宿主 uptime 6d12:59; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.17/0.28/0.31; mem avail 553M (107M free); 磁盘 74% (9.8G free)。
