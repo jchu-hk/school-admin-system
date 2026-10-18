@@ -1,3 +1,26 @@
+# 09:06 — PM Patrol (Sun 10-18, 09:06 轮次) [refresh, 无新变体, 09:00 窗口 0 ERROR]
+
+🟢 服务全绿 — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d15:05; 探针全 200 (backend :3000 → 200, admin :8080 → 200, portal :8081 → 200); 磁盘 74% (9.8G free)。
+⚠️ **瞬时负载尖峰**: load 23.37/9.32/3.77 (1min 急升), 但进程列表中无高 CPU 常驻者 (top 为 ps/npm MCP/java 7.4%), 疑似 Java/容器短时 GC + 探针并发叠加; mem avail 407M (120M free, 偏低)。→ 下轮复核是否回落。
+✅ **09:00 窗口 0 ERROR**: backend 近 2h 无 ERROR/QueryFailedError/exception, 近 1h 仅 4 行日志 (整点 BackupService 正常)。
+🔴 镜像仍 v1.5.9 → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee); PR 仅 #369 CONFLICTING; HEAD ac62ff6 (patrol 09:00, 已 trim HEARTBEAT)。
+**代理**: 环境仅 main (allowAny=false), 无可 spawn 的 DEV/QA/DEVOPS → blocker 持续。
+**Needs your input**: 部署 #375 / 处理 #369 (i18n 冲突) / 复验+指派 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
+# 09:00 — PM Patrol (Sun 10-18, 09:00 轮次) [refresh, 无新变体, 09:00 窗口 0 ERROR]
+
+🟢 全绿 — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d15:00; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.60/0.43/0.38; mem avail 371M (115M free, 略降); 磁盘 74% (9.8G free)。
+✅ **09:00 窗口 0 ERROR**: backend 近 2h 仅 6 行日志 (08:00/09:00 BackupService 正常清理各删 0 个, 09:00 UserLifecycle 0 warnings), 无 ERROR/QueryFailedError/exception; 无 cron/lunch 变体。
+🔴 StartedAt 10-11T10:01:02Z (restarts=0, 非部署), 镜像仍 v1.5.9 (08-14) → #374 修复未上线。
+**GH 无变化**: 55 open (全部无 assignee); p0/p1 大量积压; PR 仅 #369 CONFLICTING (末更 08-23); #374 OPEN (p1, 无 assignee, 末更 10-04)。
+**代理**: 环境仅 main (allowAny=false), 无可 spawn 的 DEV/QA/DEVOPS → blocker 持续。
+**Needs your input**: 部署 #375 / 处理 #369 (i18n 冲突) / 复验+指派 #374 / 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 09:00 — PM Patrol (Sun 10-18, 09:00 轮次) [refresh, 无新变体, 09:00 窗口 0 ERROR]
 
 🟢 全绿 — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d14:59; 探针全 200 (backend :3000 `/api/health` → 200, admin :8080 → 200, portal :8081 → 200); load 0.67/0.42/0.38; mem avail 474M (119M free); 磁盘 74% (9.8G free)。
