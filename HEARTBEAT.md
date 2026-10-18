@@ -1,3 +1,14 @@
+# 20:04 — PM Patrol (Sun 10-18, 20:04 轮次) [refresh, 服务全绿, 18–20 窗口 0 ERROR]
+
+🟢 **服务全绿** — 14 容器全部 Up 7 days (healthy 5, unhealthy 0); 宿主 uptime 7d02:03; 探针全 200 (backend `/api/health`, admin :8080, portal :8081); load **1.07/0.55/0.41**; mem avail 538M (free 119M); 磁盘 74% (9.8G free)。
+✅ **18:00–20:00 窗口 0 ERROR**: backend 日志 grep error/QueryFailed 计数 0。
+🔴 镜像仍 **v1.5.9** (StartedAt 10-11T10:01:02Z, restarts=0) → #374 修复仍未上线。
+**GH 无变化**: 55 open; PR 仅 #369 CONFLICTING (i18n, 末更 08-23); HEAD 3a3ba25。
+**代理**: 仍只有 main (allowAny=false) → 无 DEV/QA/DEVOPS 可 spawn, blocker 持续。
+**Needs your input**: ① 部署含 #374 修复的镜像 ② 处理 #369 i18n 冲突 ③ 指派 owner 给 p0 积压 ④ 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 19:04 — PM Patrol (Sun 10-18, 19:04 轮次) [refresh, 服务全绿, 17–19 窗口 0 ERROR]
 
 🟢 **服务全绿** — 14 容器 Up 7 days (healthy 5, unhealthy 0); 宿主 uptime 7d01:03; 探针全 200 (backend `/api/health`, admin :8080, portal :8081); load **0.51/0.41/0.45** 平稳; mem avail 578M (free 130M); 磁盘 74% (9.8G free)。
