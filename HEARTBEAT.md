@@ -1,3 +1,14 @@
+# 14:04 — PM Patrol (Sun 10-18, 14:04 轮次) [refresh, 服务全绿, 14:00 窗口 2 ERROR 同 #374]
+
+🟢 **服务全绿** — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d20:03; 探针全 200 (backend `/api/health`, admin :8080, portal :8081); load **0.51/0.41/0.37** 平稳; mem avail 506M (free 126M); 磁盘 75% (9.8G free)。
+🔴 **14:00 窗口 2 ERROR (非 0)**: `LunchReminderScheduler.handleAutoReject` → `QueryFailedError: missing FROM-clause entry for table "change"`（13:00 同源 `LunchChange.created_by does not exist`）。周日午膳调度本应不跑，今日却有执行 → **#374 schema 漂移线上持续发作**，非回归。近 35m 日志共 10 行。
+🔴 镜像仍 **v1.5.9** (2 months) → #374 修复仍未上线。
+**GH 无变化**: 55 open (0 assigned); PR 仅 #369 OPEN (i18n, 末更 08-23); HEAD 82af1a9, main ahead origin 5。
+**代理**: 仅 main (allowAny=false), 无 DEV/QA/DEVOPS 可 spawn → blocker 持续。
+**Needs your input**: ① 部署含 #374 修复的镜像（14:00 已实际报错，优先级上升）② 处理 #369 i18n 冲突 ③ 指派 owner 给 p0 积压 ④ 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 14:00 — PM Patrol (Sun 10-18, 14:00 轮次) [🔴 有变化: 14:00 午膳 cron 恢复执行并报 ERROR]
 
 🟢 **服务全绿** — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d19:59; 探针: backend `/api/health` → 200, admin :8080 → 200, portal :8081 → 200; load **0.49/0.38/0.37** (平稳); mem avail 552M (98M free, 偏低); 磁盘 75% (9.8G free)。
