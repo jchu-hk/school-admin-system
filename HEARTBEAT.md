@@ -1,3 +1,17 @@
+# 14:00 — PM Patrol (Sun 10-18, 14:00 轮次) [🔴 有变化: 14:00 午膳 cron 恢复执行并报 ERROR]
+
+🟢 **服务全绿** — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d19:59; 探针: backend `/api/health` → 200, admin :8080 → 200, portal :8081 → 200; load **0.49/0.38/0.37** (平稳); mem avail 552M (98M free, 偏低); 磁盘 75% (9.8G free)。
+🔴 **变化点 — 14:00 窗口 4 ERROR (非 0, 上轮 11:00 为 0)**: 午膳定时任务恢复执行并连续失败 2 次 —
+- 13:00 `LunchReminderScheduler.handleReminder` → `column LunchChange.created_by does not exist`
+- 14:00 `handleAutoReject` → `missing FROM-clause entry for table "change"`
+→ 即 **#374 schema 漂移 bug 在线上持续发作**（周日午膳调度本应不跑，今日却有执行）。非回归，属已知 p1。
+🔴 镜像仍 **v1.5.9**, started 10-11T10:01:02Z (restarts=0) → #374 修复未上线。
+**GH 无变化**: 55 open (0 assigned, 含 p0 积压); PR 仅 #369 OPEN (i18n, 末更 08-20); HEAD 3efefb6, main ahead origin 4。
+**代理**: 环境仅 main (allowAny=false), 无 DEV/QA/DEVOPS 可 spawn → blocker 持续。
+**Needs your input**: ① 部署修复版以关闭 #374（14:00 已实际报错，优先级上升）② 处理 #369 i18n 冲突 ③ 指派 owner 给 p0 积压 ④ 确认 10-11 18:00 宿主重启原因。
+
+---
+
 # 11:04 — PM Patrol (Sun 10-18, 11:04 轮次) [refresh, 无新变体, 11:00 窗口 0 ERROR]
 
 🟢 **全绿** — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d17:03; 探针: admin :8080 → 200, portal :8081 → 200, backend `/api/health` → 200; load **0.39/0.37/0.39** (低位平稳, 09:06 尖峰确认已回落); mem avail 522M (131M free); 磁盘 74% (9.8G free)。
