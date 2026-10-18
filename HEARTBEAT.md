@@ -441,3 +441,12 @@
 ---
 
 # 21:04 — PM Patrol (Sat 10-17, 21:04 轮次) — 已由上一条记录覆盖 (重复触发)
+
+# 18:04 — PM Patrol (Sun 10-18, 18:04 轮次) [refresh, 服务全绿, 18:00 窗口 0 ERROR]
+
+🟢 **服务全绿** — 14 容器 Up 7 days (healthy 5, unhealthy 0); 宿主 uptime 7d00:03 (跨过 7 天); 探针全 200 (backend `/api/health`, admin :8080, portal :8081); load **0.85/0.55/0.48** (低位); mem avail 473M (free 115M); 磁盘 75% (9.8G free)。
+✅ **18:00 窗口 0 ERROR**: 17:00–18:04 backend 仅 4 行日志（17:00/18:00 BackupService 正常清理，各删 0），无 ERROR/QueryFailedError，午膳调度未再触发（14:00 后无新增）。
+🔴 镜像仍 **v1.5.9** (StartedAt 10-11T10:01:02Z, restarts=0) → #374 修复仍未上线。
+**GH 无变化**: 55 open (0 assigned); p0 共 29 个仍无 owner；PR 仅 #369 CONFLICTING (i18n, 末更 08-23 已近 2 月)；HEAD a3b6aa8, main ahead origin 8。
+**代理**: 配置层已列出 arch/checker/dev/devops/ops/qa/req，但 requester main 的 allowAny=false → 仍无法 spawn → blocker 持续（此点可与上轮记录有差异，待确认）。
+**Needs your input**: ① 部署含 #374 修复的镜像 ② 处理 #369 i18n 冲突 ③ 指派 owner 给 29 个 p0 ④ 确认 10-11 宿主重启原因。
