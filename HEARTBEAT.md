@@ -1,3 +1,28 @@
+# 11:04 — PM Patrol (Mon 10-19, 11:04 轮次) [服务全绿, 10:04–11:04 窗口 0 ERROR, load 正常 0.29]
+
+🟢 **服务全绿** — 14 容器 Up 7 days (unhealthy 0); 宿主 uptime 7d17:03; 探针全 200: backend `/api/health`, admin :8080, portal :8081。
+🟢 **load 正常**: **0.29/0.37/0.36** (10:04 轮次 0.73 → 持续平稳，09:06 峰值 21.4 已完全消解，无高 CPU 进程)。mem avail 521M (free 123M) 偏紧; 磁盘 75% (9.7G free)。
+✅ **10:04→11:04 窗口 0 ERROR**: school-admin-backend 日志 error/QueryFailed/Exception 计数 0。
+🔴 镜像仍 **v1.5.9** (`school-admin-backend:v1.5.9`, Up 7 days) → #374 修复仍未上线（第 8 天）。
+**GH 无变化**: 55 open, 0 assigned, 29 个 p0 全部无 owner; PR 仅 #369 (i18n, CONFLICTING)。HEAD c10437f, main ahead origin 2。
+**代理**: 运行时仅 main (allowAny=false) → 无法 spawn DEV/QA/DEVOPS，blocker 持续第 8 天。
+**Needs your input**: ① 部署含 #374 修复的镜像 ② 处理 #369 i18n 冲突 ③ 指派 p0 owner ④ 确认 10-11 18:00 宿主重启原因。
+
+---
+
+# 10:04 — PM Patrol (Mon 10-19, 10:04 轮次) [服务全绿, 09:04–10:04 窗口 0 ERROR, load 已回落]
+
+🟢 **服务全绿** — 14 容器 Up 7 days (unhealthy 0); 宿主 uptime 7d16:03; 探针全 200: backend `/api/health`, admin :8080, portal :8081。
+🟢 **load 已回落正常**: **0.73/0.55/0.64** (09:06 峰值 21.4 → 已消解)。PID 4132968 java 已退出，当前无高 CPU 进程（top 为 npm exec/model 19%，瞬时）。mem avail 482M (free 126M) 偏紧; 磁盘 75% (9.7G free)。
+✅ **09:04→10:04 窗口 0 ERROR**: backend error/QueryFailed/Exception 计数 0。
+🔴 镜像仍 **v1.5.9** (StartedAt 10-11T10:01:02Z, restarts=0) → #374 修复仍未上线（第 8 天）。
+**GH 无变化**: 55 open, 29 个 p0 **全部无 owner**, 0 assigned; PR 仅 #369 (i18n, CONFLICTING)。
+**代理**: 运行时仅 main (allowAny=false) → 无法 spawn DEV/QA/DEVOPS，blocker 持续第 8 天。
+**Needs your input**: ① 部署含 #374 修复的镜像 ② 处理 #369 i18n 冲突 ③ 指派 p0 owner ④ 确认 10-11 18:00 宿主重启原因。
+✅ 待办关闭: 09:08 提出的 PID 4132968 java 高 CPU 已自行消失，无需处置。
+
+---
+
 # 09:08 — PM Patrol (Mon 10-19, 09:08 轮次) [服务全绿, 08:08–09:08 窗口 0 ERROR, ⚠️ load 持续 12+ / java 50% CPU]
 
 🟢 **服务全绿** — 14 容器 Up 7 days (healthy 5; kafka unhealthy 为长期已知); 宿主 uptime 7d15:06; 探针全 200: backend `/api/health`, admin :8080, portal :8081。
