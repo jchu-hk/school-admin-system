@@ -1,4 +1,13 @@
-# 09:06 — PM Patrol (Mon 10-19, 09:06 轮次) [服务全绿, 08:06–09:06 窗口 0 ERROR, ⚠️ load 21.4]
+# 09:08 — PM Patrol (Mon 10-19, 09:08 轮次) [服务全绿, 08:08–09:08 窗口 0 ERROR, ⚠️ load 持续 12+ / java 50% CPU]
+
+🟢 **服务全绿** — 14 容器 Up 7 days (healthy 5; kafka unhealthy 为长期已知); 宿主 uptime 7d15:06; 探针全 200: backend `/api/health`, admin :8080, portal :8081。
+⚠️ **load 12.43/12.37/6.39** — 09:06 轮次的 21.4 峰值已回落但**未回正常**（基线 <1）。CPU id 72–85%，iowait 0，非 IO 争抢。定位到 **PID 4132968 (java) 占 50.7% CPU / 2.1% MEM** — 高度疑似近期启动的临时 JVM（非 14 个常驻容器之一）。mem avail 412M (free 135M) 偏紧; 磁盘 75% (9.7G free)。
+✅ **08:08→09:08 窗口 0 ERROR**: backend 日志 error/QueryFailed 计数 0。
+🔴 镜像仍 **v1.5.9** (Up 7 days) → #374 修复仍未上线（第 8 天）。
+**GH / 代理**: 无变化（55 open，p0 无 owner；PR #369 CONFLICTING）；运行时仅 main (allowAny=false)，无法 spawn DEV/QA/DEVOPS。
+**Needs your input**: ① 部署含 #374 修复的镜像 ② 处理 #369 i18n 冲突 ③ 指派 p0 owner ④ 确认 10-11 18:00 宿主重启原因 ⑤ 是否排查 PID 4132968 的 java 进程（下轮 10:00 复查，若仍 >40% 建议处置）。
+
+---# 09:06 — PM Patrol (Mon 10-19, 09:06 轮次) [服务全绿, 08:06–09:06 窗口 0 ERROR, ⚠️ load 21.4]
 
 🟢 **服务全绿** — 14 容器 Up 7 days (healthy 5, unhealthy 0); 宿主 uptime 7d15:05; 探针: backend `/api/health` `{"status":"ok"}`, admin :8080 200, portal :8081 200。
 ⚠️ **load 21.43/13.17/5.91** (1m/5m/15m 陡升) vs 09:00 轮次 0.86/0.42/0.41。top 进程 CPU 均 <4%（docker stats / dockerd / uvicorn:9000），无单一失控进程 → 疑似短时突发或 IO 争抢，**下轮 10:00 复查**。mem avail 339M (free 113M) 偏紧; 磁盘 75% (9.7G free)。
