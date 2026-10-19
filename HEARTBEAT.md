@@ -232,3 +232,12 @@
 🟢 **服务全绿** — 14 容器 Up 6 days (healthy 5, unhealthy 0); 宿主 uptime 6d23:03; 探针全 200 (backend `/api/health`, admin :8080, portal :8081); load **1.33/0.91/0.58** (1min 略抬头，仍属低位可接受); mem avail 514M (free 127M); 磁盘 75% (9.8G free)。
 ✅ **17:00 窗口 0 ERROR**: 15:00–17:04 backend 日志仅 6 行 BackupService 正常清理（15/16/17 点各删 0），无 ERROR/QueryFailedError，无午膳调度变体。
 🔴 镜像仍 **v1.5.9** (StartedAt 10-11T10:01:02Z, restarts=0) → #374 修复仍未上线。
+
+# 19:04 — PM Patrol (Mon 10-19, 19:04 轮次) [服务全绿, 17:04–19:04 窗口 4 ERROR = 18:00 日报 #374]
+
+🟢 **服务全绿** — 14 容器 Up 5 hours (unhealthy 0); 宿主 uptime 4:30 (14:33 重启后稳定); load **0.36/0.35/0.29**; mem avail **1263M**; 磁盘 74% (9.8G free)。探针全 200: backend `/api/health` :3000, admin :8080, portal :8081。
+🔴 **18:00 日报再次失败** — 窗口内 4 条 ERROR 全部为 #374 schema 漂移：`DailyReportService` 「生成班级日报失败 / 签到日报生成失败: column AttendanceDailyReport.school_id does not exist」（今日第 2 次：14:00 定时任务 → 18:00 日报）。除外 0 ERROR。
+🔴 镜像仍 **v1.5.9** (Up 5 hours) → #374 修复仍未上线（第 8 天）。
+**GH 无变化**: 55 open, 0 assigned, p0=29 全部无 owner; PR 仅 #369 CONFLICTING。main ahead origin **7**。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 8 天。
+**Needs your input**（沿用）: ① 🔥 部署含 #374 修复镜像（已影响日报）② 🔥 放开 Agent spawn 权限 ③ #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ 14:33 重启原因（建议开 journald 持久化）。
