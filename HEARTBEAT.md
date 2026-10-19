@@ -3,10 +3,11 @@
 🟢 **服务全绿** — 14 容器 Up 6 hours (unhealthy 0); uptime 6:26; load **0.64/0.60/0.72**; mem avail **1293M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000 `{"status":"ok"}`、admin :8080、portal :8081。kafka 重启后 6h 稳定。
 ✅ **20:04→21:04 窗口 0 ERROR**（下一风险点: 明日 14:00 午膳 / 18:00 日报，#374 触发点）。
 🔴 镜像仍 **v1.5.9** (StartedAt 06:33Z, restarts=0) → #374 修复仍未上线（**第 8 天**）。
-🟡 main 现 **ahead origin 9**（含两条重复 19:04 patrol commit → 待清理）。
+🟡 **Grafana 噪音**: 每 10 分钟 update checker 拉 github raw 超时（网络受限，非业务）→ 可关 `analytics.check_for_updates`。
+🟡 main 现 **ahead origin 10**（含两条重复 19:04 patrol commit → 待清理）。
 **GH 无变化**: 55 open, **0 assigned**, p0=29 / p1=16 / bug=5 全部无 owner; PR 仅 #369 (CONFLICTING)。
 **代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 8 天。
-**Needs your input**（顺延）: ① 🔥 部署含 #374 修复镜像（每日定时任务持续失败）② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化（重启取证）⑥ main ahead 9 是否推 origin。
+**Needs your input**（顺延）: ① 🔥 部署含 #374 修复镜像（每日定时任务持续失败）② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化（重启取证）⑥ main ahead 10 是否推 origin。
 
 ---
 
