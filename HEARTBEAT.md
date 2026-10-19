@@ -1,3 +1,15 @@
+# 17:04 — PM Patrol (Mon 10-19, 17:04 轮次) [服务全绿, 15:04–17:04 窗口 0 ERROR, load 0.44 正常]
+
+🟢 **服务全绿** — 14 容器全部 Up 3 hours (unhealthy 0); 宿主 uptime 2:30 (14:33 重启后稳定); load **0.44/0.42/0.42** 平稳; mem avail **1387M** (重启释放泄漏，较重启前 545M 明显改善); 磁盘 74% (9.8G free)。
+✅ **探针全 200**: backend `/api/health` :3000 → `{"status":"ok"}`、admin :8080、portal :8081。**更正**：此前 patrol 中 backend 探针写作 :8000 属笔误，实际端口为 **3000**（docker port 确认 3000/tcp），非服务异常。
+✅ **15:04→17:04 窗口 0 ERROR**: school-admin-backend error/QueryFailed/Exception 计数 0。kafka 重启后 3 小时无再次退出。
+🔴 镜像仍 **v1.5.9** (StartedAt 06:33Z, restarts=0) → **#374 修复仍未上线（第 8 天）**；今日 14:00 午膳定时任务仍已失败（`missing FROM-clause entry for table "change"`）。
+**GH 无变化**: 55 open, **0 assigned**, **29 个 p0 全部无 owner**; PR 仅 #369 (i18n, CONFLICTING)。main ahead origin **5**（本轮 patrol commit 后）。
+**代理**: 运行时仅 main (allowAny=false) → 无法 spawn DEV/QA/DEVOPS，blocker 第 8 天。
+**Needs your input**: ① **确认 14:33 重启是否为你/平台发起**（journald 无持久化，仍无法取证；建议开启）② 部署含 #374 修复的镜像 ③ 处理 #369 i18n 冲突 ④ 指派 p0 owner ⑤ 本地 5 个 commit 是否推 origin。
+
+---
+
 # 15:04 — PM Patrol (Mon 10-19, 15:04 轮次) [⚠️ 宿主 14:33 重启, 服务已全恢复, 14:33–15:04 仅 #374 午膳 ERROR]
 
 🟡 **宿主重启事件**: 14:33:18 系统重启（距上轮 14:00 报告仅 33 分钟，非计划内）→ 全部 14 容器随 docker 重建，已 **Up 30 min 全恢复**；探针全 200: backend `/api/health`, admin :8080, portal :8081。
