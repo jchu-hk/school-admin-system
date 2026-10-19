@@ -1,3 +1,14 @@
+# 19:04 — PM Patrol (Mon 10-19, 19:04 轮次) [服务全绿, 17:04–19:04 窗口 4 ERROR = 18:00 日报 #374]
+
+🟢 **服务全绿** — 14 容器 Up 4 hours (unhealthy 0); uptime 4:26; load **0.53/0.33/0.29**; mem avail **1336M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000, admin :8080, portal :8081。
+🔴 **18:00 日报再次失败** — 4 ERROR 全为 `DailyReportService` → `column AttendanceDailyReport.school_id does not exist`（#374 schema 漂移扩散至日报，今日第 2 次复现）。除此外窗口内 0 ERROR。
+🔴 镜像仍 **v1.5.9** (StartedAt 06:33Z, restarts=0) → #374 修复仍未上线（第 8 天）。
+**GH 无变化**: 55 open, **0 assigned**, p0=29 / p1=16 全部无 owner; PR 仅 #369 (CONFLICTING)。main ahead origin **6**。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 8 天。
+**Needs your input**（无变化，顺延）: ① 🔥 部署含 #374 修复镜像（已影响日报）② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ 14:33 重启原因（建议开 journald 持久化）。
+
+---
+
 # 17:04 — PM Patrol (Mon 10-19, 17:04 轮次) [服务全绿, 15:04–17:04 窗口 0 ERROR, load 0.44 正常]
 
 🟢 **服务全绿** — 14 容器全部 Up 3 hours (unhealthy 0); 宿主 uptime 2:30 (14:33 重启后稳定); load **0.44/0.42/0.42** 平稳; mem avail **1387M** (重启释放泄漏，较重启前 545M 明显改善); 磁盘 74% (9.8G free)。
