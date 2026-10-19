@@ -1,3 +1,31 @@
+# 15:04 — PM Patrol (Mon 10-19, 15:04 轮次) [⚠️ 宿主 14:33 重启, 服务已全恢复, 14:33–15:04 仅 #374 午膳 ERROR]
+
+🟡 **宿主重启事件**: 14:33:18 系统重启（距上轮 14:00 报告仅 33 分钟，非计划内）→ 全部 14 容器随 docker 重建，已 **Up 30 min 全恢复**；探针全 200: backend `/api/health`, admin :8080, portal :8081。
+  - 重启原因 **无法取证**：上一启动的 journal 为空（journald 未持久化，无 `-b -1`），kernel OOM/panic 记录 0 条 → 仅能确认非正常关机信令（无 shutdown 记录，wtmp 直接出现新 boot）。
+  - ⚠️ **kafka 重启 3 次**（14:33:46/52/58 连续 exit 1 后稳定，现 healthy）→ 冷启动竞态为已知模式。
+  - 🔴 **重启风险已验证**: 镜像仍 v1.5.9 → 重启后 **没有任何修复被带上线**，#374 依旧存在。
+  - ✅ **正向副作用**: `mem available` 从 545M → **1375M**（reboot 释放泄漏），磁盘 74% (9.9G free)。
+🟢 **load 0.62/0.36/0.34** 正常（重启后基线）。
+✅ 14:33–15:04 窗口 **2 ERROR = 仅 #374** `LunchReminderScheduler` 午膳自动拒绝 `missing FROM-clause entry for table "change"`（14:00 定时触发，与重启无关，重启前已发生）。重启后无新增错误。
+🔴 镜像 **v1.5.9** (StartedAt 06:33Z/14:33 CST) → #374 修复仍未上线（第 8 天）。
+**GH 无变化**: 55 open, 0 assigned, **29 个 p0 全部无 owner**; PR 仅 #369 (i18n, CONFLICTING)。main ahead origin **4**。
+**代理**: 运行时仅 main (allowAny=false) → 无法 spawn DEV/QA/DEVOPS，blocker 第 8 天。
+**Needs your input**: ① **确认 14:33 重启是否为你/平台发起**（若否需查宿主）② 部署含 #374 修复的镜像 ③ 处理 #369 i18n 冲突 ④ 指派 p0 owner ⑤ 本地 4 个未推送 commit 是否推 origin ⑥ 建议开启 journald 持久化以便事后取证。
+
+---
+
+# 14:00 — PM Patrol (Mon 10-19, 14:00 轮次) [服务全绿, 13:00–14:00 窗口 2 ERROR = #374 已知漂移, load 1.57]
+
+🟢 **服务全绿** — 14 容器 Up 7 days (unhealthy 0); 宿主 uptime 7d20:00; 探针全 200: backend `/api/health`, admin :8080, portal :8081。
+🟢 **load 1.57/1.46/0.94**（12:04 轮次 0.40 → 轻度上升但仍在正常区间，无高 CPU 进程）。mem avail 545M 偏紧; 磁盘 75% (9.8G free)。
+⚠️ **13:00→14:00 窗口 2 ERROR**，均为 #374 schema 漂移: 14:00:00 `LunchReminderScheduler` 「missing FROM-clause entry for table "change"」→ 午膳定时任务每日 14:00 稳定复现失败。
+🔴 镜像仍 **v1.5.9** (Up 7 days) → #374 修复仍未上线（第 8 天）。
+**GH 无变化**: 55 open, 45 个 p0/p1 **全部无 owner**, 0 assigned; PR 仅 #369 (i18n, CONFLICTING)。**main ahead origin 4**（上轮 3，本地 1 commit 未推送）。
+**代理**: 运行时仅 main (allowAny=false) → 无法 spawn DEV/QA/DEVOPS，blocker 持续第 8 天。
+**Needs your input**: ① 部署含 #374 修复的镜像（14:00 定时任务仍每日失败）② 处理 #369 i18n 冲突 ③ 指派 p0 owner ④ 确认 10-11 18:00 宿主重启原因 ⑤ 本地 1 个未推送 commit 是否需要推 origin。
+
+---
+
 # 12:04 — PM Patrol (Mon 10-19, 12:04 轮次) [服务全绿, 11:04–12:04 窗口 0 ERROR, load 0.40 正常]
 
 🟢 **服务全绿** — 14 容器 Up 7 days (unhealthy 0); 宿主 uptime 7d18:03; 探针全 200: backend `/api/health`, admin :8080, portal :8081。
