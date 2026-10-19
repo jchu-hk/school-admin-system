@@ -11,6 +11,30 @@
 
 ---
 
+---
+
+# 07:00 — PM Patrol (Tue 10-20, 07:00 轮次) [服务全绿, 夜间 12h 窗口 0 ERROR]
+
+🟢 **服务全绿** — 14 容器 Up 16 hours (unhealthy 0); uptime 16:26; load **0.58/0.47/0.40**; mem avail **1299M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000, admin :8080, portal :8081。
+✅ **夜间 12h 窗口 0 ERROR**（无定时任务触发；下一风险点 今日 14:00 / 18:00）。
+🔴 镜像仍 **v1.5.9** (StartedAt 06:33Z, restarts=0) → #374 修复仍未上线（第 9 天）。
+🟢 `main` 已与 origin 同步（ahead 0，重复 patrol commit 已清）。
+**GH 无变化**: 55 open, **0 assigned**, p0=29 / p1=16 全部无 owner; PR 仅 #369 (CONFLICTING)。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 9 天。
+**Needs your input**（顺延）: ① 🔥 部署含 #374 修复镜像 ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化。
+
+# 07:00 — PM Patrol (Tue 10-20, 07:00 轮次) [服务全绿, 夜间 12h 窗口 0 ERROR]
+
+🟢 **服务全绿** — 14 容器 Up 16 hours (unhealthy 0); uptime 16:26; load **0.58/0.47/0.40**; mem avail **1299M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000, admin :8080, portal :8081。
+✅ **夜间 12h 窗口 0 ERROR**（无定时任务触发；下一风险点 今日 14:00 / 18:00）。
+🔴 镜像仍 **v1.5.9** (StartedAt 06:33Z, restarts=0) → #374 修复仍未上线（第 9 天）。
+🟢 `main` 已与 origin 同步（ahead 0，重复 patrol commit 已清）。
+**GH 无变化**: 55 open, **0 assigned**, p0=29 / p1=16 全部无 owner; PR 仅 #369 (CONFLICTING)。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 9 天。
+**Needs your input**（顺延）: ① 🔥 部署含 #374 修复镜像 ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化。
+
+---
+
 # 20:04 — PM Patrol (Mon 10-19, 20:04 轮次) [服务全绿, 19:04–20:04 窗口 0 ERROR, load 0.55]
 
 🟢 **服务全绿** — 14 容器 Up 6 hours (unhealthy 0); uptime 5:30; load **0.55/0.44/0.53**; mem avail **1273M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000, admin :8080, portal :8081。
