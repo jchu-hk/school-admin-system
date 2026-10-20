@@ -1,5 +1,17 @@
 # 16:04 — PM Patrol (Tue 10-20, 16:04 轮次) [服务全绿, 0 ERROR]
 
+🟢 14 容器 Up 26 hours (unhealthy 0); load **0.24/0.30/0.32**; mem avail **907M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+✅ **15:04→16:04 窗口 backend 0 ERROR**（下午平稳）。
+🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 9 天）。**下一风险点 18:00 日报**。
+🟡 `main` ahead origin **11**（`29ddda7` 最新，patrol commit 累积待推送决策）；工作区 clean。
+**GH 无变化**: 55 open, **0 assigned**; p0=29 / p1=16 / p2=7 / p3=2 / bug=5; PR 仅 #369 (CONFLICTING)。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 9 天。
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像（今晚 18:00 触发）② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 11 是否推 origin。
+
+---
+
+# 16:04 — PM Patrol (Tue 10-20, 16:04 轮次) [服务全绿, 0 ERROR]
+
 🟢 14 容器 Up 25 hours (unhealthy 0); load **0.17/0.34/0.35**; mem avail **991M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
 ✅ **15:04→16:04 窗口 backend 0 ERROR**（下午平稳，无定时任务时段）。
 🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 9 天）。**下一风险点 18:00 日报**（预测 `AttendanceDailyReport.school_id` 变体）。
