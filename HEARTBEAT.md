@@ -1,3 +1,15 @@
+# 09:00 — PM Patrol (Tue 10-20, 09:00 轮次) [服务全绿, 08:04–09:00 窗口 0 ERROR]
+
+🟢 **服务全绿** — 14 容器 Up 18 hours (unhealthy 0); uptime 18:27; load **0.44/0.36/0.30**; mem avail **1197M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000, admin :8080, portal :8081。
+✅ **08:04→09:00 窗口 backend 0 ERROR**（下一风险点 今日 14:00 午膳 / 18:00 日报，#374 触发时段）。
+🔴 镜像仍 **v1.5.9** (StartedAt 2026-10-19T06:33Z, restarts=0) → #374 修复仍未上线（第 9 天）。
+🟡 `main` ahead origin **2**（`2705bc6` 09:00 日报 + `4d62df6` 08:04 patrol，非重复，待推送）。
+**GH 无变化**: 55 open, **0 assigned**; p0=29 / p1=16 / p2=7 / p3=2 全部无 owner; PR 仅 #369 (CONFLICTING，仍冲突)。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 9 天。
+**Needs your input**（顺延）: ① 🔥 部署含 #374 修复镜像 ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化。
+
+---
+
 # 08:04 — PM Patrol (Tue 10-20, 08:04 轮次) [服务全绿, 07:04–08:04 窗口 0 ERROR]
 
 🟢 **服务全绿** — 14 容器 Up 18 hours (unhealthy 0); uptime 17:30; load **0.29/0.32/0.33**; mem avail **1298M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000, admin :8080, portal :8081。
@@ -78,3 +90,15 @@
 **GH 无变化**: 55 open, **0 assigned**, p0=29 / p1=16 全部无 owner; PR 仅 #369 (CONFLICTING)。main ahead origin **6**。
 **代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 8 天。
 **Needs your input**（无变化，顺延）: ① 🔥 部署含 #374 修复镜像（已影响日报）② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ 14:33 重启原因（建议开 journald 持久化）。
+
+# 10:00 — PM Patrol (Tue 10-20, 10:00 轮次) [服务全绿, 09:00–10:00 窗口 0 ERROR]
+
+🟢 **服务全绿** — 14 容器 Up 18 hours (unhealthy 0); uptime 18:27; load **0.42/0.36/0.30**; mem avail **1067M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000, admin :8080, portal :8081。
+✅ **09:00→10:00 窗口 backend 0 ERROR**（无定时任务时段；下一风险点 今日 14:00 午膳 / 18:00 日报，#374 触发时段）。
+🔴 镜像仍 **v1.5.9** (StartedAt 2026-10-19T06:33Z, restarts=0) → #374 修复仍未上线（第 9 天）。
+🟡 `main` ahead origin **2**（`2705bc6` 09:00 日报 + `4d62df6` 08:04 patrol，非重复，待推送）；HEARTBEAT.md 本轮有未提交改动。
+**GH 无变化**: 55 open, **0 assigned**; p0=29 / p1=16 / p2=7 / p3=2 全部无 owner; PR 仅 #369 (CONFLICTING，仍冲突)。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 9 天。
+**Needs your input**（顺延）: ① 🔥 部署含 #374 修复镜像 ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化。
+
+---
