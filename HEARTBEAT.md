@@ -1,3 +1,15 @@
+# 14:00 — PM Patrol (Tue 10-20, 14:00 轮次) [服务可用, 1 ERROR = #374]
+
+🟢 14 容器 Up 23 hours (unhealthy 0); load **0.17/0.29/0.33**; mem avail **1107M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+🔴 **13:04→14:00 窗口 backend 1 ERROR**: `14:00:00 LunchReminderScheduler 【Cron】午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` → **#374 第 9 天，14:00 触发点如期复现**（13:00 为另一 SQL 变体）。
+🔴 镜像仍 **v1.5.9** (StartedAt 2026-10-19T06:33Z, restarts=0) → #374 修复未上线。
+🟡 `main` ahead origin **8**（`13f928c`，patrol/日报 commit 累积，待推送）。
+**GH 无变化**: 55 open, **0 assigned**; p0=29 / p1=16 / p2=7 / p3=2; PR 仅 #369 (CONFLICTING)。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 9 天。
+**Needs your input**（顺延）: ① 🔥 部署含 #374 修复镜像（14:00 已二次复现，下一触发 18:00）② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 8 是否推 origin。
+
+---
+
 # 13:04 — PM Patrol (Tue 10-20, 13:04 轮次) [服务可用, 1 ERROR = #374]
 
 🟢 14 容器 Up 23 hours (unhealthy 0); load **0.23/0.28/0.31**; mem avail **1091M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
