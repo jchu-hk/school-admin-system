@@ -1,3 +1,14 @@
+# 07:00 — PM Patrol (Wed 10-21, 07:00 轮次) [服务全绿, 夜间 0 ERROR]
+
+🟢 14 容器 Up 40 hours (unhealthy 0); load **0.52/0.45/0.45**; mem avail **783M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000 `{"status":"ok"}`、admin :8080、portal :8081。
+✅ **21:00→07:00 窗口 backend 0 ERROR**；02:00 BackupScheduler 备份成功。
+🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 10 天）。**下一风险点：今早 08:00/09:00 巡检任务；13:00/14:00/18:00 已知触发点**。
+🟡 git: `1f7814a chore: dashboard rebuild`，ahead origin **0**（与昨轮 ahead 15 不一致 → 疑似已推送，待确认）。
+**GH 无变化**: 55 open, **0 assigned**; p0=29 / p1=16 / p2=7 / p3=2 / bug=5; 无新 issue、无 start condition 新满足项；PR 仅 #369。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 10 天。
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ git 推送状态确认。
+
+---
 # 21:00 — PM Patrol (Tue 10-20, 21:00 轮次) [服务全绿, 20:00–21:00 窗口 0 ERROR]
 
 🟢 14 容器 Up 30 hours (unhealthy 0); load **1.45/0.75/0.50**（瞬时，非异常）; mem avail **795M**; 磁盘 74% (9.8G)。探针: backend `/api/health` :3000 `{"status":"ok"}`、admin :8080、portal :8081 全 200。
