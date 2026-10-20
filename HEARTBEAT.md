@@ -196,3 +196,15 @@
 **GH 无变化**: 55 open, **0 assigned**; p0=29 / p1=16 / p2=7 / p3=2 / bug=5 全部无 owner; PR 仅 #369 (CONFLICTING)。
 **代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 9 天。
 **Needs your input**（顺延）: ① 🔥 部署含 #374 修复镜像 ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化。
+
+---
+
+# 18:04 — PM Patrol (Tue 10-20, 18:04 轮次) [服务全绿, 18:00 日报 ERROR 如期复现]
+
+🟢 14 容器 Up 28 hours (unhealthy 0); load **0.41/0.48/0.54**; mem avail **874M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+🔴 **17:04→18:04 窗口 backend 2 ERROR**，均为 18:00 日报（预测命中）: `DailyReportService 生成班级日报失败: column AttendanceDailyReport.school_id does not exist` + `签到日报生成失败: column "school_id" of relation "attendance_daily_reports" does not exist` → #374 第 9 天，第三个 SQL 变体。
+🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线，今日 3 个定时触发点(13:00/14:00/18:00)全部踩雷。
+🟡 `main` ahead origin **13**（`1161e29` 18:00 日报 commit 最新）；工作区 clean。
+**GH 无变化**: 55 open, **0 assigned**; p0=29 / p1=16 / p2=7 / p3=2。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 9 天。
+**Needs your input**（顺延，无新增；⚠️ 18:00 日报已坏，明早 06:00 还有触发）: ① 🔥 部署含 #374 修复镜像 ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 13 是否推 origin。
