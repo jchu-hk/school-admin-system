@@ -1,3 +1,21 @@
+# 21:04 — PM Patrol (Wed 10-21, 21:04 轮次) [服务全绿, 20:04–21:04 窗口 0 ERROR]
+
+🟢 14 容器 Up 2 days (unhealthy 0); load **0.38/0.31/0.34**; mem avail **603M**; 磁盘 74% (9.8G)。探针: backend `/api/health` :3000 `{"status":"ok"}`、admin :8080 200、portal :8081 200。
+
+✅ **20:04→21:04 窗口 backend 0 ERROR** — 18:00 日报后连续 4 小时 0 ERROR。今日 #374 触发点: 13:00/14:00 命中，18:00 未复现。明日 06:00/13:00/14:00/18:00 继续盯三个 SQL 变体。
+
+🔴 镜像仍 **v1.5.9** (restarts=0) → #374 修复未上线（第 11 天）。
+
+🟡 git: `ee05eaa chore(pm): 21:00 patrol`，ahead origin **13**（patrol commit 累积待推送）；工作区 clean。
+
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; p0=29 / p1=16 / p2=7 / p3=2；PR 仅 #369 (CONFLICTING)。
+
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 11 天。
+
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 13 是否推 origin。
+
+---
+
 # 20:04 — PM Patrol (Wed 10-21, 20:04 轮次) [服务全绿, 19:04–20:04 窗口 0 ERROR]
 
 🟢 14 容器 Up 2 days (unhealthy 0); load **1.80/1.35/0.82**（瞬时偏高，仍属正常）; mem avail **716M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
