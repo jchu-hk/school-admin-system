@@ -1,3 +1,15 @@
+# 12:04 — PM Patrol (Wed 10-21, 12:04 轮次) [服务全绿, 11:04–12:04 窗口 0 ERROR]
+
+🟢 14 容器 Up 46 hours (unhealthy 0); load **0.48/0.37/0.31**; mem avail **657M**（较 09:04 的 552M 回升）; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000 `{"status":"ok"}`、admin :8080、portal :8081。
+✅ **11:04→12:04 窗口 backend 0 ERROR**（无定时任务时段）。
+🔴 镜像仍 **v1.5.9** (Created=2026-08-14, StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 11 天）。**下一风险点: 今日 13:00/14:00/18:00**（1 小时后开始）。
+🟡 git: `725b2ca chore(pm): 09:04 patrol`，ahead origin **2**（09:00/09:04 patrol commit 待推送）；工作区有未跟踪 `memory/pm-2026-10-21-1100-patrol.md`（1100 轮次未提交 HEARTBEAT 条目）。
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; p0=29 / p1=16 / p2=7 / p3=2 / bug=5; 无新 issue；PR 仅 #369 (CONFLICTING)。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 11 天。
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像（今日 13:00 起再次踩雷）② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化。
+
+---
+
 # 09:04 — PM Patrol (Wed 10-21, 09:04 轮次) [服务全绿, 08:04–09:04 窗口 0 ERROR]
 
 🟢 14 容器 Up 43 hours (unhealthy 0); load **0.26/0.41/0.38**; mem avail **552M**（较 09:00 的 725M 下降，仍可接受）; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000 `{"status":"ok"}`、admin :8080、portal :8081。
