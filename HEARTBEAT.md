@@ -1,3 +1,21 @@
+# 14:00 — PM Patrol (Wed 10-21, 14:00 轮次)
+
+🟢 14 容器 Up 47 hours (unhealthy 0); load **0.35/0.43/0.44**; mem avail **793M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+
+🔴 **13:00→14:00 窗口 backend 2 ERROR — #374 双变体**: ① `13:00:00 LunchReminderScheduler 午膳变更提醒任务失败: column LunchChange.created_by does not exist`（同 13:04）② `14:00:00 LunchReminderScheduler 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"` — **14:00 新变体**。schema 漂移每日 13:00/14:00/18:00 稳定复现。
+
+🔴 镜像仍 **v1.5.9** (Created=2026-08-14, StartedAt=2026-10-19T06:33Z, restarts=0) → 修复未上线（第 11 天）。
+
+🟡 git: `8c3e292 chore(pm): 13:04 patrol`，ahead origin **4**（09:00/09:04/12:04/13:04 patrol commit 待推送）；工作区 clean。
+
+**GH 无变化**: 55 open, **0 assigned**; 24h 无新 issue；PR 仅 #369 (CONFLICTING)；#374 无评论。
+
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 11 天。
+
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 4 是否推 origin。
+
+---
+
 # 13:04 \u2014 PM Patrol (Wed 10-21, 13:04 \u8f6e\u6b21)\n\n"\U0001f7e2 14 容器 Up 47 hours (unhealthy 0); load **1.48/1.06/0.62**; mem avail **713M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。\n\n\U0001f534 **12:04\u219213:04 窗口 backend 2 ERROR \u2014 #374 新变体如期触发**: `13:00:00 LunchChangeScheduler 午膳变更提醒任务失败: column LunchChange.created_by does not exist` \u2192 与 `AttendanceDailyReport.school_id` 同源（DB schema 落后于代码）。**13:00 触发点已确认命中**，14:00 / 18:00 待观察。\n\n\U0001f534 镜像仍 **v1.5.9** (Created=2026-08-14, StartedAt=2026-10-19T06:33Z, restarts=0) \u2192 修复未上线（第 11 天）。\n\n\U0001f7e1 git: `427ec96 chore(pm): 12:04 patrol`，ahead origin **3**（09:00/09:04/12:04 patrol commit 待推送）；未跟踪 `memory/pm-2026-10-21-1100-patrol.md`。\n\n**GH 无变化**: 55 open, **0 assigned**; 24h 无新 issue；PR 仅 #369 (CONFLICTING)。\n\n**代理**: 仅 main (allowAny=false) \u2192 无法 spawn，blocker 第 11 天。\n\n**Needs your input**（\u2460\u2461 今日已实证踩雷，优先级最高）: \u2460 \U0001f525 部署含 #374 修复镜像 + 补 DB migration ② \U0001f525 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 3 是否推 origin。\n\n---\n\n# 12:04 — PM Patrol (Wed 10-21, 12:04 轮次) [服务全绿, 11:04–12:04 窗口 0 ERROR]
 
 🟢 14 容器 Up 46 hours (unhealthy 0); load **0.48/0.37/0.31**; mem avail **657M**（较 09:04 的 552M 回升）; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000 `{"status":"ok"}`、admin :8080、portal :8081。
