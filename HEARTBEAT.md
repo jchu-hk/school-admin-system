@@ -1,3 +1,21 @@
+# 07:00 — PM Patrol (Thu 10-22, 07:00 轮次) [全绿, 06:00–07:00 窗口 0 ERROR]
+
+🟢 14 容器 Up 2 days (unhealthy 0); load **0.40/0.31/0.28**; mem avail **748M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+
+✅ **06:00→07:00 窗口 backend 0 ERROR** — 夜间连续 0 ERROR。今日需盯 #374 触发点: 13:00/14:00/18:00 三个 SQL 变体。
+
+🔴 镜像仍 **v1.5.9** (restarts=0) → #374 修复未上线（第 12 天）。
+
+🟡 git: `6655c93 chore: dashboard rebuild`（06:00 memory-sync 自动提交），与 origin/main **同步 (ahead 0)**，工作区 clean。前几轮 ahead 13 的 patrol commit 已被自动同步消化，该项从 Needs-input 移除。
+
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; p0=29 / p1=16 / p2=7 / p3=2；72h 无新 issue；PR 仅 #369 (CONFLICTING)。
+
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 12 天。
+
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化。
+
+---
+
 # 21:04 — PM Patrol (Wed 10-21, 21:04 轮次) [服务全绿, 20:04–21:04 窗口 0 ERROR]
 
 🟢 14 容器 Up 2 days (unhealthy 0); load **0.38/0.31/0.34**; mem avail **603M**; 磁盘 74% (9.8G)。探针: backend `/api/health` :3000 `{"status":"ok"}`、admin :8080 200、portal :8081 200。
