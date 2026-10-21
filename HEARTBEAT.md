@@ -241,3 +241,15 @@
 **GH 无变化**: 55 open, **0 assigned**; p0=29 / p1=16 / p2=7 / p3=2。
 **代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 9 天。
 **Needs your input**（顺延，无新增；⚠️ 18:00 日报已坏，明早 06:00 还有触发）: ① 🔥 部署含 #374 修复镜像 ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 13 是否推 origin。
+
+---
+
+# 09:00 — PM Patrol (Wed 10-21, 09:00 轮次) [服务全绿, 08:00–09:00 窗口 0 ERROR]
+
+🟢 14 容器 Up 42 hours (unhealthy 0); load **0.90/0.49/0.40**; mem avail **725M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000 `{"status":"ok"}`、admin :8080、portal :8081。
+✅ **08:00→09:00 窗口 backend 0 ERROR** — 关注点: 今早 08:00/09:00 巡检类任务未触发 #374（与 07:00 预测不符，风险点未命中）。**下一风险点: 今日 13:00/14:00/18:00 已知触发点**。
+🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 11 天）。
+🟢 git: `d4a45e4 chore: dashboard rebuild`，ahead origin **0**（昨轮 ahead 15 已确认同步）。
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; p0=29 / p1=16 / p2=7 / p3=2 / bug=5 / ready-for-review=5; 无新 issue；PR 仅 #369 (CONFLICTING)。
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 11 天。
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像（今日 13:00 起将再次踩雷）② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化。
