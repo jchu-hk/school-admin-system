@@ -387,3 +387,19 @@
 **GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）；PR 仅 #369 (CONFLICTING)。
 **代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 11 天。
 **Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 10 是否推 origin。
+
+# 21:00 — PM Patrol (Wed 10-21, 21:00 轮次) [服务全绿, 20:04–21:00 窗口 0 ERROR]
+
+🟢 14 容器 Up 2 days (unhealthy 0); load **0.44/0.35/0.36**; mem avail **710M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+
+✅ **20:04→21:00 窗口 backend 0 ERROR** — 18:00 日报后连续 3 小时 0 ERROR；今日 #374 触发点中 13:00/14:00 命中、18:00 未复现。明日 06:00/13:00/14:00/18:00 继续盯三个 SQL 变体。
+
+🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 11 天）。
+
+🟡 git: `ab7a9e1 chore(pm): 20:04 patrol`，ahead origin **12**（09:00/09:04/12:04/13:04/14:04/15:04/16:04/17:04/18:04/19:04/20:04 patrol + 本轮待推送）；工作区 clean。
+
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; p0=29 / p1=16 / p2=7 / p3=2；PR 仅 #369 (CONFLICTING)。
+
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 11 天。
+
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 12 是否推 origin。
