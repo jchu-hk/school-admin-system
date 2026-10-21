@@ -1,3 +1,21 @@
+# 14:04 — PM Patrol (Wed 10-21, 14:04 轮次)
+
+🟢 14 容器 Up 2 days (unhealthy 0); load **0.55/0.52/0.48**; mem avail **708M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+
+🔴 **13:04→14:04 窗口 backend 2 ERROR — #374 双变体确认**: ① `13:00:00 LunchReminderScheduler 午膳变更提醒任务失败: column LunchChange.created_by does not exist` ② `14:00:00 ... 午膳变更自动拒绝任务失败: missing FROM-clause entry for table "change"`。今日 13:00/14:00 触发点均命中；剩余观察点 18:00 日报。
+
+🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → 修复未上线（第 11 天）。
+
+🟡 git: `315befc chore(pm): 14:00 patrol`，ahead origin **5**（09:00/09:04/12:04/13:04/14:04 patrol commit 待推送）；工作区 clean。
+
+**GH 无变化**: 55 open, **0 assigned**; 24h 无新 issue；PR 仅 #369 (CONFLICTING)；#374 无评论。
+
+**代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 11 天。
+
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 5 是否推 origin。
+
+---
+
 # 14:00 — PM Patrol (Wed 10-21, 14:00 轮次)
 
 🟢 14 容器 Up 47 hours (unhealthy 0); load **0.35/0.43/0.44**; mem avail **793M**; 磁盘 74% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
