@@ -613,3 +613,22 @@
 **代理**: 仍无法 spawn（main 不在 requester 白名单），blocker 第 13 天。
 
 **Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 9 是否推 origin。
+
+# 18:04 — PM Heartbeat (Thu 10-22, 18:04 轮次) [全绿, 17:04–18:04 窗口 2 ERROR = #374 日报变体如期命中]
+
+🟢 14 容器 Up 3 days (unhealthy 0); load **2.01/1.48/0.89**（偏高但非异常）; mem avail **809M**; 磁盘 75% (9.7G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+
+🔴 **17:04→18:04 窗口 backend 2 ERROR — 18:00 日报触发点如期命中**（#374 第 13 天，三变体今日全部踩中）:
+`18:00:00 DailyReportService 生成班级日报失败: class=中一A班(...): column AttendanceDailyReport.school_id does not exist`
+`18:00:00 DailyReportService 签到日报生成失败: column "school_id" of relation "attendance_daily_reports" does not exist`
+→ 教师端班级日报连续第 13 天不可用。今日三个触发点（13:00 created_by / 14:00 FROM-clause / 18:00 school_id）全部复现，无新增故障面。今晚无更多定时任务。
+
+🔴 镜像仍 **v1.5.9** (Up 3 days, StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 13 天）。
+
+🟡 git: 工作区仅 memory 变更，HEAD `f34281d chore(pm): 17:04 heartbeat`；main ahead origin **10**。
+
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; p0=29 / p1=16 / p2=7 / p3=2；PR 仅 #369 (CONFLICTING)。
+
+**代理**: 仍无法 spawn（main 不在 requester 白名单），blocker 第 13 天。
+
+**Needs your input**（顺延，无新增，① 今日三触发点已全部实证）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 10 是否推 origin。
