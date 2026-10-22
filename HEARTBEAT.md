@@ -493,3 +493,17 @@
 🟢 **代理配置已可用**: `agents_list` 现返回 8 个 agent（arch/checker/dev/devops/ops/qa/req），`allowAny` 仍 false 但显式 id 可路由 → **Needs-input 项 ②「放开 Agent spawn 权限」可解除**，待用户确认后即可派单。
 
 **Needs your input**（顺延；② 已具备操作条件）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② ✅ 可开始 spawn（需你确认派单顺序）③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ 磁盘 75% 是否清理。
+
+# 10:04 — PM Heartbeat (Thu 10-22, 10:04 轮次) [全绿, 09:04–10:04 窗口 0 ERROR]
+
+🟢 14 容器 Up 2 days (unhealthy 0); load **1.78/1.44/0.99**（较 09:04 的 0.26 明显上升，仍属正常波动）; mem avail **674M**; 磁盘 75% (9.7G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+
+✅ **09:04→10:04 窗口 backend 0 ERROR**（日志仅 2 行，完全静默）。**下一风险点 13:00/14:00/18:00** 三个 SQL 变体。
+
+🔴 镜像仍 **v1.5.9** (started=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 13 天）。#374 OPEN / 0 assignee / 0 评论。
+
+🟡 git: 工作区 clean，HEAD `4eec523 chore(pm): 09:04 heartbeat`；main ahead origin **3**。
+
+**GH 无变化**: 55 open, **0 assigned**; p0=29 / p1=16 / p2=7 / p3=2；PR 仅 #369 (CONFLICTING)。
+
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② Agent spawn 派单顺序确认 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 3 是否推 origin。
