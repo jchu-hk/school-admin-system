@@ -595,3 +595,21 @@
 **代理**: 仍无法 spawn（main 不在 requester 白名单），blocker 第 13 天。
 
 **Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration（13:00 已踩雷，14:00 一小时内再现）② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 5 是否推 origin。
+
+---
+
+# 17:04 — PM Heartbeat (Thu 10-22, 17:04 轮次) [全绿, 15:04–17:04 窗口 0 ERROR]
+
+🟢 14 容器 Up 3 days (unhealthy 0); load **0.60/1.04/0.96**; mem avail **692M**; 磁盘 75% (9.7G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+
+✅ **15:04→17:04 窗口 backend 0 ERROR** — 今日 13:00/14:00 两个 #374 触发点已过，下午平稳。**下一风险点 18:00 日报**（`AttendanceDailyReport.school_id`，约 1 小时后）。
+
+🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 13 天）。
+
+🟡 git: 工作区仅 `memory/2026-10-22.md` 未提交，HEAD `1b06537 chore(pm): 15:04 heartbeat`；main ahead origin **9**。
+
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; p0=29 / p1=16 / p2=7 / p3=2；PR 仅 #369 (CONFLICTING)；#374 仍 OPEN / 0 assignee。
+
+**代理**: 仍无法 spawn（main 不在 requester 白名单），blocker 第 13 天。
+
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 9 是否推 origin。
