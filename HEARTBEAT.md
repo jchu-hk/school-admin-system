@@ -525,3 +525,19 @@
 **GH 无变化**: 55 open, **0 assigned**; p0=29 / p1=16 / p2=7 / p3=2；PR 仅 #369 (CONFLICTING)。
 
 **Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② Agent spawn 派单顺序确认 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 3 是否推 origin。
+
+# 13:04 — PM Heartbeat (Thu 10-22, 13:04 轮次) [全绿, 12:04–13:04 窗口 1 ERROR = #374]
+
+🟢 14 容器 Up 2 days (unhealthy 0); load **0.82/0.48/0.44**; mem avail **594M**; 磁盘 75% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+
+🔴 **12:04→13:04 窗口 backend 1 ERROR — 13:00 触发点如期命中**（#374 第 13 天）: `13:00:00 LunchReminderScheduler 【Cron】午膳变更提醒任务失败: column LunchChange.created_by does not exist`。与昨日同一 SQL 变体。**下一风险点 14:00（FROM-clause "change"）、18:00 日报（AttendanceDailyReport.school_id）**。
+
+🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线。
+
+🟡 git: 工作区 clean，HEAD `25a5da6 chore(pm): 12:04 heartbeat`；main ahead origin **5**。
+
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; p0=29；PR 仅 #369 (CONFLICTING)。
+
+**代理**: 仍无法 spawn（main 不在 requester 白名单），blocker 第 13 天。
+
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration（13:00 已踩雷，14:00 一小时内再现）② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 5 是否推 origin。
