@@ -1,3 +1,21 @@
+# 15:04 — PM Heartbeat (Thu 10-22, 15:04 轮次) [全绿, 14:00–15:04 窗口 0 新 ERROR]
+
+🟢 14 容器 Up 2 days (unhealthy 0); load **0.55/0.56/0.38**; mem avail **640M**; 磁盘 75% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
+
+✅ **14:00→15:04 窗口无新 ERROR**（`grep -c ERROR` 仅 1 条，即 14:00:00 已记录的 #374 FROM-clause 变体，无新增故障面）。今日 13:00/14:00 两个触发点均已过，**下一风险点 18:00 日报**（`AttendanceDailyReport.school_id`）。
+
+🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 13 天）。
+
+🟡 git: 工作区 clean，HEAD `dce5be9 chore(pm): 14:00 patrol`；main ahead origin **7**。
+
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; p0=29 / p1=16 / p2=7 / p3=2；PR 仅 #369。
+
+**代理**: 仍无法 spawn（main 不在 requester 白名单），blocker 第 13 天。
+
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 7 是否推 origin。
+
+---
+
 # 14:00 — PM Patrol (Thu 10-22, 14:00 轮次) [全绿, 13:00–14:00 窗口 2 事件 ERROR, 均 #374]
 
 🟢 探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。14 容器 Up 2 days (unhealthy 0); load **0.19/0.28/0.27**; mem avail **796M**; 磁盘 75% (9.8G)。
