@@ -439,3 +439,21 @@
 **代理**: 仅 main (allowAny=false) → 无法 spawn，blocker 第 11 天。
 
 **Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 12 是否推 origin。
+
+---
+
+# 09:00 — PM Patrol (Thu 10-22, 09:00 轮次) [全绿, 08:00–09:00 窗口 0 ERROR]
+
+🟢 14 容器 Up 2 days (unhealthy 0); load **0.47/0.34/0.29**; mem avail **645M**; 磁盘 75% (9.8G, 较上轮 74% 微升)。探针全 200: backend `/api/health` :3000 `{"status":"ok"}`、admin :8080、portal :8081。
+
+✅ **08:00→09:00 窗口 backend 0 ERROR** — 今日已过 06:00 触发点，未复现。**下一风险点: 13:00/14:00/18:00** 三个 SQL 变体（`LunchChange.created_by` / `FROM-clause "change"` / `AttendanceDailyReport.school_id`）。
+
+🔴 镜像仍 **v1.5.9** (started=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 13 天）。#374 仍 OPEN、0 assignee、0 评论。
+
+🟢 git: `6e7e6f4 chore: dashboard rebuild`（08:00 memory-sync 自动提交），与 origin/main **同步 (ahead 0)**；工作区 clean。
+
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; p0=29 / p1=16 / p2=7 / p3=2；72h 无新 issue；PR 仅 #369 (CONFLICTING)。
+
+🟢 **代理配置已可用**: `agents_list` 现返回 8 个 agent（arch/checker/dev/devops/ops/qa/req），`allowAny` 仍 false 但显式 id 可路由 → **Needs-input 项 ②「放开 Agent spawn 权限」可解除**，待用户确认后即可派单。
+
+**Needs your input**（顺延；② 已具备操作条件）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② ✅ 可开始 spawn（需你确认派单顺序）③ PR #369 i18n 冲突 ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ 磁盘 75% 是否清理。
