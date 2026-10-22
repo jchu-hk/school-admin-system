@@ -1,3 +1,21 @@
+# 14:00 — PM Patrol (Thu 10-22, 14:00 轮次) [全绿, 13:00–14:00 窗口 2 事件 ERROR, 均 #374]
+
+🟢 探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。14 容器 Up 2 days (unhealthy 0); load **0.19/0.28/0.27**; mem avail **796M**; 磁盘 75% (9.8G)。
+
+🟡 **13:00→14:00 backend 4 行 ERROR / 2 事件**，均 #374 整点 cron 变体: 13:00 `LunchChange.created_by does not exist`、14:00 `missing FROM-clause entry for table "change"`。13:20–14:00 除整点外无错误 → 无新故障面。
+
+🔴 镜像仍 **v1.5.9** (StartedAt=2026-10-19T06:33Z, restarts=0) → #374 修复未上线（第 12 天）。
+
+🟡 git: clean，HEAD `0480f64`; main ahead origin **6**。
+
+**GH 无变化**: 55 open, **0 assigned**（55/55 无 owner）; PR 仅 #369。无新增 P0/P1。
+
+**代理**: 仍无法 spawn，blocker 第 12 天。
+
+**Needs your input**（顺延，无新增）: ① 🔥 部署含 #374 修复镜像 + 补 DB migration ② 🔥 放开 Agent spawn 权限 ③ PR #369 i18n ④ 29 个 p0 指派 owner ⑤ journald 持久化 ⑥ main ahead 6 是否推 origin。
+
+---
+
 # 12:04 — PM Heartbeat (Thu 10-22, 12:04 轮次) [全绿, 11:00–12:04 窗口 0 ERROR]
 
 🟢 14 容器 Up 2 days (unhealthy 0); load **0.67/0.47/0.46**; mem avail **642M**; 磁盘 75% (9.8G)。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
