@@ -1,19 +1,16 @@
-# 15:04 — PM Heartbeat (Fri 10-23, 15:00 轮次) [无实质变化 / load 持续走高 / 内存新低]
+# 16:04 — PM Heartbeat (Fri 10-23, 16:00 轮次) [load 回落 / 内存仍紧 / 报错清零]
 
-🟡 **无实质变化轮次**：GH 55 open、0 assigned、p0=29/p1=16 —— 与 13:00、14:00 完全一致。PR 仅 #369，本轮 mergeable=**UNKNOWN**（GitHub 尚未算完，上轮为 CONFLICTING，视为待复核）。
-
-🟢 探针全 200：backend `/api/health` :3000、admin :8080、portal :8081。14 容器全 Up 4 days，4 个 healthy、0 unhealthy。
-🟡 load **1.33/1.18/1.02**（13:00 0.45 → 14:00 0.91 → 15:00 1.33，**连续 3 轮单调上升**，已超核数基线，需盯）。
-🔴 内存 avail **616M**（637→724→**616M**，回吐 14:00 涨幅，为本日最低区间）。磁盘 75% 不变。
-
-🟡 backend 近 2h **1 条 ERROR**：14:00 午膳变更自动拒绝任务失败 (`missing FROM-clause entry for table "change"`)。13:00 的提醒链路报错已滚出 2h 窗口，非已修复（同属 #374 schema 漂移）。
-
-🔴 镜像仍 **v1.5.9**（built 2026-08-14，已 2 个月）→ #374 修复未上线（**第 14 天**）。
-🟢 git: HEAD `ae24f80`（上轮心跳提交）；工作区干净。
+🟢 **load 大幅回落**：1.33/1.18/1.02 → **0.41/0.37/0.36**。15:00 的三连升是短时峰值，非趋势，警报解除。
+🟡 内存 avail **622M**（616M → 622M，仍在今日低位区间，未继续恶化）。磁盘 75% 不变。
+🟢 探针全 200：backend :3000、admin :8080、portal :8081。14 容器全 Up 4 days（5 healthy / 0 unhealthy）。
+🟡 **GH 无变化**：55 open、0 assigned、p0=29/p1=16 —— 与 13:00/14:00/15:00 完全一致。
+🟡 backend 近 2h **0 条 ERROR**（上轮 1 条午膳拒绝任务失败已滚出窗口；仍需复核，不等于已修）。
+🔴 PR #369（i18n）仍 **CONFLICTING**，未处理。
+🔴 镜像仍 v1.5.9（2026-08-14）→ #374 未上线，**第 14 天**。
 
 **代理**: spawn 仍不可用（main 不在 requester 白名单），blocker 第 14 天。
 
-**Needs your input**（与 14:00 相同，无新增项）:
+**Needs your input**（连续 4 轮同一清单，无新增）:
 ① 🔥🔥 **部署含 #374 修复镜像 + 补 DB migration** — 午膳提醒/自动拒绝双链路每日报错第 14 天
 ② 🔥 放开 Agent spawn 权限（第 14 天）
-③ PR #369 i18n 冲突处理（mergeable 待 GitHub 复算）
+③ PR #369 i18n 冲突处理
