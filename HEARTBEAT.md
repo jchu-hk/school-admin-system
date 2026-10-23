@@ -1,23 +1,22 @@
-# 13:04 — PM Heartbeat (Fri 10-23, 13:00 轮次) [全绿 infra / 1 已知 ERROR 复发]
+# 14:04 — PM Heartbeat (Fri 10-23, 14:00 轮次) [无实质变化 / #374 报错链路扩至 2 条]
 
-🟢 14 容器全部 Up 3 days，0 unhealthy。load **0.45/0.39/0.32**（vs 12:00 的 0.23/0.34/0.37，略升但仍在低位）。探针全 200: backend `/api/health` :3000、admin :8080、portal :8081。
-🟢 内存 avail **637M**（total 3911 / used 3274 / free 117 / buff/cache 824）——连续第三轮回升/稳定（543→599→626→637M）。磁盘 75% (9.7G 可用) 无变化。
+🟡 **无实质变化轮次**：GH 55 open、0 assigned、p0=29/p1=16 —— 与 13:00 完全一致。PR 仅 #369，mergeable=**CONFLICTING**（已重算确认）。
 
-🟡 backend 近 2h 有 **1 条 ERROR**（12:00 轮次当时 0 条，为 13:00 新产生）：
-`LunchReminderScheduler【Cron】午膳变更提醒任务失败: column LunchChange.created_by does not exist`
-→ 即 #374 的 schema 漂移问题**已在生产实际造成定时任务失败**（影响午膳变更提醒推送），严重度从"潜在"升级为"已在报错"。
+🟢 探针全 200：backend `/api/health` :3000、admin :8080、portal :8081。14 容器全 Up 3 days，0 unhealthy。
+🟡 load **0.91/0.72/0.80**（vs 13:00 的 0.45/0.39/0.32，明显上升，需观察是否持续）。
+🟢 内存 avail **724M**（第 4 轮回升 543→599→626→637→724M）。磁盘 75% 不变。
 
-🔴 镜像仍 **v1.5.9**（built 2026-08-14）→ #374 修复未上线（第 14 天）。
+🟡 backend 近 2h **2 条 ERROR**，均为 #374 schema 漂移实际后果，已覆盖两条链路：
+- 13:00 午膳变更**提醒**任务失败 (`LunchChange.created_by does not exist`)
+- 14:00 午膳变更**自动拒绝**任务失败 (`missing FROM-clause entry for table "change"`)
+→ 午膳提醒 + 自动拒绝双链路均已失效，不只是单条提醒。
 
-🟢 git: HEAD `f7c1751`；已 push，main 与 origin 同步；工作区干净。
-
-**GH 无变化**: 55 open，**0 assigned**；p0=29 / p1=16 / p2=7 / p3=2；最新 issue 仍 #374 (10-04)。PR 仅 **#369**，本次确认 **CONFLICTING**。
+🔴 镜像仍 **v1.5.9**（built 2026-08-14）→ #374 修复未上线（**第 14 天**）。
+🟢 git: HEAD `5068fb0`；工作区仅本轮心跳文档变更。
 
 **代理**: spawn 仍不可用（main 不在 requester 白名单），blocker 第 14 天。
 
-**Needs your input**（① 严重度上调）:
-① 🔥🔥 **部署含 #374 修复镜像 + 补 DB migration** — 现已确认在跑的任务每天 13:00 报错，不再只是"潜在漂移"
+**Needs your input**（与 13:00 相同，无新增项）:
+① 🔥🔥 **部署含 #374 修复镜像 + 补 DB migration** — 现确认提醒与自动拒绝两条定时任务每日报错
 ② 🔥 放开 Agent spawn 权限（第 14 天）
 ③ PR #369 i18n 冲突处理（CONFLICTING 已确认）
-④ 29 个 p0 指派 owner
-⑤ 磁盘 75%（内存已稳定回升，可降级观察）
