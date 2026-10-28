@@ -1,14 +1,26 @@
 {
   "lastChecks": {
-    "email": 1792102800,
-    "calendar": 1792102800,
-    "weather": 1792102800,
-    "githubIssues": 1792102800,
-    "systemHealth": 1792102800,
-    "docker": 1792102800,
-    "git": 1792102800,
-    "agents": 1792102800,
-    "ciCd": 1792102800
+    "email": 1793192414,
+    "calendar": 1793192414,
+    "weather": 1793192414,
+    "githubIssues": 1793192414,
+    "systemHealth": 1793192414,
+    "docker": 1793192414,
+    "git": 1793192414,
+    "agents": 1793192414,
+    "ciCd": 1793192414
   },
-  "lastUpdated": "2026-10-16T07:00:00+08:00"
+  "lastUpdated": "2026-10-28T21:00:00+08:00",
+  "lastRunAt": "2026-10-28T21:00:00+08:00",
+  "lastResult": "no-threshold-breach-quiet",
+  "last_check": "2026-10-28T21:04:00+08:00",
+  "last_result": "no_breakthrough",
+  "open_issues": 55,
+  "open_prs": [
+    {
+      "number": 369,
+      "mergeable": "CONFLICTING"
+    }
+  ],
+  "spawn_blocker": "allowAny=false"
 }
