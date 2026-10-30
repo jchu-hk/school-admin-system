@@ -1,26 +1,20 @@
 {
-  "lastChecks": {
-    "email": 1793192414,
-    "calendar": 1793192414,
-    "weather": 1793192414,
-    "githubIssues": 1793192414,
-    "systemHealth": 1793192414,
-    "docker": 1793192414,
-    "git": 1793192414,
-    "agents": 1793192414,
-    "ciCd": 1793192414
-  },
-  "lastUpdated": "2026-10-28T21:00:00+08:00",
-  "lastRunAt": "2026-10-28T21:00:00+08:00",
-  "lastResult": "no-threshold-breach-quiet",
-  "last_check": "2026-10-28T21:04:00+08:00",
-  "last_result": "no_breakthrough",
-  "open_issues": 55,
-  "open_prs": [
-    {
-      "number": 369,
-      "mergeable": "CONFLICTING"
-    }
-  ],
-  "spawn_blocker": "allowAny=false"
+  "lastPatrol": "2026-10-30T19:00:00+08:00",
+  "health": { "backend": 200, "admin": 200, "portal": 200 },
+  "containersUp": 14,
+  "backendErrors2h": 2,
+  "backendErrorsNote": "18:00 DailyReportService: AttendanceDailyReport.school_id does not exist (#374 schema drift)",
+  "ghOpenIssues": 55,
+  "ghOpenP0P1": 45,
+  "ghUnassigned": 55,
+  "openPRs": [{ "number": 369, "state": "CONFLICTING", "staleDays": 71 }],
+  "imageVersion": "v1.5.9 (built 2026-08-14)",
+  "issue374Days": 27,
+  "spawnBlocker": "allowAny=false — cannot dispatch DEV/QA/DEVOPS",
+  "verdict": "no change / silent",
+  "needsInput": [
+    "#374 migration + image rebuild (missing columns: attendance_daily_reports.school_id, LunchChange.created_by)",
+    "PR #369 disposition (rebase or close & redo)",
+    "Whether to open DEV->QA->DEVOPS dispatch"
+  ]
 }

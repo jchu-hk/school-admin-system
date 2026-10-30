@@ -1,3 +1,27 @@
+# 21:00 — PM Heartbeat (Fri 10-30, 21:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (20.7ms)；admin :8080 = 200 (17.7ms)；portal :8081 = 200 (1.4ms)。
+🟢 14 容器全 running，非 Up = 0；uptime 11d6h26m；load 0.49/0.61/0.73（低位）；内存 avail **600M**（626M→600M，稳）；磁盘 76%（9.3G）。
+🟢 backend 近 2h ERROR/FATAL = **0**（19:00–21:00 窗口干净）。
+🟢 GH 55 open；唯一 open PR #369 mergeable=CONFLICTING（2026-08-23 更新，停滞 68 天）。
+🔴 镜像仍 2026-08-14 构建（v1.5.9）→ #374 第 28 天。
+🔴 spawn blocker：allowAny=false，PM 无法派单 DEV/QA/DEVOPS（持续，环境仅 main）。
+
+判定：与 20:04 完全同质（三端 200、ERROR=0、容器全绿、内存 600M 稳、GH 无变化）→ 无阈值突破，不推送用户，仅记录本文件。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置（rebase 或关闭）/ 是否放开 DEV→QA→DEVOPS 派单。
+
+# 20:04 — PM Heartbeat (Fri 10-30, 20:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (4.7ms)；admin :8080 = 200 (4.5ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器全 running，非 Up = 0（1 Exited = cloudflared 2 个月未用，常态）；uptime 11d5h30m；load 1.01/0.49/0.52（低位）；内存 avail **626M**（671M→626M，小幅回落仍稳）；磁盘 76%（9.3G）。
+🟢 backend 近 2h ERROR/FATAL = **0**（18:04–20:04 窗口干净）。
+🟢 GH 55 open；唯一 open PR #369 mergeable=CONFLICTING（2026-08-23 更新，停滞 68 天）。
+🔴 镜像仍 2026-08-14 构建（v1.5.9）→ #374 第 28 天。
+🔴 spawn blocker：allowAny=false，PM 无法派单 DEV/QA/DEVOPS（持续，环境仅 main）。
+
+判定：与 18:04 完全同质（三端 200、ERROR=0、容器全绿、内存 626M 稳、GH 无变化）→ 无阈值突破，不推送用户，仅记录本文件。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置（rebase 或关闭）/ 是否放开 DEV→QA→DEVOPS 派单。
+
 # 18:04 — PM Heartbeat (Fri 10-30, 18:04 轮次) [无阈值突破 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (74ms)；admin :8080 = 200 (7.6ms)；portal :8081 = 200 (2.9ms)。
@@ -1153,4 +1177,17 @@ Needs-input：#374 migration + 镜像重建上线 / PR #369 处置（rebase 或�
 🔴 spawn blocker：allowAny=false，环境仅 main，PM 无法派单 DEV/QA/DEVOPS（持续）。
 
 判定：与 12:04 轮同质（ERROR 类型未变、容器全绿、资源回升、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置（rebase 或关闭）/ 是否放开 DEV→QA→DEVOPS 派单。
+
+# 19:00 — PM Patrol (Fri 10-30, 19:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (7.1ms)；admin :8080 = 200 (4.6ms)；portal :8081 = 200 (1.3ms)。
+🟢 14 容器全 Up（12×11d / zookeeper 5d）；uptime 11d4h26m；load 0.41/0.29/0.28；内存 avail **617M**（未破 400M）；磁盘 76%（9.3G）。
+🟡 backend 近 2h ERROR = **2**：18:00 整点 cron `DailyReportService` → `column AttendanceDailyReport.school_id does not exist`。属 #374 schema 漂移已知失败面（与 13:00 LunchReminder / 14:00 午膳自动拒绝同源），无新错误类型。
+🟢 GH 55 open（P0/P1 = 45）；24h 内更新 = 0；assigned = 0；无新 P0/P1、无可启动任务。
+🟡 唯一 open PR #369（2026-08-20，停滞 71 天，mergeable=CONFLICTING）。
+🔴 镜像仍 2026-08-14 构建（v1.5.9）→ #374 第 27 天未处置。
+🔴 spawn blocker：allowAny=false，环境仅 main，PM 无法派单 DEV/QA/DEVOPS（持续）。
+
+判定：与 17:04 轮同质 → 不推送用户，仅记录本文件 + memory/pm-2026-10-30-1900-patrol.md + heartbeat-state.json。
 Needs-input：#374 migration + 镜像重建上线 / PR #369 处置（rebase 或关闭）/ 是否放开 DEV→QA→DEVOPS 派单。
