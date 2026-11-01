@@ -1,3 +1,15 @@
+# 21:04 — PM Heartbeat (Sun 11-01, 21:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (28ms)；admin :8080 = 200 (3.3ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up（8 Up 13d / 5 healthy 13d / 1 Up 7d；1 Exited=cloudflared 常态；1 Created 僵尸）；内存 avail **572M**（595M→572M，稳）；磁盘 76%（剩 9.2G）。
+🟢 backend 近 2h ERROR/FATAL = **0**。
+🟢 GH 55 open；assigned = 0；唯一 open PR #369 CONFLICTING（自 08-23 停滞 ~70 天）。
+🔴 #374（p1 schema 漂移）仍未指派 → 第 32 天；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS。
+
+判定：与 21:00 同质（三端 200、ERROR=0、容器全绿、内存稳、GH 无变化）→ 不推送用户，仅记录本文件。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。
+
 # 21:00 — PM Heartbeat (Sun 11-01, 21:00 轮次) [无阈值突破 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (10.0ms)；admin :8080 = 200 (4.6ms)；portal :8081 = 200 (0.8ms)。
