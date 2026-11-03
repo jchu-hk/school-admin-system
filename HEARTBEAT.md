@@ -1,3 +1,266 @@
+# 15:04 — PM Heartbeat (Tue 11-03, 15:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (2.0ms)；admin :8080 = 200 (0.8ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 25h）；内存 avail 1153M（1221M→1153M，稳）；磁盘 76%（剩 9.3G）。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；assigned = 0；无新增 P0/P1（最新仍 #374）。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅注册 main、allowAny 未设置 → 无法派单（连续 18 轮）。
+
+判定：与 14:00 同质（三端 200、容器全绿、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 rebase 或关闭 / 是否把 DEV→QA→DEVOPS 注册进 agents.list 并放开派单。
+
+# 14:00 — PM Heartbeat (Tue 11-03, 14:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (2.5ms)；admin :8080 = 200 (1.6ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器 Up（0 unhealthy）；内存 avail 1221M（1112M→1221M，稳）；磁盘 76%（剩 9.3G）。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；assigned = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅注册 main、allowAny 未设置 → 无法派单（连续 17 轮）。
+
+判定：与 12:04 同质（三端 200、容器全绿、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 rebase 或关闭 / 是否把 DEV→QA→DEVOPS 注册进 agents.list 并放开派单。
+
+# 12:04 — PM Heartbeat (Tue 11-03, 12:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (3.4ms)；admin :8080 = 200 (1.5ms)；portal :8081 = 200 (3.1ms)。
+🟢 14 容器 Up（0 unhealthy）；内存 avail 1112M（1042M→1112M，稳）；磁盘 76%（剩 9.3G）。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；唯一 open PR #369 仍 CONFLICTING。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅注册 main、allowAny 未设置 → 无法派单（连续 16 轮）。
+✅ 本轮确认 backend 健康（09:01 轮次漏测，已补）。
+
+判定：与上一轮同质（三端 200、容器全绿、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 rebase 或关闭 / 是否把 DEV→QA→DEVOPS 注册进 agents.list 并放开派单。
+
+# 09:01 — PM Heartbeat (Tue 11-03, 09:01 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.6ms)；admin :8080 = 200 (0.8ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up（0 unhealthy）；内存 avail 1042M（1211M→1042M，仍充裕）；磁盘 76%（剩 9.3G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）。
+🟡 PR #369 仍 CONFLICTING（需 rebase，或关闭）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅注册 main、allowAny 未设置 → 无法派单（连续 15 轮）。
+
+判定：与 08:04 同质（三端 200、容器全绿、ERROR=0、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 rebase 或关闭 / 是否把 DEV→QA→DEVOPS 注册进 agents.list 并放开派单。
+
+🟢 backend :3000/api/health = 200 (2.7ms)；admin :8080 = 200 (0.5ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up（0 unhealthy）；内存 avail 1211M（1249M→1211M，稳）；磁盘 76%（剩 9.3G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；#374 仍无 assignee。
+🟡 PR #369 mergeable 已由 UNKNOWN → CONFLICTING（CI 复核结论：仍需 rebase，不能直接合并）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents 目录有 DEV/QA/DEVOPS，但 agents.list 仅注册 main、allowAny 未设置 → 无法派单（连续 14 轮）。
+
+判定：与 08:04 同质（三端 200、容器全绿、ERROR=0、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 rebase 或关闭（已确认 CONFLICTING）/ 是否把 DEV→QA→DEVOPS 注册进 agents.list 并放开派单。
+
+# 08:04 — PM Heartbeat (Tue 11-03, 08:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (2.5ms)；admin :8080 = 200 (8.8ms, root 200)；portal :8081 = 200 (0.6ms, root 200)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 18h）；内存 avail 1249M（1309M→1249M，稳）；磁盘 76%（剩 9.3G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；assigned = 0；无新增 P0/P1。
+🟡 PR #369 mergeable 仍 UNKNOWN（自 07:00 起状态未回 CONFLICTING，CI 需复核）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 13 轮）。
+
+判定：与 07:00 同质（三端 200、容器全绿、ERROR=0、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单。
+
+# 07:00 — PM Heartbeat (Tue 11-03, 07:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (3.3ms)；admin :8080 = 200 (0.7ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 17h）；内存 avail 1309M（1170M→1309M，回升）；磁盘 76%（剩 9.4G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；assigned = 0；无新增 P0/P1。
+🟡 PR #369 mergeable 由 CONFLICTING → UNKNOWN（状态变动，需复核 CI）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 12 轮）。
+
+判定：三端 200、容器全绿、ERROR=0、GH 无新问题 → 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置（mergeable 已变）/ 是否放开 DEV→QA→DEVOPS 派单。
+
+# 21:04 — PM Heartbeat (Mon 11-02, 21:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (48ms)；admin :8080 = 200 (41ms)；portal :8081 = 200 (20ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 7h）；内存 avail 1170M（1239M→1170M，缓降但充裕）；磁盘 76%（剩 9.4G）。
+🟢 backend 近 2h ERROR/FATAL = 0（19:00 后无整点 cron 报错）。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；唯一 open PR #369 CONFLICTING（自 08-23）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 11 轮）。
+
+判定：与 21:00 同质（三端 200、容器全绿、ERROR=0、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单。
+
+# 21:00 — PM Heartbeat (Mon 11-02, 21:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (3.7ms)；admin :8080 = 200 (2.5ms)；portal :8081 = 200 (2.6ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 7h）；内存 avail 1239M（1280M→1239M，稳）；磁盘 76%（剩 9.4G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；assigned = 0；唯一 open PR #369 CONFLICTING（自 08-23）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 10 轮）。
+
+判定：与 20:04 完全同质（三端 200、容器全绿、ERROR=0、内存稳、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单。
+
+# 20:04 — PM Heartbeat (Mon 11-02, 20:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (9.0ms)；admin :8080 = 200 (1.9ms)；portal :8081 = 200 (1.2ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 6h）；内存 avail 1280M（1330M→1280M，稳）；磁盘 76%（剩 9.4G）。
+🟢 backend 近 2h ERROR/FATAL = 0（18:00 整点 cron 已滑出窗口）。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；唯一 open PR #369 CONFLICTING（自 08-23）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 9 轮）。
+
+判定：与 19:04 同质（三端 200、容器全绿、ERROR=0、内存稳、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单。
+
+# 19:04 — PM Heartbeat (Mon 11-02, 19:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.7ms)；admin :8080 = 200 (0.4ms)；portal :8081 = 200 (0.4ms)。
+🟢 14 容器 Up（5 healthy）；内存 avail 1330M（1278M→1330M，回升）；磁盘 76%（剩 9.4G）。
+🟢 backend 近 2h ERROR/FATAL = 0（18:00 整点 cron 报错已滑出窗口）。
+🟢 GH open issues = 55（持平，p0/p1=45）；唯一 open PR #369 CONFLICTING（自 08-23）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 8 轮）。
+
+判定：与 18:04 同质且更优（三端 200、容器全绿、ERROR=0、内存回升、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单。
+
+# 18:04 — PM Heartbeat (Mon 11-02, 18:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (5.1ms)；admin :8080 = 200 (2.0ms)；portal :8081 = 200 (2.6ms)。
+🟢 14 容器 Up（5 healthy）；内存 avail 1278M（1374M→1278M，稳）；磁盘 76%（剩 9.4G）。
+🟡 backend 近 2h ERROR = 4，全部为 18:00 整点 cron `attendance_daily_reports.school_id 不存在` —— 已知 #374 schema 漂移，非新增回归。
+🟢 GH open issues = 55（持平，p0/p1=45）；唯一 open PR #369 CONFLICTING（自 08-23）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 7 轮）。
+
+判定：与 17:04 同质（三端 200、容器全绿、ERROR 为同一已知整点 cron、内存稳、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单。
+
+# 17:04 — PM Heartbeat (Mon 11-02, 17:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (2.6ms)；admin :8080 = 200 (0.6ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up（5 healthy）；内存 avail 1374M（1407M→1374M，稳）；磁盘 76%（剩 9.4G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH open issues = 55（持平，p0/p1=45）；唯一 open PR #369 CONFLICTING（自 08-23）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 6 轮）。
+
+判定：与 16:04 同质（三端 200、容器全绿、ERROR=0、内存稳、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单。
+
+# 16:04 — PM Heartbeat (Mon 11-02, 16:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (2.7ms)；admin :8080 = 200 (0.6ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up（9 Up 2h + 5 healthy 2h）；内存 avail 1407M（1332M→1407M，继续回升）；磁盘 76%（剩 9.4G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH open issues = 55（持平，p0/p1=45）；无新 P0/P1 报障；assigned = 0；唯一 open PR #369 CONFLICTING（自 08-23）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 5 轮）。
+
+判定：与 15:04 同质（三端 200、容器全绿、ERROR=0、内存回升、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单。
+
+# 15:04 — PM Heartbeat (Mon 11-02, 15:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (16ms)；admin :8080 = 200 (4.3ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器 Up（58min，5 healthy）；内存 avail 1332M（593M→1332M，回升）；磁盘 76%（剩 9.4G）。
+🟢 GH open issues = 55（持平）；无新 P0/P1 报障。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 4 轮）。
+
+判定：与 14:00 同质（三端 200、容器全绿、内存回升、GH 无新 P0/P1）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单。
+
+# 14:00 — PM Patrol (Mon 11-02, 14:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (6.2ms)；admin :8080 = 200 (5.2ms)；portal :8081 = 200 (1.1ms)。
+🟢 14 容器 Up（13d uptime，5 healthy）；内存 avail 593M（483M→593M，回升）；磁盘 76%（剩 9.2G）。
+🟢 GH open issues = 55（持平）；assigned = 0；唯一 open PR #369 CONFLICTING（停滞 ~72 天）。
+🔴 #374（p1 schema 漂移）仍未指派；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（连续 3 轮）。
+
+判定：与 13:04 同质（三端 200、容器全绿、内存回升、GH 无新 P0/P1）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。
+
+# 13:04 — PM Heartbeat (Mon 11-02, 13:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (44ms)；admin :8080 = 200 (3.7ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up（13d uptime，5 healthy）；内存 avail 483M（488M→483M，稳）；磁盘 76%（剩 9.2G）。
+🟢 GH open issues = 30（55→30，缓解）；唯一 open PR #369 CONFLICTING（停滞 ~72 天）。
+🔴 #374（p1 schema 漂移）仍未指派；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS。
+
+判定：与 12:04 同质（三端 200、容器全绿、内存稳、GH 无新 P0/P1）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。
+
+# 12:04 — PM Heartbeat (Mon 11-02, 12:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (4.9ms)；admin :8080 = 200 (4.4ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器 Up（13 Up 13d + 1 Up 8d；5 healthy）；内存 avail 488M（503M→488M，稳）；磁盘 76%（剩 9.2G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH 55 open；assigned = 0；唯一 open PR #369 CONFLICTING（停滞 ~71 天）。
+🔴 #374（p1 schema 漂移）仍未指派；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS。
+
+判定：与 11:04 同质（三端 200、ERROR=0、容器全绿、内存稳、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。
+
+# 11:04 — PM Heartbeat (Mon 11-02, 11:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (36ms)；admin :8080 = 200 (3.6ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器 Up（8 Up 13d + 5 healthy 13d + 1 Up 8d；cloudflared/zombie 未出现在 ps 列表）；内存 avail 503M（514M→503M，稳）；磁盘 76%（剩 9.2G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH 55 open；唯一 open PR #369 CONFLICTING（停滞 ~71 天）。
+🔴 #374（p1 schema 漂移）仍未指派；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS。
+
+判定：与 10:04 同质（三端 200、ERROR=0、容器全绿、内存稳、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。
+
+# 10:04 — PM Heartbeat (Mon 11-02, 10:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.5ms)；admin :8080 = 200 (4.1ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器 Up（postgres/redis/kafka/ai-sre healthy，uptime 13d；cloudflared Exited 常态）；内存 avail 514M（493M→514M，稳）；磁盘 76%（剩 9.2G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH 55 open；assigned = 0；唯一 open PR #369 CONFLICTING（停滞 ~71 天）。
+🔴 #374（p1 schema 漂移）仍未指派；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS。
+
+判定：与 09:04 同质（三端 200、ERROR=0、容器全绿、内存稳、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。
+
+# 09:04 — PM Heartbeat (Mon 11-02, 09:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (399ms)；admin :8080 = 200 (21ms, root 200)；portal :8081 = 200 (2.0ms, root 200)。
+🟢 14 running 容器（postgres/redis/kafka/ai-sre healthy，uptime 13d；zookeeper 8d；1 Exited=cloudflared 常态；1 Created 僵尸）；内存 avail **493M**（527M→493M，小幅回落仍稳）；磁盘 76%（剩 9.2G）。
+🟢 backend 近 2h ERROR/FATAL = **0**。
+🟢 GH 55 open；assigned = 0；p1 = 16；唯一 open PR #369 CONFLICTING（自 08-23 停滞 ~71 天）。
+🔴 #374（p1 schema 漂移）仍未指派 → 第 34 天；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS。
+
+判定：与 11-02 09:01 同质（三端 200、ERROR=0、容器全绿、内存稳、GH 无变化）→ 不推送用户，仅记录本文件。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。
+
+# 09:01 — PM Heartbeat (Mon 11-02, 09:01 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000 /api/health = 200 (4.9ms)；admin :8080 = 200 (4.7ms, root 200)；portal :8081 = 200 (0.9ms, root 200)。
+🟢 15 容器 Up（backend/kafka/opa/postgres/redis healthy，uptime 13d；zookeeper 8d；1 Exited=cloudflared 常态；1 Created=zen_kowalevski 僵尸）；内存 avail **527M**（572M→527M，小幅回落仍稳）；磁盘 76%（剩 9.2G）。
+🟢 backend 近 2h ERROR/FATAL = **0**。
+🟢 GH 55 open；assigned = 0；p1 = 16；唯一 open PR #369 CONFLICTING（自 08-23 停滞 ~71 天）。
+🔴 #374（p1 schema 漂移）仍未指派 → 第 33 天；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS。
+
+判定：与 11-01 21:04 同质（三端 200、ERROR=0、容器全绿、内存稳、GH 无变化）→ 不推送用户，仅记录本文件。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。
+
 # 21:04 — PM Heartbeat (Sun 11-01, 21:04 轮次) [无阈值突破 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (28ms)；admin :8080 = 200 (3.3ms)；portal :8081 = 200 (0.6ms)。
@@ -1525,3 +1788,28 @@ Needs-input：#374 migration + 镜像重建 / PR #369 处置 / 是否放开派�
 
 判定：与 09:00 / 18:00 轮同质 → 不推送用户，仅记录本文件 + memory/pm-2026-11-01-1900-patrol.md + heartbeat-state.json。
 Needs-input：#374 migration + 镜像重建上线 / PR #369 处置（rebase 或关闭）/ 是否放开 DEV→QA→DEVOPS 派单。
+
+# 07:00 — PM Patrol (Mon 11-02, 07:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (12.9ms)；admin :8080 = 200 (4.3ms)；portal :8081 = 200 (1.5ms)。
+🟢 容器：14 Up（8 Up 13d / 5 healthy / zookeeper Up 8d；cloudflared Exited 常态；zen_kowalevski Created 僵尸）；内存 avail **618M**（572M→618M，稳）；磁盘 76%（剩 9.2G）。
+🟢 backend 近 2h ERROR/FATAL = **0**。
+🟢 GH 55 open（p0 29 / p1 16）；assigned = 0；唯一 open PR #369 mergeable UNKNOWN（自 08-23 停滞 ~71 天）。
+🔴 #374（p1 schema 漂移）仍未指派 → 第 33 天；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（持续性）。
+
+判定：与 11-01 21:04 同质（三端 200、ERROR=0、容器全绿、内存稳、GH 无变化）→ 不推送用户，仅记录本文件。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。
+
+# 19:00 — PM Patrol (Mon 11-02, 19:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (3.2ms)；admin :8080 = 200 (0.5ms)；portal :8081 = 200 (0.4ms)。
+🟢 容器：14 Up **5h**（本轮整体重启，原 13d 运行时长归零 — 非崩溃，全 Up/healthy）；内存 avail **1378M**（593M→1378M，大幅回升）；磁盘 76%（9.4G free）。
+🟡 backend 近 2h ERROR = 2，均为 #374 已知症状（18:00 整点 cron：DailyReportService「column "school_id" of relation "attendance_daily_re...」）。
+🟢 GH 55 open（p0 29 / p1 16）；assigned = 0；24h 更新 = 0；最新更新仍为 #374 (10-04) → 无新 P0/P1、无可启动任务。
+🟡 唯一 open PR #369 mergeable = CONFLICTING（自 08-20 停滞 ~74 天）。
+🔴 #374（p1 schema 漂移）第 34 天未指派；镜像仍 v1.5.9（2026-08-14）。
+🔴 spawn blocker 持续：agents.list 仅 main、allowAny 未设置 → 无法派单 DEV/QA/DEVOPS（第 4 轮连续）。
+
+判定：与 14:00 轮同质（三端 200、容器全绿、GH 无变化；内存改善、容器重启为唯一差异）→ 不推送用户，仅记录本文件 + memory/pm-2026-11-02-1900-patrol.md + heartbeat-state.json。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。

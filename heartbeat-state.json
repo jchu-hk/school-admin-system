@@ -1,13 +1,23 @@
 {
-  "lastPatrol": "2026-10-30T19:00:00+08:00",
-  "health": { "backend": 200, "admin": 200, "portal": 200 },
+  "lastPatrol": "2026-11-03T15:04:00+08:00",
+  "health": {
+    "backend": 200,
+    "admin": 200,
+    "portal": 200
+  },
   "containersUp": 14,
-  "backendErrors2h": 2,
+  "backendErrors2h": 0,
   "backendErrorsNote": "18:00 DailyReportService: AttendanceDailyReport.school_id does not exist (#374 schema drift)",
   "ghOpenIssues": 55,
   "ghOpenP0P1": 45,
   "ghUnassigned": 55,
-  "openPRs": [{ "number": 369, "state": "CONFLICTING", "staleDays": 71 }],
+  "openPRs": [
+    {
+      "number": 369,
+      "state": "CONFLICTING",
+      "staleDays": 71
+    }
+  ],
   "imageVersion": "v1.5.9 (built 2026-08-14)",
   "issue374Days": 27,
   "spawnBlocker": "allowAny=false — cannot dispatch DEV/QA/DEVOPS",
@@ -16,5 +26,30 @@
     "#374 migration + image rebuild (missing columns: attendance_daily_reports.school_id, LunchChange.created_by)",
     "PR #369 disposition (rebase or close & redo)",
     "Whether to open DEV->QA->DEVOPS dispatch"
-  ]
+  ],
+  "last_pm_patrol": "2026-11-01T19:00:00+08:00",
+  "last_patrol_result": {
+    "open_issues": 55,
+    "p0p1": 45,
+    "assigned": 0,
+    "updated_24h": 0,
+    "health": "green",
+    "blockers": [
+      "spawn:single-agent",
+      "#374 schema drift day30",
+      "PR#369 conflicting 73d"
+    ],
+    "notified": false
+  },
+  "last_patrol": "2026-11-02T19:00+08:00",
+  "open_issues": 55,
+  "p0": 29,
+  "p1": 16,
+  "assigned": 0,
+  "spawn_blocker": true,
+  "pr369": "CONFLICTING",
+  "notified": false,
+  "containers_uptime": "5h (restarted)",
+  "lastHeartbeat": "2026-11-02T21:04:00+08:00",
+  "lastStatus": "green"
 }
