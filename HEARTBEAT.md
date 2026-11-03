@@ -1,3 +1,16 @@
+# 18:04 — PM Heartbeat (Tue 11-03, 18:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (2.3ms)；admin :8080 = 200 (0.4ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up（4 healthy，0 unhealthy，uptime 28h）；内存 avail 1226M（1153M→1226M，回升）；磁盘 76%（剩 9.3G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；assigned = 0；无新增 P0/P1（最新仍 #374）。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅注册 main、allowAny 未设置 → 无法派单（连续 19 轮）。
+
+判定：与 15:04 同质（三端 200、容器全绿、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 rebase 或关闭 / 是否把 DEV→QA→DEVOPS 注册进 agents.list 并放开派单。
+
 # 15:04 — PM Heartbeat (Tue 11-03, 15:04 轮次) [无阈值突破 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (2.0ms)；admin :8080 = 200 (0.8ms)；portal :8081 = 200 (0.9ms)。
@@ -1813,3 +1826,16 @@ Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放�
 
 判定：与 14:00 轮同质（三端 200、容器全绿、GH 无变化；内存改善、容器重启为唯一差异）→ 不推送用户，仅记录本文件 + memory/pm-2026-11-02-1900-patrol.md + heartbeat-state.json。
 Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放开 DEV→QA→DEVOPS 派单 / 是否授权 PM 自动分配 issue owner。
+
+# 19:00 — PM Patrol (Tue 11-03, 19:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200；admin :8080 = 200；portal :8081 = 200。
+🟢 容器：14 Up 29h（5 healthy）；内存 avail ~1267M（18:00 1045M→回升）；磁盘 76%（9.3G free）。
+🟡 backend 近 24h ERROR = 4 条，均为 #374 同因（AttendanceDailyReport.school_id 缺失）：01:00 / 02:00 / 18:00（2条）。24h 内 18/19/20/21/22/23 时点均无错 → 维持「间歇性触发」判定（与 18:00 汇报一致）。
+🟢 GH 55 open（p0 29 / p1 16 / p2 7 / p3 2）；assigned = 0；今日 closed = 0、updated = 0 → 无新 P0/P1、无可启动任务。
+🟡 唯一 open PR #369 mergeable = CONFLICTING（~76 天），堵 #366/#367/#368 三条 p1。
+🔴 #374（p1 schema 漂移）第 35 天无 owner；镜像仍 v1.5.9（2026-08-14，落后 ~2.5 月）。
+🔴 spawn blocker：agents.list 仅 main、allowAny 未设置 → DEV/QA/DEVOPS 八代理已配置但不可派单（第 19 轮连续）。
+
+判定：与 18:00 同质（三端 200、容器全绿、GH 零变化，内存回升）→ 不推送用户，仅记录本文件 + memory/2026-11-03.md。
+Needs-input（延续 4 项，待下次状态汇报呈现）：① 放开 allowAny 派单 ② #374 处置（A 修 migration / B 暂缓 / C 先加失败告警）③ 镜像重建上线 ④ #369 处置（弃用重开 or 手工解冲突）。
