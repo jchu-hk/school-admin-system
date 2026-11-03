@@ -1,3 +1,16 @@
+# 19:04 — PM Heartbeat (Tue 11-03, 19:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (2.1ms)；admin :8080 = 200 (0.5ms)；portal :8081 = 200 (0.7ms)。
+🟢 14 容器 Up（4 healthy，0 unhealthy，uptime 29h）；内存 avail 1188M（1226M→1188M，稳）；磁盘 76%（剩 9.3G）；load 0.38。
+🟡 backend 近 2h ERROR = 2，均为 18:00 整点 cron `AttendanceDailyReport.school_id 不存在` —— 已知 #374 schema 漂移，非新增回归。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；assigned = 0；无新增 P0/P1（最新仍 #374）。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅注册 main、allowAny 未设置 → 无法派单（连续 20 轮）。
+
+判定：与 18:04 同质（三端 200、容器全绿、ERROR 为同一已知整点 cron、GH 无变化）→ 不推送用户，仅记录。
+Needs-input：#374 migration + 镜像重建上线 / PR #369 rebase 或关闭 / 是否把 DEV→QA→DEVOPS 注册进 agents.list 并放开派单。
+
 # 18:04 — PM Heartbeat (Tue 11-03, 18:04 轮次) [无阈值突破 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (2.3ms)；admin :8080 = 200 (0.4ms)；portal :8081 = 200 (0.5ms)。

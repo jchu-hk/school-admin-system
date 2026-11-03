@@ -1,44 +1,22 @@
----
+# 18:04 — PM Heartbeat (Fri 10-23, 18:00 轮次) [资源转好 / 报错复现 / 阻塞第 14 天]
 
-## 2026-07-10 14:25 GMT+8 - 午后心跳 ✅
+🟢 load **0.29/0.41/0.39**（17:00 为 0.83/0.53/0.46）——回落至全天低位。
+🟢 内存 avail **751M**（621M → 751M，+130M，脱离今日低位平台）。磁盘 75%（9.7G 可用）不变。
+🟢 探针：admin :8080 = 200、portal :8081 = 200、backend `/api/health` = 200。
+🟢 14 容器全 Up 4 days（5 healthy / 0 unhealthy）。
 
-**系统**: 全部健康 Up 15h | **Issues**: 15 open, #212(P1) ~27h未处理, #140(P3)待审查 | **Agent**: 全部idle ✅ | **Stuck误报**: #211已关闭, 忽略
+🔴 **报错复现（重要）**：近 2h backend **2 条 ERROR**，18:00:00 整点触发：
+  - `DailyReportService 生成班级日报失败: class=中一A班: column AttendanceDailyReport.school_id does not exist`
+  - `签到日报生成失败: column "school_id" of relation "attendance_daily_reports" does not exist`
+  → **DB schema 与代码不一致**（缺 migration），与 #374 同源。17:00 轮次的「0 ERROR」只是整点任务未到，非已修复。
 
----
+🟡 **GH 无变化**：55 open、p0=29/p1=16/p2=7/p3=2 —— 与 13:00–17:00 完全一致（5h 零变动）。
+🔴 PR #369（i18n）仍 **CONFLICTING**，唯一 open PR。
+🔴 镜像仍 `school-admin-backend:v1.5.9`（2026-08-14 构建）→ #374 未上线，**第 14 天**。
 
-## PM Patrol 检查清单 (2026-07-10)
+**代理**: spawn 仍不可用（main 不在 requester 白名单），blocker 第 14 天。
 
-### 系统状态检查
-- [x] Backend API 健康检查
-- [x] Frontend 状态
-- [x] Docker 容器状态
-- [x] Git 工作区状态
-
-### GitHub Issues 检查
-- [x] Open Issues 数量
-- [x] Issue #212 根因确认
-- [x] CI/CD Pipeline 状态
-- [x] Ready for Review 待验收
-- [x] In Progress 进行中
-- [x] 新创建的 Issues
-
-### Agent 状态检查 (关键!)
-- [x] **检查 Stuck Tasks** (`python3 scripts/detect-stuck-tasks.py`)
-  - [x] 无响应 >2小时的 Agent
-  - [x] Running 但无进展 >4小时的 Agent
-  - [x] 标记 Running 但无心跳文件的 Agent
-- [x] Issue #211 历史残留误报（实际已关闭于 16:40）- **已知问题，忽略**
-
-### 测试环境检查
-- [x] Backend API 可达
-- [x] Frontend 可访问
-- [x] 登录功能正常
-
-### CI/CD 检查
-- [x] GitHub Actions 状态
-- [x] 是否有阻塞 Pipeline 的错误
-
----
-
-## 心跳日志 - 2026-07-09 (压缩)
-
+**Needs your input**（连续 6 轮同一清单，无新增；本轮回出现实证报错）:
+① 🔥🔥🔥 **部署含 #374 修复镜像 + 补 DB migration（`attendance_daily_reports.school_id`）** — 日报链路每日 18:00 必现 ERROR，第 14 天
+② 🔥 放开 Agent spawn 权限（第 14 天）
+③ PR #369 i18n 冲突处理
