@@ -1852,3 +1852,15 @@ Needs-input：#374 migration + 镜像重建上线 / PR #369 处置 / 是否放�
 
 判定：与 18:00 同质（三端 200、容器全绿、GH 零变化，内存回升）→ 不推送用户，仅记录本文件 + memory/2026-11-03.md。
 Needs-input（延续 4 项，待下次状态汇报呈现）：① 放开 allowAny 派单 ② #374 处置（A 修 migration / B 暂缓 / C 先加失败告警）③ 镜像重建上线 ④ #369 处置（弃用重开 or 手工解冲突）。
+
+# 21:00 — PM Heartbeat (Tue 11-03, 21:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.5ms)；admin :8080 = 200 (0.5ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up（4 healthy，0 unhealthy，uptime 31h）；内存 avail 1206M（1188M→1206M，稳）；磁盘 76%（剩 9.3G）；load 0.52。
+🟡 backend 近 2h ERROR 见上轮结论：19:00/20:00 整点 cron `AttendanceDailyReport.school_id 不存在` —— 已知 #374 schema 漂移，非新增回归。
+🟢 GH open = 55（持平）；p0/p1 = 45（p0=29, p1=16）；今日新增 = 0；无新增 P0/P1（最新仍 #374）。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）。
+🔴 #374（p1 schema 漂移）仍未指派；#368/#367 i18n p1 停滞；线上镜像仍 2026-08-14（v1.5.9）。
+🔴 spawn blocker：agents.list 仅注册 main、allowAny 未设置 → 无法派单（连续 21 轮）。
+
+判定：与 19:04/20:04 同质（三端 200、容器全绿、GH 无变化、ERROR 为同一已知整点 cron）→ 不推送用户，仅记录。
