@@ -1,3 +1,30 @@
+# 19:04 (2nd check) — PM Heartbeat (Wed 11-04) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (3.5ms)；admin :8080 = 200 (0.5ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up，0 unhealthy；内存 avail 668M（714M→668M，仍 >600M）；磁盘 76%（剩 9.3G）。
+🟢 backend 近 2h ERROR/FATAL = 0（18:00 cron 报错已滑出窗口，未复发）。
+🟡 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；无新增 P0/P1。PR #369 仍 CONFLICTING。
+🔴 spawn blocker 未解除（agents.list 仅 main）。
+
+判定：同质且优于上轮（ERROR 归零）→ 不推送，仅记录。
+
+# 19:04 — PM Heartbeat (Wed 11-04, 19:04 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (6.9ms)；admin :8080 = 200 (1.2ms)；portal :8081 = 200 (1.4ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy）；内存 avail 714M（699M→714M，平稳）；磁盘 76%（剩 9.3G）。
+🟡 backend 近 2h ERROR = 2（18:00 DailyReportService 定时任务：`column AttendanceDailyReport.school_id does not exist`）→ 即 #374 schema 漂移已知表现，非新增故障，影响仅限班级日报生成。
+🟡 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；今日 closed = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，08-23 起未动）。
+🔴 unassigned p0/p1 = 45——assignee 派单持续为空。
+🔴 spawn blocker：agents.list 仅注册 main、allowAny 未设置 → 无法派单（连续 31 轮）。
+
+判定：与 17:04 同质（三端 200、容器全绿、GH 无变化）→ 不推送用户，仅记录。ERROR 2 条归因 #374，未扩散。
+
+Needs your input：
+1. #374（p1 schema 漂移）— 需执行 migration 并重建镜像上线；线上镜像仍 2026-08-14（v1.5.9）。此问题已开始影响每日定时任务，建议排期。
+2. PR #369 — rebase 修复或关闭（已停滞 2.5 个月）。
+3. 是否把 DEV/QA/DEVOPS 注册进 agents.list 并放开 allowAny，解除连续 31 轮的派单阻塞。
+
 # 17:04 — PM Heartbeat (Wed 11-04, 17:04 轮次) [无阈值突破 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (3.0ms)；admin :8080 = 200 (1.1ms)；portal :8081 = 200 (1.2ms)。
@@ -2030,3 +2057,19 @@ Needs-input：#374 migration + 镜像重建上线 / PR #369 rebase 或关闭 / �
 
 判定：与 12:04 同质（三端 200、容器全绿、ERROR=0、GH 无变化）→ 不推送用户，仅记录。
 Needs-input：#374 migration + 镜像重建上线 / PR #369 rebase 或关闭 / 是否把 DEV→QA→DEVOPS 注册进 agents.list 并放开派单。
+
+# 21:00 — PM Heartbeat (Wed 11-04, 21:00 轮次) [无阈值突破 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (42ms)；admin :8080 = 200 (4.3ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器 Up（0 unhealthy）；内存 avail 648M（668M→648M，仍 >600M）；磁盘 76%（剩 9.3G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟡 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；近 24h 新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，08-23 起未动）。
+🔴 unassigned p0/p1 = 45；spawn blocker 未解除（agents.list 仅 main）。
+
+判定：与 19:04 同质（三端 200、容器全绿、ERROR=0、GH 无变化）→ 不推送用户，仅记录。
+
+Needs your input（延续未决）：
+1. #374（p1 schema 漂移，`AttendanceDailyReport.school_id` 缺失）— 需 migration + 镜像重建上线；线上镜像仍 2026-08-14（v1.5.9），已开始影响每日定时报表。
+2. PR #369 — rebase 修复或关闭（停滞 ~2.5 个月）。
+3. 是否把 DEV/QA/DEVOPS 注册进 agents.list 并放开派单，解除连续 32 轮阻塞。
