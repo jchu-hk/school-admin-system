@@ -1,3 +1,41 @@
+# 07:04 — PM Heartbeat (Thu 11-05, 07:00 轮次) [同质 / spawn 回退 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (43.7ms)；admin :8080 = 200 (3.9ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy）；backend 近 2h ERROR/FATAL = 0。
+🟢 内存 avail 709M（619M→709M，回升）；swap 0；磁盘 76%（剩 9.3G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；近 24h 新增 = 0；无新增 P0/P1。
+🟡 PR #369 mergeable=UNKNOWN（上轮 CONFLICTING，需复查）；unassigned p0/p1 = 45。
+🔴 **spawn 能力回退**：openclaw.json agents.list 恢复为仅 main，allowAny 未设 → 上轮「8 agents 已注册」不再成立，派单再次阻塞（计数重置 = 1 轮）。
+
+判定：三端全绿、GH 零变化、内存回稳 → 与上轮同质，**不推送用户**。唯一负面变更为派单回退，并入 Needs your input。
+
+Needs your input：
+1. agents.list 回退 — 是否重新注册 dev/qa/devops/arch/checker/ops/req 恢复派单（当前唯一硬阻塞）。
+2. #374（p1 schema 漂移）— 排期 migration + 重建镜像（线上镜像仍 2026-08-14）。
+3. PR #369 — rebase 修复或关闭。
+
+---
+
+# 21:04 — PM Heartbeat (Wed 11-04, 21:04 轮次) [✅ spawn blocker 解除 + 🟡 内存临界]
+
+🟢 backend :3000/api/health = 200 (7.5ms)；admin :8080 = 200 (1.2ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy）；磁盘 76%（剩 9.3G）。
+🟢 backend 近 2h ERROR/FATAL = 0。
+🟡 内存 avail 595M→619M（两次采样），首次贴近 600M 阈值；无 swap；大户 java 965M + openclaw 560M。当前不构成风险，下轮若持续 <600M 或 free <150M 再处理。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；近 24h 新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）。
+🔴 unassigned p0/p1 = 45——仍无人认领。
+✅ **spawn blocker 解除**：agents.list 现注册 main/arch/checker/dev/devops/ops/qa/req 共 8 个（连续 31 轮的「仅 main」阻塞已消失，allowAny 仍 false 但 agentId 定向派单可用）。
+
+判定：基础设施全绿，但有一个**正面变更**（可派单）+ 一个**待观察项**（内存）。按阈值规则本轮仍不主动推送用户；派单能力已恢复，下一轮起可开始给 dev/qa 派 #374 等存量 p1。
+
+Needs your input：
+1. #374（p1 schema 漂移）— 是否现在派给 dev 做 migration？线上镜像仍 2026-08-14（v1.5.9），每日定时任务已受影响。
+2. PR #369 — rebase 修复或关闭（停滞 2.5 个月，阻塞 #366/#367/#368 i18n）。
+3. 内存 595M 无 swap — 是否需要给主机加 swap 或做一次容器重启释放。
+
+---
+
 # 19:04 (2nd check) — PM Heartbeat (Wed 11-04) [无阈值突破 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (3.5ms)；admin :8080 = 200 (0.5ms)；portal :8081 = 200 (0.5ms)。
@@ -2073,3 +2111,16 @@ Needs your input（延续未决）：
 1. #374（p1 schema 漂移，`AttendanceDailyReport.school_id` 缺失）— 需 migration + 镜像重建上线；线上镜像仍 2026-08-14（v1.5.9），已开始影响每日定时报表。
 2. PR #369 — rebase 修复或关闭（停滞 ~2.5 个月）。
 3. 是否把 DEV/QA/DEVOPS 注册进 agents.list 并放开派单，解除连续 32 轮阻塞。
+
+# 08:04 — PM Heartbeat (Thu 11-05, 08:04 轮次) [同质 / spawn 仍回退 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (23.9ms)；admin :8080 = 200 (5.3ms)；portal :8081 = 200 (1.7ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy）；backend 近 2h ERROR/FATAL = 0。
+🟢 内存 avail 676M（709M→676M，仍 >600M）；swap 0；磁盘 76%（剩 9.3G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；无新增 P0/P1。
+🟡 PR #369 mergeable=UNKNOWN（唯一 open PR，仍停滞）。
+🔴 spawn blocker：`/root/.openclaw/openclaw.json` agents.list = ['main']，allowAny=null → 派单仍阻塞（连续 2 轮）。
+🔴 unassigned p0/p1 = 45。
+
+判定：与 07:04 完全同质（三端 200、容器全绿、GH 零变化、内存回稳）→ **不推送用户**，仅记录。
+待用户决策项不变：① agents.list 重新注册；② #374 migration；③ PR #369 处置。
