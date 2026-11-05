@@ -1,3 +1,21 @@
+# 11:04 — PM Heartbeat (Thu 11-05, 11:04 轮次) [✅ 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.7ms)；admin :8080 = 200 (0.9ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up，0 unhealthy（uptime 2d）。
+🟢 内存 avail 775M（785M→775M，稳定且远离 600M 阈值）；free 117M；buff/cache 959M；swap 0；磁盘 76%（剩 9.3G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）。
+🟢 Git: main 干净。
+
+判定：与 10:04 同质（三端 200、容器全绿、内存稳、GH 零变化）→ 本轮**不推送用户**，仅记录。
+10:01 记录的内存跌破 600M 已确认恢复（连续三轮 >700M）。
+
+Needs your input（延续，未变）：
+1. #374（p1 schema 漂移）— 是否派 DEV 写 migration + DEVOPS 重建镜像上线。
+2. PR #369 — rebase 修复或关闭（阻塞 #366/#367/#368 i18n）。
+3. P0 存量 29 个 — 是否授权按里程碑/依赖排序分批派工（并发上限 8）。
+
+
 # 10:04 — PM Heartbeat (Thu 11-05, 10:04 轮次) [✅ 全绿 / 内存回升 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (4.4ms)；admin :8080 = 200 (3.0ms)；portal :8081 = 200 (0.8ms)。
