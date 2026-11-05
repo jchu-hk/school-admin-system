@@ -1,3 +1,24 @@
+# 10:01 — PM Heartbeat (Thu 11-05, 10:01 轮次) [🟡 内存跌破阈值 / 保持安静]
+
+# 09:04 — PM Heartbeat (Thu 11-05, 09:04 轮次) [✅ 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 404（根路径，非 health 端点）；:3001 = 301；admin :8080 = 200。
+🟢 14 容器 Up，0 unhealthy；postgres/redis/opa/kafka/ai-sre 均 healthy。
+🟢 内存 avail 685M（已从 495M 阈值区回升到 600M 以上）；free 121M；buff/cache 860M；swap 0；磁盘 76%（剩 9.3G）。
+🟢 GH open issue 列表正常（#374 p1 schema 漂移、#368/#367 p1 i18n 等），无新增 P0。
+🟢 Git: main 分支干净，仅 HEARTBEAT.md 未提交（本轮写入后提交）。
+
+判定：服务全绿、容器全绿、内存回升至阈值以上、GH 无新增 P0 → 本轮**不推送用户**。上轮记录的内存跌破 600M 已自然恢复，暂不干预。
+
+
+🟢 backend :3000/api/health = 200 (37.7ms)；admin :8080 = 200 (1.4ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器 Up，0 unhealthy；backend 近 2h ERROR/FATAL = 0。
+🟡 **内存 avail 495M（622M→495M，跌破 600M 阈值）**；free 107M；buff/cache 689M；swap 0；磁盘 76%（剩 9.3G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；unassigned = 55（p0/p1 = 45）。
+🟡 PR #369 mergeable 仍 CONFLICTING（08-23 起未动，唯一 open PR）。
+
+判定：三端全绿、容器全绿、ERROR=0、GH 零变化；唯一负面变更 = 内存跌破 600M（无 swap）。连续下降趋势（709M→622M→495M）已构成慢性内存压力，但不影响服务可用性 → 本轮**不推送用户**，下轮若 <450M 或出现 unhealthy/5xx 再告警并建议重启大户容器。
+
 # 09:00 — PM Heartbeat (Thu 11-05, 09:00 轮次) [✅ 播单 blocker 误判纠正 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (1.6ms)；admin :8080 = 200 (0.4ms)；portal :8081 = 200 (0.5ms)。
