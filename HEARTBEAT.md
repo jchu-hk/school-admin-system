@@ -1,3 +1,23 @@
+# 09:00 — PM Heartbeat (Thu 11-05, 09:00 轮次) [✅ 播单 blocker 误判纠正 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.6ms)；admin :8080 = 200 (0.4ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up，0 unhealthy；backend 近 2h ERROR/FATAL = 0。
+🟡 内存 avail 622M（709M→622M，仍 >600M）；free 124M；swap 0；磁盘 76%（剩 9.3G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；近 24h 新增 = 0；unassigned = 55（p0/p1 = 45）。
+🟡 PR #369 mergeable 仍 CONFLICTING（唯一 open PR）。
+✅ **播单 blocker 纠正**：`agents_list` 实测 8 个 agent 全部 configured=true（main/arch/checker/dev/devops/ops/qa/req），allowAny=false 但 agentId 定向 spawn 可用。
+   → 07:00 报的「回退为仅 main」是**误判**：当时读的是工作区 `openclaw.json`（不存在），配置实际在 `/root/.openclaw/openclaw.json`。之前多轮的「spawn blocker」统计均基于该错误路径。
+   → 已修正 memory/pm-2026-11-05-0900-daily-report.md 对应结论。
+
+判定：三端全绿、GH 零变化 → 不推送用户，仅记录。今日 09:00 已生成每日状态汇报（memory/pm-2026-11-05-0900-daily-report.md）。
+
+Needs your input（已缩减为 3 项，原「恢复播单」作废）：
+1. #374（p1 schema 漂移）— 是否立即派 DEV 写 migration + DEVOPS 重建镜像上线？
+2. PR #369 — rebase 修复或关闭（阻塞 #366/#367/#368 i18n）？
+3. P0 存量 29 个 — 是否授权我按里程碑/依赖自动排序分批派工（并发上限 8）？
+
+---
+
 # 07:04 — PM Heartbeat (Thu 11-05, 07:00 轮次) [同质 / spawn 回退 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (43.7ms)；admin :8080 = 200 (3.9ms)；portal :8081 = 200 (0.5ms)。
