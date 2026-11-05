@@ -1,3 +1,20 @@
+# 19:04 — PM Heartbeat (Thu 11-05, 19:04 轮次) [✅ 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (2.9ms)；admin :8080 = 200 (1.4ms)；portal :8081 = 200 (1.8ms)。
+🟢 14 容器 Up（0 unhealthy）。
+🟢 内存 avail 706M（758M→706M，缓降但远离 600M 阈值）；free 127M；buff/cache 881M；swap 0；磁盘 76%（剩 9.3G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；近 3 日新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，i18n #366/#367/#368），无 review。
+🟢 Git: HEARTBEAT.md / heartbeat-state.json 变更 + 2 个 memory 报告未提交（本轮记录后一并提交）。
+
+判定：与 17:04 同质 → 本轮**不推送用户**，仅记录。
+
+Needs your input（延续，未变）：
+1. #374（p1 schema 漂移）— 是否派 DEV 写 migration + DEVOPS 重建镜像上线。
+2. PR #369 — rebase 修复或关闭（阻塞 #366/#367/#368 i18n）。
+3. P0 存量 29 个 — 是否授权按里程碑/依赖排序分批派工（并发上限 8）。
+
+
 # 17:04 — PM Heartbeat (Thu 11-05, 17:04 轮次) [✅ 全绿 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (1.5ms)；admin :8080 = 200 (0.8ms)；portal :8081 = 200 (0.5ms)。
@@ -2302,3 +2319,16 @@ Needs your input（延续未决）：
 
 判定：与 07:04 完全同质（三端 200、容器全绿、GH 零变化、内存回稳）→ **不推送用户**，仅记录。
 待用户决策项不变：① agents.list 重新注册；② #374 migration；③ PR #369 处置。
+
+# 19:00 — PM Heartbeat (Thu 11-05, 19:00 轮次) [同质 / 保持安静]
+
+🟢 backend :3000/api/health = 200；admin :8080 = 200；portal :8081 = 200。
+🟢 14 容器 Up（5 healthy，0 unhealthy）；内存 avail 756MB（676M→756M）；磁盘 76%。
+🟡 backend 近 2h ERROR = 2（仅 18:00 DailyReportService #374 school_id 缺失，与既往同源）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；近 48h 新增 = 0。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）。
+🔴 unassigned = 55（p0/p1 = 45）；spawn blocker 未解除（agents.list 仅 main，allowAny=null）。
+🔴 #374 已 32 天未修，每日 18:00 定时报表持续失败。
+
+判定：与当日 08:04 / 14:00 同质 → 不推送用户，仅记录。
+Needs your input（延续）：① #374 migration + 镜像重建；② PR #369 处置；③ 是否开放 DEV/QA/DEVOPS 派单。
