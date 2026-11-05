@@ -1,3 +1,37 @@
+# 17:04 — PM Heartbeat (Thu 11-05, 17:04 轮次) [✅ 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.5ms)；admin :8080 = 200 (0.8ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 3d）。
+🟢 内存 avail 758M（740M→758M，持续回升，远离 600M 阈值）；free 159M；buff/cache 900M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；近 3 日新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR），无 review。
+🟢 Git: 仅 HEARTBEAT.md 未提交（本轮写入后提交）；无新增未指派/可启动任务变化。
+
+判定：与 16:04 同质 → 本轮**不推送用户**，仅记录。
+
+Needs your input（延续，未变）：
+1. #374（p1 schema 漂移）— 是否派 DEV 写 migration + DEVOPS 重建镜像上线。
+2. PR #369 — rebase 修复或关闭（阻塞 #366/#367/#368 i18n）。
+3. P0 存量 29 个 — 是否授权按里程碑/依赖排序分批派工（并发上限 8）。
+
+
+# 16:04 — PM Heartbeat (Thu 11-05, 16:04 轮次) [✅ 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.6ms)；admin :8080 = 200 (0.5ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up（0 unhealthy，uptime 3d）。
+🟢 内存 avail 740M（692M→740M，回升，远离 600M 阈值）；free 114M；buff/cache 929M；swap 0；磁盘 76%（剩 9.3G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；近 3 日新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR），无 review。
+🟢 Git: 工作区干净；无新增未指派/可启动任务变化。
+
+判定：与 14:04 同质 → 本轮**不推送用户**，仅记录。
+
+Needs your input（延续，未变）：
+1. #374（p1 schema 漂移）— 是否派 DEV 写 migration + DEVOPS 重建镜像上线。
+2. PR #369 — rebase 修复或关闭（阻塞 #366/#367/#368 i18n）。
+3. P0 存量 29 个 — 是否授权按里程碑/依赖排序分批派工（并发上限 8）。
+
+
 # 14:04 — PM Heartbeat (Thu 11-05, 14:04 轮次) [✅ 全绿 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (2.3ms)；admin :8080 = 200 (2.0ms)；portal :8081 = 200 (0.7ms)。
