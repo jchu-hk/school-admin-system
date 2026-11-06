@@ -2473,3 +2473,21 @@ Needs your input（延续，未变）：
 2. PR #369 — rebase 修复或关闭重做（阻塞 #366/#367/#368 i18n）。
 3. P0 存量 29 个 — 是否授权按里程碑/依赖排序分批派工（并发上限 8）。
 4. 是否立即开始把 #374 派给 dev（定向 spawn 已确认可用）。
+
+# 14:00 — PM Patrol (Fri 11-06) [🟡 全绿偏黄 / 保持安静]
+
+🟢 backend :3000/api/health = 200 {"status":"ok"}；admin :8080 = 200；portal :8081 = 200。
+🟢 14 容器 Up 4 days（5 healthy，0 unhealthy）；内存 avail 815M（721M→815M，连续回升）；磁盘 76%（剩 9.2G）。
+🟡 backend 近 2h ERROR = 2，均为 #374 schema 漂移：13:00 `LunchChange.created_by does not exist`、14:00 `missing FROM-clause entry for table "change"`。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；unassigned=55；无新增 P0/P1。
+🟡 PR #369 仍唯一 open PR，自 08-20 未更新（阻塞 #366/#367/#368 i18n）。
+⚠️ dispatch blocker 未解除：仅 main，allowAny=false，无法 spawn DEV/QA/DEVOPS。
+🟢 Git: 工作区干净，HEAD b2a055c。
+
+判定：与 11:04 同质 → **不推送用户**，仅记录。
+
+Needs your input（延续，未变）：
+1. #374（p1 schema 漂移，第 36 天）— 派 DEV 写 migration + DEVOPS 重建镜像。
+2. PR #369 — rebase 修复或关闭重做。
+3. P0 存量 29 个 — 是否授权分批派工（并发上限 8）。
+4. spawn 权限 — 是否开放 allowAny 允许 PM 自主派发。
