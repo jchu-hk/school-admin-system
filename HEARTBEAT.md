@@ -1,3 +1,41 @@
+# 15:04 — PM Heartbeat (Fri 11-06, 15:04 轮次) [🟡 延续 / schema 漂移仍在报错 / 主动推送]
+
+🟢 backend :3000/api/health = 200 (1.7ms)；admin :8080 = 200；portal :8081 = 200。
+🟢 14 容器 Up（0 unhealthy，uptime 4d）。
+🟡 backend 近 2h ERROR = 1：14:00 LunchReminderScheduler「午膳变更自动拒绝」→ `missing FROM-clause entry for table "change"` —— 与 14:04 轮次同一 #374 schema 漂移，未扩散，但每日定时任务仍失效。
+🟢 内存 avail 688M（660M→**688M**，稳定在 600M 上方）；free 207M；buff/cache 787M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；unassigned 55/55；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，i18n #366/#367/#368，更新于 08-23）— 阻塞第 80 天。
+🟢 Git: HEAD e79ae1b，仅 HEARTBEAT.md 有改动（本轮记录后提交）。
+
+判定：三端全绿、容器全绿、内存回稳；唯一 🟡 为 #374 引发的午膳定时任务持续失败（与上轮同源，无新增故障）→ 级别维持🟡，因连续两轮同一功能损坏，本轮继续推送提醒。
+
+Needs your input（未变，按优先级）：
+1. **#374（p1 schema 漂移，第 35 天）** — 已致午膳提醒/自动拒绝每日失败。回复「批准 #374」即定向 spawn DEV 写 migration，后续 spawn DEVOPS 重建镜像上线。
+2. PR #369 — rebase 修复或关闭重做（阻塞 #366/#367/#368 i18n）。
+3. P0 存量 29 个 — 是否授权按里程碑/依赖排序分批派工（并发上限 8）。
+
+# 14:04 — PM Heartbeat (Fri 11-06, 14:04 轮次) [🟡 转黄 / schema 漂移已产生运行时错误]
+
+🟢 backend :3000/api/health = 200 (4.5ms)；admin :8080 = 200 (1.3ms)；portal :8081 = 200 (1.0ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 4d）。
+🟡 backend 近 2h ERROR = 2（此前多轮为 0）：
+  - 13:00 LunchReminderScheduler「午膳变更提醒」→ `column LunchChange.created_by does not exist`
+  - 14:00 LunchReminderScheduler「午膳变更自动拒绝」→ `missing FROM-clause entry for table "change"`
+  → 即 #374 报告的表结构漂移（线上镜像仍 2026-08-14）已从「潜在风险」变为**每日定时任务实际失败**，午膳提醒/自动拒绝功能处于失效状态。
+🟢 内存 avail 660M（653M→**660M**，稳定在 600M 上方）；free 129M；buff/cache 838M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，i18n），自 08-23 未更新 — 阻塞第 80 天。
+🟢 Git: 工作区干净（HEAD e79ae1b, chore: patrol 14:00）。
+
+判定：三端 HTTP 全绿、容器全绿；但 ERROR 从 0 升为 2 且均为 schema 漂移引发，属**功能已损坏**（非仅告警）→ 本轮升级为🟡并主动推送用户。
+
+Needs your input（优先级已变化，#374 升为首位）：
+1. **#374（p1 schema 漂移，第 35 天）— 现在已造成午膳定时任务每日失败。** 建议立即派 DEV 写 migration + DEVOPS 重建镜像上线。请回复「批准 #374」我即定向 spawn dev。
+2. PR #369 — rebase 修复或关闭重做（阻塞 #366/#367/#368 i18n）。
+3. P0 存量 29 个 — 是否授权按里程碑/依赖排序分批派工（并发上限 8）。
+4. spawn 权限 — allowAny=false 不影响定向派单，此项可关闭。
+
 # 09:04 — PM Heartbeat (Fri 11-06, 09:04 轮次) [✅ 全绿 / 内存回升 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (12ms)；admin :8080 = 200 (3.5ms)；portal :8081 = 200 (0.8ms)。
