@@ -1,5 +1,23 @@
 # 09:00 — PM Heartbeat (Fri 11-06, 09:00 轮次) [✅ 全绿 / 保持安静]
 
+🟢 backend :3000/api/health = 200 (3.1ms)；admin :8080 = 200 (0.9ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up（0 unhealthy）；backend 近 2h ERROR/FATAL = 0。
+🟡 内存 avail 529M（601M→529M，已跌破 600M 阈值）；free 128M；buff/cache 705M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，i18n #366/#367/#368），无 review — 阻塞第 79 天。
+⚠️ dispatch blocker：allowAny=false（agentId 定向 spawn 实测可用与否未复核，11-05 曾纠正为可用）。
+🟢 Git: 工作区干净（HEAD 9454561）。
+
+判定：三端全绿、ERROR=0、GH 零变化；内存连续第二小时下滑（753M→601M→529M）已跌破 600M 且无 swap。服务仍可用，未触发告警阈值（<450M 或 unhealthy/5xx），记为🟡；下轮若继续下滑即建议重启大户容器（java ~965M / openclaw ~560M）。
+
+Needs your input（延续，未变）：
+1. #374（p1 schema 漂移，第 34 天）— 是否派 DEV 写 migration + DEVOPS 重建镜像上线。
+2. PR #369 — rebase 修复或关闭重做（阻塞 #366/#367/#368 i18n）。
+3. P0 存量 29 个 — 是否授权按里程碑/依赖排序分批派工（并发上限 8）。
+4. spawn 权限 — 是否开放 allowAny 允许 PM 自主派发。
+
+# 09:00 — PM Heartbeat (Fri 11-06, 09:00 轮次) [✅ 全绿 / 保持安静]
+
 🟢 backend :3000/api/health = 200 (6.7ms)；admin :8080 = 200 (0.4ms)；portal :8081 = 200 (0.5ms)。
 🟢 14 容器 Up（0 unhealthy）；backend 近 2h ERROR/FATAL = 0。
 🟡 内存 avail 601M（753M→601M，已触及 600M 阈值边缘）；free 159M；buff/cache 746M；swap 0；磁盘 76%（剩 9.2G）。
