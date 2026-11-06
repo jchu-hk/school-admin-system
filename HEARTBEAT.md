@@ -1,3 +1,19 @@
+# 18:04 — PM Heartbeat (Fri 11-06, 18:04 轮次) [🟡 收盘整点 cron 复发 / 推送提醒]
+
+🟢 backend :3000/api/health = 200 (49ms)；admin :8080 = 200 (4ms)；portal :8081 = 200 (1.2ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 4d）；Git main 干净。
+🟡 backend 近 2h ERROR = 2，**均为 18:00 整点 DailyReportService 签到日报** → `column "school_id" of relation "attendance_daily_reports" does not exist` —— 与 14:04 轮次的 #374 schema 漂移同源（午后窗口内 17:04 曾归零，因当时窗口未覆盖 18:00）。
+🟢 内存 avail 678M（688M→678M，持平，稳在 600M 上方）；free 120M；buff/cache 862M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；近 3 日新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，i18n #366/#367/#368，更新于 08-23）— 阻塞第 80 天。
+
+判定：服务与资源全绿；唯一故障为 #374 引发的**每日 18:00 日报生成失败**（现役功能持续损坏，非新增故障）→ 维持🟡，本轮推送提醒（连续第 3 轮同一功能失败）。
+
+Needs your input：
+1. **#374（p1 schema 漂移，第 35 天）** — 回复「批准 #374」即 spawn DEV 写 migration，随后 DEVOPS 重建镜像上线（线上镜像仍 2026-08-14）。
+2. PR #369 — rebase 修复或关闭重做（阻塞 #366/#367/#368 i18n）。
+3. P0 存量 29 个 — 是否授权按里程碑/依赖分批派工（并发上限 8）。
+
 # 17:04 — PM Heartbeat (Fri 11-06, 17:04 轮次) [🟢 全绿 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (2.7ms)；admin :8080 = 200 (3.5ms)；portal :8081 = 200 (1.1ms)。
