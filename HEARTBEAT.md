@@ -2557,3 +2557,15 @@ Needs your input（延续，未变）：
 2. PR #369 — rebase 修复或关闭重做。
 3. P0 存量 29 个 — 是否授权分批派工（并发上限 8）。
 4. spawn 权限 — 是否开放 allowAny 允许 PM 自主派发。
+
+# 21:00 — PM Heartbeat (Fri 11-06, 21:00 轮次) [🟢 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (8.6ms)；admin :8080 = 200 (1.3ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 4d）；backend 近 2h ERROR/FATAL = **0**（20:00 时段无整点定时任务触发，18:00 日报失败未复现于本窗口）。
+🟢 内存 avail 663M（678M→663M，小幅下降但稳在 600M 上方）；free 172M；buff/cache 798M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；近 3 日新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，i18n #366/#367/#368，更新于 08-23）— 阻塞第 80 天。
+🟢 Git: HEAD 1f2b2d7，工作区干净（仅本轮 HEARTBEAT 追加）。
+
+判定：三端 200、容器全绿、ERROR=0、GH 零变化 → **不推送用户**，仅记录。注意：#374 schema 漂移导致的日报失败只是本次统计窗口未覆盖整点，功能仍损坏，明日 00:00/18:00 会复现。
+Needs input 三项延续未变（#374 批准、PR #369 处置、29 个 P0 派工授权）。
