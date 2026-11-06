@@ -1,3 +1,21 @@
+# 09:04 — PM Heartbeat (Fri 11-06, 09:04 轮次) [✅ 全绿 / 内存回升 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (12ms)；admin :8080 = 200 (3.5ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器 Up（4 healthy，0 unhealthy，uptime 3d）；backend 近 2h ERROR/FATAL = 0。
+🟢 内存 avail 653M（601M→529M→**653M**，止跌回升，回到 600M 上方）；free 178M；buff/cache 777M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，i18n #366/#367/#368），自 08-23 未更新 — 阻塞第 80 天。
+✅ dispatch 复核：agents_list 确认 8 个 agent 全部 configured=true（main/arch/checker/dev/devops/ops/qa/req），agentId 定向 spawn 可用；allowAny=false 仅限制「任意 agent 互派」，不阻塞 PM 派单。
+🟢 Git: 工作区干净（HEAD 8690eb9）。
+
+判定：三端全绿、容器全绿、ERROR=0、GH 零变化；内存连续三小时下滑（753→601→529）后本轮回升至 653M，压力解除 → 上轮🟡降级为🟢，无需重启容器。
+
+Needs your input（延续，未变）：
+1. #374（p1 schema 漂移，第 35 天）— 是否派 DEV 写 migration + DEVOPS 重建镜像上线（线上镜像仍 2026-08-14）。
+2. PR #369 — rebase 修复或关闭重做（阻塞 #366/#367/#368 i18n）。
+3. P0 存量 29 个 — 是否授权按里程碑/依赖排序分批派工（并发上限 8）。
+4. spawn 权限 — allowAny=false 已确认不影响定向派单，此项可关闭；是否要我立即开始派 #374 给 dev？
+
 # 09:00 — PM Heartbeat (Fri 11-06, 09:00 轮次) [✅ 全绿 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (3.1ms)；admin :8080 = 200 (0.9ms)；portal :8081 = 200 (0.5ms)。
