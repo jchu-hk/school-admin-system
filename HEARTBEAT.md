@@ -1,3 +1,20 @@
+# 09:01 — PM Heartbeat (Sat 11-07, 09:01 轮次) [🟡 内存偏低 / 定时任务窗口内 ERROR=0 / 简短提醒]
+
+🟢 backend :3000/api/health = 200 (1.9ms)；admin :8080 = 200 (0.9ms)；portal :8081 = 200 (0.5ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 4d）；backend 近 2h ERROR/FATAL = **0**（18:00 日报 cron 窗已滑出；昨夜 19:04/20:04 轮次两次 ERROR 均为此同一 cron，与 #374 同源，本轮未见新错误）。
+🟡 内存 avail 550M（678M→**550M**，跌破 600M 阈值，缓降趋势）；free 155M；buff/cache 704M；swap 0；磁盘 76%（剩 9.2G）。未触发告警阈值（<450M 或 unhealthy/5xx）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；近 24h 新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，i18n #366/#367/#368，更新于 08-23）— 阻塞第 81 天。
+🟢 Git: main 6e46dcd（09:00 daily report，已记录 #374 对应 PR #375 已合并但镜像未上线），仅 HEARTBEAT.md 未提交（本轮一并提交）。
+
+判定：三端全绿、容器全绿、ERROR 归零（较昨夜改善）；唯一负面变更为内存 550M 跌破 600M 阈值（缓降、无 swap）。按规则未达告警线，但连续两日同一时段偏低 → 本轮**简短推送**，提示 #374 镜像上线仍为唯一待批动作。
+
+Needs your input：
+1. **#374 上线（关键）** — PR #375 已合并，但线上镜像仍 2026-08-14，migration 未执行 → 每日 18:00/午膳定时任务持续报错。回复「批准上线」即 spawn DEVOPS 执行 migration + 重建镜像。
+2. 内存 550M 缓降 — 是否授权重启大户容器（java ~965M / openclaw ~560M）释放，或调整堆上限。
+3. PR #369 — rebase 修复或关闭重做（阻塞 #366/#367/#368 i18n，第 81 天）。
+4. P0 存量 29 个 — 是否授权按里程碑/依赖分批派工（并发上限 8）。
+
 # 18:04 — PM Heartbeat (Fri 11-06, 18:04 轮次) [🟡 收盘整点 cron 复发 / 推送提醒]
 
 🟢 backend :3000/api/health = 200 (49ms)；admin :8080 = 200 (4ms)；portal :8081 = 200 (1.2ms)。
@@ -2569,3 +2586,20 @@ Needs your input（延续，未变）：
 
 判定：三端 200、容器全绿、ERROR=0、GH 零变化 → **不推送用户**，仅记录。注意：#374 schema 漂移导致的日报失败只是本次统计窗口未覆盖整点，功能仍损坏，明日 00:00/18:00 会复现。
 Needs input 三项延续未变（#374 批准、PR #369 处置、29 个 P0 派工授权）。
+
+# 07:00 — PM Patrol (Sat 11-07) [🟢 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.7ms)；admin :8080 = 200 (4.4ms)；portal :8081 = 200 (1.0ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy）；backend 近 2h ERROR/FATAL = **0**。
+🟡 内存 avail 602M（663M→602M）；free 116M；buff/cache 798M；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；unassigned=55；近 3 日新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，#366/#367/#368 i18n，更新于 08-23）— 阻塞第 81 天。
+⚠️ dispatch blocker 未解除：仅 main，allowAny=false，无法 spawn DEV/QA/DEVOPS → 记为 blocker。
+🟢 Git: HEAD fe7fc2a (chore: dashboard rebuild)，工作区干净。
+
+判定：三端 200、容器全绿、ERROR=0、GH/PR 零变化 → 与昨日 21:00 同质，**不推送用户**，仅记录。
+Needs your input（延续，未变）：
+1. #374（p1 schema 漂移，第 37 天，午膳/通知定时任务持续失败）— 是否派 DEV 写 migration + DEVOPS 重建镜像。
+2. PR #369 — rebase 修复或关闭重做（阻塞 #366/#367/#368）。
+3. P0 存量 29 个 — 是否授权按里程碑分批派工（并发上限 8）。
+4. spawn 权限 — 是否开放 allowAny 允许 PM 自主派发。
