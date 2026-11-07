@@ -1,3 +1,20 @@
+# 09:04 — PM Heartbeat (Sat 11-07, 09:04 轮次) [🟡 内存 520M 续降 / 定时任务 ERROR=0 / 简短提醒]
+
+🟢 backend :3000/api/health = 200 (70ms)；admin :8080 = 200 (3.8ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up（0 unhealthy，uptime 4d）；school-admin-backend 近 2h ERROR/FATAL = **0**（18:00 日报 cron 窗口外，未复发）。
+🟡 内存 avail **520M**（678→550→520M，连续三轮下滑）；free 122M；buff/cache 705M；swap 0；磁盘 76%（剩 9.2G）。未达告警线（<450M 或 unhealthy/5xx）。
+🟢 GH open = 55（持平）；近 2 日新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，i18n #366/#367/#368，更新 08-23）— 第 82 天。
+🟢 Git: main d34b548，工作区干净（上轮 09:01 已提交）。
+
+判定：三端全绿、容器全绿、ERROR=0；唯一负面为内存 520M 持续缓降（无 swap）。未达告警线，按规则仅记录 + 本轮不重复长篇推送（09:01 轮已提醒）。
+
+Needs your input（未变，按优先级）：
+1. **#374 上线** — PR #375 已合并但线上镜像仍 2026-08-14 → 回复「批准上线」即 spawn DEVOPS 执行 migration + 重建镜像。
+2. 内存 520M 缓降 — 大户为 kafka 964MiB（非 java/openclaw，前次归因有误）；是否授权重启或用 kafka 内存上限释放。
+3. PR #369 — rebase 修复或关闭重做（阻塞 i18n 第 82 天）。
+4. P0 存量 29 个 — 是否授权按里程碑分批派工（并发上限 8）。
+
 # 09:01 — PM Heartbeat (Sat 11-07, 09:01 轮次) [🟡 内存偏低 / 定时任务窗口内 ERROR=0 / 简短提醒]
 
 🟢 backend :3000/api/health = 200 (1.9ms)；admin :8080 = 200 (0.9ms)；portal :8081 = 200 (0.5ms)。
