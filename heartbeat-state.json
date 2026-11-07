@@ -1,5 +1,5 @@
 {
-  "lastPatrol": "2026-11-06T07:00:00+08:00",
+  "lastPatrol": "2026-11-07T09:01:00+08:00",
   "health": {
     "backend": 200,
     "admin": 200,
@@ -17,7 +17,7 @@
   "imageVersion": "v1.5.9 (built 2026-08-14)",
   "issue374Days": 33,
   "spawnBlocker": "allowAny=false — cannot dispatch DEV/QA/DEVOPS",
-  "verdict": "no change / silent",
+  "verdict": "yellow/push — 内存 461M 逼近 450M 告警线；三端全绿 ERROR=0",
   "needsInput": [
     "#374 migration + image rebuild (missing columns: attendance_daily_reports.school_id, LunchChange.created_by)",
     "PR #369 disposition (rebase or close & redo)",
@@ -62,5 +62,7 @@
     "#374 no owner day35",
     "image v1.5.9 (2026-08-14)",
     "PR #369 conflicting"
-  ]
+  ],
+  "ghNewIssues24h": 0,
+  "memAvailableMb": 461
 }
