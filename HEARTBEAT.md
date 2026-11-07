@@ -1,3 +1,17 @@
+# 13:04 — PM Heartbeat (Sat 11-07, 13:04 轮次) [🟡 schema 漂移复发 / 推送]
+
+🟢 backend :3000/api/health = 200 (5.9ms)；admin :8080 = 200 (5.8ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器 Up（0 unhealthy，uptime 4d）。
+🟡 backend 近 2h ERROR = 1 → 13:00 整点 `LunchReminderScheduler`：`column LunchChange.created_by does not exist` —— 与 #374 同源（数据库 schema 漂移），**日内第二个定时任务受害**（18:00 日报 → 13:00 午膳提醒）。
+🟢 内存 avail **638M**（603→638M，稳）；free 162M；buff/cache 787M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）— 第 83 天。
+🟢 Git: main 干净。
+
+判定：服务/容器/资源全绿，但 schema 漂移已开始影响第二个定时任务 → 严重度上升，本轮推送。
+
+Needs your input（未变）：#374 上线（回复「批准上线」）／PR #369 处置／P0 存量 29 个分批派工。
+
 # 11:04 — PM Heartbeat (Sat 11-07, 11:04 轮次) [🟢 全绿 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (10.6ms)；admin :8080 = 200 (5.2ms)；portal :8081 = 200 (0.9ms)。
