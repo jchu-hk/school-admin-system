@@ -1,3 +1,17 @@
+# 14:04 — PM Heartbeat (Sat 11-07, 14:04 轮次) [🟡 schema 漂移扩散至 14:00 / 推送]
+
+🟢 backend :3000/api/health = 200 (18ms)；admin :8080 = 200 (0.8ms)；portal :8081 = 200 (0.4ms)。
+🟢 14 容器 Up（0 unhealthy，uptime 5d）。
+🟡 backend 近 2h ERROR = 2 → 13:00 `LunchChange.created_by does not exist` + **14:00 `missing FROM-clause entry for table "change"`**。即午膳提醒 cron **每小时**失败（13:00、14:00 连续两轮），不止整点一次 → #374 schema 漂移影响面比上轮记录更大。
+🟢 内存 avail **648M**（638→648M，稳）；free 174M；buff/cache 784M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）— 第 83 天。
+🟢 Git: HEAD 9c8bc84 `chore: patrol 14:00`，工作区干净。
+
+判定：服务/容器/资源全绿；#374 导致午膳相关 cron **每小时**报错（13:00 与 14:00 各一条），严重度维持🟡但扩散确认 → 本轮推送（连续第 2 轮同因）。
+
+Needs your input（未变）：#374 上线（回复「批准上线」即 spawn DEVOPS 执行 migration + 重建镜像）／PR #369 处置／P0 存量 29 个分批派工。
+
 # 13:04 — PM Heartbeat (Sat 11-07, 13:04 轮次) [🟡 schema 漂移复发 / 推送]
 
 🟢 backend :3000/api/health = 200 (5.9ms)；admin :8080 = 200 (5.8ms)；portal :8081 = 200 (0.8ms)。
