@@ -2690,3 +2690,25 @@ Needs your input：
 判定：三端全绿、容器全绿、ERROR=0、GH 零变化；唯一变动为内存 631→546M 小幅回落（未达 450M 告警线）→ 按规则**不推送用户**，仅记录。
 
 待批（未变）：#374 上线（回复「批准上线」）／PR #369 处置／P0 存量 29 个分批派工。
+
+# 14:00 — PM Patrol (Sat 11-07) [🟢 服务全绿 / 🟡 定时任务错误复现]
+
+🟢 backend :3000/api/health = 200 (5.0ms)；admin :8080 = 200 (4.8ms)；portal :8081 = 200 (1.2ms)。
+🟢 14 容器 Up（5 healthy，0 unhealthy，uptime 5d）；磁盘 76%（剩 9.2G）。
+🟢 内存 avail **721M**（546M→721M，明显回升，远离 450M 告警线）；free 165M；buff/cache 866M；swap 0。
+🟡 backend 近 2h ERROR/FATAL = **2**（此前连续多轮为 0）：均为 #374 schema 漂移导致 —
+   13:00 LunchReminderScheduler「column LunchChange.created_by does not exist」；
+   14:00「missing FROM-clause entry for table "change"」。**每小时整点必现**，非偶发。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；unassigned=55；近 3 日新增 = 0；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，阻塞 i18n #366/#367/#368，更新于 08-23）— 第 82 天。
+⚠️ dispatch blocker 未解除：仅 main，allowAny=false，无法 spawn DEV/QA/DEVOPS → 记为 blocker。
+🟢 Git: HEAD 027576a（chore: heartbeat 13:04），工作区干净。
+
+判定：#374 已从「偶发」转为「每小时整点可复现」，且线上镜像仍为 2026-08-14 / migration 未执行。
+本轮仍有实质变化（ERROR 由 0→2、错误可复现性提升）→ 归入下一次状态汇报，不单独打扰。
+
+Needs your input（延续）：
+1. **#374 上线**（p1，第 37 天，每小时整点报错）— 回复「批准上线」即执行 migration + 重建镜像。
+2. PR #369 — rebase 修复或关闭重做（阻塞 i18n，第 82 天）。
+3. P0 存量 29 个 — 是否授权按里程碑分批派工（并发上限 8）。
+4. spawn 权限 — 是否开放 allowAny 允许 PM 自主派发 DEV/QA/DEVOPS。
