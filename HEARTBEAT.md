@@ -2726,3 +2726,17 @@ Needs your input（延续）：
 2. PR #369 — rebase 修复或关闭重做（阻塞 i18n，第 82 天）。
 3. P0 存量 29 个 — 是否授权按里程碑分批派工（并发上限 8）。
 4. spawn 权限 — 是否开放 allowAny 允许 PM 自主派发 DEV/QA/DEVOPS。
+
+# 15:04 — PM Heartbeat (Sat 11-07, 15:04 轮次) [🟡 schema 漂移持续 / 第 3 轮同因 / 不重复推送]
+
+🟢 backend :3000/api/health = 200 (5.0ms)；admin :8080 = 200 (4.1ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up（0 unhealthy）。
+🟡 backend 近 2h ERROR = 2 → 均为 14:00 窗口内（`LunchChange.created_by does not exist` + `missing FROM-clause entry for table "change"`）。15:00 轮尚未落日志/或已被 2h 窗口边界截断 → 待 16:04 轮确认是否每小时持续。
+🟢 内存 avail **663M**（648→663M，续稳）；free 113M；buff/cache 860M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）— 第 83 天。
+🟢 Git: HEAD 30bf727 `chore: heartbeat 14:04`，工作区干净。
+
+判定：服务/容器/资源全绿；schema 漂移（#374）无新增受害者，仍是同因同任务 → 与 14:04 同质，按规则**不重复推送**（已连推 2 轮），仅记录。
+
+Needs your input（未变）：#374 上线（回复「批准上线」即 spawn DEVOPS 执行 migration + 重建镜像）／PR #369 处置／P0 存量 29 个分批派工。
