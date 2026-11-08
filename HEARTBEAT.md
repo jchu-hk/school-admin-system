@@ -1,3 +1,18 @@
+# 07:00 — PM Patrol (Sun 11-08) [🟢 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (44ms)；admin :8080 = 200 (4ms)；portal :8081 = 200 (1.1ms)。
+🟢 14 容器 Up（0 unhealthy，uptime 5d）。
+🟢 backend 近 2h ERROR/FATAL = **0**。
+🟢 内存 avail **665M**（503→665M，回升至 600M 上方）；free 133M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；近 24h 新建 0，无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR）— 第 84 天。
+🟢 Git: HEAD 85a0588 `chore: dashboard rebuild`，工作区干净。
+
+判定：三端全绿、容器全绿、ERROR=0、内存回升、GH 零变化 → **不推送用户**，仅记录。
+Blocker（未变）：环境仅 main，无法 spawn DEV/QA/DEVOPS → 自动派工不可行。
+
+Needs your input（未变）：#374 上线（需 migration）／PR #369 处置／P0 存量 29 个分批派工。
+
 # 21:04 — PM Heartbeat (Sat 11-07, 21:04 轮次) [🟢 全绿 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (43ms)；admin :8080 = 200 (8ms)；portal :8081 = 200 (3ms)。
@@ -2815,3 +2830,18 @@ Needs your input（延续）：
 判定：服务/容器/资源全绿；schema 漂移（#374）无新增受害者，仍是同因同任务 → 与 14:04 同质，按规则**不重复推送**（已连推 2 轮），仅记录。
 
 Needs your input（未变）：#374 上线（回复「批准上线」即 spawn DEVOPS 执行 migration + 重建镜像）／PR #369 处置／P0 存量 29 个分批派工。
+
+# 08:04 — PM Heartbeat (Sun 11-08, 08:04 轮次) [🟢 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (33ms)；admin :8080 = 200 (5ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up（0 unhealthy）。
+🟢 backend 近 2h ERROR/FATAL = **0**。
+🟢 内存 avail **590M**（665→590M，小幅回落，仍在 600M 附近）；free 123M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；近 24h 新建 0；P0 存量 29；无新增 P0/P1。
+🟡 PR #369 mergeable=UNKNOWN（唯一 open PR）— 第 84 天。
+🟢 Git: HEAD 86ab658 `chore: dashboard rebuild`，工作区仅 HEARTBEAT.md 与 patrol 记录变更。
+
+判定：三端全绿、容器全绿、ERROR=0、GH 零变化 → **不推送用户**，仅记录。
+Blocker（未变）：环境仅 main，无法 spawn DEV/QA/DEVOPS → 自动派工不可行。
+
+Needs your input（未变）：#374 上线（需 migration）／PR #369 处置／P0 存量 29 个分批派工。
