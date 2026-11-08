@@ -1,5 +1,5 @@
 {
-  "lastPatrol": "2026-11-07T09:01:00+08:00",
+  "lastPatrol": "2026-11-08T09:00:00+08:00",
   "health": {
     "backend": 200,
     "admin": 200,
@@ -7,7 +7,7 @@
   },
   "containersUp": 14,
   "backendErrors2h": 0,
-  "backendErrorsNote": "",
+  "backendErrorsNote": "近2h ERROR/FATAL=0（相比07:00轮次一致）",
   "ghOpenIssues": 55,
   "ghOpenP0P1": 45,
   "ghUnassigned": 55,
@@ -15,9 +15,9 @@
     "369": "CONFLICTING"
   },
   "imageVersion": "v1.5.9 (built 2026-08-14)",
-  "issue374Days": 33,
+  "issue374Days": 34,
   "spawnBlocker": "allowAny=false — cannot dispatch DEV/QA/DEVOPS",
-  "verdict": "yellow/push — 内存 461M 逼近 450M 告警线；三端全绿 ERROR=0",
+  "verdict": "green/hold — 三端全绿、容器全绿、ERROR=0、内存565M（665→565M 缓降未破线）、GH零变化",
   "needsInput": [
     "#374 migration + image rebuild (missing columns: attendance_daily_reports.school_id, LunchChange.created_by)",
     "PR #369 disposition (rebase or close & redo)",
@@ -64,5 +64,10 @@
     "PR #369 conflicting"
   ],
   "ghNewIssues24h": 0,
-  "memAvailableMb": 461
+  "memAvailableMb": 461,
+  "memory": {
+    "availableM": 565,
+    "swap": 0,
+    "disk": "76% (9.2G free)"
+  }
 }
