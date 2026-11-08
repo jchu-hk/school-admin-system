@@ -1,3 +1,18 @@
+# 14:04 — PM Patrol (Sun 11-08, 14:04 轮次) [🟡 #374 cron 连续第 4 轮失败 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (2.8ms)；admin :8080 = 200 (1.2ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器 running（0 unhealthy）。
+🟡 backend 近 2h ERROR = **4** → 13:00 `LunchReminderScheduler` 午膳变更提醒 `column LunchChange.created_by does not exist`；14:00 午膳变更自动拒绝 `missing FROM-clause entry for table "change"`（grep 计数 4 含多行堆栈）。#374 同源，连续第 4 轮，报错点/形态与 14:00 轮完全一致，无扩散。
+🟢 内存 avail 566M（734→566M，仍在 600M 下方但服务正常）；free 127M；swap 未见；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；最新 Issue 停在 10-04，无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，更新 08-23）— 第 86 天。
+🟢 Git: HEAD 7db9f28 `chore: PM patrol 14:00`，工作区干净。
+
+判定：三端/容器/资源绿；#374 每小时候失败、状态与上轮（14:00 记录）完全一致，无新增故障面 → 本轮**不重复推送**（上轮 30 分钟前已推送同内容），仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变）：#374 上线（回复「批准上线」即执行 migration）／PR #369 处置／P0 存量 29 个分批派工。
+
 # 14:00 — PM Patrol (Sun 11-08, 14:00 轮次) [🟡 schema 漂移持续 2 处报错 / 推送]
 
 🟢 backend :3000/api/health = 200 (5.0ms)；admin :8080 = 200 (1.1ms)；portal :8081 = 200 (1.1ms)。
