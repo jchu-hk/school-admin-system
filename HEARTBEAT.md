@@ -1,3 +1,18 @@
+# 14:00 — PM Patrol (Sun 11-08, 14:00 轮次) [🟡 schema 漂移持续 2 处报错 / 推送]
+
+🟢 backend :3000/api/health = 200 (5.0ms)；admin :8080 = 200 (1.1ms)；portal :8081 = 200 (1.1ms)。
+🟢 14 容器 running（0 unhealthy）。
+🟡 backend 近 2h ERROR = **2** → 13:00 `LunchReminderScheduler` `column LunchChange.created_by does not exist`；14:00 `午膳变更自动拒绝` `missing FROM-clause entry for table "change"` —— 均 #374 同源，本轮新增第二处失败点，连续第 3 轮。
+🟢 内存 avail 734M（622→734M）；free 123M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；无新增 P0/P1。未指派 p0/p1 = 45。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，更新 08-23）— 第 86 天。
+🟢 Git: HEAD fa72245 `chore: heartbeat 13:04`，工作区干净。
+
+判定：三端/容器/资源绿；#374 使午膳 cron 每小时失败且报错点增加 → 维持🟡并推送（同因连续第 3 轮，距上次推送 1h）。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS，自动派工不可行。
+
+Needs your input（未变）：#374 上线（回复「批准上线」即执行 migration）／PR #369 处置／P0 存量 29 个分批派工。
+
 # 13:04 — PM Heartbeat (Sun 11-08, 13:04 轮次) [🟡 ERROR 复发=1 / 推送(连续第 2 轮同因)]
 
 🟢 backend :3000/api/health = 200 (16ms)；admin :8080 = 200 (5.9ms)；portal :8081 = 200 (1.4ms)。
