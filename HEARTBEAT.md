@@ -1,3 +1,17 @@
+# 13:04 — PM Heartbeat (Sun 11-08, 13:04 轮次) [🟡 ERROR 复发=1 / 推送(连续第 2 轮同因)]
+
+🟢 backend :3000/api/health = 200 (16ms)；admin :8080 = 200 (5.9ms)；portal :8081 = 200 (1.4ms)。
+🟢 14 容器 running（0 unhealthy，uptime 5d+）。
+🟡 backend 近 2h ERROR = 1 → 13:00 `LunchReminderScheduler`：`column LunchChange.created_by does not exist` —— #374 同源（schema 漂移），午膳提醒每小时失败，连续第 2 轮（12:04 曾判 0，因当时 13:00 未触发）。
+🟢 内存 avail 622M（608→622M，稳在 600M 上方）；free 125M；swap 0；磁盘 76%（剩 9.2G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；无新增 P0/P1。
+🟡 PR #369 仍 CONFLICTING（唯一 open PR，更新 08-23）— 第 85 天。
+🟢 Git: HEAD ad5552d `chore: heartbeat 12:04`，工作区干净。
+
+判定：三端/容器/资源全绿；#374 导致午膳 cron 每小时报错（13:00 命中）→ 维持🟡，本轮推送（同因连续第 2 轮，距上次推送 11-07 14:04）。
+
+Needs your input（未变）：#374 上线（回复「批准上线」即 spawn DEVOPS 执行 migration）／PR #369 处置／P0 存量 29 个分批派工。
+
 # 12:04 — PM Heartbeat (Sun 11-08, 12:04 轮次) [🟢 全绿 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (1.5ms)；admin :8080 = 200 (19.7ms)；portal :8081 = 200 (1.4ms)。
