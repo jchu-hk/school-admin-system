@@ -3160,3 +3160,18 @@ Needs your input（未变）：#374 上线（回复「批准上线」即执行 m
 Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
 
 Needs your input（未变，3 项）：① #374 上线（回复「批准上线」执行 migration）② PR #369 处置（冲突 91 天）③ P0 存量 29 个分批派工。
+
+# 15:04 — PM Patrol (Mon 11-09, 15:04 轮次) [🟡 #374 复现第 13 轮 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (2.9ms)；admin :8080 = 200 (1.2ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器 running（9 up + 5 healthy，0 unhealthy），全部 Up 7 days。
+🟡 backend 近 3h ERROR = **4**，均为 #374 同源：13:00 `column LunchChange.created_by does not exist`；14:00 `missing FROM-clause entry for table "change"`。#374 连续第 13 轮复现，报错点与上轮完全一致，无扩散。
+🟡 内存 avail **574M**（719→574M，回落 145M）；free 144M；buff/cache 747M；swap 0；磁盘 76%（剩 9.1G）。未达告警线。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；10-05 后新增 = 0；最新仍 10-04 (#374)。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 93 天。
+🟢 Git: HEAD 3f2db8e `chore: PM patrol 14:00`，工作区仅 HEARTBEAT.md。
+
+判定：三端/容器全绿，无新增 P0/P1；#374 按小时稳定复现，属已知同源失败 → 按「不重复推送同因」**不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，3 项）：① #374 上线（回复「批准上线」执行 migration）② PR #369 处置（冲突 93 天）③ P0 存量 29 个分批派工。
