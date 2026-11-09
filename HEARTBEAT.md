@@ -1,3 +1,18 @@
+# 13:04 — PM Patrol (Mon 11-09, 13:04 轮次) [🟡 #374 复现(第 11 轮) / 保持安静]
+
+🟢 backend :3000/api/health = 200 (7.5ms)；admin :8080 = 200 (15.3ms)；portal :8081 = 200 (3.0ms)。
+🟢 14 容器 running（9 up + 5 healthy，0 unhealthy）。
+🟡 backend 近 3h ERROR = **1** → 13:00 `LunchReminderScheduler` `column LunchChange.created_by does not exist`（lunch-reminder.service.js:56）。#374 连续第 11 轮复现（10 轮静默期结束，仍是 cron 未命中而非修复）。
+🟢 内存 avail **578M**（605→578M，小幅回落）；free 107M；buff/cache 788M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；10-05 之后新增 = 0；最新仍 10-04 (#374)。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 93 天。
+🟢 Git: HEAD d18ad58 `chore: PM patrol 12:04`，工作区仅 HEARTBEAT.md。
+
+判定：三端/容器全绿，无新增 P0/P1；#374 报错于 13:00 再次命中，属已知同源失败，无扩散 → 按「不重复推送同因」**不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，3 项）：① #374 上线（回复「批准上线」执行 migration）② PR #369 处置（冲突 93 天）③ P0 存量 29 个分批派工。
+
 # 12:04 — PM Patrol (Mon 11-09, 12:04 轮次) [🟢 服务全绿 / 🟢 内存 605M 回稳 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (4.5ms)；admin :8080 = 200 (4.2ms)；portal :8081 = 200 (1.1ms)。
