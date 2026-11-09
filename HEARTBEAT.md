@@ -1,3 +1,33 @@
+# 08:04 — PM Patrol (Mon 11-09, 08:04 轮次) [🟢 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (45ms)；admin :8080 = 200 (4.9ms)；portal :8081 = 200 (1.1ms)。
+🟢 14 容器 running（0 unhealthy）。
+🟢 backend 近 2-3h ERROR/FATAL = **0**；无 LunchReminder / 午膳 日志行 → #374 连续第 7 轮零复现（通宵窗口静默，仍属 cron 静默非修复）。
+🟡 内存 avail 616M（713→616M）；free 132M；buff/cache 801M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；10-05 之后新增 Issue = 0；最新仍为 10-04 (#374)。
+🟡 PR #369 仍 open（唯一 open PR，更新 08-23，mergeable=UNKNOWN）— 第 89 天。
+🟢 Git: HEAD 8015bca `chore: dashboard rebuild`，工作区仅 HEARTBEAT.md 修改 + 本巡逻记录。
+
+判定：三端/容器/资源全绿，无新增 P0/P1 → **不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，3 项）：① #374 上线（回复「批准上线」执行 migration）② PR #369 处置（冲突 89 天）③ P0 存量 29 个分批派工。
+
+# 07:00 — PM Patrol (Mon 11-09, 07:00 轮次) [🟢 全绿 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (43ms)；admin :8080 = 200 (6.0ms)；portal :8081 = 200 (0.7ms)。
+🟢 14 容器 running（0 unhealthy），全部 Up 6 days。
+🟢 backend 近 2-3h ERROR/FATAL = **0**；无 LunchReminder / 午膳 日志行 → #374 连续第 6 轮零复现（17:00→07:00 通宵窗口静默）。
+🟢 内存 avail 713M（653→713M）；free 152M；buff/cache 879M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；10-05 之后新增 Issue = 0；最新仍为 10-04 (#374)；全部未指派。
+🟡 PR #369 仍 open（唯一 open PR，更新 08-23，mergeable=UNKNOWN 未重算）— 第 88 天。
+🟢 Git: HEAD 544bf05 `chore: dashboard rebuild`（已含 9ff9406 PM patrol 21:00），工作区干净。
+
+判定：三端/容器/资源全绿，无新增 P0/P1 → **不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS，可启动任务无法派工。
+
+Needs your input（未变，3 项）：① #374 上线（回复「批准上线」执行 migration；报错静默≠已修复）② PR #369 处置（冲突 88 天）③ P0 存量 29 个分批派工。
+
 # 21:00 — PM Patrol (Sun 11-08, 21:00 轮次) [🟢 全绿 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (9.1ms)；admin :8080 = 200 (3.0ms)；portal :8081 = 200 (1.0ms)。
