@@ -1,3 +1,19 @@
+# 19:00 — PM Patrol (Mon 11-09, 19:00 轮次) [🟢 三端全绿 / 🟡 新报错点 attendance_daily_reports.school_id / 保持安静]
+
+🟢 backend :3000 = 200 (5.9ms)；admin :8080 = 200 (5.6ms)；portal :8081 = 200 (1.9ms)。
+🟢 14 容器 running，0 unhealthy。
+🟡 backend 近 3h ERROR = 4（含堆栈行，实为 2 条失败），**报错源切换**：18:00 `DailyReportService` 签到日报 → `column "school_id" of relation "attendance_daily_reports" does not exist`。与 #374 同属 schema 漂移家族，72h 内首发，仅 18:00 一次，未扩散。
+🟢 #374 本轮零复现（近 3h LunchChange/lunch-reminder = 0）。
+🟢 内存 avail **710M**（502→710M 回升，脱离 450M 告警线）；free 153M；buff/cache 875M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；最新仍 #374；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 93 天。
+🟢 Git: HEAD 573ea8e `chore: PM patrol 18:04`，工作区仅 HEARTBEAT.md。
+
+判定：三端/容器全绿，无新增 P0/P1，新报错为每日定时任务且单次出现 → **不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（4 项，+1）：① #374 上线（回复「批准上线」执行 migration）② **新增** attendance_daily_reports.school_id 漂移，建议与 #374 并入同一次 migration ③ PR #369 处置（冲突 93 天）④ P0 存量 29 个分批派工。
+
 # 17:04 — PM Patrol (Mon 11-09, 17:04 轮次) [🟢 全绿 / 🟢 #374 本轮零复现 / 保持安静]
 
 🟢 backend :3000 = 200；admin :8080 = 200；portal :8081 = 200。
