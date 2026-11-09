@@ -3253,3 +3253,19 @@ Needs your input（未变，3 项）：① #374 上线（回复「批准上线�
 Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
 
 Needs your input（未变，3 项）：① #374 上线（回复「批准上线」执行 migration）② PR #369 处置（冲突 93 天）③ P0 存量 29 个分批派工。
+
+# 20:04 — PM Patrol (Mon 11-09, 20:04 轮次) [🟢 三端全绿 / 🟡 同上一条 school_id 报错，无新增 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (5.4ms)；admin :8080 = 200 (4.4ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器 running（9 up + 5 healthy，0 unhealthy），全部 Up 7 days。
+🟡 backend 近 3h ERROR = 2 条（各 1 行堆栈），仍为 18:00 每日签到日报单点：
+`column AttendanceDailyReport.school_id does not exist`（中一A班）。与 19:04 轮同源，无扩散、无新报错源。
+🟢 内存 avail **674M**（664→674M 持平回升）；free 110M；buff/cache 883M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 93 天。
+🟢 Git: HEAD 7897180 `chore: PM patrol 19:04`，工作区干净。
+
+判定：三端/容器全绿，无新增 P0/P1；报错与上轮完全同源（每日定时任务单点）→ **不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，4 项）：① #374 上线（回复「批准上线」执行 migration）② attendance_daily_reports.school_id 漂移并入同一次 migration ③ PR #369 处置（冲突 93 天）④ P0 存量 29 个分批派工。
