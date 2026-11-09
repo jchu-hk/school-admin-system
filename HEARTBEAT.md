@@ -1,3 +1,18 @@
+# 21:04 — PM Patrol (Mon 11-09, 21:04 轮次) [🟢 全绿 / ERROR 归零 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (7.8ms)；admin :8080 = 200 (3.1ms)；portal :8081 = 200 (1.1ms)。
+🟢 14 容器 running（0 unhealthy）。
+🟢 backend 近 3h ERROR/FATAL = **0** → attendance_daily_reports.school_id 本窗口零复现（每日任务，明日 18:00 复测）。
+🟢 内存 avail **559M**（675→559M 回落，仍 >450M 告警线）；free 102M；buff/cache 776M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；最新仍 #374 (10-04)；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 93 天。
+🟢 Git: HEAD 5aa6d30 `chore: PM patrol 21:00`，工作区仅 HEARTBEAT.md。
+
+判定：三端/容器/ERROR 全绿，无新增 P0/P1 → **不推送用户**，仅记录。内存 559M 回落但距告警线仍有 109M，下轮复测。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，4 项）：① #374 上线（回复「批准上线」执行 migration）② attendance_daily_reports.school_id 漂移建议并入同一次 migration ③ PR #369 处置（冲突 93 天）④ P0 存量 29 个分批派工。
+
 # 21:00 — PM Patrol (Mon 11-09, 21:00 轮次) [🟢 全绿 / ERROR 归零 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (29ms)；admin :8080 = 200 (4ms)；portal :8081 = 200 (1.4ms)。
