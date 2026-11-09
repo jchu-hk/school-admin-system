@@ -3205,3 +3205,18 @@ Needs your input（未变，3 项）：① #374 上线（回复「批准上线�
 Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
 
 Needs your input（未变，3 项）：① #374 上线（回复「批准上线」执行 migration）② PR #369 处置（冲突 93 天）③ P0 存量 29 个分批派工。
+
+# 18:04 — PM Patrol (Mon 11-09, 18:04 轮次) [🟡 #374 复发（18:00 日报）+ 新报错点 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (53ms)；admin :8080 = 200；portal :8081 = 200。
+🟢 14 容器 running（9 up + 5 healthy，0 unhealthy）。
+🟡 backend 近 3h ERROR = **2** — 均 18:00 `DailyReportService` 签到/班级日报生成失败：`column "school_id" of relation "attendance_daily_reports" does not exist`。#374 同源（schema 漂移），但报错点从午膳（LunchChange）**换到日报（AttendanceDailyReport）** → 受害面扩大到第 3 个定时任务；17:04 轮的「零复现」属 18:00 未触发，非修复。
+🟢 内存 avail **647M**（502→647M 回升，脱离告警线 450M）；free 121M；buff/cache 843M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；10-04 后无新增；最新仍 #374。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 93 天。
+🟢 Git: HEAD cde4bf4 `chore: PM patrol 17:04`，工作区仅 HEARTBEAT.md + memory/2026-11-09.md。
+
+判定：三端/容器全绿、内存回升；#374 报错点新增（日报），属同因扩散无新增故障面 → 按「同因不重复推送」**不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，3 项）：① #374 上线（回复「批准上线」执行 migration）② PR #369 处置（冲突 93 天）③ P0 存量 29 个分批派工。
