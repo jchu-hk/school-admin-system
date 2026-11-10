@@ -1,3 +1,12 @@
+# 16:04 PM Patrol (Tue 11-10)
+
+🟢 backend :3000/api/health = 200 (8.7ms)；admin :8080 = 200 (6.8ms)；portal :8081 = 200 (2.5ms)。
+🟢 14 容器 running，0 unhealthy。
+🟡 backend 近 3h ERROR = **1** → 14:00 `LunchReminderScheduler` 午膳变更自动拒绝 `missing FROM-clause entry for table "change"` —— 与 13:00 `LunchChange.created_by does not exist` 同属 #374 schema 漂移家族；15:00 窗口未命中（cron 静默），未扩散。
+🟢 内存 avail **534M**（14:04 轮 514M→534M，回升，在 450M 告警线上方）；free 140M；buff/cache 711M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；11-09 后新增 0；最新仍 #374 (10-04)；全部 unassigned。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 99 天。
+
 # 14:04 — PM Patrol (Tue 11-10, 14:04 轮次) [🟢 全绿 / 午膳 cron 新错误 / 内存 669M / 保持安静]
 
 🟢 backend :3000/api/health = 200；admin :8080 = 200；portal :8081 = 200。
