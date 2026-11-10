@@ -1,3 +1,18 @@
+# 13:04 — PM Patrol (Tue 11-10, 13:04 轮次) [🟢 全绿 / 内存 537M / 保持安静]
+
+🟢 backend :3000/api/health = 200 (13.9ms)；admin :8080 = 200 (12.2ms)；portal :8081 = 200 (3.1ms)。
+🟢 14 容器 running（5 healthy，0 unhealthy），全部 Up 7 days。
+🟡 backend 近 3h ERROR/FATAL = **1** → 13:00 `LunchReminderScheduler`：`column LunchChange.created_by does not exist` —— #374 同源（schema 漂移），与昨日 13:00 形态一致，仅单点、无扩散；午膳 cron 恢复按小时失败（连续多轮静默期结束）。
+🟢 内存 avail **537M**（553→537M，小幅回落，仍在 450M 告警线上方）；free 118M；buff/cache 736M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 99 天。
+🟢 Git: HEAD 7f74eeb `chore: PM patrol 11:04 [green]`，工作区记录后提交。
+
+判定：三端/容器/内存全绿，无新增 P0/P1；ERROR=1 为 #374 已知同源点，无扩散 → 按「不重复推送同因」**不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，4 项）：① #374 上线（回复「批准上线」执行 migration）② attendance_daily_reports.school_id 漂移建议并入同一次 migration ③ PR #369 处置（冲突 99 天）④ P0 存量 29 个分批派工。
+
 # 11:04 — PM Patrol (Tue 11-10, 11:04 轮次) [🟢 全绿 / ERROR 归零 / 内存 553M / 保持安静]
 
 🟢 backend :3000/api/health = 200 (6.7ms)；admin :8080 = 200 (6.0ms)；portal :8081 = 200 (1.2ms)。
