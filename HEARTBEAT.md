@@ -3434,3 +3434,18 @@ Needs your input（未变，4 项）：① #374 上线（回复「批准上线�
 Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
 
 Needs your input（未变，4 项）：① #374 上线（回复「批准上线」执行 migration）② attendance_daily_reports.school_id 漂移建议并入同一次 migration ③ PR #369 处置（冲突 97 天）④ P0 存量 29 个分批派工。
+
+# 14:04 — PM Patrol (Tue 11-10, 14:04 轮次) [🟢 服务全绿 / 🟡 午膳 cron 2 报错 / 内存 514M / 保持安静]
+
+🟢 backend :3000/api/health = 200 (3ms)；admin :8080 = 200 (3ms)；portal :8081 = 200 (2ms)。
+🟢 14 容器 running（5 healthy，0 unhealthy），全部 Up 8 days。
+🟡 backend 近 3h ERROR = **2**（+2 堆栈行）：13:00 `column LunchChange.created_by does not exist`；14:00 `missing FROM-clause entry for table "change"`（午膳变更自动拒绝，SQL 写法错误）—— 均 #374 schema 漂移家族，午膳模块内，无扩散。
+🟡 内存 avail **514M**（669→514M，回落 155M，仍 >450M 告警线）；free 169M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 99 天。
+🟢 Git: HEAD 5a3626f `chore: PM patrol 14:04 [green, lunch cron new error]`，工作区干净（记录后提交）。
+
+判定：三端/容器全绿，无新增 P0/P1；午膳 cron 两条报错同属 #374 修复窗口，模块内未扩散；内存回落但未破线 → 按「不重复推送同因」**不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，5 项）：① #374 上线（回复「批准上线」）② attendance_daily_reports.school_id 并入同次 migration ③ 14:00 新错误随 #374 一并修 ④ PR #369 处置（第 99 天）⑤ P0 存量 29 个分批派工。
