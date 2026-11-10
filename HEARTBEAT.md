@@ -1,3 +1,18 @@
+# 08:04 — PM Patrol (Tue 11-10, 08:04 轮次) [🟢 全绿 / ERROR 归零 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (30ms)；admin :8080 = 200 (5.9ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器 running（9 up + 5 healthy，0 unhealthy），全部 Up 7 days。
+🟢 backend 近 3h ERROR/FATAL = **0** → attendance_daily_reports.school_id 本轮零复现（每日任务，今日 18:00 再复测）。
+🟢 内存 avail **612M**（559→612M 回升，>450M 告警线）；free 127M；buff/cache 802M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；最新仍 #374 (10-04)；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=UNKNOWN（上轮 CONFLICTING），更新 08-23 — 第 94 天。
+🟢 Git: HEAD 8805c68 `chore: dashboard rebuild`，工作区 HEARTBEAT.md + 本轮 patrol 记录。
+
+判定：三端/容器/ERROR/内存全绿，无新增 P0/P1 → **不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，4 项）：① #374 上线（回复「批准上线」执行 migration）② attendance_daily_reports.school_id 漂移建议并入同一次 migration ③ PR #369 处置（冲突 94 天）④ P0 存量 29 个分批派工。
+
 # 21:04 — PM Patrol (Mon 11-09, 21:04 轮次) [🟢 全绿 / ERROR 归零 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (7.8ms)；admin :8080 = 200 (3.1ms)；portal :8081 = 200 (1.1ms)。
@@ -3299,3 +3314,18 @@ Needs your input（未变，3 项）：① #374 上线（回复「批准上线�
 Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
 
 Needs your input（未变，4 项）：① #374 上线（回复「批准上线」执行 migration）② attendance_daily_reports.school_id 漂移并入同一次 migration ③ PR #369 处置（冲突 93 天）④ P0 存量 29 个分批派工。
+
+# 07:00 — PM Patrol (Tue 11-10, 07:00 轮次) [🟢 三端全绿 / 报错清零 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (58ms)；admin :8080 = 200 (5ms)；portal :8081 = 200 (3ms)。
+🟢 14 容器 running（9 up + 5 healthy，0 unhealthy），全部 Up 7 days。
+🟢 backend 近 4h ERROR = **0**（上轮 #374 同源 school_id 报错未再出现；夜间定时任务未触发或已静默，需 18:00 日报窗口再验证）。
+🟢 内存 avail **592M**；free 132M；buff/cache 779M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；>#374 新增 = 0；未指派 = 55/55（全量未指派，存量结构问题）。
+🟡 PR #369 仍 open，mergeable=UNKNOWN，更新 08-23 — 第 94 天。
+🟡 Git: HEAD aa51678 `chore: dashboard rebuild`（非本巡逻轮提交，工作区干净）— 有外部改动落地。
+
+判定：三端/容器全绿、报错清零、无新增 P0/P1 → **不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS，可启动任务全部滞留 main。
+
+Needs your input（未变，4 项）：① #374 上线（回复「批准上线」执行 migration）② attendance_daily_reports.school_id 漂移并入同一次 migration ③ PR #369 处置（冲突 94 天）④ P0 存量 29 个分批派工。
