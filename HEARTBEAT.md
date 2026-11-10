@@ -3359,3 +3359,18 @@ Needs your input（未变，4 项）：① #374 上线（回复「批准上线�
 Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS，可启动任务全部滞留 main。
 
 Needs your input（未变，4 项）：① #374 上线（回复「批准上线」执行 migration）② attendance_daily_reports.school_id 漂移并入同一次 migration ③ PR #369 处置（冲突 94 天）④ P0 存量 29 个分批派工。
+
+# 09:04 — PM Patrol (Tue 11-10, 09:04 轮次) [🟡 内存 449M 触线 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (65ms)；admin :8080 = 200 (7.2ms)；portal :8081 = 200 (4.0ms)。
+🟢 14 容器 running（9 up + 5 healthy，0 unhealthy），全部 Up 7 days。
+🟢 backend 近 3h ERROR/FATAL = **0** → attendance_daily_reports.school_id 零复现（每日任务，今日 18:00 复测）。
+🟡 内存 avail **449M**（490→449M，**已跌破 450M 告警线 1M**）；free 124M；buff/cache 639M；swap 0；磁盘 76%（剩 9.1G）。连续 3 轮下滑（619→490→449），下轮若继续下滑或触 430M 即建议重启大户容器。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 97 天。
+🟢 Git: HEAD e872eaf `chore: PM patrol 09:00`，工作区干净。
+
+判定：三端/容器/ERROR 全绿，无新增 P0/P1；内存首次跌破告警线（449M，差 1M，服务与延迟均正常）→ 按「临界 1M 且无 5xx/unhealthy」**不推送用户**，仅记录并重点盯下轮。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，4 项）：① #374 上线（回复「批准上线」执行 migration）② attendance_daily_reports.school_id 漂移建议并入同一次 migration ③ PR #369 处置（冲突 97 天）④ P0 存量 29 个分批派工。
