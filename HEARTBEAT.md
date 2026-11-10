@@ -1,3 +1,18 @@
+# 09:00 — PM Patrol (Tue 11-10, 09:00 轮次) [🟢 全绿 / ERROR 归零 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.9ms)；admin :8080 = 200 (0.9ms)；portal :8081 = 200 (1.3ms)。
+🟢 14 容器 running（9 up + 5 healthy，0 unhealthy），全部 Up 7 days。
+🟢 backend 近 3h ERROR/FATAL = **0** → attendance_daily_reports.school_id 零复现（每日任务，今日 18:00 再复测）。
+🟢 内存 avail **619M**（612→619M，>450M 告警线）；free 125M；buff/cache 810M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；最新仍 #374 (10-04)；近 2 天无任何 Issue 更新，无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 95 天。
+🟢 Git: HEAD 1e2a47d `chore: PM patrol 08:04`，工作区干净。
+
+判定：三端/容器/ERROR/内存全绿，无新增 P0/P1 → **不推送用户**，仅记录。
+Blocker（未变）：runtime capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（未变，4 项）：① #374 上线（回复「批准上线」执行 migration）② attendance_daily_reports.school_id 漂移建议并入同一次 migration ③ PR #369 处置（冲突 95 天）④ P0 存量 29 个分批派工。
+
 # 08:04 — PM Patrol (Tue 11-10, 08:04 轮次) [🟢 全绿 / ERROR 归零 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (30ms)；admin :8080 = 200 (5.9ms)；portal :8081 = 200 (0.9ms)。
