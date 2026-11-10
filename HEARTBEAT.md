@@ -1,3 +1,16 @@
+# 20:04 — PM Patrol (Tue 11-10, 20:04 轮次) [🟢 全绿 / 无变化 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (4.6ms)；admin :8080 = 200 (4.4ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 running，0 unhealthy。
+🟡 backend 近 3h ERROR = **2** → 仍仅 18:00 `DailyReportService` 签到日报 `attendance_daily_reports.school_id` 缺列（中一A班）；19:00–20:00 窗口零新错误，未扩散。
+🟢 内存 avail **597M**（643M → 597M，>450M 线）；free 113M；buff/cache 803M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；11-09 后新增 0；最新仍 #374 (10-04)；全部 unassigned。
+🟡 PR #369 仍 open，mergeable=CONFLICTING — 第 99 天。
+🟢 Git: main 工作区干净。
+
+判定：三端/容器/内存全绿，无新增 P0/P1、无新错误类型 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
 # 19:04 — PM Patrol (Tue 11-10, 19:04 轮次) [🟢 全绿 / 无变化 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (18.7ms)；admin :8080 = 200 (7.5ms)；portal :8081 = 200 (1.2ms)。
