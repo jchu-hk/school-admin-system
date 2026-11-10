@@ -1,3 +1,23 @@
+# 18:04 — PM Patrol (Tue 11-10, 18:04 轮次) [🟡 18:00 日报 cron 复现 / 其余全绿]
+
+🟢 backend :3000/api/health = 200 (34ms)；admin :8080 = 200 (5ms)；portal :8081 = 200 (1.4ms)。
+🟢 14 容器 running，0 unhealthy。
+🟡 backend 近 3h ERROR = **2** → 18:00 `DailyReportService` 签到日报：`column AttendanceDailyReport.school_id does not exist` / `column "school_id" of relation "attendance_daily_reports" does not exist`（影响 中一A班 等）。属 #374 schema 漂移家族第三处受害点（午膳提醒 / 午膳自动拒绝 / 签到日报），每日 18:00 定时触发，任务级失败、未扩散至接口。
+🟢 内存 avail **572M**（16:04 534M → 572M 回升，>450M 告警线）；free 128M；buff/cache 761M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；11-09 后新增 0；最新仍 #374 (10-04)；全部 unassigned。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 99 天。
+🟢 Git: HEAD 6cd8a39 `chore: PM patrol 16:04 [green, ...]`，工作区仅 HEARTBEAT.md。
+
+判定：三端/容器/内存全绿，无新增 P0/P1；18:00 日报报错为**预期内复现**（昨日 18:00/19:04 已记录同点，同一 school_id 缺列），与 #374 同一修复窗口 → 不推送用户，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项）：
+1. #374 上线 — 回复「批准上线」执行 migration（含 attendance_daily_reports.school_id 一并补列）
+2. 18:00 日报 school_id 缺列并入同一次 migration
+3. 午膳自动拒绝 SQL（missing FROM-clause）随 #374 一并修
+4. PR #369 处置（冲突 99 天，阻塞 i18n）
+5. P0 存量 29 个分批派工
+
 # 16:04 PM Patrol (Tue 11-10)
 
 🟢 backend :3000/api/health = 200 (8.7ms)；admin :8080 = 200 (6.8ms)；portal :8081 = 200 (2.5ms)。
