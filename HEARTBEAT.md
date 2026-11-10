@@ -1,3 +1,18 @@
+# 14:04 — PM Patrol (Tue 11-10, 14:04 轮次) [🟢 全绿 / 午膳 cron 新错误 / 内存 669M / 保持安静]
+
+🟢 backend :3000/api/health = 200；admin :8080 = 200；portal :8081 = 200。
+🟢 14 容器 running（9 up + 5 healthy，0 unhealthy），Up 8 days。
+🟡 backend 近 3h ERROR = **2**：①13:00 `LunchChange.created_by does not exist`（#374 同源）②14:00 `missing FROM-clause entry for table "change"` —— 午膳自动拒绝任务 SQL 写法错误，**新增**，仍属午膳模块、未扩散。
+🟢 内存 avail **669M**（537→669M 回升）；free 135M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；全部 unassigned；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 99 天。
+🟢 记录已写入 memory/pm-2026-11-10-1400-patrol.md。
+
+判定：三端/容器/内存全绿，无新增 P0/P1；14:00 错误增 1（午膳模块内），与 #374 同一修复窗口 → 不推送用户，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，新增第 3）：① #374 上线（回复「批准上线」）② attendance_daily_reports.school_id 并入同次 migration ③ 14:00 新错误随 #374 一并修 ④ PR #369 处置 ⑤ P0 存量 29 个分批派工。
+
 # 13:04 — PM Patrol (Tue 11-10, 13:04 轮次) [🟢 全绿 / 内存 537M / 保持安静]
 
 🟢 backend :3000/api/health = 200 (13.9ms)；admin :8080 = 200 (12.2ms)；portal :8081 = 200 (3.1ms)。
