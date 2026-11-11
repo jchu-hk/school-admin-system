@@ -3700,3 +3700,23 @@ Needs your input（5 项，未变）：
 3. 午膳自动拒绝/提醒 SQL（missing FROM-clause、LunchChange.created_by）随 #374 一并修
 4. PR #369 处置（冲突 102 天，阻塞 i18n #367/#368）
 5. P0 存量 29 个分批派工
+
+# 20:04 — PM Patrol (Wed 11-11, 20:04 轮次) [🟢 全绿 / 无新增 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (4.6ms)；admin :8080 = 200 (4.4ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up，0 unhealthy。
+🟡 backend 近 3h ERROR = 2（仅 18:00 整点）：`AttendanceDailyReport.school_id does not exist` / `relation "attendance_daily_reports"` 缺列 → 与既有 #374 schema 漂移同源，定点重复不扩散。20:00 无新增错误。
+🟢 内存 avail 620M（634M → 620M，>450M 线）；free 119M；buff/cache 820M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；10-04 后新增 0；最新仍 #374；全部 unassigned。
+🟡 PR #369 仍 open，CONFLICTING，更新 08-23 — 第 101 天，阻塞 i18n #367/#368。
+🟢 Git: HEAD 60407a7 `chore: PM patrol 19:04`，工作区干净。
+
+判定：三端/容器/内存全绿；无新增 P0/P1、无新错误类型 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：
+1. #374 上线 — 回复「批准上线」执行 migration（含 attendance_daily_reports.school_id 补列）
+2. 18:00 日报 school_id 缺列 — 已实际发生，确认并入同一次 migration
+3. 午膳自动拒绝/提醒 SQL（missing FROM-clause、LunchChange.created_by）随 #374 一并修
+4. PR #369 处置（冲突 101 天，阻塞 i18n #367/#368）
+5. P0 存量 29 个分批派工
