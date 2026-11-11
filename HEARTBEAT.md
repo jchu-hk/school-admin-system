@@ -3614,3 +3614,26 @@ Needs your input（5 项，第 3 项扩为「LunchChange + 午膳自动拒绝」
 3. LunchChange.created_by 缺列 + 午膳自动拒绝 SQL（missing FROM-clause）随 #374 一并修
 4. PR #369 处置（冲突 102 天，阻塞 i18n #367/#368）
 5. P0 存量 29 个分批派工
+
+# 14:04 — PM Patrol (Wed 11-11, 14:04 轮次) [🟢 全绿 / 错误形态未变 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (1.5ms)；admin :8080 = 200；portal :8081 = 200。
+🟢 14 容器 Up 9 days（9 up + 5 healthy，0 unhealthy）。
+🟡 backend 近 3h ERROR = 2，与 14:00 轮完全一致（同一根因 #374）：
+  - 13:00 午膳变更提醒 → `column LunchChange.created_by does not exist`
+  - 14:00 午膳自动拒绝 → `missing FROM-clause entry for table "change"`
+  → cron 定点复用、无扩散，无新增错误类型。
+🟢 内存 avail 491M（605M → 491M，仍 >450M 线）；free 114M；buff/cache 696M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；最新仍 #374 (10-04)；全部 unassigned。
+🟡 PR #369 仍 open，CONFLICTING，更新 08-23 — 第 102 天，阻塞 i18n #367/#368。
+🟢 Git: HEAD 7f463d3 `chore: PM patrol 14:04`，工作区干净。
+
+判定：三端/容器全绿，无新增 P0/P1，错误形态零变化 → **不推送用户**，仅记录。内存较上轮降 114M，下轮重点复测。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：
+1. #374 上线 — 回复「批准上线」执行 migration（含 attendance_daily_reports.school_id 一并补列）
+2. 18:00 日报 school_id 缺列并入同一次 migration
+3. 午膳自动拒绝/提醒 SQL（missing FROM-clause、LunchChange.created_by）随 #374 一并修
+4. PR #369 处置（冲突 102 天，阻塞 i18n #367/#368）
+5. P0 存量 29 个分批派工
