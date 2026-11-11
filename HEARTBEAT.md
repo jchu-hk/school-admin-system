@@ -3637,3 +3637,23 @@ Needs your input（5 项，未变）：
 3. 午膳自动拒绝/提醒 SQL（missing FROM-clause、LunchChange.created_by）随 #374 一并修
 4. PR #369 处置（冲突 102 天，阻塞 i18n #367/#368）
 5. P0 存量 29 个分批派工
+
+# 16:04 — PM Patrol (Wed 11-11, 16:04 轮次) [🟢 全绿 / ERROR 1 条已知同源 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (6.8ms)；admin :8080 = 200 (5.9ms)；portal :8081 = 200 (1.3ms)。
+🟢 14 容器 Up 9 days，0 unhealthy。
+🟡 backend 近 3h ERROR = **1** → 14:00 `LunchReminderScheduler` 午膳变更自动拒绝 `missing FROM-clause entry for table "change"`。#374 schema 漂移同源，与 14:04 轮形态一致，未扩散。（13:00 提醒任务本窗口未命中）
+🟢 内存 avail **547M**（605M → 547M，>450M 线）；free 102M；buff/cache 762M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；10-04 后新增 0；最新仍 #374；全部 unassigned。
+🟡 PR #369 仍 open，CONFLICTING，更新 08-23 — 第 101 天，阻塞 i18n #367/#368。
+🟢 Git: HEAD 888abb9 `chore: PM patrol 14:04`，工作区干净。
+
+判定：三端/容器/内存全绿；ERROR 1 条为 #374 已知同源定时任务失败 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：
+1. #374 上线 — 回复「批准上线」执行 migration（含 attendance_daily_reports.school_id 一并补列）
+2. 18:00 日报 school_id 缺列并入同一次 migration
+3. 午膳自动拒绝/提醒 SQL（missing FROM-clause、LunchChange.created_by）随 #374 一并修
+4. PR #369 处置（冲突 101 天，阻塞 i18n #367/#368）
+5. P0 存量 29 个分批派工
