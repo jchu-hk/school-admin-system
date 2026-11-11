@@ -1,3 +1,23 @@
+# 07:00 — PM Patrol (Wed 11-11, 07:04 轮次) [🟢 全绿 / 无变化 / 保持安静]
+
+🟢 backend :3000/api/health = 200；admin :8080 = 200；portal :8081 = 200。
+🟢 14 容器 running（8 days），0 unhealthy。
+🟢 backend 近 3h ERROR = **0** → 18:00 日报 school_id 报错未在 08:00 前窗口复现（下次触发 18:00，持续观察）；07:00 BackupService 清理正常（删除 0 个旧备份）。
+🟢 内存 avail **589M**（597M → 589M，>450M 线）；free 148M；buff/cache 757M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；11-09 后新增 0；最新仍 #374 (10-04)；全部 unassigned。
+🟡 PR #369 仍 open（mergeable=UNKNOWN，更新 08-23）— 第 100 天，仍阻塞 i18n #367/#368。
+🟢 Git: 工作区干净。
+
+判定：三端/容器/内存全绿，无新增 P0/P1、无新错误 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：
+1. #374 上线 — 回复「批准上线」执行 migration（含 attendance_daily_reports.school_id 一并补列）
+2. 18:00 日报 school_id 缺列并入同一次 migration
+3. 午膳自动拒绝 SQL（missing FROM-clause）随 #374 一并修
+4. PR #369 处置（冲突 100 天，阻塞 i18n #367/#368）
+5. P0 存量 29 个分批派工
+
 # 20:04 — PM Patrol (Tue 11-10, 20:04 轮次) [🟢 全绿 / 无变化 / 保持安静]
 
 🟢 backend :3000/api/health = 200 (4.6ms)；admin :8080 = 200 (4.4ms)；portal :8081 = 200 (0.6ms)。
@@ -3511,3 +3531,23 @@ Needs your input（未变，4 项）：① #374 上线（回复「批准上线�
 Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
 
 Needs your input（未变，5 项）：① #374 上线（回复「批准上线」）② attendance_daily_reports.school_id 并入同次 migration ③ 14:00 新错误随 #374 一并修 ④ PR #369 处置（第 99 天）⑤ P0 存量 29 个分批派工。
+
+# 09:04 — PM Patrol (Wed 11-11, 09:04 轮次) [🟢 全绿 / 无变化 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (76ms)；admin :8080 = 200 (4.2ms)；portal :8081 = 200 (1.0ms)。
+🟢 14 容器 running，0 unhealthy。
+🟢 backend 近 3h ERROR/FATAL = **0**（18:00 日报 school_id 报错未在 09:00 前窗口复现；下次触发 18:00）。
+🟡 内存 avail **461M**（589M → 461M，持续下滑，距 450M 告警线仅 11M，下轮重点复测）；free 118M；buff/cache 660M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增 P0/P1。
+🟡 PR #369 仍 open（mergeable=CONFLICTING，更新 08-23）— 第 101 天，仍阻塞 i18n #367/#368。
+🟢 Git: 工作区仅 HEARTBEAT.md + patrol 记录。
+
+判定：三端/容器/ERROR 全绿，无新增 P0/P1 → **不推送用户**，仅记录。内存 461M 逼近告警线，下轮若 <450M 建议重启大户容器。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：
+1. #374 上线 — 回复「批准上线」执行 migration（含 attendance_daily_reports.school_id 一并补列）
+2. 18:00 日报 school_id 缺列并入同一次 migration
+3. 午膳自动拒绝 SQL（missing FROM-clause）随 #374 一并修
+4. PR #369 处置（冲突 101 天，阻塞 i18n #367/#368）
+5. P0 存量 29 个分批派工
