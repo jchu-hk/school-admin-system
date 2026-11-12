@@ -1,3 +1,18 @@
+# 14:00 — PM Patrol (Thu 11-12, 14:00 轮次) [🟢 全绿 / 无新增 / 内存 671M / #374 已知症状复发]
+
+🟢 backend :3000/api/health = 200 (11ms)；admin :8080 = 200 (9.8ms)；portal :8081 = 200 (0.7ms)。
+🟢 14 容器 Up，0 unhealthy，无重启。
+🟡 backend 近 3h ERROR/FATAL = **2**（13:00 轮为 0）：13:00 午膳提醒 `column LunchChange.created_by does not exist`；14:00 午膳自动拒绝 `missing FROM-clause entry for table "change"` — 均为 #374 schema 漂移已知症状，每小时准点触发，非新问题。
+🟢 内存 avail **671M**（597M → 671M 回升）；used 3239M；free 115M；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；全部 unassigned；最新 #374 (10-04)；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 108 天，阻塞 i18n #367/#368。
+🟢 Git: HEAD cc50d10 `chore: PM patrol 13:04`。
+
+判定：服务全绿、无新增 P0/P1、错误均为已知 #374 症状 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修（本轮复发，优先级上调）④ PR #369 处置（108 天）⑤ P0 存量 29 个分批派工。
+
 # 13:04 — PM Patrol (Thu 11-12, 13:04 轮次) [🟢 全绿 / 无新增 / 内存 597M / 保持安静]
 
 🟢 backend :3000/api/health = 200 (26ms)；admin :8080 = 200 (7.9ms)；portal :8081 = 200 (1.1ms)。
