@@ -1,54 +1,20 @@
 {
-  "lastPatrol": "2026-11-08T09:00:00+08:00",
+  "lastPatrol": "2026-11-13T07:00:00+08:00",
   "health": {
     "backend": 200,
     "admin": 200,
     "portal": 200
   },
   "containersUp": 14,
-  "backendErrors2h": 0,
-  "backendErrorsNote": "近2h ERROR/FATAL=0（相比07:00轮次一致）",
+  "backendErrors3h": 0,
+  "backendErrorsNote": "近3h ERROR=0；#374 仍为每日 18:00 定点一次，无扩散",
+  "memAvailableMb": 625,
+  "memory": {
+    "usedM": 3286,
+    "swap": 0,
+    "disk": "76% (9.1G free)"
+  },
   "ghOpenIssues": 55,
-  "ghOpenP0P1": 45,
-  "ghUnassigned": 55,
-  "openPRs": {
-    "369": "CONFLICTING"
-  },
-  "imageVersion": "v1.5.9 (built 2026-08-14)",
-  "issue374Days": 34,
-  "spawnBlocker": "allowAny=false — cannot dispatch DEV/QA/DEVOPS",
-  "verdict": "green/hold — 三端全绿、容器全绿、ERROR=0、内存565M（665→565M 缓降未破线）、GH零变化",
-  "needsInput": [
-    "#374 migration + image rebuild (missing columns: attendance_daily_reports.school_id, LunchChange.created_by)",
-    "PR #369 disposition (rebase or close & redo)",
-    "Whether to open DEV->QA->DEVOPS dispatch"
-  ],
-  "last_pm_patrol": "2026-11-06T07:00:00+08:00",
-  "last_patrol_result": {
-    "open_issues": 55,
-    "p0p1": 45,
-    "assigned": 0,
-    "updated_24h": 0,
-    "health": "green",
-    "blockers": [
-      "spawn:single-agent",
-      "#374 schema drift day33",
-      "PR#369 conflicting"
-    ],
-    "notified": false
-  },
-  "last_patrol": "2026-11-05T19:00:00+08:00",
-  "open_issues": 55,
-  "p0": 29,
-  "p1": 16,
-  "assigned": 0,
-  "spawn_blocker": true,
-  "pr369": "CONFLICTING",
-  "notified": false,
-  "containers_uptime": "5h (restarted)",
-  "lastHeartbeat": "2026-11-02T21:04:00+08:00",
-  "lastStatus": "green",
-  "lastPatrolStatus": "green-ish: 3/3 endpoints 200, 14 containers up, GH unchanged, 4 ERROR in 24h (known #374)",
   "openIssues": {
     "total": 55,
     "p0": 29,
@@ -57,17 +23,19 @@
     "p3": 2,
     "assigned": 0
   },
-  "blockers": [
-    "allowAny=false (19th round)",
-    "#374 no owner day35",
-    "image v1.5.9 (2026-08-14)",
-    "PR #369 conflicting"
-  ],
   "ghNewIssues24h": 0,
-  "memAvailableMb": 461,
-  "memory": {
-    "availableM": 565,
-    "swap": 0,
-    "disk": "76% (9.2G free)"
-  }
+  "openPRs": {
+    "369": "CONFLICTING"
+  },
+  "issue374Days": 40,
+  "spawnBlocker": "capabilities=none / allowAny=false — cannot dispatch DEV/QA/DEVOPS",
+  "verdict": "green/hold — 三端全绿、容器全绿、夜间 ERROR=0、内存 625M、GH 零变化",
+  "needsInput": [
+    "#374 上线批准（回复「批准上线」）",
+    "18:00 日报 school_id 并入同次 migration",
+    "午膳自动拒绝/提醒 SQL 随 #374 一并修",
+    "PR #369 处置（rebase 或关闭重做）",
+    "P0 存量 29 个是否分批派工"
+  ],
+  "notified": false
 }

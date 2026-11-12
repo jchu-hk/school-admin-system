@@ -1,3 +1,18 @@
+# 07:00 — PM Patrol (Fri 11-13, 07:00 轮次) [🟢 三端全绿 / 🟢 夜间 ERROR 归零 / 内存 625M / 无新增]
+
+🟢 backend :3000/api/health = 200 (44ms)；admin :8080 = 200 (3.9ms)；portal :8081 = 200 (1.1ms)。
+🟢 14 容器 Up 10 days（zookeeper 38h），0 unhealthy，无重启。
+🟢 backend 近 3h ERROR = **0**：#374 仍为每日 18:00 定点一次，夜间无新错误、无扩散。
+🟢 内存 avail **625M**（21:05 轮 534M → 625M，回升 91M，>450M 线）；used 3286M；free 110M；buff/cache 834M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；全部 unassigned；最新 #374 (10-04)；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 114 天，阻塞 i18n #367/#368。
+🟢 Git: HEAD c044f2b `chore: dashboard rebuild`。
+
+判定：三端/容器/内存全绿、夜间 ERROR 归零、无新增 P0/P1 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（114 天）⑤ P0 存量 29 个分批派工。
+
 # 21:05 — PM Patrol (Thu 11-12, 21:05 轮次) [🟢 三端全绿 / 🟢 近3h ERROR 归零 / 内存 534M / 无新增]
 
 🟢 backend :3000/api/health = 200 (32ms)；admin :8080 = 200 (4.5ms)；portal :8081 = 200 (1.1ms)。
