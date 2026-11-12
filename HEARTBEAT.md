@@ -1,3 +1,43 @@
+# 08:04 — PM Patrol (Thu 11-12, 08:04 轮次) [🟢 全绿 / 无新增 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (20ms)；admin :8080 = 200 (4.6ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up（9 days；zookeeper Up 15h），0 unhealthy。
+🟢 backend 近 3h ERROR/FATAL = **0**；08:00 BackupService 清理正常（删 0 个）。18:00 日报窗口未到。
+🟢 内存 avail **598M**（664M → 598M，>450M 线）；free 136M；buff/cache 779M；swap 0；磁盘 76%（剩 9.1G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；近 24h 新增 0；最新 #374 (10-04)；全部 unassigned。
+🟡 PR #369 仍 open，mergeable=UNKNOWN（未重算），更新 08-23 — 第 103 天，阻塞 i18n #367/#368。
+🟢 Git: HEAD 4f703a5 `chore: dashboard rebuild`，工作区仅 HEARTBEAT.md + 本轮记录。
+
+判定：全绿，无新增 P0/P1、零错误 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：
+1. #374 上线 — 回复「批准上线」执行 migration（含 attendance_daily_reports.school_id 补列）
+2. 18:00 日报 school_id 缺列 — 确认并入同一次 migration
+3. 午膳自动拒绝/提醒 SQL（missing FROM-clause、LunchChange.created_by）随 #374 一并修
+4. PR #369 处置（冲突 103 天，阻塞 i18n #367/#368）
+5. P0 存量 29 个分批派工
+
+# 07:00 — PM Patrol (Thu 11-12, 07:00 轮次) [🟢 全绿 / 无新增 / 保持安静]
+
+🟢 backend :3000/api/health = 200 (41.7ms)；admin :8080 = 200 (3.9ms)；portal :8081 = 200 (1.0ms)。
+🟢 14 容器 Up，0 unhealthy；backend 近 90m ERROR = 0；07:00 BackupService 清理正常（删 0 个）。
+🟡 近 24h ERROR = 4，全为 #374 schema 漂移定点重复（13:00/14:00 午膳、18:00 日报 ×2），无新类型、不扩散。
+🟢 内存 avail 664M（466M → 664M 回升，>450M 线，昨日下滑解除）；磁盘 76%（剩 9.1G）；swap 0。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；11-11 新增 0；最新 #374；assignee 0。
+🟡 PR #369 仍 open/CONFLICTING，更新 08-23 — 第 102 天，阻塞 i18n #367/#368。
+🟢 Git: HEAD 9409cd1 `chore: dashboard rebuild`，工作区干净。
+
+判定：全绿，无新增 P0/P1 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：
+1. #374 上线 — 回复「批准上线」执行 migration（含 attendance_daily_reports.school_id 补列）
+2. 18:00 日报 school_id 缺列 — 每日复发，确认并入同一次 migration
+3. 午膳自动拒绝/提醒 SQL（missing FROM-clause、LunchChange.created_by）随 #374 一并修
+4. PR #369 处置（冲突 102 天，阻塞 i18n #367/#368）
+5. P0 存量 29 个分批派工
+
 # 19:00 — PM Patrol (Wed 11-11, 19:04 轮次) [🟢 全绿 / 无新增 / 保持安静]
 
 
