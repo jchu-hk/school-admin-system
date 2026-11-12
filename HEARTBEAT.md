@@ -1,3 +1,18 @@
+# 18:04 — PM Patrol (Thu 11-12, 18:04 轮次) [🟢 服务全绿 / 🟡 18:00 日报按预期复现 / 内存 487M / 无新增]
+
+🟢 backend :3000/api/health = 200 (76ms)；admin :8080 = 200 (4.3ms)；portal :8081 = 200 (1.0ms)。
+🟢 14 容器 Up 10 days（zookeeper Up 25h），0 unhealthy，无重启。
+🟡 backend 近 3h ERROR = **2**，与昨日 18:00 完全同点同形态：18:00 `DailyReportService` 生成班级日报（中一A班）`column AttendanceDailyReport.school_id does not exist` + `column "school_id" of relation "attendance_daily_reports" does not exist` → #374 schema 漂移已知症状第三处，每日 18:00 定点复发，任务级失败无扩散。17:00 自动拒绝窗口本轮静默（17:04 轮为 0）。
+🟡 内存 avail **487M**（17:04 轮 554M → 487M，回落 67M，仍 >450M 线）；used 3424M；free 120M；buff/cache 681M；swap 0；磁盘 76%（剩 9.0G）。下一轮重点复测，若破 450M 即建议重启大户容器。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签 1；55 全部 unassigned；最新 #374 (10-04)；无新增 P0/P1。
+🟡 PR #369 仍 open，mergeable=CONFLICTING，更新 08-23 — 第 113 天，阻塞 i18n #367/#368。
+🟢 Git: HEAD 18bb97a `chore: PM patrol 17:04`。
+
+判定：三端/容器全绿、ERROR 为已知 #374 定点复发、无新增 P0/P1 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（113 天）⑤ P0 存量 29 个分批派工。
+
 # 17:04 — PM Patrol (Thu 11-12, 17:04 轮次) [🟢 全绿 / 无新增 / 内存 554M 回落 / 近3h ERROR 归零]
 
 🟢 backend :3000/api/health = 200 (2.5ms)；admin :8080 = 200 (6.7ms)；portal :8081 = 200 (2.8ms)。
