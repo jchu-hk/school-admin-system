@@ -505,3 +505,17 @@ Needs your input（5 项，未变）：① #374 上线（回复「批准上线�
 Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
 
 Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（128 天）⑤ P0 存量 29 个分批派工。
+
+# 21:04 — PM Patrol (Sun 11-15, 21:00 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 570M / 无新增]
+
+🟢 backend :3000/api/health = 200 (48ms)；admin :8080 = 200 (1.3ms)；portal :8081 = 200 (1.2ms)。
+🟢 14 容器全 Up（zookeeper 4 days，其余 13 days），0 非 Up / 0 unhealthy。
+🟢 backend 近 3h ERROR = **0**。
+🟢 内存 avail **570M**（19:04 590M → 570M，-20M，远高于 300M 安全线）；free 117M + cache 770M；swap 0；磁盘 75%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；最新仍 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 128 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR=0、无新增 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（128 天）⑤ P0 存量 29 个分批派工。
