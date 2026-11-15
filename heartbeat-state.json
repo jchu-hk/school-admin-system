@@ -1,18 +1,18 @@
 {
-  "lastPatrol": "2026-11-13T07:00:00+08:00",
+  "lastPatrol": "2026-11-15T14:00:00+08:00",
   "health": {
     "backend": 200,
     "admin": 200,
     "portal": 200
   },
   "containersUp": 14,
-  "backendErrors3h": 0,
-  "backendErrorsNote": "近3h ERROR=0；#374 仍为每日 18:00 定点一次，无扩散",
-  "memAvailableMb": 625,
+  "backendErrors3h": 2,
+  "backendErrorsNote": "近3h ERROR=2，均 #374 schema 漂移（13:00 created_by；14:00 自动拒绝 SQL 别名）",
+  "memAvailableMb": 709,
   "memory": {
-    "usedM": 3286,
+    "usedM": 3202,
     "swap": 0,
-    "disk": "76% (9.1G free)"
+    "disk": "75% (9.4G free)"
   },
   "ghOpenIssues": 55,
   "openIssues": {
@@ -29,7 +29,7 @@
   },
   "issue374Days": 40,
   "spawnBlocker": "capabilities=none / allowAny=false — cannot dispatch DEV/QA/DEVOPS",
-  "verdict": "green/hold — 三端全绿、容器全绿、夜间 ERROR=0、内存 625M、GH 零变化",
+  "verdict": "green/hold — 三端全绿、ERROR 仅 #374 已知漂移、内存 709M、GH 零变化",
   "needsInput": [
     "#374 上线批准（回复「批准上线」）",
     "18:00 日报 school_id 并入同次 migration",
