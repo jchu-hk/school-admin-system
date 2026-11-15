@@ -1,3 +1,17 @@
+# 16:04 — PM Patrol (Sun 11-15, 16:04 轮次) [🟢 三端全绿 / 🟡 ERROR=2 (#374 同源) / 🟢 内存 581M / 无新增]
+
+🟢 backend :3000/api/health = 200 (18.8ms)；admin :8080 = 200 (6.4ms)；portal :8081 = 200 (1.0ms)。
+🟢 14 容器全 Up，0 unhealthy（cloudflared Exited / zen_kowalevski Created 属历史残留，非在册服务）。
+🟡 backend 近 3h ERROR = **2**，与 13:04/14:04/15:04 同一批（13:00 `created_by does not exist` + 14:00 `missing FROM-clause entry for table "change"`），15:00–16:00 无新增，符合已知周期。
+🟢 内存 avail **581M**（15:04 591M → 581M，-10M，远高于 300M 安全线）；used 3330M；free 186M + cache 714M；swap 0；磁盘 75%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 127 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR 仅 #374 已知漂移、无新增 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（127 天）⑤ P0 存量 29 个分批派工。
+
 # 14:04 — PM Patrol (Sun 11-15, 14:04 轮次) [🟢 三端全绿 / 🟡 ERROR=2 (#374 预期) / 🟢 内存 623M / 无新增]
 
 🟢 backend :3000/api/health = 200 (2.3ms)；admin :8080 = 200 (1.3ms)；portal :8081 = 200 (0.5ms)。
