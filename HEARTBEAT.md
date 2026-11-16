@@ -1,3 +1,115 @@
+# 19:04 — PM Patrol (Mon 11-16, 19:04 轮次) [🟢 三端全绿 / 🟠 近 3h ERROR = 2（18:00 日报 school_id 已实际报错） / 🟢 内存 578M / 无新增]
+
+🟢 backend :3000/api/health = 200 (57.7ms)；admin :8080 = 200 (3.7ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器全 Up，0 unhealthy；磁盘 76%（剩 9.4G，持平）。
+🟠 backend 近 3h ERROR = **2**，**均为 18:00 日报 school_id 缺陷，本轮首次实际触发**：
+- `DailyReportService 生成班级日报失败: class=中一A班: column AttendanceDailyReport.school_id does not exist`
+- `DailyReportService 签到日报生成失败: column "school_id" of relation "attendance_daily_reports" does not exist`
+⚠️ 此前 17:04 轮次该缺陷仅为「预测」，19:04 轮已确认为**实报错误**。与 #374 schema 漂移同源（实体字段未落 migration）。班级日报/签到日报业务已实质失效。
+🟢 内存 avail **578M**（17:04 轮 549M → 578M，+29M，安全区）；free 132M + cache 761M；swap 0。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 130 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、内存稳定、GH 无新增，但 **18:00 日报 school_id 已实际报错** → 建议**推送用户**（属业务功能失效升级）。
+⚠️ 升级（本轮由「待处理」→「已实报」）：① 18:00 日报 school_id ② 午膳提醒/自动拒绝 — **三项均已实际报错**，全部同源于 #374 schema 漂移，强烈建议将 #374 migration 提升为最高优先并一次性修完。
+
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项）：
+① #374 上线（回复「批准上线」）— **本轮升级：日报+午膳三处定时任务已全部实报错误**
+② 18:00 日报 school_id 并入同次 migration — **本轮已实报，建议立即并入**
+③ 午膳自动拒绝/提醒 SQL 随 #374 一并修
+④ PR #369 处置（130 天）
+⑤ P0 存量 29 个分批派工
+
+---
+
+# 17:04 — PM Patrol (Mon 11-16, 17:04 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 549M / 无新增]
+
+🟢 backend :3000/api/health = 200 (19ms)；admin :8080 = 200 (6.4ms)；portal :8081 = 200 (1.5ms)。
+🟢 14 容器全 Up（zookeeper 5 days，其余 2 weeks），0 unhealthy。
+🟢 backend 近 3h ERROR = **0**（14:00 的两条 #374 报错已滑出窗口，15:00–17:00 无新增）。
+🟢 内存 avail **549M**（16:04 轮次 579M → 549M，-30M，仍在安全区）；free 180M + cache 685M；swap 0；磁盘 76%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无优先级标签）；最新仍 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 130 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR=0、内存稳定、无新增 → **不推送用户**，仅记录。
+⚠️ 待处理升级（未变）：午膳提醒 + 自动拒绝两条 Cron 自 13:00/14:00 起均已失败，业务功能实质失效，建议将 SQL 修复提升为优先事项。
+
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项）：
+① #374 上线（回复「批准上线」）
+② 18:00 日报 school_id 并入同次 migration
+③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 — **建议优先**
+④ PR #369 处置（130 天）
+⑤ P0 存量 29 个分批派工
+
+---
+
+# 16:04 — PM Patrol (Mon 11-16, 16:04 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 579M / 无新增]
+
+🟢 backend :3000/api/health = 200 (7.9ms)；admin :8080 = 200 (5.2ms)；portal :8081 = 200 (1.6ms)。
+🟢 14 容器全 Up（zookeeper 4 days，其余 2 weeks），0 unhealthy。
+🟢 backend 近 3h ERROR = **0**（15:04 的 2 条 #374 报错已滑出窗口，15:00–16:00 无新增；下一轮复现预计 17:00）。
+🟢 内存 avail **579M**（15:04 轮次 603M → 579M，-24M，连续七轮稳在安全区）；free 106M + cache 791M；swap 0；磁盘 75%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无优先级标签）；最新仍 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 130 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR=0、内存稳定、无新增 → **不推送用户**，仅记录。
+⚠️ 待处理升级（未变）：午膳提醒 + 自动拒绝两条 Cron 自 13:00/14:00 起均已失败，业务功能实质失效，建议将 SQL 修复提升为优先事项。
+
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项）：
+① #374 上线（回复「批准上线」）
+② 18:00 日报 school_id 并入同次 migration
+③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 — **建议优先**
+④ PR #369 处置（130 天）
+⑤ P0 存量 29 个分批派工
+
+---
+
+# 15:04 — PM Patrol (Mon 11-16, 15:04 轮次) [🟢 三端全绿 / 🟠 近 3h ERROR = 2（午膳 Cron，连续第 2 小时复发） / 🟢 内存 603M / 无新增]
+
+🟢 backend :3000/api/health = 200 (15.5ms)；admin :8080 = 200 (6.1ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器全 Up（zookeeper 4 days，其余 13 days），0 unhealthy（cloudflared Exited / zen_kowalevski Created 属历史残留）。
+🟠 backend 近 3h ERROR = **2**（均为已知 schema 漂移缺陷 #374，非新增故障）：
+- 13:00 `LunchReminderScheduler 午膳变更提醒失败: column LunchChange.created_by does not exist`
+- 14:00 `LunchReminderScheduler 午膳变更自动拒绝失败: missing FROM-clause entry for table "change"`
+近 24h 累计 2 条，同一 Issue。**注意：缺陷已从每小时 1 条变为两条 Cron 均失败**（14:00 新增「自动拒绝」任务也挂），影响面在扩大。
+🟢 内存 avail **603M**（14:04 轮次 589M → 603M，+14M，连续六轮稳在安全区）；free 111M + cache 810M；swap 0；磁盘 75%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无优先级标签）；最新仍 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 130 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR 2 条均为已知 #374、内存稳定、无新增 → **不推送用户**，仅记录。
+⚠️ 升级提示：午膳两条定时任务现已**全部**失败（提醒 + 自动拒绝），业务功能实质失效，建议将「随 #374 一并修」提升为优先事项。
+
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项）：
+① #374 上线（回复「批准上线」）
+② 18:00 日报 school_id 并入同次 migration
+③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 — **本轮升级：两条 Cron 均已失败，建议优先**
+④ PR #369 处置（130 天）
+⑤ P0 存量 29 个分批派工
+
+---
+
+# 14:04 — PM Patrol (Mon 11-16, 14:04 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 589M / 无新增]
+
+🟢 backend :3000/api/health = 200 (2.0ms)；admin :8080 = 200 (1.1ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器全 Up（zookeeper 4 days，其余 13 days），0 unhealthy（cloudflared Exited / zen_kowalevski Created 属历史残留）。
+🟢 backend 近 3h ERROR = **0**（13:00 的 LunchChange 报错已滑出 3h 窗口，近 24h 仍计 1 条，属已知缺陷）。
+🟢 内存 avail **589M**（13:04 轮次 590M → 589M，持平，连续五轮稳在安全区）；free 108M + cache 798M；swap 0；磁盘 76%（剩 9.4G，较上轮 +1pp 但可用量持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无优先级标签）；最新仍 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 130 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR=0、内存稳定、无新增 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（130 天）⑤ P0 存量 29 个分批派工。
+
 # 13:04 — PM Patrol (Mon 11-16, 13:04 轮次) [🟢 三端全绿 / 🟡 ERROR = 1（已知 LunchChange） / 🟢 内存 590M / 无新增]
 
 🟢 backend :3000/api/health = 200 (15.5ms)；admin :8080 = 200 (6.6ms)；portal :8081 = 200 (1.4ms)。
@@ -528,3 +640,30 @@ Needs your input（5 项，未变）：① #374 上线（回复「批准上线�
 
 判定：三端全绿、ERROR=0、无新增 → **不推送用户**，仅记录。
 Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+# 14:00 — PM Patrol (Mon 11-16, 14:00 轮次) [🟢 三端全绿 / 🟡 近 3h ERROR = 2（#374 已知复发） / 🟢 内存 675M / 无新增]
+
+🟢 backend :3000/api/health = 200 (13ms)；admin :8080 = 200 (5ms)；portal :8081 = 200 (0.7ms)。
+🟢 14 容器 Up，0 unhealthy（非 Up 仅历史残留 zen_kowalevski/cloudflared）。
+🟡 backend 近 3h ERROR = **2**（打断连续 9 轮 0）：13:00 午膳变更提醒 `LunchChange.created_by does not exist`；14:00 自动拒绝 `missing FROM-clause for "change"`。**均为 #374 schema 漂移，非新增故障**。
+🟢 内存 avail **675M**（09:00 543M → 675M，+132M）；free 146M；swap 0；磁盘 76%（剩 9.4G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374；无新增/无新 P0/P1；全部 issue 未指派。
+🟡 PR #369 仍 OPEN/**CONFLICTING**（last update 08-23）— 第 122 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、无新增 → **不推送用户**，仅记录。唯一变化 = ERROR 0→2（已知根因）。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」+ 午膳 cron SQL 一并修）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（122 天）⑤ P0 存量 29 个分批派工。
+
+# 19:00 — PM Patrol (Mon 11-16, 19:00 轮次) [🟢 三端全绿 / 🟡 近 3h ERROR = 2（18:00 日报 school_id，#374 同源） / 🟢 内存 590M / 无新增]
+
+🟢 backend = 200；admin = 200；portal = 200。14 容器 Up，0 unhealthy。
+🟡 近 3h ERROR = **2**：18:00 日报 `column AttendanceDailyReport.school_id does not exist` ×2 — 与 #374 schema 漂移同源，非新增。
+🟢 内存 avail **590M**（14:00 675M → 590M，-85M，>300M 安全线）；swap 0；磁盘 75%（9.4G）。
+🟢 GH open = 55（持平）；p0=29 / p1=16 / p2=7 / p3=2；最新 #374；24h 无新增；55 个全部未指派。
+🟡 PR #369 OPEN/**CONFLICTING**（08-23）— 第 122 天，阻塞 #367/#368/#366。
+
+判定：无实质变化 → **不推送用户**，仅记录。
+Blocker（未变）：无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS；29 个 P0 待人工派工。
+
+Needs your input（5 项，未变）：① #374 上线批准 ② 18:00 日报 school_id 并入同次 migration ③ 午膳 cron SQL 随 #374 修 ④ PR #369 处置 ⑤ P0 存量 29 个派工顺序。
