@@ -1,3 +1,47 @@
+# 09:01 — PM Patrol (Mon 11-16, 09:01 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟡 内存 339M / 无新增]
+
+🟢 backend :3000/api/health = 200 (2.0ms)；admin :8080 = 200 (0.6ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器全 Up（zookeeper 4 days，其余 13 days），0 unhealthy。
+🟢 backend 近 3h ERROR = **0**。
+🟡 内存 avail **339M**（09:00 轮次 449M → 339M，-110M，逼近 300M 安全线，**连续第二轮下滑**）；free 121M + cache 534M；swap 0；磁盘 75%（剩 9.4G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 130 天，阻塞 i18n #367/#368/#366。
+
+判定：服务全绿、ERROR=0、无新增 → **不推送用户**，仅记录（内存下滑需盯）。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（130 天）⑤ P0 存量 29 个分批派工。
+
+# HEARTBEAT.md — PM Patrol Log
+
+## 09:01 — PM Patrol (Mon 11-16, 09:01 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 449M / 无新增]
+
+🟢 backend :3000/api/health = 200 (1.9ms)；admin :8080 = 200 (6.0ms)；portal :8081 = 200 (1.1ms)。
+🟢 14 容器全 Up（zookeeper 4 days，其余 13 days），0 unhealthy（cloudflared Exited / zen_kowalevski Created 属历史残留）。
+🟢 backend 近 3h ERROR = **0**。
+🟡 内存 avail **449M**（09:00 轮次 543M → 449M，-94M，仍高于 300M 安全线）；free 115M + cache 654M；swap 0；磁盘 75%（剩 9.4G，持平）。下滑趋势，下轮观察。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 130 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR=0、无新增 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（130 天）⑤ P0 存量 29 个分批派工。
+
+## 07:00 — PM Patrol (Mon 11-16, 07:00 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 601M / 无新增]
+
+🟢 backend :3000/api/health = 200 (28ms)；admin :8080 = 200 (4.4ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器全 Up（zookeeper 5 days，其余 14 days），0 unhealthy。
+🟢 backend 近 3h ERROR = **0**。
+🟢 内存 avail **601M**（11-15 19:04 590M → 601M，+11M，远高于 300M 安全线）；free 190M + cache 731M；swap 0；磁盘 75%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN（last update 08-20）— 第 129 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR=0、无新增 → **不推送用户**，仅记录。
+Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS（agents/ 目录有 DEV/QA/DEVOPS 定义但本运行环境不可 spawn）。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（129 天）⑤ P0 存量 29 个分批派工。
+
 # 19:04 — PM Patrol (Sun 11-15, 19:00 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 590M / 无新增]
 
 🟢 backend :3000/api/health = 200 (1.7ms)；admin :8080 = 200 (0.6ms)；portal :8081 = 200 (0.7ms)。
@@ -431,91 +475,14 @@ Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DE
 
 Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（122 天）⑤ P0 存量 29 个分批派工。
 
-# 09:04 — PM Patrol (Sun 11-15, 09:04 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 443M / 无新增]
+# 09:00 — Heartbeat (Mon 11-16, 09:00 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 543M / 无新增]
 
-🟢 backend :3000/api/health = 200 (75ms)；admin :8080 = 200 (12.5ms)；portal :8081 = 200 (0.9ms)。
-🟢 14 容器全 Up，0 unhealthy（cloudflared Exited 3 months ago 属历史遗留；zen_kowalevski Created 为旧残留）。
-🟢 backend 近 3h ERROR = **0**（连续第 9 轮 0）。
-🟢 内存 avail **443M**（09:00 504M → 443M，-61M，仍高于 300M 安全线但为本日最低，下轮重点观察）；used 3468M；free 107M + cache 651M；swap 0；磁盘 75%（剩 9.4G，持平）。
-🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新 #374 (10-04)；无新增。
-🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 124 天，阻塞 i18n #367/#368/#366。
-
-判定：三端全绿、ERROR=0、无新增 → **不推送用户**，仅记录。内存 443M 为今日低点，下轮若 <400M 则升级提醒。
-Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
-
-Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（124 天）⑤ P0 存量 29 个分批派工。
-
-# 13:04 — Heartbeat (Sun 11-15, 13:00 轮次) [🟢 三端全绿 / 🟡 ERROR=1 (#374 预期) / 🟢 内存 600M / 无新增]
-
-🟢 backend :3000/api/health = 200 (1.6ms)；admin :8080 = 200 (0.4ms)；portal :8081 = 200 (0.8ms)。
-🟢 14 容器全 Up（8 Up + 5 healthy + 1 Up 3 days）；Exited/Created 各 1 为历史残留，非恶化。
-🟡 backend 近 3h ERROR = **1**（打破连续 9 轮 0）：`LunchReminderScheduler 午膳变更提醒任务失败: column LunchChange.created_by does not exist` @ 13:00。属已知 #374 schema 漂移，非新问题。
-🟢 内存 avail **600M**（09:04 443M → 600M，+157M，回安全线）；used 3311M；free 142M + cache 773M；磁盘 75%（剩 9.5G，持平）。
-🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增/无新 P0/P1。
-🟡 PR #369 仍 OPEN — 第 125 天（36 轮未变），阻塞 i18n #367/#368/#366。
-
-判定：三端全绿、无新增，唯一 ERROR 为 #374 已知漂移 → **不推送用户**，仅记录。
-Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS；29 个 P0 需人工分批派工。
-
-Needs your input（5 项，未变）：① #374 上线（回复「批准上线」，13:00 的 ERROR 即其症状）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（125 天）⑤ P0 存量 29 个分批派工。
-
-# 14:04 — PM Patrol (Sun 11-15, 14:00 轮次) [🟢 三端全绿 / 🟡 ERROR=2 (#374 预期) / 🟢 内存 709M / 无新增]
-
-🟢 backend :3000/api/health = 200；admin :8080 = 200；portal :8081 = 200。
-🟢 14 容器全 Up，0 非 Up / 0 unhealthy。
-🟡 backend 近 3h ERROR = **2**，均为 #374 已知 schema 漂移的定时任务：
-  · 13:00 LunchReminderScheduler `column LunchChange.created_by does not exist`
-  · 14:00 LunchReminderScheduler `missing FROM-clause entry for table "change"`（自动拒绝任务，新增变体，同源问题）
-🟢 内存 avail **709M**（13:04 600M → 709M，+109M）；used 3202M；free 197M；swap 0；磁盘 75%（剩 9.4G）。
-🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增、无新 P0/P1、无 assigned 变化。
-🟡 PR #369 仍 OPEN（last update 08-23）— 第 126 天（37 轮未变），阻塞 i18n #367/#368/#366。
-
-判定：三端全绿、ERROR 仅 #374 已知漂移（两任务同源）→ **不推送用户**，仅记录。
-Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS；29 个 P0 需人工分批派工。
-
-Needs your input（5 项，未变）：① #374 上线（回复「批准上线」；14:00 第二条 ERROR 为其新变体）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（126 天）⑤ P0 存量 29 个分批派工。
-
-# 15:04 — Heartbeat (Sun 11-15, 15:00 轮次) [🟢 三端全绿 / 🟡 ERROR=2 (#374 同源) / 🟢 内存 591M / 无新增]
-
-🟢 backend :3000/api/health = 200；admin :8080 = 200；portal :8081 = 200。
-🟢 14 容器全 Up，0 非 Up / 0 unhealthy（13 天连续运行）。
-🟡 backend 近 3h ERROR = **2**，与 14:04 轮次同一批（无新增）：
-  · 13:00 LunchReminderScheduler `column LunchChange.created_by does not exist`
-  · 14:00 LunchReminderScheduler `missing FROM-clause entry for table "change"`（自动拒绝任务）
-  均为 #374 schema 漂移同源症状。
-🟢 内存 avail **591M**（14:04 709M → 591M，-118M，仍在安全线）；used 3320M；free 116M + cache 793M；磁盘 75%（剩 9.5G，持平）。
-🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增、无新 P0/P1。
-🟡 PR #369 仍 OPEN（last update 08-23）— 第 127 天（38 轮未变），阻塞 i18n #367/#368/#366。
-
-判定：三端全绿、无新增 Issue、ERROR 仅 #374 已知漂移 → **不推送用户**，仅记录。
-Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS；29 个 P0 需人工分批派工。
-
-Needs your input（5 项，未变）：① #374 上线（回复「批准上线」；每小时定时任务会持续报此 ERROR）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（127 天）⑤ P0 存量 29 个分批派工。
-
-# 18:04 — Heartbeat (Sun 11-15, 18:04 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 533M / 无新增]
-
-🟢 backend :3000/api/health = 200 (53ms)；admin :8080 = 200 (7.5ms)；portal :8081 = 200 (4.5ms)。
-🟢 14 容器全 Up（zookeeper 4 days，其余 13 days），0 unhealthy（cloudflared Exited 3 months、zen_kowalevski Created 属历史残留）。
-🟢 backend 近 3h ERROR = **0**（15:00–18:00 无 ERROR；#374 定时任务本轮未复现）。
-🟢 内存 avail **533M**（17:04 523M → 533M，+10M，远高于 300M 安全线）；used 3378M；free 142M + cache 705M；swap 0；磁盘 75%（剩 9.4G，持平）。
-🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增、无新 P0/P1。
-🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 128 天，阻塞 i18n #367/#368/#366。
-
-判定：三端全绿、ERROR=0、无新增 → **不推送用户**，仅记录。
-Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
-
-Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（128 天）⑤ P0 存量 29 个分批派工。
-
-# 21:04 — PM Patrol (Sun 11-15, 21:00 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 570M / 无新增]
-
-🟢 backend :3000/api/health = 200 (48ms)；admin :8080 = 200 (1.3ms)；portal :8081 = 200 (1.2ms)。
-🟢 14 容器全 Up（zookeeper 4 days，其余 13 days），0 非 Up / 0 unhealthy。
+🟢 backend :3000/api/health = 200 (2.4ms)；admin :8080 = 200 (0.5ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器全 Up（zookeeper 4 days，其余 13 days），0 unhealthy。
 🟢 backend 近 3h ERROR = **0**。
-🟢 内存 avail **570M**（19:04 590M → 570M，-20M，远高于 300M 安全线）；free 117M + cache 770M；swap 0；磁盘 75%（剩 9.4G，持平）。
-🟢 GH open = 55（持平）；最新仍 #374 (10-04)；无新增、无新 P0/P1。
-🟡 PR #369 仍 OPEN/CONFLICTING（last update 08-23）— 第 128 天，阻塞 i18n #367/#368/#366。
+🟢 内存 avail **543M**（07:00 轮次 601M → 543M，-58M，仍远高于 300M 安全线）；free 146M + cache 716M；swap 0；磁盘 75%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2, 无标签=1；最新仍 #374；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN（last update 08-20）— 第 130 天，阻塞 i18n #367/#368/#366。
 
 判定：三端全绿、ERROR=0、无新增 → **不推送用户**，仅记录。
 Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS。
-
-Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（128 天）⑤ P0 存量 29 个分批派工。
