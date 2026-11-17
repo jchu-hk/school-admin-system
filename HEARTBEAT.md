@@ -398,6 +398,24 @@ Needs your input（5 项，未变）：① #374 上线（回复「批准上线�
 
 # HEARTBEAT.md — PM Patrol Log
 
+# 20:04 — PM Patrol (Tue 11-17, 20:04 轮次) [🟢 三端全绿 / 🟢 近 2h ERROR = 0 / 🟢 内存 532M / 无新增]
+
+🟢 backend :3000/api/health = 200 (5.8ms)；admin :8080 = 200 (4.1ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up / 0 unhealthy（cloudflared Exited 属历史残留）。
+🟢 backend 近 2h ERROR = **0**：18:00 日报 school_id 两条已滑出窗口，19:00–20:04 无新增，今日全部预告触发点结束。
+🟢 内存 available **532M**（19:04 轮 545M → 532M，-13M，远高于 300M 安全线）；free 122M + cache 727M；swap 0；磁盘 76%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无 p 标签）；最新 #374；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（updated 08-23）— 第 136 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR=0、内存安全、无新增 → **无实质变化，不推送用户**，仅记录。
+ℹ️ 今日全部预告触发点（13:00/14:00/18:00）已按预计复现完毕；下一轮复现点为明日 13:00。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（136 天）⑤ P0 存量 29 个分批派工
+
+---
+
 # 19:04 — PM Patrol (Tue 11-17, 19:04 轮次) [🟢 三端全绿 / 🟡 近 4h ERROR = 2（18:00 日报 school_id，同源 #374）/ 🟢 内存 545M / 无新增]
 
 🟢 backend :3000/api/health = 200 (62ms)；admin :8080 = 200 (3.9ms)；portal :8081 = 200 (0.6ms)。
