@@ -1,3 +1,26 @@
+# 07:00 — PM Patrol (Tue 11-17, 07:00 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 594M / 无新增]
+
+🟢 backend :3000/api/health = 200 (7.8ms)；admin :8080 = 200 (5.0ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器全 Up，0 unhealthy；磁盘 76%（剩 9.4G，持平）。
+🟢 backend 近 3h ERROR = **0**（夜间无定时任务）；近 24h ERROR = 8，全为 11-16 已知 #374 schema 漂移（14:00 午膳自动拒绝、18:00 日报 school_id ×2）。
+🟢 内存 available **594M**（昨晚 543M → +51M 回升）；free 149M + cache 762M；swap 0。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374；无新增、无新 P0/P1；全部 issue 未指派。
+🟡 PR #369 仍 OPEN（updated 08-23）— 第 131 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR=0、内存回升、GH 无新增、无可启动新任务 → **无实质变化，不推送用户**，仅记录。
+ℹ️ 今日预计复现：13:00 午膳提醒 / 14:00 午膳自动拒绝 / 18:00 日报 school_id — 均同源 #374。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：
+① #374 上线（回复「批准上线」）
+② 18:00 日报 school_id 并入同次 migration
+③ 午膳自动拒绝/提醒 SQL 随 #374 一并修
+④ PR #369 处置（131 天）
+⑤ P0 存量 29 个分批派工
+
+---
+
 # 21:04 (会话内复核) — 三端 200 (backend 45ms)，14 容器 Up/0 unhealthy，内存 avail 550M，ERROR(3h)=0，GH open=55 持平 → 与上条一致，无变化。
 
 ---
@@ -694,3 +717,24 @@ Needs your input（5 项，未变）：① #374 上线（回复「批准上线�
 Blocker（未变）：无 sessions_spawn → 无法 spawn DEV/QA/DEVOPS；29 个 P0 待人工派工。
 
 Needs your input（5 项，未变）：① #374 上线批准 ② 18:00 日报 school_id 并入同次 migration ③ 午膳 cron SQL 随 #374 修 ④ PR #369 处置 ⑤ P0 存量 29 个派工顺序。
+
+# 08:04 — PM Patrol (Tue 11-17, 08:04 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 517M / 无新增]
+
+🟢 backend :3000/api/health = 200 (52ms)；admin :8080 = 200 (6.6ms)；portal :8081 = 200 (1.5ms)。
+🟢 14 容器全 Up，0 unhealthy；磁盘 76%（剩 9.4G，持平）。
+🟢 backend 近 3h ERROR = **0**（早间无定时任务）。
+🟢 内存 avail **517M**（07:00 轮 594M → 517M，-77M，仍远高于 300M 安全线）；free 108M + cache 792M；swap 0。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新仍 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/MERGEABLE=UNKNOWN（updated 08-23）— 第 132 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR=0、GH 无新增、无可启动新任务 → **无实质变化，不推送用户**，仅记录。
+ℹ️ 今日预计复现：13:00 午膳提醒 / 14:00 午膳自动拒绝 / 18:00 日报 school_id — 均同源 #374。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：
+① #374 上线（回复「批准上线」）
+② 18:00 日报 school_id 并入同次 migration
+③ 午膳自动拒绝/提醒 SQL 随 #374 一并修
+④ PR #369 处置（132 天）
+⑤ P0 存量 29 个分批派工
