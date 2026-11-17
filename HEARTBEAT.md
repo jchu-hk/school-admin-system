@@ -1,3 +1,21 @@
+# 19:00 — PM Patrol (Tue 11-17, 19:00 轮次) [🟢 三端全绿 / 🟡 近 4h ERROR = 2（18:00 日报 school_id，同源 #374，按预计时点复现）/ 🟢 内存 527M / 无新增]
+
+🟢 backend :3000/api/health = 200 (11.3ms)；admin :8080 = 200 (6.7ms)；portal :8081 = 200 (2.0ms)。
+🟢 14 容器 Up / 0 unhealthy。
+🟡 backend 近 4h ERROR = **2**：18:00 班级日报（AttendanceDailyReport.school_id 不存在）+ 18:00 签到日报（column "school_id" of relation "attendance_daily_reports" does not exist）— 均为此前预告的今日最后一个定时触发点，同源 #374；15:00–19:00 其余时段无新增。
+🟢 内存 available **527M**（17:04 轮 553M → 527M，-26M，远高于 300M 安全线）；free 126M + cache 717M；swap 0；磁盘 76%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无 p 标签）；最新 #374；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（updated 08-23）— 第 135 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR 属 #374 定时复现、内存安全、无新增 → **无实质变化，不推送用户**，仅记录。
+ℹ️ 今日全部预告触发点（13:00/14:00/18:00）均已按预计复现，无意外新增。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（135 天）⑤ P0 存量 29 个分批派工
+
+---
+
 # 17:04 — PM Patrol (Tue 11-17, 17:04 轮次) [🟢 三端全绿 / 🟡 近 4h ERROR = 2（13:00 提醒 + 14:00 自动拒绝，同源 #374）/ 🟢 内存 553M / 无新增]
 
 🟢 backend :3000/api/health = 200 (7.8ms)；admin :8080 = 200 (4.8ms)；portal :8081 = 200 (1.4ms)。
@@ -379,6 +397,24 @@ Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DE
 Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（130 天）⑤ P0 存量 29 个分批派工。
 
 # HEARTBEAT.md — PM Patrol Log
+
+# 19:04 — PM Patrol (Tue 11-17, 19:04 轮次) [🟢 三端全绿 / 🟡 近 4h ERROR = 2（18:00 日报 school_id，同源 #374）/ 🟢 内存 545M / 无新增]
+
+🟢 backend :3000/api/health = 200 (62ms)；admin :8080 = 200 (3.9ms)；portal :8081 = 200 (0.6ms)。
+🟢 14 容器 Up / 0 unhealthy（仅 cloudflared Exited 属历史残留）。
+🟡 backend 近 4h ERROR = **2**：均为 18:00 班级日报/签到日报 `AttendanceDailyReport.school_id does not exist` — #374 已知 schema 漂移，今日最后一个预告触发点，19:00–19:04 无新增。
+🟢 内存 available **545M**（19:00 轮 527M → 545M，+18M，远高于 300M 安全线）；free 143M + cache 718M；swap 0；磁盘 76%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无 p 标签）；最新 #374 无新增。
+🟡 PR #369 仍 OPEN/CONFLICTING（updated 08-23）— 第 136 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR 属 #374 定时复现、内存安全、无新增 → **无实质变化，不推送用户**，仅记录。
+ℹ️ 今日全部预告触发点（13:00/14:00/18:00）均已按预计复现，明日 13:00 起再复现。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（136 天）⑤ P0 存量 29 个分批派工
+
+---
 
 ## 09:01 — PM Patrol (Mon 11-16, 09:01 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 449M / 无新增]
 
@@ -922,3 +958,21 @@ Needs your input（5 项，未变）：
 ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修
 ④ PR #369 处置（132 天）
 ⑤ P0 存量 29 个分批派工
+
+---
+
+# 18:04 — PM Patrol (Tue 11-17, 18:04 轮次) [🟢 三端全绿 / 🟡 近 4h ERROR = 3（17:00 新触发点：18:00 日报 school_id，同源 #374）/ 🟢 内存 587M / 无新增]
+
+🟢 backend :3000/api/health = 200 (59ms)；admin :8080 = 200 (5.6ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器 Up，0 unhealthy。
+🟡 backend 近 4h ERROR = **3**：18:00 日报出现 **2 条** `column AttendanceDailyReport.school_id does not exist`（签到日报 + 班级日报）— 正是 17:04 轮预报的今日最后触发点，同源 #374，非新增故障；17:00–18:04 无其他新增。
+🟢 内存 available **587M**（16:04 轮 553M → 587M，+34M，远高于 300M 安全线）；free 126M + cache 776M；swap 0；磁盘 76%（剩 9.3G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无 p 标签）；最新 #374；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（updated 08-23）— 第 134 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、18:00 ERROR 属 #374 已预报的定时复现（今日 3 个触发点 13:00/14:00/18:00 全部兑现）、内存安全、无新增 → **无实质变化，不推送用户**，仅记录。
+ℹ️ 今日定时触发点已全部走完；下一轮预计静默至明日 13:00。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration（今日已复现 2 条）③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（134 天）⑤ P0 存量 29 个分批派工
