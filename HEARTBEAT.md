@@ -1,3 +1,21 @@
+# 15:04 — PM Patrol (Tue 11-17, 15:04 轮次) [🟢 三端全绿 / 🟡 近 3h ERROR = 2（13:00 提醒 + 14:00 自动拒绝，同源 #374）/ 🟢 内存 531M / 无新增]
+
+🟢 backend :3000/api/health = 200 (10ms)；admin :8080 = 200 (17ms)；portal :8081 = 200 (1.7ms)。
+🟢 14 容器 Up / 0 unhealthy（cloudflared Exited 3mo、zen_kowalevski Created 属历史残留）。
+🟡 backend 近 3h ERROR = **2**：13:00 午膳变更提醒（column LunchChange.created_by does not exist）、14:00 午膳自动拒绝（missing FROM-clause entry for table "change"）— 均为 #374 已知 schema 漂移按预计时点复现，15:00–15:04 无新增。
+🟢 内存 available **531M**（14:04 轮 553M → 531M，-22M，远高于 300M 安全线）；free 106M + cache 741M；swap 0；磁盘 76%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无 p 标签）；最新 #374 (10-04)；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（updated 08-23）— 第 134 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR 属 #374 定时复现、内存安全、无新增 → **无实质变化，不推送用户**，仅记录。
+ℹ️ 今日剩余触发点：18:00 日报 school_id（预计报错）— 同源 #374。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（134 天）⑤ P0 存量 29 个分批派工
+
+---
+
 # 14:04 — PM Patrol (Tue 11-17, 14:04 轮次) [🟢 三端全绿 / 🟡 近 3h ERROR = 2（13:00 提醒 + 14:00 自动拒绝，同源 #374）/ 🟢 内存 553M / 无新增]
 
 🟢 backend :3000/api/health = 200 (14ms)；admin :8080 = 200 (1.8ms)；portal :8081 = 200 (0.5ms)。
