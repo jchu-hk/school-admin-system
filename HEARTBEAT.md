@@ -1,3 +1,39 @@
+# 08:04 — PM Patrol (Wed 11-18, 08:04 轮次) [🟢 三端全绿 / 🟢 近 12h ERROR = 0 / 🟢 内存 556M / 无新增]
+
+🟢 backend :3000/api/health = 200 (50ms)；admin :8080 = 200 (6.1ms)；portal :8081 = 200 (0.9ms)。
+🟢 14 容器 Up / 0 unhealthy；load 0.43。
+🟢 backend 近 12h ERROR = **0**（夜间无定时任务；今日预告触发点 13:00/14:00/18:00 尚未到）。
+🟢 内存 available **556M**（07:00 轮 560M → 556M，-4M，远高于 300M 安全线）；free 208M + cache 663M；磁盘 76%（剩 9.3G）；swap 未见异常。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无 p 标签）；最新 #374；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN（i18n #367/#368/#366）— 第 137 天。
+
+判定：三端全绿、ERROR 归零、内存安全、无新增 → **无实质变化，不推送用户**，仅记录。
+ℹ️ 今日预告触发点：13:00 午膳提醒 / 14:00 自动拒绝 / 18:00 日报（预计因 #374 复现报错）。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（137 天）⑤ P0 存量 29 个分批派工
+
+---
+
+# 07:00 — PM Patrol (Wed 11-18, 07:00 轮次) [🟢 三端全绿 / 🟢 近 12h ERROR = 0 / 🟢 内存 560M / 无新增]
+
+🟢 backend :3000/api/health = 200 (8.1ms)；admin :8080 = 200 (6.7ms)；portal :8081 = 200 (1.0ms)。
+🟢 14 容器 Up / 0 unhealthy；load 0.33。
+🟢 backend 近 12h ERROR = **0**（昨日 18:00 日报 #374 触发后未再复发；#374 仍 OPEN）。
+🟢 内存 available **560M**（19:00 轮 527M → 560M，+33M，远高于 300M 安全线）；swap 0；磁盘 76%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2（1 无 p 标签）；最新 #374；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN（i18n #367/#368/#366）— 第 136 天。
+
+判定：三端全绿、ERROR 归零、内存安全、无新增 → **无实质变化，不推送用户**，仅记录。
+ℹ️ 今日预告触发点：13:00 午膳提醒 / 14:00 自动拒绝 / 18:00 日报（均预计因 #374 复现报错）。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（136 天）⑤ P0 存量 29 个分批派工
+
+---
+
 # 19:00 — PM Patrol (Tue 11-17, 19:00 轮次) [🟢 三端全绿 / 🟡 近 4h ERROR = 2（18:00 日报 school_id，同源 #374，按预计时点复现）/ 🟢 内存 527M / 无新增]
 
 🟢 backend :3000/api/health = 200 (11.3ms)；admin :8080 = 200 (6.7ms)；portal :8081 = 200 (2.0ms)。
@@ -397,6 +433,24 @@ Blocker（未变）：capabilities=none，无 sessions_spawn → 无法 spawn DE
 Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（130 天）⑤ P0 存量 29 个分批派工。
 
 # HEARTBEAT.md — PM Patrol Log
+
+# 21:04 — PM Patrol (Tue 11-17, 21:04 轮次) [🟢 三端全绿 / 🟢 近 3h ERROR = 0 / 🟢 内存 493M / 无新增]
+
+🟢 backend :3000/api/health = 200 (30.5ms)；admin :8080 = 200 (4.2ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器 Up / 0 unhealthy。
+🟢 backend 近 3h ERROR = **0**：18:00 日报 school_id 两条已滑出窗口，19:00–21:04 无新增；今日全部预告触发点结束。
+🟢 内存 available **493M**（21:00 轮 505M → 493M，-12M，远高于 300M 安全线）；free 127M + cache 约 700M；swap 0；磁盘 76%（剩 9.4G，持平）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；最新 #374；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（updated 08-23）— 第 136 天，阻塞 i18n #367/#368/#366。
+
+判定：三端全绿、ERROR=0、内存安全、无新增 → **无实质变化，不推送用户**，仅记录。
+ℹ️ 下一轮预计复现点：明日 13:00 午膳提醒。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（136 天）⑤ P0 存量 29 个分批派工
+
+---
 
 # 21:00 — PM Patrol (Tue 11-17, 21:00 轮次) [🟢 三端全绿 / 🟢 近 4h ERROR = 0 / 🟢 内存 505M / 无新增]
 
