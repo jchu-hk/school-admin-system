@@ -1,3 +1,21 @@
+
+---
+
+# 15:04 — PM Patrol (Wed 11-18, 15:04 轮次) [🟢 三端全绿 / 🟡 近 12h ERROR = 2（均为 #374 已知复现，无新增）/ 🟡 内存 437M（回升）/ 🟢 GH 持平]
+
+🟢 backend :3000/api/health = 200 (58ms)；admin :8080 = 200 (4.6ms)；portal :8081 = 200 (0.8ms)。
+🟢 14 容器 Up / 0 unhealthy；load 0.44。
+🟡 backend 近 12h ERROR = **2**，与 14:04 轮一致、均为 #374 已知复现，无新增：13:00 午膳变更提醒 `column LunchChange.created_by does not exist`；14:00 自动拒绝 `missing FROM-clause entry for table "change"`。
+🟡 内存 available **437M**（14:04 轮 388M → 437M，+49M，**止跌回升**，未触发 350M 告警线）；free 119M + cache 633M；swap 0；磁盘 76%（剩 9.4G）。
+🟢 GH open = 55（持平）；p0=29, p1=16, p2=7, p3=2；55/55 未指派；最新 #374；无新增、无新 P0/P1。
+🟡 PR #369 仍 OPEN/CONFLICTING（i18n #367/#368/#366）— 第 138 天。
+
+判定：三端全绿、GH 无新增、ERROR 属已知 #374 复现、内存止跌 → 实质状态无变化，不推送用户，仅记录。
+
+Blocker（未变）：capabilities=none，环境仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（5 项，未变）：① #374 上线（回复「批准上线」）② 18:00 日报 school_id 并入同次 migration ③ 午膳自动拒绝/提醒 SQL 随 #374 一并修 ④ PR #369 处置（138 天）⑤ P0 存量 29 个分批派工
+ℹ️ 今日剩余触发点：18:00 日报（预计同样因 #374 报错）。
 # 14:04 — PM Patrol (Wed 11-18, 14:04 轮次) [🟢 三端全绿 / 🟡 近 12h ERROR = 2（均为 #374 已知复现）/ 🟡 内存 388M / 无新增]
 
 🟢 backend :3000/api/health = 200 (68ms)；admin :8080 = 200 (31ms)；portal :8081 = 200 (2.5ms)。
