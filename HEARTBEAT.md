@@ -272,3 +272,37 @@ Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 s
 判定：健康，无实质变化 → 不推送用户，仅记录。笔记：memory/pm-2026-11-20-1400-patrol.md
 Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn。
 Needs input（3 项）已在笔记列出，待下次状态汇报呈现。
+
+---
+
+# 16:04 — PM Patrol (Fri 11-20, 16:04 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 22h / 🟢 内存 1115M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 backend=200；admin=200；portal=200
+🟢 14 容器全 Up（22h 无重启）；opa/postgres/redis/kafka/ai-sre 全 healthy
+🟢 内存 available 1115M（15:04 为 1074M）；磁盘 75%（剩 9.4G）
+🟢 全容器 60m ERROR = 0；LunchReminderScheduler 本轮无输出（15:00 报错后静默，属 #374 已知间歇故障）
+🟢 GH open = 55（十四轮一致）；p0=29、p1=16；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（自 08-23，逾期 ~89 天）
+
+判定：基础设施健康，无新 P0/P1，无实质变化 → 不推送用户，仅记录。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs your input（延续）：① #374 上线批准 ② #374 migration 含 attendance_daily_reports.school_id + 午膳字段 ③ 午膳提醒/自动拒绝 SQL 随 #374 修 ④ PR #369 处置 ⑤ P0 存量 29 分批派工 ⑥ 派工方式（人工/放开 allowAny）。
+
+---
+
+# 18:04 — PM Patrol (Fri 11-20, 18:04 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 24h / 🟡 内存 980M / 🔴 18:00 日报任务触发 #374 报错 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 backend=200；admin=200；portal=200
+🟢 14 容器全 Up 24h（9 Up + 5 healthy）；opa/postgres/redis/kafka/ai-sre healthy
+🟡 内存 available 980M（16:04 为 1115M，缓慢下滑）；磁盘 75%（剩 9.4G）
+🔴 近 60m backend ERROR = 4：18:00 DailyReportService 班级日报 + 签到日报均失败
+   → 「column AttendanceDailyReport.school_id does not exist」/「column "school_id" of relation "attendance_daily_reports" does not exist」
+   → #374 漂移新增第三处实锤（此前为 13:00 提醒、14:00 自动拒绝；今日 18:00 叠加日报生成）
+🟡 grafana 60m ERROR=6，全为 update checker 拉 github 超时（外网限制，非业务故障，忽略）
+🟢 GH open = 55（十五轮一致）；p0=29、p1=16；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（自 08-23，逾期 ~89 天）
+
+判定：基础设施健康；#374 影响面已确认扩散到「日报生成」这条业务链（不只定时提醒），每日 18:00 稳定失败 → 从「定时任务故障」升级为「日报数据缺失」，建议优先级再提。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（延续 6 项）：① #374 上线批准（现含日报链路缺失，影响面扩大）② #374 migration 补齐 attendance_daily_reports.school_id + 午膳字段 ③ 午膳提醒/自动拒绝 SQL 随 #374 修 ④ PR #369 处置 ⑤ P0 存量 29 分批派工 ⑥ 派工方式（人工/放开 allowAny）。
