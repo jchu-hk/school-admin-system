@@ -1,3 +1,41 @@
+# 15:04 — PM Patrol (Fri 11-20, 15:04 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 21h / 🟢 内存 1074M / 🔴 午膳 Cron 13:00+14:00 双错 / 🔴 PR #369 CONFLICTING]
+
+🟢 backend=200；admin=200；portal=200；14 容器全 Up 21h（opa/postgres/redis/kafka/ai-sre healthy）
+🟢 内存 available 1074M（14:00 1306M）；磁盘 75%（剩 9.4G）；全容器 60m ERROR=0
+🔴 3h 内双错：13:00 handleReminder「column LunchChange.created_by does not exist」；14:00 handleAutoReject「missing FROM-clause entry for table "change"」→ #374 漂移在「提醒+自动拒绝」两段任务上实锤
+🟢 GH open = 55（十三轮一致）；p0=29、p1=16；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（自 08-23，逾期 ~89 天）
+
+判定：基础设施健康；唯一持续故障 = #374 定时任务（14:00 已汇报，未获回复）→ 不重复推送，仅记录。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn。
+
+---
+
+# 13:04 — PM Patrol (Fri 11-20, 13:04 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 19h / 🟢 内存 1214M / 🔴 午膳 Cron 报错复现 / 🔴 PR #369 CONFLICTING]
+
+
+🟢 backend :3000/api/health = 200；admin :8080 = 200；portal :8081 = 200
+🟢 14 容器全 Up（19h 无重启）；opa/postgres/redis/kafka/ai-sre 全 healthy
+🟢 内存 available 1214M（11:04 为 1262M）；磁盘 75%（剩 9.4G）
+🔴 backend 近 60m ERROR = 1：13:00 LunchReminderScheduler「午膳变更提醒任务失败: column LunchChange.created_by does not exist」
+🟡 近 24h LunchReminderScheduler 共 6 条日志：14:00(11-19) 自动拒绝失败「missing FROM-clause entry for table "change"」→ 昨夜起 Cron 不执行；今日仅 13:00 触发过提醒任务（10:00 应跑未跑）
+🟢 GH open = 55（十二轮一致）；p0=29、p1=16；无新 P0/P1（最新更新 #374 / 10-04）
+🔴 PR #369 OPEN + CONFLICTING，updated 2026-08-23（逾期 ~89 天）
+
+判定：#374 schema 漂移已在生效定时任务上实锤（两处 SQL 与实体/migration 均不一致）。属已知 Issue，无新 P0/P1 → 不额外推送，但「#374 上线」优先级应提升（每天 10:00/13:00/14:00 任务持续失败）。
+
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+
+Needs your input（延续）：
+① #374 上线（「批准上线」）— 已从「报错未复现」升级为「定时任务每日失败」
+② #374 migration 含 `attendance_daily_reports.school_id` + 午膳字段
+③ 午膳自动拒绝/提醒 SQL 随 #374 修（`handleAutoReject` 别名 change、`handleReminder` LunchChange.created_by）
+④ PR #369 处置（关闭 or DEV 解冲突重开）
+⑤ P0 存量 29 个分批派工
+⑥ 无代理可 spawn，需指定派工方式（人工 / 放开 allowAny）
+
+---
+
 # 09:58 — PM Patrol (Fri 11-20, 09:58 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 15h / 🟢 内存 987M / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
 
 🟢 backend=200；admin=200；portal=200
@@ -194,3 +232,43 @@ Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 s
 判定：健康，无实质变化 → 不推送用户。笔记：memory/pm-2026-11-20-1004b-patrol.md
 
 ---
+
+# 11:04 — PM Patrol (Fri 11-20, 11:04 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 17h / 🟢 内存 1262M / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 backend=200；admin=200；portal=200
+🟢 14 容器全 Up（17h 无重启）；opa/postgres/redis/kafka/ai-sre 全 healthy
+🟢 内存 available 1262M（10:04 为 1258M）；磁盘 75%（剩 9.4G）
+🟢 全容器 60m ERROR = 0；LunchReminderScheduler 无输出（#374 报错未复现）
+🟢 GH open = 55（十一轮一致）；p0=29（p1 本轮口径 0，前轮 16，待核）；无新 P0/P1（最新更新 #374 / 10-04）
+🔴 PR #369 OPEN + CONFLICTING（自 08-23 逾期 ~89 天）
+
+判定：健康，无新 P0/P1，无实质变化 → 不推送用户，仅记录。笔记：memory/pm-2026-11-20-1104-patrol.md
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn。
+
+---
+
+# 12:04 — PM Patrol (Fri 11-20, 12:04 轮次) [🟢 三端全绿 / 🟢 14 容器 Up / 🟢 内存 1175M / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 backend /api/health=200；admin :8080=200；portal :8081=200（:8082 非服务端口，正常无响应）
+🟢 14 容器全 Up；backend 60m ERROR = 0
+🟢 内存 available 1175M（09:58 987M → 回升）；磁盘 75%（剩 9.4G）
+🟢 GH open = 55（十轮一致）；无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（自 08-23 逾期 ~89 天）
+
+判定：健康，无实质变化 → 不推送用户，仅记录。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn。
+
+---
+
+# 14:00 — PM Patrol (Fri 11-20, 14:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 20h / 🟢 内存 1306M / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 backend/api/health=200；admin :8080=200；portal :8081=200
+🟢 14 容器全 Up 20h；opa/postgres/redis/kafka/ai-sre healthy
+🟢 内存 available 1306M（12:04 1175M）；磁盘 75%（剩 9.4G）
+🟢 GH open = 55（四轮一致），p0=29；最新更新仍 #374（10-04）→ 无新 P0/P1
+🟡 55 个 Issue 全部未指派（既有状态）
+🔴 PR #369 OPEN + CONFLICTING（自 08-23 逾期 ~89 天）
+
+判定：健康，无实质变化 → 不推送用户，仅记录。笔记：memory/pm-2026-11-20-1400-patrol.md
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn。
+Needs input（3 项）已在笔记列出，待下次状态汇报呈现。

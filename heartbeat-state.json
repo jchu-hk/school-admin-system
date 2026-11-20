@@ -1,17 +1,15 @@
 {
-  "lastPatrol": "2026-11-16T19:04:00+08:00",
+  "lastPatrol": "2026-11-20T15:04:00+08:00",
   "health": {
     "backend": 200,
     "admin": 200,
     "portal": 200
   },
   "containersUp": 14,
-  "backendErrors3h": 2,
-  "backendErrorsNote": "近3h ERROR=2，18:00 DailyReport AttendanceDailyReport.school_id 缺失（#374 同源），本轮首次实报",
-  "memAvailableMb": 578,
+  "backendErrors3h": 0,
+  "backendErrorsNote": "近60m ERROR=0；但 13:00 handleReminder、14:00 handleAutoReject 均报 #374 漂移错误",
+  "memAvailableMb": 1074,
   "memory": {
-    "usedM": 3321,
-    "swap": 0,
     "disk": "75% (9.4G free)"
   },
   "ghOpenIssues": 55,
@@ -19,9 +17,8 @@
     "total": 55,
     "p0": 29,
     "p1": 16,
-    "p2": 7,
-    "p3": 2,
-    "assigned": 0
+    "unassigned": 55,
+    "newP0P1": 0
   },
   "ghNewIssues24h": 0,
   "openPRs": {
@@ -29,7 +26,7 @@
   },
   "issue374Days": 40,
   "spawnBlocker": "capabilities=none / allowAny=false — cannot dispatch DEV/QA/DEVOPS",
-  "verdict": "green/hold — 三端全绿、ERROR 仅 #374 已知漂移、内存 709M、GH 零变化",
+  "verdict": "infra green; #374 定时任务持续失败（13:00/14:00）；PR#369 conflict",
   "needsInput": [
     "#374 上线批准（回复「批准上线」）",
     "18:00 日报 school_id 并入同次 migration",
@@ -45,5 +42,14 @@
   "push": {
     "at": "2026-11-16T19:04:00+08:00",
     "reason": "18:00 日报 school_id 首次实报错误，业务功能失效升级"
-  }
+  },
+  "pr369": {
+    "state": "OPEN",
+    "mergeable": "CONFLICTING",
+    "since": "2026-08-23"
+  },
+  "lastHeartbeat": "2026-11-20T15:04:20.679276+08:00",
+  "status": "healthy-with-known-failure",
+  "notes": "#374 lunch cron failing 13:00/14:00; PR#369 conflicting; gh open 55; no new P0/P1",
+  "backendErrors60m": 0
 }
