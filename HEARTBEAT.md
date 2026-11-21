@@ -1,3 +1,19 @@
+# 09:00 — PM Patrol (Sat 11-21, 09:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 39h / 🟡 内存 850M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING / 🔴 #374 待观察]
+
+🟢 backend=200；admin=200；portal=200
+🟢 14 容器全 Up 39h；opa/postgres/redis/kafka/ai-sre 全 healthy
+🟡 内存 available 850M（08:04 887M，缓降 ~37M/h，安全区）；磁盘 75%（剩 9.4G）
+🟢 近 60m 全容器 ERROR = 0
+🟢 GH open = 55（二十轮一致）；p0=29、p1=16；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（复核确认，08-04 的 UNKNOWN 已回落；逾期 ~90 天）
+🔴 #374 今日 13:00/14:00/18:00 触发点未到，待观察
+
+判定：基础设施健康；无新 P0/P1、无实质变化 → 不推送用户，仅记录。笔记：memory/pm-2026-11-21-0900-patrol.md
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① PR #369 合并/关闭 ② #374 migration 是否授权 main 处理 ③ 是否放宽代理 spawn 策略
+
+---
+
 # 08:04 — PM Patrol (Sat 11-21, 08:00 轮次) [🟢 14 容器 Up 38h / 🟢 内存 887M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🟡 PR #369 待复核 / 🔴 #374 待修]
 
 🟢 14 容器全 Up 38h；opa/postgres/redis/kafka/ai-sre 全 healthy
