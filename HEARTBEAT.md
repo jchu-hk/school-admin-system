@@ -1,3 +1,34 @@
+# 08:04 — PM Patrol (Sat 11-21, 08:00 轮次) [🟢 14 容器 Up 38h / 🟢 内存 887M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🟡 PR #369 待复核 / 🔴 #374 待修]
+
+🟢 14 容器全 Up 38h；opa/postgres/redis/kafka/ai-sre 全 healthy
+🟢 内存 available 887M（07:00 为 1015M，降 ~128M，安全区）；磁盘 75%（剩 9.4G）
+🟢 backend 近 60m ERROR = 0
+🟢 GH open = 55（十九轮一致）；最新更新仍 #374（10-04）→ 无新 P0/P1
+🟡 PR #369 mergeable=UNKNOWN（重算中，此前 CONFLICTING）→ 下轮复核
+🔴 #374 定时触发点 13:00 未到，待观察
+
+判定：基础设施健康；无新 P0/P1、无实质变化 → 不推送用户，仅记录。笔记：memory/pm-2026-11-21-0800-patrol.md
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① PR #369 合并/关闭 ② #374 migration 是否授权 main 处理 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 07:00 — PM Patrol (Sat 11-21, 07:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 37h / 🟢 内存 1015M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 #374 待修 / 🔴 PR #369 CONFLICTING]
+
+🟢 backend=200；admin=200；portal=200
+🟢 14 容器全 Up 37h；opa/postgres/redis/kafka/ai-sre 全 healthy
+🟢 内存 available 1015M（昨 21:00 为 1009M，持平）；磁盘 75%（剩 9.4G）
+🟢 backend 近 60m ERROR = 0
+🟢 GH open = 55（十八轮一致）；p0=29、p1=16；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 #374 今日未到定时触发点（13:00/14:00/18:00），待观察
+🔴 PR #369 OPEN + CONFLICTING（自 08-23，逾期 ~90 天）
+
+判定：基础设施健康；无新 P0/P1、无实质变化 → 不推送用户，仅记录。笔记：memory/pm-2026-11-21-0700-patrol.md
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① PR #369 合并/关闭 ② #374 migration 是否授权 main 处理 ③ 是否放宽代理 spawn 策略
+
+---
+
 # 21:00 — PM Patrol (Fri 11-20, 21:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 27h / 🟢 内存 1009M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 #374 待修 / 🔴 PR #369 CONFLICTING]
 
 🟢 backend=200；admin=200；portal=200
