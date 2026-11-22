@@ -717,3 +717,18 @@ Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关�
 判定：全绿，无实质变化 → 未打扰用户。
 Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
 Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 13:04 — PM Patrol (Sun 11-22, 13:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 2d / 🟡 内存 717M / 🟡 后端 1 条已知 ERROR / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 backend :3000/api/health = 200；admin :8080/school-admin/ = 200；portal :8081/portal/student = 200
+🟢 14 运行容器全 Up 2 days（opa/postgres/redis/kafka/ai-sre healthy）；唯一 exited = cloudflared（3 个月前已退役残留，非新增）
+🟡 内存 available 717M（12:04 694M → 微升 23M，连降趋势暂缓）；磁盘 75%（剩 9.4G）
+🟡 近 60m backend ERROR=1，frontend/frontend-v2/postgres = 0。唯一报错为 13:00:00 LunchReminderScheduler「column LunchChange.created_by does not exist」→ 即 #374（schema drift）的准点触发，已知未修复，非新问题
+🟢 GH open = 55；p0=29、p1=16、p2=7、p3=2；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~92 天）
+
+判定：全绿（1 条 ERROR 属已有的 #374 已知缺陷）→ 未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
