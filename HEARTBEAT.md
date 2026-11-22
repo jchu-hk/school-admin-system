@@ -1,3 +1,93 @@
+# 09:00 — PM Patrol (Sun 11-22, 09:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 2d / 🟢 内存 807M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend /api/health status=ok（`01:00:39Z`=09:00 本地）、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 2 days；opa/postgres/redis/kafka/ai-sre 全 healthy（无 exited/restarting/unhealthy）
+🟢 内存 available 807M（08:04 为 859M，微降 52M/h，安全区）；磁盘 75%（剩 9.4G）
+🟢 近 60m backend/frontend/frontend-v2/postgres/redis/kafka ERROR/FATAL = 0
+🟢 GH open = 55；p0=29、p1=16、p2=7、p3=2；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~92 天）；08:04 的 UNKNOWN 已回落为 CONFLICTING
+
+判定：全绿，无实质变化 → 未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 07:00 — PM Patrol (Sun 11-22, 07:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 2d / 🟢 内存 924M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend /api/health status=ok（`23:00:05Z`=07:00 本地）、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 2 days；opa/postgres/redis/kafka/ai-sre 全 healthy（无 exited/restarting）
+🟢 内存 available 924M（21:00 为 900M，平稳）；磁盘 75%（剩 9.4G）
+🟢 近 60m backend/frontend/frontend-v2/postgres/redis/kafka ERROR/FATAL = 0
+🟢 GH open = 55；p0=29、p1=16、p2=7、p3=2；assigned = 0；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN（mergeable=UNKNOWN，上次 CONFLICTING，updated 08-23，逾期 ~92 天）
+
+判定：全绿，无实质变化 → 未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 21:00 — PM Patrol (Sat 11-21, 21:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 2d / 🟢 内存 900M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend /api/health=200、admin :8080=200、portal :8081=200
+🟢 14/14 容器 Up 2 days，无 exited/restarting、无 unhealthy
+🟢 内存 available 900M（20:04 为 975M，微降 75M/h，安全区）；磁盘 75%（剩 9.4G）
+🟢 近 60m 全容器 ERROR/FATAL = 0（今日 13:00/14:00/18:00 三个 #374 触发点均未报错）
+🟢 GH open = 55；p0=29、p1=16、p2=7、p3=2；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~91 天）
+
+判定：全绿，无实质变化 → 未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 20:04 — PM Patrol (Sat 11-21, 20:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 2d / 🟢 内存 975M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend /api/health=200、admin :8080=200、portal :8081=200
+🟢 14/14 容器 Up 2 days；opa/postgres/redis/kafka/ai-sre 全 healthy（无 exited/restarting）
+🟢 内存 available 975M（19:00 为 1004M，平稳）；磁盘 75%（剩 9.4G）
+🟢 近 60m 全容器 ERROR/FATAL = 0
+🟢 GH open = 55；p0=29、p1=16、p2=7、p3=2；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~91 天）
+
+判定：全绿，无实质变化 → 未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 19:00 — PM Patrol (Sat 11-21, 19:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 2d / 🟢 内存 1004M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend /api/health status=ok（`11:00:07Z`=19:00 本地）、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 2 days；opa/postgres/redis/kafka/ai-sre 全 healthy
+🟢 内存 available 1004M（18:04 为 901M，回升）；磁盘 75%（剩 9.4G）
+🟢 近 60m 全容器 ERROR/FATAL = 0（LunchReminderScheduler 未复现）
+🟢 GH open = 55；p0=29、p1=16、p2=7、p3=2；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（仍冲突，逾期 ~91 天）
+
+判定：全绿，无实质变化 → 未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 18:04 — PM Patrol (Sat 11-21, 18:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 49h / 🟢 内存 901M / 🟢 近 70m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend /api/health status=ok（`10:04Z`=18:04 本地）、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 2 days；opa/postgres/redis/kafka/ai-sre 全 healthy
+🟢 内存 available 901M（17:04 为 851M，回升，安全）；磁盘 75%（剩 9.4G）
+🟢 近 70m 全容器 ERROR/FATAL = 0 — 17:00/18:00 午膳调度器触发点未报错（上轮 14:00 报错未复现）
+🟢 GH open = 55；p0=29、p1=16；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（mergeable 已定格为 CONFLICTING，逾期 ~90 天）
+
+判定：全绿，无实质变化。上轮 UNKNOWN 状态已澄清为 CONFLICTING。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
+
+---
+
 # 17:04 — PM Patrol (Sat 11-21, 17:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 47h / 🟢 内存 851M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 UNKNOWN]
 
 🟢 三端全绿：backend /api/health status=ok（`09:04:15Z`=17:04 本地）、admin=301→200、portal=200
@@ -521,3 +611,33 @@ Needs input：① PR #369 合并/关闭 ② #374 migration 是否授权 main 处
 判定：基础设施健康；无新 P0/P1、无实质变化 → 不推送用户，仅记录。
 Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
 Needs input：① PR #369 合并/关闭 ② #374 migration 是否授权 main 处理 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 21:00 — PM Patrol (Sat 11-21, 21:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 2d / 🟢 内存 803M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend /api/health=200、admin :8080=200、portal :8081=200
+🟢 14/14 容器 Up 2 days，无 exited/restarting、无 unhealthy（opa/postgres/redis/kafka/ai-sre healthy）
+🟢 内存 available 803M（20:04 为 900M，微降 ~97M/h，安全区）；磁盘 75%（剩 9.4G）
+🟢 近 60m 全容器 ERROR/FATAL = 0（#374 的 13:00/14:00/18:00 三个触发点本轮窗口内无新增报错）
+🟢 GH open = 55；p0=29、p1=16、p2=7、p3=2；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~91 天）
+
+判定：全绿，无实质变化 → 未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 08:04 — PM Patrol (Sun 11-22, 08:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 2d / 🟢 内存 859M / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🟡 PR #369 UNKNOWN]
+
+🟢 三端全绿：backend /api/health status=ok（`00:04:11Z`=08:04 本地）、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 2 days；opa/postgres/redis/kafka/ai-sre 全 healthy（无 exited/restarting）
+🟢 内存 available 859M（07:00 为 924M，微降 65M/h，安全区）；磁盘 75%（剩 9.4G）
+🟢 近 60m backend/frontend/frontend-v2/postgres/redis/kafka ERROR/FATAL = 0
+🟢 GH open = 55；p0=29、p1=16、p2=7、p3=2；assigned = 0；最新更新仍 #374（10-04）→ 无新 P0/P1
+🟡 PR #369 OPEN，mergeable=UNKNOWN（07:00 为 CONFLICTING，HTML 旧值 UNKNOWN 属 GitHub 重算中；updated 08-23，逾期 ~92 天）→ 下轮复核
+
+判定：全绿，无实质变化 → 未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
