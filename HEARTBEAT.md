@@ -657,3 +657,33 @@ Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关�
 判定：全绿，无实质变化 → 未打扰用户。
 Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
 Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 09:04 — PM Patrol (Sun 11-22, 09:00 轮次·复核) [🟢 三端全绿 / 🟢 14 运行容器 / 🟡 内存 667M / 🟢 近 61m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 backend /api/health status=ok（`01:04:09Z`=09:04 本地）；admin :8080/school-admin/ = 200；portal :8081/portal/student = 200
+🟢 14 运行容器全 Up 2 days（opa/postgres/redis/kafka/ai-sre healthy）；无常驻容器 exited/restarting（cloudflared 为 3 个月前已退役，zen_kowalevski 为 created 残留）
+🟡 内存 available 667M（09:00 721M → 微降 54M/h，连续两轮下滑但仍安全）；磁盘 75%（剩 9.4G）
+🟢 近 61m backend/frontend/frontend-v2/postgres/redis/kafka ERROR/FATAL = 0
+🟢 GH open = 55；p0=29、p1=16、p2=7、p3=2；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~92 天）
+
+判定：全绿，无实质变化 → 未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
+
+---
+
+# 10:04 — PM Patrol (Sun 11-22, 10:00 轮次) [🟢 三端全绿 / 🟢 14 容器 Up 2d / 🟢 内存 785M（回升） / 🟢 近 60m ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 backend :3000/api/health status=ok（`02:04:11Z`=10:04 本地）；admin :8080/school-admin/ = 200；portal :8081/portal/student = 200
+🟢 14 运行容器全 Up 2 days（opa/postgres/redis/kafka/ai-sre healthy）；无常驻容器 exited/restarting（cloudflared 3 个月前已退役）
+🟢 内存 available 785M（09:04 为 667M，回升 118M → 连降趋势暂缓）；磁盘 75%（剩 9.4G）
+🟢 近 60m backend/frontend/frontend-v2/postgres/redis/kafka ERROR/FATAL = 0（#374 的 10:00 触发点未报错）
+🟢 GH open = 55；p0=29、p1=16、p2=7、p3=2；最新更新仍 #374（10-04）→ 无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~92 天）
+
+判定：全绿，无实质变化 → 未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 migration 授权（最高优先）② PR #369 合并/关闭 ③ 是否放宽代理 spawn 策略
