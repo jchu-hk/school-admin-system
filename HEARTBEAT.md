@@ -194,3 +194,16 @@ Needs input：① #374 修复授权（migration + 定时任务 SQL，整点复�
 未打扰用户（全绿、无 P0/P1 新增）。
 Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
 Needs input：① **#374 修复授权（migration + LunchReminder/通知定时任务 SQL 别名，午膳档触发）** ② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+# 18:04 — PM Patrol (Mon 11-23, 18:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 726M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (34.6ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 4 days，无 restarting/exited
+🟢 内存 available 726M（17:04 526M → 726M，回升）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0 → #374 18:00 静默，符合「仅午膳档 12:00–13:00 触发」规律（连续第三个整点 17:00/18:00 无复现）
+🟢 GH open = 55（p0 29、p1 16），无新 P0/P1；最新更新仍 #374（10-04）
+🔴 PR #369 OPEN + CONFLICTING（逾期 ~92 天）
+
+判定：全绿。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
+Needs input：① #374 修复授权（migration + LunchReminder 定时 SQL 别名，建议明日午膳前完成）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
