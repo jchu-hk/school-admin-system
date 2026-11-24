@@ -1,3 +1,48 @@
+# 16:04 — PM Patrol (Tue 11-24, 16:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 594M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (15ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 4 days（9 Up + 5 healthy）
+🟢 内存 available 594M（15:04 622M → 594M，-28M，平稳）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0 — 15:00 档未触发异常，#374 本小时静默（下次 16:00 已过，无报错；17:00 观察点）
+🟢 GH open = 55，今日 issue 更新 = 0；55/55 均未指派
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~93 天）
+
+判定：功能全绿，无告警升级。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权 ② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
+# 15:04 — PM Patrol (Tue 11-24, 15:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 622M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (28ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 4 days（9 Up + 5 healthy）
+🟢 内存 available 622M（14:04 753M → 622M，-131M，属午间波动，仍在安全区）；磁盘 76%（剩 9.4G）
+🟢 backend 近 60m ERROR=0 — 14:00 整点的那条「missing FROM-clause entry for table "change"」已滑出 60m 窗口，为 #374 已知定时复现（14:00 档），非新增。15:00 整点静默。
+🟢 GH open = 55，今日无任何 issue 更新（updated>11-24 计数=0）；P0/P1 仍 45 条，55/55 均未指派
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~93 天）
+
+判定：功能全绿，无告警升级。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权（migration + LunchReminder 定时 SQL 别名，「change」别名缺失）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
+# 14:04 — PM Patrol (Tue 11-24, 14:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 753M / 🟡 backend ERROR=1(#374 定时) / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (8ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 4 days（9 Up + 5 healthy）
+🟢 内存 available 753M（13:04 589M → 753M，+164M 明显回升，脱离下滑）；磁盘 76%（剩 9.3G）
+🟡 backend 近 60m ERROR=1 — **非新增故障**：14:00:00 LunchReminderScheduler「missing FROM-clause entry for table "change"」，即 #374 每日 14:00 定时复现（与 13:00 午膳列缺失同源）。节奏完全符合预期，非回归。
+🟢 GH open = 55，无新增、无新 P0/P1；#374/#368/#367 等仍无 assignee（最新更新仍 10-04）
+🔴 PR #369 OPEN + CONFLICTING（逾期 ~96 天）
+
+判定：功能全绿，无告警升级。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权 ② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
 # 13:04 — PM Patrol (Tue 11-24, 13:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 589M / 🟡 backend ERROR=1(已知#374) / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
 
 🟢 三端全绿：backend :3000/api/health = 200 (31ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
@@ -340,3 +385,50 @@ Needs input：① #374 修复授权（migration + LunchReminder 定时 SQL 别�
 判定：全绿、无实质变化。未打扰用户。
 Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS。
 Needs input：① #374 修复授权（migration + LunchReminder 定时 SQL 别名，建议明日午膳 12:00 前完成以便验证）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
+# 18:04 — PM Patrol (Tue 11-24, 18:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 790M / 🟡 backend ERROR=2(#374 新增变体) / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (1.5ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up（16 个含 2 历史残留：zen_kowalevski Created、cloudflared Exited）
+🟢 内存 available 790M（16:04 594M → 790M，+196M 回升）；磁盘 76%（剩 9.3G）
+🟡 backend 近 60m ERROR=2 @ 18:00:00 DailyReportService — `column AttendanceDailyReport.school_id does not exist` / `column "school_id" of relation "attendance_daily_reports" does not exist`
+  → 与 #374 同源（schema 漂移），但**新暴露点**：此前记录的是 LunchReminder 的 FROM-clause 别名问题，本次是 DailyReportService 少 school_id 列。18:00 整点定时触发，非回归、非流量相关。
+🟢 GH open = 55，今日更新 = 0；均未指派
+🔴 PR #369 OPEN + CONFLICTING（#366/#367/#368 合集，逾期 ~96 天）
+
+判定：功能可用，错误限于夜间批量任务。#374 影响面比原记录更广（LunchReminder + DailyReport 两处），已在下方 Needs input 中升级说明。未打扰用户（无用户主动提问，按 PM 静默原则）。
+
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权 — **影响面扩大**：AttendanceDailyReport.school_id 缺列 + LunchReminder SQL 别名，需 migration ② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
+# 19:00 — PM Patrol (Tue 11-24, 19:00 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 788M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 5 days，无重启
+🟢 内存 available 788M（18:04 790M → 持平）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0 → 18:00 DailyReportService 报错未在 19:00 复发，确认属整点批处理而非持续故障
+🟢 GH open = 55，今日更新 0 条；无新 P0/P1，全部未指派
+🔴 PR #369 OPEN + CONFLICTING（#366/#367/#368 合集，逾期 ~93 天）
+
+判定：全绿、无实质变化。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权（migration：AttendanceDailyReport.school_id 缺列 + LunchReminder SQL 别名）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
+# 19:04 — PM Patrol (Tue 11-24, 19:04 轮次) [🟢 三端全绿 / 🟢 容器全 Up 5d / 🟢 内存 678M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (2.2ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 容器全 Up 5 days，无 restarting/exited
+🟢 内存 available 678M（19:00 788M → 678M，-110M，仍在安全区）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0 → 18:00 DailyReportService 报错未复发，维持「整点批处理」判定
+🟢 GH open = 55，今日更新 0 条；无新 P0/P1，全部未指派
+🔴 PR #369 OPEN + CONFLICTING（#366/#367/#368 合集，逾期 ~93 天）
+
+判定：全绿、无实质变化。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权（migration：AttendanceDailyReport.school_id 缺列 + LunchReminder SQL 别名）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
