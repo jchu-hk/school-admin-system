@@ -1,3 +1,33 @@
+# 13:04 — PM Patrol (Tue 11-24, 13:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 589M / 🟡 backend ERROR=1(已知#374) / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (31ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 4 days（9 Up + 5 healthy）
+🟢 内存 available 589M（11:04 629M → 589M，-40M，温和）；磁盘 76%（剩 9.3G）
+🟡 backend 近 60m ERROR=1 — **非新增故障**：13:00:00 LunchReminderScheduler「column LunchChange.created_by does not exist」，即 #374 的每日 13:00 定时复现（24h 内 2 次，符合预期节奏）。14:00 预计再现 change 表报错。
+🟢 GH open = 55，无新增、无新 P0/P1；#374 仍无 assignee（updated 10-04）
+🔴 PR #369 OPEN + CONFLICTING（逾期 ~96 天）
+
+判定：功能全绿；backend 单条 ERROR 为已知 P1 #374 的定时复现，非回归。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权 ② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
+# 11:04 — PM Patrol (Tue 11-24, 11:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 629M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (2.2ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 4 days
+🟢 内存 available 629M（10:04 676M → 629M，-47M，温和波动）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0（#374 持续静默）
+🟢 GH open = 55，无新增、无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（逾期 ~96 天）
+
+判定：功能全绿，无告警。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权 ② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
 # 10:04 — PM Patrol (Tue 11-24, 10:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 676M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
 
 🟢 三端全绿：backend :3000/api/health = 200 (7ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
