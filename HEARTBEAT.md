@@ -1,3 +1,33 @@
+# 10:04 — PM Patrol (Tue 11-24, 10:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 676M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (7ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 4 days
+🟢 内存 available 676M（09:04 564M → 676M，+112M 回升，脱离下滑趋势）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0（#374 持续静默）
+🟢 GH open = 55，无新增、无新 P0/P1；最新更新仍 #374 (10-04)
+🔴 PR #369 OPEN + CONFLICTING（逾期 ~96 天）
+
+判定：功能全绿，内存回落，无告警。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权 ② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
+# 09:04 — PM Patrol (Tue 11-24, 09:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟡 内存 564M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (4.5ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 4 days
+🟡 内存 available 564M（09:00 689M → 564M，-125M，连续两轮下滑，继续观察）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0（#374 持续静默）
+🟢 GH open = 55，无新增、无新 P0/P1；最新更新仍 #374 (10-04)
+🔴 PR #369 OPEN + CONFLICTING（逾期 ~96 天）
+
+判定：功能全绿，仅内存趋势轻微告警，未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权 ② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
 # 09:00 — PM Patrol (Tue 11-24, 09:00 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 689M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
 
 🟢 三端全绿：backend :3000/api/health = 200 (2ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
