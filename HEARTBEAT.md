@@ -1,3 +1,35 @@
+# 14:15 — PM Patrol (Wed 11-25, 14:15 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 659M / 🟡 backend ERROR=1 (14:00 自动拒绝档) / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (2ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 5 days（9 Up + 5 healthy，school-admin-opa 已恢复 healthy）
+🟢 内存 available 659M（14:14 842M → 659M，回落但在安全区）；磁盘 76%（剩 9.3G）
+🟡 backend 近 60m ERROR=1 — 14:00:00 LunchReminderScheduler 午膳变更**自动拒绝**失败：`missing FROM-clause entry for table "change"`（SQL 别名错，与 #374 schema 漂移同源）；13:00 档本轮已滚出 60m 窗口
+🟢 GH open = 55，今日 issue 更新 = 0；无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~94 天）— 未变
+
+判定：功能面全绿；#374 每日定时档持续复现（自动拒绝查询 SQL 别名错待修）。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权（LunchChange.created_by 缺列 + 自动拒绝 SQL 别名 "change" 错）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 14:14 — PM Patrol (Wed 11-25, 14:14 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 842M / 🟡 backend ERROR=2 (#374 13:00+14:00 双档) / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (217ms，较常态偏慢)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 5 days（9 Up + 4 healthy + 1 unhealthy）
+🟡 school-admin-opa 瞬时 unhealthy — 14:10~14:13 连续 3 次探针 exit=-1，14:14:54 exit=0 已自愈（FailingStreak=0），非核心路径，观察
+🟢 内存 available 842M（13:04 628M → 842M，+214M 大幅回升）；磁盘 76%（剩 9.3G）
+🟡 backend 近 90m ERROR=2 — #374 双档全中且**故障面扩大**：
+   • 13:00 午膳变更提醒：`column LunchChange.created_by does not exist`
+   • 14:00 午膳变更**自动拒绝**：`missing FROM-clause entry for table "change"` ← 新增，同源 schema/查询漂移
+🟢 GH open = 55，今日 issue 更新 = 0；无新 P0/P1；55/55 未指派
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~94 天）— 未变
+
+判定：功能面全绿；#374 由偶发确认为每日定时多档稳定复现 + 故障面扩大，告警升级。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权（LunchChange 表缺 created_by + 自动拒绝任务 SQL 别名错，需 migration + 查询修正） ② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
 # 13:04 — PM Patrol (Wed 11-25, 13:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 628M / 🔴 backend ERROR=1 (#374 午膳) / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
 
 🟢 三端全绿：backend :3000/api/health = 200、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
