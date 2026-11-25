@@ -1,3 +1,45 @@
+# 20:04 — PM Patrol (Wed 11-25, 20:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 621M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (10ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 6 days，无 Exited/restarting
+🟢 内存 available 621M（19:04 628M → 621M，-7M 平稳）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0 — 19:00/20:00 档静默；午膳档外不复现，符合已知规律
+🟢 GH open = 55，今日 issue 更新 = 0；55/55 未指派；无新 P0/P1；最新更新仍 #374 (10-04)
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~94 天）— 未变
+
+判定：功能面全绿，无实质变化。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权（LunchChange.created_by 缺列 + 自动拒绝 SQL 别名 "change" 错）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 19:04 — PM Patrol (Wed 11-25, 19:04 轮次) [🟢 三端全绿 / 🟢 13 容器 / 🟢 内存 628M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (2.8ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 13/13 school-admin 容器 Up 6 days（含 healthy）；无掉线
+🟢 内存 available 628M（19:00 605M → 628M，+23M 小幅回升，脱离缓降）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0 — 19:00 档静默；午膳档（12-14 点）外不复现，符合已知规律
+🟢 GH open = 55，今日 issue 更新 = 0；无新 P0/P1；55/55 未指派
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~94 天）— 未变
+
+判定：功能面全绿，无实质变化。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权（LunchChange.created_by 缺列 + 自动拒绝 SQL 别名 "change" 错）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 19:00 — PM Patrol (Wed 11-25, 19:00 轮次) [🟢 三端全绿 / 🟢 13 容器 / 🟡 内存 605M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (7ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 13/13 school-admin 容器 Up 6 days（含 4 healthy）；无掉线
+🟡 内存 available 605M（16:04 634M → 605M，-29M 持续缓降，仍在安全区，观察）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0 — 18:00 档无报错；近 3h LunchReminder/LunchChange 日志为空，午膳档未复现
+🟢 GH open = 55，无新 P0/P1；55/55 未指派；今日 issue 更新 = 0
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~94 天）— 未变
+
+判定：功能面全绿，无实质变化。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权（LunchChange.created_by 缺列 + 自动拒绝 SQL 别名 "change" 错）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
 # 16:04 — PM Patrol (Wed 11-25, 16:04 轮次) [🟢 三端全绿 / 🟢 13 容器 / 🟢 内存 634M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
 
 🟢 三端全绿：backend :3000/api/health = 200 (6ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
