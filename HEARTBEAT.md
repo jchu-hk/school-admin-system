@@ -1,3 +1,33 @@
+# 13:04 — PM Patrol (Wed 11-25, 13:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 628M / 🔴 backend ERROR=1 (#374 午膳) / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 5 days（5 healthy）
+🟢 内存 available 628M（12:04 616M → 628M，+12M 稳）；磁盘 76%（剩 9.3G）
+🔴 backend 近 60m ERROR=1 — 13:00:00 LunchReminderScheduler 午膳变更提醒失败：`column LunchChange.created_by does not exist` → **#374 定时档复现，根因确认为 DB schema 缺列 created_by**（非偶发）
+🟢 GH open = 55，今日 issue 更新 = 0；label 无 P0/P1 标签（标签体系未打）；55/55 未指派
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~94 天，较 12:04 的 UNKNOWN 已重算回 CONFLICTING）
+
+判定：功能面全绿，但 #374 每日 12:00/13:00 定时档稳定复现 → 告警升级为持续性缺陷。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权（已定位：LunchChange 表缺 created_by 列，需 DEV 补 migration）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
+# 12:04 — PM Patrol (Wed 11-25, 12:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 616M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🟡 PR #369 mergeable UNKNOWN]
+
+🟢 三端全绿：backend :3000/api/health = 200 (11ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
+🟢 14/14 容器 Up 5 days（含 5 healthy）；非 Up 仅 cloudflared Exited(2) 历史遗留 + zen_kowalevski Created 非本项目
+🟢 内存 available 616M（09:04 562M → 616M，+54M 回升，脱离下滑）；磁盘 76%（剩 9.3G）
+🟢 backend 近 60m ERROR=0 — #374 午膳档 12:00 本期未复现
+🟢 GH open = 55，今日 issue 更新 = 0；P0=29 / P1=16；55/55 均未指派
+🟡 PR #369 OPEN，mergeable 由 CONFLICTING 变为 UNKNOWN（GitHub 重算中，非合并）；updated 08-23，逾期 ~94 天
+
+判定：功能全绿，无告警升级。内存止跌回升。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input：① #374 修复授权 ② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
 # 09:04 — PM Patrol (Wed 11-25, 09:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 562M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
 
 🟢 三端全绿：backend :3000/api/health = 200 (24ms)、admin :8080/school-admin/ = 200、portal :8081/portal/student = 200
