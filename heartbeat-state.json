@@ -1,16 +1,17 @@
 {
-  "lastPatrol": "2026-11-22T09:00:00+08:00",
+  "lastPatrol": "2026-11-26T13:04:00+08:00",
   "health": {
     "backend": 200,
     "admin": 200,
     "portal": 200
   },
   "containersUp": 14,
-  "backendErrors3h": 0,
-  "backendErrorsNote": "近60m 全容器 ERROR/FATAL=0",
-  "memAvailableMb": 807,
+  "backendErrors3h": 1,
+  "backendErrorsNote": "13:00 LunchReminderScheduler column LunchChange.created_by 不存在（#374 已知 schema drift，午膳档如期复现）",
+  "memAvailableMb": 595,
   "memory": {
-    "disk": "75% (9.4G free)"
+    "available": "595M",
+    "disk": "76% (9.3G free)"
   },
   "ghOpenIssues": 55,
   "openIssues": {
@@ -26,9 +27,9 @@
   },
   "issue374Days": 49,
   "spawnBlocker": "capabilities=none / allowAny=false — cannot dispatch DEV/QA/DEVOPS",
-  "verdict": "全绿无变化；#374 未授权迁移；PR#369 冲突逾期 ~92 天",
+  "verdict": "三端全绿、容器14、ERROR=1(已知#374)、GH 55 无新 P0/P1；PR#369 CONFLICTING；#374 未授权",
   "needsInput": [
-    "#374 migration 授权（最高优先）",
+    "#374 schema drift migration 授权（最高优先）",
     "PR #369 合并/关闭",
     "是否放宽代理 spawn 策略"
   ],
@@ -46,8 +47,8 @@
     "mergeable": "CONFLICTING",
     "since": "2026-08-23"
   },
-  "lastHeartbeat": "2026-11-20T15:04:20.679276+08:00",
-  "status": "healthy-with-known-failure",
-  "notes": "#374 lunch cron failing 13:00/14:00; PR#369 conflicting; gh open 55; no new P0/P1",
-  "backendErrors60m": 0
+  "lastHeartbeat": "2026-11-26T13:04:00+08:00",
+  "status": "healthy-no-change",
+  "notes": "#374 lunch cron failing 13:00; PR#369 conflicting; gh open 55; no new P0/P1",
+  "backendErrors60m": 1
 }
