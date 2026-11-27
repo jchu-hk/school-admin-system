@@ -1,3 +1,116 @@
+# 15:04 — PM Patrol (Fri 11-27, 15:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 591M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (4.6ms)、admin :8080/school-admin/ = 200 (4.0ms)、portal :8081/portal/student = 200 (1.1ms)
+🟢 14 容器 Up 7 days（postgres/redis/opa/kafka/ai-sre healthy）；非 Up 仅 zen_kowalevski Created 残留 + cloudflared Exited(2) 历史遗留
+🟢 内存 available 591M（14:04 578M → 591M，+13M 平稳，安全区）；磁盘 76%（剩 9.2G）
+🟢 backend 近 60m ERROR/FATAL = 0 — 14:00 午膳档报错已滚出窗口，符合已知规律
+🟢 GH open = 55（p0 29 / p1 16 / p2 7 / p3 2 / 无标签 1）；最新更新仍 #374 (10-04)，无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~96 天）— 无实质变化
+
+判定：功能面全绿，无实质变化，无新增故障。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input（累积）：① #374 修复授权（LunchChange.created_by 缺列、自动拒绝 SQL 别名 "change"、attendance_daily_reports.school_id 缺列）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 14:04 — PM Patrol (Fri 11-27, 14:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 716M / 🟡 backend ERROR=1(#374 已知) / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (8.3ms)、admin :8080/school-admin/ = 200 (7.3ms)、portal :8081/portal/student = 200 (1.7ms)
+🟢 14 容器 Up 7 days（postgres/redis/opa/kafka/ai-sre healthy）；非 Up 仅 zen_kowalevski Created 残留 + cloudflared Exited(2) 历史遗留
+🟢 内存 available 716M（12:04 634M → 716M，+82M 回升，安全区）；磁盘 76%（剩 9.2G）
+🟡 backend 近 60m ERROR = 1 — 14:00:00 LunchReminderScheduler 自动拒绝 SQL 别名 "change" 缺 FROM-clause，属 #374 已知问题、按日 14:00 定时触发，非新增故障
+🟢 GH open = 55（p0 29 / p1 16 / p2 7 / p3 2 / 无标签 1）；最新更新仍 #374 (10-04)，无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-20，逾期 ~99 天）— 无实质变化
+
+判定：功能面全绿，无实质变化，无新增故障。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input（累积）：① #374 修复授权（LunchChange.created_by 缺列、自动拒绝 SQL 别名 "change"、attendance_daily_reports.school_id 缺列）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 12:04 — PM Patrol (Fri 11-27, 12:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 634M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (6.8ms)、admin :8080/school-admin/ = 200 (5.4ms)、portal :8081/portal/student = 200 (1.5ms)
+🟢 14 容器 Up 7 days（postgres/redis/opa/kafka/ai-sre healthy）；非 Up 仅 zen_kowalevski Created 残留 + cloudflared Exited(2) 3 月前历史遗留
+🟢 内存 available 634M（11:04 669M → 634M，-35M，正常波动，安全区）；磁盘 76%（剩 9.2G）
+🟢 backend 近 60m ERROR/FATAL = 0 — 午间静默，符合已知规律
+🟢 GH open = 55（p0 29 / p1 16 / p2 7 / p3 2 / 无标签 1）；最新更新仍 #374 (10-04)，无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~96 天）— 无实质变化
+
+判定：功能面全绿，无实质变化，无新增故障。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input（累积）：① #374 修复授权（LunchChange.created_by 缺列、自动拒绝 SQL 别名 "change"、attendance_daily_reports.school_id 缺列）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 11:04 — PM Patrol (Fri 11-27, 11:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 669M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (11ms)、admin :8080/school-admin/ = 200 (3.9ms)、portal :8081/portal/student = 200 (1.9ms)
+🟢 14 容器 Up 7 days；非 Up 仅 zen_kowalevski Created 残留 + school-admin-cloudflared Exited(2) 3 月前历史遗留
+🟢 内存 available 669M（10:04 640M → 669M，+29M，连续两轮回升，安全区）；磁盘 76%（剩 9.2G）
+🟢 backend 近 60m ERROR/FATAL = 0 — 早间静默，符合已知规律
+🟢 GH open = 55（p0 29 / p1 16 / p2 7 / p3 2 / 无标签 1）；最新更新仍 #374 (10-04)，无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~96 天）— 无实质变化
+
+判定：功能面全绿，无实质变化，无新增故障。内存两轮回升，观察解除。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input（累积）：① #374 修复授权（LunchChange.created_by 缺列、自动拒绝 SQL 别名 "change"、attendance_daily_reports.school_id 缺列）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 10:04 — PM Patrol (Fri 11-27, 10:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 640M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (6.9ms)、admin :8080/school-admin/ = 200 (6.4ms)、portal :8081/portal/student = 200 (2.0ms)
+🟢 14 容器 Up；非 Up 仅 zen_kowalevski Created 残留 + school-admin-cloudflared Exited(2) 3 月前历史遗留
+🟢 内存 available 640M（09:04 568M → 640M，+72M 回升，脱离 500M 观察线，观察解除）；磁盘 76%（剩 9.2G）
+🟢 backend 近 60m ERROR/FATAL = 0 — 早间静默，符合已知规律
+🟢 GH open = 55（p0 29 / p1 16 / p2 7 / p3 2）；无 11-26 之后更新的 issue，无新 P0/P1；最新更新仍 #374 (10-04)
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~96 天）— 无实质变化
+
+判定：功能面全绿，无实质变化，无新增故障。内存连挡回升，观察解除。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input（累积）：① #374 修复授权（LunchChange.created_by 缺列、自动拒绝 SQL 别名 "change"、attendance_daily_reports.school_id 缺列）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 09:04 — PM Patrol (Fri 11-27, 09:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 568M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (71ms)、admin :8080/school-admin/ = 200 (4.0ms)、portal :8081/portal/student = 200 (1.4ms)
+🟢 14 容器 Up 7 days（postgres/redis/opa/kafka/ai-sre healthy）；非 Up 仅 zen_kowalevski Created 残留 + cloudflared Exited(2) 历史遗留
+🟢 内存 available 568M（09:00 442M → 568M，+126M 回升，脱离 500M 观察线）；磁盘 76%（剩 9.2G）
+🟢 backend 近 60m ERROR/FATAL = 0 — 早间静默，符合已知规律
+🟢 GH open = 55（p0 29 / p1 16 / p2 7 / p3 2）；最新更新仍 10-04，无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~96 天）— 无实质变化
+
+判定：功能面全绿，无实质变化，无新增故障。内存单轮回升，观察解除（下一档 10:04 复核）。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input（累积）：① #374 修复授权（LunchChange.created_by 缺列、自动拒绝 SQL 别名 "change"、attendance_daily_reports.school_id 缺列）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 09:01 — PM Patrol (Fri 11-27, 09:01 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟡 内存 442M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (71ms)、admin :8080/school-admin/ = 200 (4.5ms)、portal :8081/portal/student = 200 (1.1ms)
+🟢 14 容器 Up 7 days（postgres/redis/opa/kafka/ai-sre healthy）；非 Up 仅 zen_kowalevski Created 残留 + cloudflared Exited(2) 历史遗留
+🟡 内存 available 442M（09:00 596M → 442M，-154M 单轮下跌，跌破 500M 观察线但仍在 400M 警戒上方；持续关注）; 磁盘 76%（剩 9.2G）
+🟢 backend 近 60m ERROR/FATAL = 0 — 早间静默，符合已知规律
+🟢 GH open = 55（p0 29 / p1 16 / p2 7 / p3 2）；最新更新仍 10-04，无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~96 天）— 无实质变化
+
+判定：功能面全绿，无实质变化，无新增故障。内存单轮下滑列入观察（下一档 10:04 复核）。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input（累积）：① #374 修复授权（LunchChange.created_by 缺列、自动拒绝 SQL 别名 "change"、attendance_daily_reports.school_id 缺列）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 09:00 — PM Patrol (Fri 11-27, 09:00 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 596M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (6.2ms)、admin :8080/school-admin/ = 200 (0.8ms)、portal :8081/portal/student = 200 (1.4ms)
+🟢 14 容器 Up 7 days（postgres/redis/opa/kafka/ai-sre healthy）；非 Up 仅 zen_kowalevski Created 残留 + cloudflared Exited(2) 3 月前历史遗留
+🟢 内存 available 596M（07:00 672M → 596M，-76M 缓降，安全区）；磁盘 76%（剩 9.2G）
+🟢 backend 近 60m ERROR/FATAL = 0 — 早间静默，符合已知规律
+🟢 GH open = 55（p0 29 / p1 16 / p2 7 / p3 2）；无 11-26 之后更新的 issue，无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~96 天）— 无实质变化（08:04 为 UNKNOWN，现已重算回 CONFLICTING，与此前一致）
+
+判定：功能面全绿，无实质变化，无新增故障。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input（累积）：① #374 修复授权（LunchChange.created_by 缺列、自动拒绝 SQL 别名 "change"、attendance_daily_reports.school_id 缺列）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+
 # 20:04 — PM Patrol (Thu 11-26, 20:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 666M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
 
 🟢 三端全绿：backend :3000/api/health = 200 (8.8ms)、admin :8080/school-admin/ = 200 (4.4ms)、portal :8081/portal/student = 200 (0.6ms)
