@@ -1,3 +1,31 @@
+# 18:04 — PM Patrol (Fri 11-27, 18:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 577M / 🟡 backend ERROR=2(#374 18:00 日报档) / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (5.1ms)、admin :8080/school-admin/ = 200 (5.9ms)、portal :8081/portal/student = 200 (2.1ms)
+🟢 14 容器 Up 8 days（postgres/redis/opa/kafka/ai-sre healthy）；无新增 Exited/Created
+🟢 内存 available 577M（17:04 529M → 577M，+48M 回升，安全区）；磁盘 76%（剩 9.2G）
+🟡 backend 近 60m ERROR=2 — 18:00:00 DailyReportService 两条（班级日报 `AttendanceDailyReport.school_id` 缺列、签到日报 `attendance_daily_reports.school_id` 缺列），同属 #374 schema 漂移，与前日 18:00 档一致，非新增故障
+🟢 GH open = 55（p0 29 / p1 16 / p2 7 / p3 2 / 无标签 1）；最新更新仍 #374 (10-04)，无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~96 天）— 无实质变化
+
+判定：功能面全绿，#374 于 18:00 日报档按期复现（已知规律），无新增故障。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input（累积）：① #374 修复授权（LunchChange.created_by 缺列、自动拒绝 SQL 别名 "change"、attendance_daily_reports.school_id 缺列）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
+# 17:04 — PM Patrol (Fri 11-27, 17:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 529M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
+
+🟢 三端全绿：backend :3000/api/health = 200 (10.4ms)、admin :8080/school-admin/ = 200 (5.6ms)、portal :8081/portal/student = 200 (2.3ms)
+🟢 14 容器 Up 7 days（postgres/redis/opa/kafka/ai-sre healthy）；非 Up 仅 zen_kowalevski Created 残留 + cloudflared Exited(2) 3 月前历史遗留
+🟢 内存 available 529M（15:04 591M → 529M，-62M 缓降，仍在安全区）；磁盘 76%（剩 9.2G）
+🟢 backend 近 60m ERROR/FATAL = 0 — 午后静默，符合已知规律
+🟢 GH open = 55（p0 29 / p1 16 / p2 7 / p3 2 / 无标签 1）；最新更新仍 #374 (10-04)，无新 P0/P1
+🔴 PR #369 OPEN + CONFLICTING（updated 08-23，逾期 ~96 天）— 无实质变化
+
+判定：功能面全绿，无实质变化，无新增故障。未打扰用户。
+Blocker（未变）：capabilities=none、仅 main、allowAny=false → 无法 spawn DEV/QA/DEVOPS，#374 无法派发。
+Needs input（累积）：① #374 修复授权（LunchChange.created_by 缺列、自动拒绝 SQL 别名 "change"、attendance_daily_reports.school_id 缺列）② PR #369 合并/关闭 ③ 代理 spawn 策略是否放宽
+
+---
 # 15:04 — PM Patrol (Fri 11-27, 15:04 轮次) [🟢 三端全绿 / 🟢 14 容器 / 🟢 内存 591M / 🟢 backend ERROR=0 / 🟢 GH open 55 / 🔴 PR #369 CONFLICTING]
 
 🟢 三端全绿：backend :3000/api/health = 200 (4.6ms)、admin :8080/school-admin/ = 200 (4.0ms)、portal :8081/portal/student = 200 (1.1ms)
